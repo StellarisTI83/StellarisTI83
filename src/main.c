@@ -1279,6 +1279,7 @@ void ChargementNouvellePartie(Empire *joueur, Parametres *parametres, Date *date
 	joueur->nourriture = 100;
 	joueur->acier = 100;
 	joueur->biensDeConsommation = 100;
+	joueur->flotte = flotteJoueur;
 	
 	date->jour = 1;
 	date->mois = 1;
@@ -1319,6 +1320,7 @@ void ChargementNouvellePartie(Empire *joueur, Parametres *parametres, Date *date
 		ti_Write(pointeur, sizeof(Flotte), 1, sauvegarde);
 		pointeur = pointeur->suivant;
 	}
+	
 	
 	ti_Write(marche, sizeof(Marche), 1, sauvegarde);
 	StellarisBoucle(&sauvegarde, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
@@ -1517,21 +1519,21 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					case 2:
 						hyperLane2 = 0;
 						break;
-					case 3:
+					/*case 3:
 						hyperLane3 = 0;
 						break;
 				}
 				switch(hyperlaneSup2)
 				{
 					case 1:
-					hyperLane1 = 0;
+						hyperLane1 = 0;
 						break;
 					case 2:
 						hyperLane2 = 0;
 						break;
 					case 3:
 						hyperLane3 = 0;
-						break;
+						break;*/
 				}
 			}
 			else if(nombreHyperlanes <= 5)
@@ -1545,18 +1547,17 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					case 2:
 						hyperLane2 = 0;
 						break;
-					case 3:
+					/*case 3:
 						hyperLane3 = 0;
-						break;
+						break;*/
 				}
 			}	
 			else
 			{
 				hyperLane1 = 1;
 				hyperLane2 = 1;
-				hyperLane3 = 1;
+				//hyperLane3 = 1;
 			}
-		
 			
 			/*if((systemeStellaires[k - LARGEUR_GALAXIE].x == 0)||((systemeStellaires[k - 1].x == 0)||(systemeStellaires[k + 1].x == 0)))
 			{
@@ -1583,7 +1584,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 				systemeStellaires[k].hyperlane3 = k + 1;
 			}
 			
-			nomInt = randInt(0, 49);
+			nomInt = randInt(0, (sizeof(nomGalaxies)/sizeof(nomGalaxies[0])) - 1);
 			strcpy(systemeStellaires[k].nom, nomGalaxies[nomInt]);
 			
 			
@@ -1717,8 +1718,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					}
 					
 					if(systemeStellaires[k].planete4->habitable == 1) {
-						//strcpy(systemeStellaires[k].planete4->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
-						strcpy(systemeStellaires[k].planete4->nom, "habitabl");
+						strcpy(systemeStellaires[k].planete4->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+						// strcpy(systemeStellaires[k].planete4->nom, "habitabl");
 					}
 					
 					systemeStellaires[k].planete4->taille = randInt(1, 100);
@@ -1785,8 +1786,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					}
 					
 					if(systemeStellaires[k].planete3->habitable == 1){
-						//strcpy(systemeStellaires[k].planete3->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
-						strcpy(systemeStellaires[k].planete3->nom, "habitabl");
+						strcpy(systemeStellaires[k].planete3->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+						//strcpy(systemeStellaires[k].planete3->nom, "habitabl");
 					}
 					
 					systemeStellaires[k].planete3->taille = randInt(1, 100);
@@ -1845,8 +1846,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					}
 					
 					if(systemeStellaires[k].planete2->habitable == 1){
-						//strcpy(systemeStellaires[k].planete2->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
-						strcpy(systemeStellaires[k].planete2->nom, "habitabl");
+						strcpy(systemeStellaires[k].planete2->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+						//strcpy(systemeStellaires[k].planete2->nom, "habitabl");
 					}
 					
 					systemeStellaires[k].planete2->taille = randInt(1, 100);
@@ -1901,8 +1902,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					}
 
 					if(systemeStellaires[k].planete1->habitable == 1){
-						//strcpy(systemeStellaires[k].planete1->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
-						strcpy(systemeStellaires[k].planete1->nom, "habitabl");
+						strcpy(systemeStellaires[k].planete1->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+						//strcpy(systemeStellaires[k].planete1->nom, "habitabl");
 					}
 
 					systemeStellaires[k].planete1->taille = randInt(1, 100);
@@ -1932,6 +1933,18 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	}
 	free(galaxie);
 	
+	i = 0;
+	//recreation des hyperlanes
+	while(i < k) {
+		if(systemeStellaires[k].hyperlane1 != 255) {
+			systemeStellaires[systemeStellaires[k].hyperlane1].hyperlane3 = k;
+		}
+		if(systemeStellaires[k].hyperlane2 != 255) {
+			systemeStellaires[systemeStellaires[k].hyperlane3].hyperlane4 = k;
+		}
+		i++;
+	}
+	
 	fin = 1;
 
 	//choix d'un systeme
@@ -1959,31 +1972,31 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					systemeStellaires[i].planete1->habitable = 1;
 					systemeStellaires[i].planete1->type = 7;
 					systemeStellaires[i].planete1->population = 28;
-					strcpy(systemeStellaires[i].planete1->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
+					strcpy(systemeStellaires[i].planete1->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 				case 2:
 					systemeStellaires[i].planete2->habitable = 1;
 					systemeStellaires[i].planete2->type = 7;
 					systemeStellaires[i].planete2->population = 28;
-					strcpy(systemeStellaires[i].planete2->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
+					strcpy(systemeStellaires[i].planete2->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 				case 3:
 					systemeStellaires[i].planete3->habitable = 1;
 					systemeStellaires[i].planete3->type = 7;
 					systemeStellaires[i].planete3->population = 28;
-					strcpy(systemeStellaires[i].planete3->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
+					strcpy(systemeStellaires[i].planete3->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 				case 4:
 					systemeStellaires[i].planete4->habitable = 1;
 					systemeStellaires[i].planete4->type = 7;
 					systemeStellaires[i].planete4->population = 28;
-					strcpy(systemeStellaires[i].planete4->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
+					strcpy(systemeStellaires[i].planete4->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 				case 5:
 					systemeStellaires[i].planete3->habitable = 1;
 					systemeStellaires[i].planete3->type = 7;
 					systemeStellaires[i].planete3->population = 28;
-					strcpy(systemeStellaires[i].planete3->nom, nomPlanetes[randInt(0, sizeof(nomPlanetes)/sizeof(nomPlanetes[0]))]);
+					strcpy(systemeStellaires[i].planete3->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 			}
 		}
@@ -2290,7 +2303,7 @@ int StellarisBoucle(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres
 		gfx_ZeroScreen();
 
 		/**dessine la map**/
-		StellarisMap(systemeStellaires, camera, &key, flotteJoueur, date, fenetre);
+		StellarisMap(systemeStellaires, camera, &key, flotteJoueur, date, fenetre, joueur);
 
 		
 		/**dessine le hud**/
@@ -2325,6 +2338,8 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	char nomPlanete[20];
 	char population[5];
 	char niveau = 0;
+	int8_t compteur = 0;
+	Flotte* flotte = NULL;
 	//gcvt(marche->valeurMinerai , 2, valeurMineraiStr);
 	
 	//dessine le fond du hud
@@ -2433,6 +2448,7 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	strcat(moisChar, anneeChar);
 	strcat(jourChar, moisChar);
 	gfx_PrintStringXY(jourChar, 125, 225);
+	
 	//pause / avance
 	switch (date->vitesse)
 	{
@@ -2455,7 +2471,7 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 		case 1:
 			gfx_SetColor(1);
 			gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
-			break;
+			break;	
 		case 2:
 			gfx_SetColor(1);
 			gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
@@ -2471,30 +2487,30 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	gfx_SetColor(11);
 	
 	//pointeur
-	if (camera->mapType == 1)
-	{
+	if (camera->mapType == 1) {
 		gfx_Line_NoClip(150, 120, 170, 120);
 		gfx_Line_NoClip(160, 110, 160, 130);
 		gfx_FillCircle_NoClip(160, 120, 2);
 		gfx_Circle_NoClip(160, 120, 4);
 		gfx_Circle_NoClip(160, 120, 8);
 	}
-	else
-	{
+	else {
 		gfx_Line_NoClip(camera->x / 2.5 + 5, camera->y / 2.5 - 30, camera->x / 2.5 + 15, camera->y / 2.5 - 30);
 		gfx_Line_NoClip(camera->x / 2.5 + 10, camera->y / 2.5 - 25, camera->x / 2.5 + 10, camera->y / 2.5 - 35);
 		gfx_FillCircle_NoClip(camera->x / 2.5 + 10, camera->y / 2.5 - 30, 3);
 	}
 	//nom galaxie
-	if ((camera->selection != -1) || (camera->mapType == 2))
-	{
-		if (camera->mapType == 1)
-		{
-			gfx_PrintStringXY(systemeStellaires[camera->selection].nom, 160 - strlen(systemeStellaires[camera->selection].nom) * 4, 211);
+	if ((camera->selection != -1) || (camera->mapType == 2)) {
+		if (camera->mapType == 1) {
+			if (systemeStellaires[camera->selection].niveauConnaissance == 0) {
+				gfx_PrintStringXY("Inconnu", 132, 211);
+			}
+			else {
+				gfx_PrintStringXY(systemeStellaires[camera->selection].nom, 160 - strlen(systemeStellaires[camera->selection].nom) * 4, 211);
+			}
 		}
-		else
-		{
-			gfx_PrintStringXY("Carte", 160 - strlen("Carte") * 4, 211);
+		else {
+			gfx_PrintStringXY("Carte", 140, 211);
 		}
 	}
 	
@@ -2619,7 +2635,7 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 				//dessiner fenetre
 				gfx_SetColor(6);
 				gfx_FillRectangle_NoClip(40, 40, 240, 11);
-				gfx_FillRectangle_NoClip(200, 52, 80, 148); //barre de coté
+				gfx_FillRectangle_NoClip(200, 51, 80, 149); //barre de coté
 				gfx_FillRectangle_NoClip(110, 200, 70, 12); //barre du bas
 				gfx_SetColor(0);
 				gfx_FillRectangle_NoClip(40, 52, 160, 148);
@@ -3183,12 +3199,10 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 						*key = 0;
 						break;
 				}
-				if (fenetre->selection > 3)
-				{
+				if (fenetre->selection > 3) {
 					fenetre->selection = 3;
 				}
-				else if (fenetre->selection < 1)
-				{
+				else if (fenetre->selection < 1) {
 					fenetre->selection = 1;
 				}
 
@@ -3204,6 +3218,29 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 				gfx_PrintStringXY("Vue flottes", 116, 42);
 				gfx_PrintStringXY("Syst~me", 47, 202);
 				gfx_PrintStringXY("Flotte", 121, 202);
+				niveau = 57;
+				flotte = joueur->flotte->premier;
+				compteur = 1;
+				while(flotte != NULL) {
+					if(flotte->systeme == camera->selection) {
+						if (compteur < 10) {
+							gfx_SetTextXY(132, niveau);
+						}
+						else {
+							gfx_SetTextXY(128, niveau);
+						}
+						gfx_PrintString("Flotte ");
+						if (compteur < 10) {
+							gfx_PrintInt(compteur, 1);
+						}
+						else {
+							gfx_PrintInt(compteur, 2);
+						}
+						niveau += 14;
+					}
+					compteur++;
+					flotte = flotte->suivant;
+				}
 				break;
 				
 			case 2: //etoile
@@ -3901,7 +3938,7 @@ void StellarisTemps(Empire *joueur, Date *date, char *key)
 }
 
 /********dessiner la map********/
-void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre)
+void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur)
 {
 	int i = 0, x = 0, y = 0, xLn = 0, yLn = 0, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, key2 = 0, systeme = 0;
 	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0;
@@ -4419,41 +4456,8 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 					}
 				}
 				
-				xLn = 0;
-				yLn = 0;
-				hyperLane3 = systemeStellaires[i].hyperlane3;
-				if (hyperLane3 != 255)
-				{
-					if((systemeStellaires[hyperLane3].niveauConnaissance == 0) || (systemeStellaires[i].niveauConnaissance == 0)) {
-						gfx_SetColor(11);
-					}
-					else {
-						gfx_SetColor(12);
-					}
-						
-					if(camera->mapType == 1)
-					{
-						xLn = systemeStellaires[hyperLane3].x*camera->zoom - camera->x + 160;
-						yLn = systemeStellaires[hyperLane3].y*camera->zoom - camera->y + 120;
-					}
-					else 
-					{
-						xLn = systemeStellaires[hyperLane3].x / 2.5 + 10;
-						yLn = systemeStellaires[hyperLane3].y / 2.5 - 30;
-					}
-					if ( (((0 <= xLn) && (xLn <= 320)) && ((0 <= yLn) && (yLn <= 240))) && (((0 <= x) && (x <= 320)) && ((0 <= y) && (y <= 240))) )		
-					{
-						gfx_Line_NoClip(x, y, xLn, yLn);
-					}
-				}
 				if(camera->mapType == 1)
 				{
-					if(((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y)))
-					{
-						gfx_SetColor(9);
-						gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
-						camera->selection = i;
-					}
 					gfx_SetTextFGColor(1);
 					gfx_SetColor(16);
 					//dessiner planetes habitables
@@ -4531,6 +4535,13 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 						}
 					}
 				}
+			}
+			
+			if(((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y)))
+			{
+				gfx_SetColor(9);
+				gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
+				camera->selection = i;
 			}
 			
 			if(camera->mapType == 1)
@@ -4625,7 +4636,7 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 	if(camera->mapType == 1)
 	{
 		//dessiner flottes
-		flotte = flotteJoueur->premier;
+		flotte = joueur->flotte->premier;
 		while(flotte != NULL) {
 			systeme = flotte->systeme;
 			if(((systemeStellaires[systeme].x*camera->zoom - camera->x + 160 > 0) && (systemeStellaires[systeme].x*camera->zoom - camera->x + 160 < 320)) && ((0 < systemeStellaires[systeme].y*camera->zoom - camera->y + 120)&& (systemeStellaires[systeme].y*camera->zoom - camera->y + 120 < 240)))
@@ -4634,11 +4645,11 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 				gfx_TransparentSprite(force_our, systemeStellaires[systeme].x*camera->zoom - camera->x + 177, systemeStellaires[systeme].y*camera->zoom - camera->y + 109);
 				if (flotte->puissance > 500)
 				{
-				gfx_TransparentSprite(force_our, systemeStellaires[systeme].x*camera->zoom - camera->x + 181, systemeStellaires[systeme].y*camera->zoom - camera->y + 109);
+					gfx_TransparentSprite(force_our, systemeStellaires[systeme].x*camera->zoom - camera->x + 181, systemeStellaires[systeme].y*camera->zoom - camera->y + 109);
 				}
 				if (flotte->puissance > 1500)
 				{
-				gfx_TransparentSprite(force_our, systemeStellaires[systeme].x*camera->zoom - camera->x + 179, systemeStellaires[systeme].y*camera->zoom - camera->y + 106);
+					gfx_TransparentSprite(force_our, systemeStellaires[systeme].x*camera->zoom - camera->x + 179, systemeStellaires[systeme].y*camera->zoom - camera->y + 106);
 				}
 			}
 			flotte = flotte->suivant;

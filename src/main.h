@@ -81,6 +81,7 @@ typedef struct {
 	char hyperlane1;
 	char hyperlane2;
 	char hyperlane3;
+	char hyperlane4;
 	char niveauConnaissance; //0 = inconnu, 1 = faible, 2 = moyen, 3 = haut, 4 = total (intel level)
 	Planete* planete1;
 	Planete* planete2;
@@ -132,7 +133,7 @@ int ChargementAnciennePartie(Empire *joueur, Parametres *parametres, Date *date,
 int StellarisBoucle(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
 int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, FlotteListe *flotteJoueur, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche);
 void StellarisTemps(Empire *joueur, Date *date, char *key);
-void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre);
+void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur);
 
 int StellarisSauvegarde(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteListe, Marche *marche);
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
