@@ -95,6 +95,9 @@ struct FlotteStruct {
 	int puissance;
 	char systeme;
 	int nombreVaisseaux;
+	char systemeSuivant;
+	char systemeArrive;
+	char avancement;
 	Flotte* suivant;
 };
 
@@ -105,6 +108,7 @@ struct FlotteListeStruct {
 typedef struct {
 	char selection;
 	char ouverte;
+	char precedente;
 } Fenetre;
 
 typedef struct {

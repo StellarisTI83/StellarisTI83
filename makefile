@@ -26,12 +26,18 @@ DESCRIPTION ?= "Stellaris"
 #V                   ?= 1
 
 FONTDIR ?= $(SRCDIR)/fonts
+#VERSIONDIR ?= $(SRCDIR)/version
 
 include $(CEDEV)/include/.makefile
 
 # This is a roundabout way to tell make that fonts.c depends on testfont.inc.
 # It does it by saying the compiled object code depends on the .inc file.
 $(OBJDIR)/fonts/fonts.src: $(FONTDIR)/testfont.inc
+#$(OBJDIR)/version/version.src: $(VERSIONDIR)/version.h
+
+#$(VERSIONDIR)/version.h:
+#	echo \#define SHA > $(VERSIONDIR)/version.h
+#	git rev-parse HEAD >> $(VERSIONDIR)/version.h
 
 $(FONTDIR)/testfont.inc: $(FONTDIR)/testfont.fnt
 	$(call MKDIR,$(@D))

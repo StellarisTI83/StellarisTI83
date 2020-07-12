@@ -3198,9 +3198,17 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 						fenetre->ouverte = 0;
 						*key = 0;
 						break;
+					case sk_Down:
+						fenetre->selection++;
+						*key = 0;
+						break;
+					case sk_Up:
+						fenetre->selection--;
+						*key = 0;
+						break;
 				}
-				if (fenetre->selection > 3) {
-					fenetre->selection = 3;
+				if (fenetre->selection > compteur) {
+					fenetre->selection = 1;
 				}
 				else if (fenetre->selection < 1) {
 					fenetre->selection = 1;
@@ -3229,6 +3237,12 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 						else {
 							gfx_SetTextXY(128, niveau);
 						}
+						if(fenetre->selection == compteur) {
+							gfx_SetTextFGColor(13);
+						}
+						else {
+							gfx_SetTextFGColor(1);
+						}
 						gfx_PrintString("Flotte ");
 						if (compteur < 10) {
 							gfx_PrintInt(compteur, 1);
@@ -3236,10 +3250,15 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 						else {
 							gfx_PrintInt(compteur, 2);
 						}
+						gfx_HorizLine_NoClip(50, niveau + 11, 220);
 						niveau += 14;
 					}
 					compteur++;
 					flotte = flotte->suivant;
+				}
+				if (*key == sk_Enter) {
+					fenetre->ouverte = 6;
+					fenetre->precedente = 1;
 				}
 				break;
 				
@@ -3732,6 +3751,45 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 						break;
 				}
 				break;
+			case 6: //menu flotte details
+				switch(*key)
+				{
+					case sk_Clear:
+						switch(fenetre->precedente){
+							case 1:
+								fenetre->ouverte = 1;
+								break;
+							case 2:
+								camera->fenetre = 3;
+								fenetre->selection = 0;
+								break;
+						}
+						*key = 0;
+						break;
+				}
+				//dessiner fenetre
+				gfx_SetColor(6);
+				gfx_FillRectangle_NoClip(40, 40, 240, 160);
+				gfx_FillRectangle_NoClip(40, 200, 70, 12); //barre du bas
+				gfx_FillRectangle_NoClip(110, 200, 90, 12);
+				gfx_SetColor(7);
+				gfx_Rectangle_NoClip(40, 40, 240, 160);
+				gfx_HorizLine_NoClip(45, 51, 230);
+				gfx_VertLine_NoClip(100, 42, 8);
+				gfx_Rectangle_NoClip(45, 56, 100, 100);
+				gfx_Rectangle_NoClip(40, 199, 230, 12); //barre du bas
+				gfx_FillRectangle_NoClip(200, 200, 70, 12);
+				gfx_VertLine_NoClip(200, 201, 8);
+				gfx_PrintStringXY("Retour", 48, 42);
+				gfx_SetTextXY(150, 42);
+				gfx_PrintString("Flotte");
+				if (fenetre->selection > 10) {
+					gfx_PrintInt(fenetre->selection, 2);
+				}
+				else {
+					gfx_PrintInt(fenetre->selection, 1);
+				}
+				break;
 		}
 	}
 	
@@ -3823,10 +3881,25 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	//menu flotte
 	else if (camera->fenetre == 3)
 	{
-		if(*key == sk_Clear)
-		{
-			camera->fenetre = 0;
-			*key = 0;
+		switch (*key) {
+			case sk_Clear:
+				camera->fenetre = 0;
+				*key = 0;
+				break;
+			case sk_Down:
+				fenetre->selection--;
+				*key = 0;
+				break;
+			case sk_Up:
+				fenetre->selection++;
+				*key = 0;
+				break;
+		}
+		if(fenetre->selection > compteur) {
+			fenetre->selection = 1;
+		}
+		else if(fenetre->selection < 1){
+			fenetre->selection = 1;
 		}
 		//dessiner fenetre
 		gfx_SetColor(6);
@@ -3834,8 +3907,40 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 		gfx_SetColor(7);
 		gfx_Rectangle_NoClip(40, 40, 240, 160);
 		gfx_HorizLine_NoClip(50, 50, 220);
-		gfx_SetColor(1);
 		gfx_PrintStringXY("Flotte", 136, 41);
+		niveau = 57;
+		flotte = joueur->flotte->premier;
+		compteur = 1;
+		while(flotte != NULL) {
+			if (compteur < 10) {
+				gfx_SetTextXY(132, niveau);
+			}
+			else {
+				gfx_SetTextXY(128, niveau);
+			}
+			if(fenetre->selection == compteur) {
+				gfx_SetTextFGColor(13);
+			}
+			else {
+				gfx_SetTextFGColor(1);
+			}
+			gfx_PrintString("Flotte ");
+			if (compteur < 10) {
+				gfx_PrintInt(compteur, 1);
+			}
+			else {
+				gfx_PrintInt(compteur, 2);
+			}
+			gfx_HorizLine_NoClip(50, niveau + 11, 220);
+			niveau += 14;
+			compteur++;
+			flotte = flotte->suivant;
+		}
+		if(*key == sk_Enter){
+			camera->fenetre = 1;
+			fenetre->ouverte = 6;
+			fenetre->precedente = 2;
+		}
 	}
 	
 	//menu recherche
