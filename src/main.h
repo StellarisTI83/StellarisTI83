@@ -6,6 +6,20 @@
 
 #define TEXT_BG_COLOR 2
 
+#define FLOTTE_MILITAIRE 1
+#define FLOTTE_SCIENTIFIQUE 2
+#define FLOTTE_DE_CONSTRUCTION 3
+
+#define FALSE 0
+#define TRUE 1
+
+#define MENU_QUITTER -1
+#define MENU_AUCUN 0
+#define MENU_SYSTEME 1
+#define MENU_MARCHE 2
+#define MENU_FLOTTE 3
+#define MENU_RECHERCHE 4
+#define MENU_CONTACTS 5
 /**************structures**************/
 
 typedef struct FlotteListeStruct FlotteListe;
@@ -92,9 +106,17 @@ typedef struct {
 
 typedef struct FlotteStruct Flotte;
 struct FlotteStruct {
+	char type;
 	int puissance;
+	int coqueTotal;
+	int coqueVie;
+	int blindageTotal;
+	int blindageVie;
+	int bouclierTotal;
+	int bouclierVie;
 	char systeme;
 	int nombreVaisseaux;
+	char action;
 	char systemeSuivant;
 	char systemeArrive;
 	char avancement;
@@ -117,7 +139,7 @@ typedef struct {
 	int valeurFer;
 } Marche;
 /**************def**************/
-int MainMenu(Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
+int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
 
 int NouvellePartieAvertissement(Empire *joueur, Parametres *parametres);
 
@@ -129,20 +151,20 @@ int NouvellePartieNom(Empire *joueur, Parametres *parametres);
 int NouvellePartieDrapeau(Empire *joueur, Parametres *parametres);
 int NouvellePartieParametres(Empire *joueur, Parametres *parametres);
 
-void ChargementNouvellePartie(Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
+void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
 int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires, FlotteListe *flotteJoueur, Camera *camera);
-int ChargementNouvellePartieGalaxieTemporaire(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires);
-int ChargementAnciennePartie(Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
+int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
 
-int StellarisBoucle(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
-int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, FlotteListe *flotteJoueur, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche);
+int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
+int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, FlotteListe *flotteJoueur, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche);
 void StellarisTemps(Empire *joueur, Date *date, char *key);
-void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur);
+void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur);
 
-int StellarisSauvegarde(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteListe, Marche *marche);
+int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteListe, Marche *marche);
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
 void PrintHUD(const unsigned int nombre, const int change, int x, int y);
 void PrintText(const char *str, int x, int y, int taille, int color);
+void PrintInt(int nombre);
 
 FlotteListe* FlotteListeCreer();
 void FlotteListeSupprimer(FlotteListe* flotteliste);

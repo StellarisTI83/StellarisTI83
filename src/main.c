@@ -25,7 +25,8 @@ int main(void)
 {
 	char fin = 1, partie = 0;
 	
-	Empire joueur;
+	Empire* joueur;
+	EmpireListe* empireListe;
 	Parametres parametres;
 	Date date;
 	Camera camera;
@@ -34,6 +35,8 @@ int main(void)
 	Fenetre fenetre;
 	Marche marche;
 	
+	empireListe = EmpireListeCreer();
+	joueur = EmpireAjouter(empireListe);
 	flotteJoueur = FlotteListeCreer();
 	
 	memset(systemeStellaires, 0, sizeof(SystemeStellaire) * LARGEUR_GALAXIE * LARGEUR_GALAXIE);
@@ -48,7 +51,7 @@ int main(void)
 	
 	while (fin)
 	{
-		fin = MainMenu(&joueur, &parametres, &date, systemeStellaires, &camera, flotteJoueur, &fenetre, &marche);
+		fin = MainMenu(empireListe, joueur, &parametres, &date, systemeStellaires, &camera, flotteJoueur, &fenetre, &marche);
 	}
 	
 	gfx_End();
@@ -57,7 +60,7 @@ int main(void)
 }
 
 /*main menu*/
-int MainMenu(Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
+int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
 {
 	char choix = 0, fin = 0, key = 0, erreur = 0;
 	unsigned char car = 'è';
@@ -122,7 +125,7 @@ int MainMenu(Empire *joueur, Parametres *parametres, Date *date, SystemeStellair
 	switch (choix)
 	{
 		case 0:
-			erreur = ChargementAnciennePartie(joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+			erreur = ChargementAnciennePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
 			if(erreur == 1)
 			{
 				gfx_FillScreen(255);
@@ -136,7 +139,7 @@ int MainMenu(Empire *joueur, Parametres *parametres, Date *date, SystemeStellair
 			if (fin == 0)
 			{
 				/*lancer la nouvelle partie*/
-				ChargementNouvellePartie(joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+				ChargementNouvellePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
 			}
 			break;
 		case 2:
@@ -1265,12 +1268,13 @@ int NouvellePartieParametres(Empire *joueur, Parametres *parametres)
 
 /******************nouvelle partie******************/
 /*chargement de la nouvelle partie*/
-void ChargementNouvellePartie(Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
+void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
 {
 	ti_var_t sauvegarde;
 	char fin = 0;
-	Flotte* pointeur = NULL;
-	int compteur = 0;
+	Flotte* flotte = NULL;
+	Empire* empire = NULL;
+	int compteur = 0, compteurEmpires = 0;;
 	/*creer sauvegarde*/
 	ti_CloseAll();
 	sauvegarde = ti_Open("sauv", "w");
@@ -1293,50 +1297,66 @@ void ChargementNouvellePartie(Empire *joueur, Parametres *parametres, Date *date
 	camera->vecteury = 0;
 	camera->zoom = 1;
 	camera->mapType = 1;
-	camera->fenetre = 0;
-	camera->bloque = 0;
+	camera->fenetre = MENU_AUCUN;
+	camera->bloque = FALSE;
 
 	marche->valeurMinerai = 50;
-	
-	ti_Write(joueur, sizeof(Empire), 1, sauvegarde);
+
 	ti_Write(parametres, sizeof(Parametres), 1, sauvegarde);
 	ti_Write(date, sizeof(Date), 1, sauvegarde);
 	ti_Write(camera, sizeof(Camera), 1, sauvegarde);
+	ti_Write(marche, sizeof(Marche), 1, sauvegarde);
 	fin = ChargementNouvellePartieGalaxie(parametres, &sauvegarde, systemeStellaires, flotteJoueur, camera);
 	if(fin == 0)
 	{
 		return ;
 	}
-	ti_Write(flotteJoueur, sizeof(FlotteListe), 1, sauvegarde);
-	
-	pointeur = flotteJoueur->premier;
-	while(pointeur != NULL) {
+
+	compteur = 0;
+	compteurEmpires = 0;
+
+	empire = empireListe->premier;
+	while(empire != NULL) {
 		compteur++;
-		pointeur = pointeur->suivant;
+		empire = empire->suivant;
 	}
+
 	ti_Write(&compteur, sizeof(int), 1, sauvegarde);
-	pointeur = flotteJoueur->premier;
-	while(pointeur != NULL) {
-		ti_Write(pointeur, sizeof(Flotte), 1, sauvegarde);
-		pointeur = pointeur->suivant;
+
+	empire = empireListe->premier;
+	while(empire != NULL) {
+		ti_Write(empire, sizeof(Empire), 1, sauvegarde);
+
+		//enregistrer flottes
+		compteur = 0;
+		flotte = empire->flotte->premier;
+		while(flotte != NULL) {
+			compteur++;
+			flotte = flotte->suivant;
+		}
+		ti_Write(&compteur, sizeof(int), 1, sauvegarde);
+		flotte = empire->flotte->premier;
+		while(flotte != NULL) {
+			ti_Write(flotte, sizeof(Flotte), 1, sauvegarde);
+			flotte = flotte->suivant;
+		}
+
+		empire = empire->suivant;
 	}
 	
-	
-	ti_Write(marche, sizeof(Marche), 1, sauvegarde);
-	StellarisBoucle(&sauvegarde, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
 }
 
 int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires, FlotteListe *flotteJoueur, Camera *camera)
 {
 	int *galaxie = NULL;
-	//unsigned char galaxie[LARGEUR_GALAXIE][LARGEUR_GALAXIE*2];
 	int i = 0, j = 0, espaceEntreEtoiles = 50, barreDeChargement = 1, k = 0, etoile = 0, nombrePlanetes = 0, nombrePlanetesHabitables = 0, trouNoir = 0, fin = 0, nomInt = 0;
 	int coefficientDeplacementStellaire = 100, coefficientX = 0, coefficientY = 0, rayon = ((espaceEntreEtoiles * LARGEUR_GALAXIE) - espaceEntreEtoiles) / 2 - 25, lane = 255, rayonInterieur = 50;
 	int x = LIMITE_GAUCHE;
 	int y = LIMITE_HAUT;
 	int nombreHyperlanes = 0, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, hyperlaneSup1, hyperlaneSup2;
 	int planeteHabitable1 = 0, planeteHabitable2 = 0, planeteHabitable3 = 0, planeteHabitable4 = 0, planeteHabitable5 = 0, nombreAleatoire = 0;
-	Flotte* pointeur = NULL;
+	Flotte* flotte = NULL;
 	galaxie = malloc(LARGEUR_GALAXIE * LARGEUR_GALAXIE * 2 * sizeof(int));
 	if(galaxie == 0)
 	{
@@ -1959,12 +1979,22 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			systemeStellaires[i].empire = 1;
 			systemeStellaires[i].niveauStation = 1;
 			systemeStellaires[i].niveauConnaissance = 4;
-			pointeur = FlotteAjouter(flotteJoueur);
-			pointeur->systeme = i;
-			pointeur->nombreVaisseaux = 3;
-			pointeur->puissance = 150;
+
+			flotte = FlotteAjouter(flotteJoueur);
+			flotte->systeme = i;
+			flotte->nombreVaisseaux = 3;
+			flotte->puissance = 150;
+			flotte->type = FLOTTE_MILITAIRE;
+			flotte->coqueVie = 100;
+			flotte->coqueTotal = 300;
+			flotte->blindageVie = 50;
+			flotte->blindageTotal = 50;
+			flotte->bouclierVie = 100;
+			flotte->bouclierTotal = 100;
+
 			camera->x = systemeStellaires[i].x;
 			camera->y = systemeStellaires[i].y;
+
 			fin = 0;
 			switch(randInt(1, systemeStellaires[i].nombrePlanetes))
 			{
@@ -2033,178 +2063,13 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	return 1;
 }
 
-/*creation de la galaxie
-int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires)
-{
-	unsigned int galaxie[LARGEUR_GALAXIE][LARGEUR_GALAXIE*2];
-	char i = 0, j = 0, espaceEntreEtoiles = 30, barreDeChargement = 1, coefficientX = 0, coefficientY = 0, k = 0, rayon = 225;
-	int coefficientDeplacementStellaire = 75;
-	unsigned int x = espaceEntreEtoiles;
-	unsigned int y = espaceEntreEtoiles;
-	while(!os_GetCSC());
-	PrintCentered("Creation de la galaxie", 120, 1, 0, 0);
-	gfx_SetColor(6);
-	/*creation de la matrice
-	while (LARGEUR_GALAXIE-1 >= i)
-	{
-		while (LARGEUR_GALAXIE*2-2 >= j)
-		{
-			galaxie[i][j] = x;
-			galaxie[i][j+1] = y;
-			x += espaceEntreEtoiles;
-			j += 2;
-		}	
-		y += espaceEntreEtoiles;
-		j = 0;
-		i++;
-		gfx_HorizLine(50, 130, barreDeChargement++);
-	}
-	i = 0;
-	j = 0;
-	while(!os_GetCSC());
-	/*aleatoire de la matrice
-	while (LARGEUR_GALAXIE-1 >= i)
-	{
-		while (LARGEUR_GALAXIE*2-2 >= j)
-		{
-			x = galaxie[i][j];
-			y = galaxie[i][j+1];
-			coefficientX = randInt (-coefficientDeplacementStellaire, coefficientDeplacementStellaire);
-			coefficientY = randInt (-coefficientDeplacementStellaire, coefficientDeplacementStellaire);
-			x = x + (coefficientX / 10);
-			y = y + (coefficientY / 10);
-			galaxie[i][j] = x;
-			galaxie[i][j+1] = y;
-			j += 2;
-			gfx_HorizLine(50, 130, barreDeChargement++);
-		}	
-		j = 0;
-		i++;
-	}
-	i = 0;
-	j = 0;
-	
-	/*arrondir la matrice
-	while (LARGEUR_GALAXIE-1 >= i)
-	{
-		while (LARGEUR_GALAXIE*2-2 >= j)
-		{
-			x = galaxie[i][j];
-			y = galaxie[i][j+1];
-			if (((x - (450 / 2))^2 + (y - (450 / 2))^2) >= rayon^2)
-			{	
-				x = 0;
-				y = 0;
-			}
-			galaxie[i][j] = x;
-			galaxie[i][j+1] = y;
-			j += 2;
-			gfx_HorizLine(50, 130, barreDeChargement++);
-		}	
-		j = 0;
-		i++;
-	}
-	i = 0;
-	j = 0;
-	
-	while(!os_GetCSC());
-	
-	k = 0;
-	
-	/*enregistrer la matrice
-	while (LARGEUR_GALAXIE-1 >= i)
-	{
-		while (LARGEUR_GALAXIE*2-2 >= j)
-		{
-			x = galaxie[i][j];
-			y = galaxie[i][j+1];
-			systemeStellaires[k].x = x;
-			systemeStellaires[k].y = y;
-			systemeStellaires[k].hyperlane1 = 255;
-			systemeStellaires[k].hyperlane2 = 255;
-			systemeStellaires[k].hyperlane3 = 255;
-			k++;
-			j += 2;
-			gfx_HorizLine(50, 130, barreDeChargement++);
-		}	
-		j = 0;
-		i++;
-	}
-	//ti_Write(systemeStellaires, sizeof(SystemeStellaire)*50, 1, *sauvegarde);
-	return 1;
-}*/
-
-int ChargementNouvellePartieGalaxieTemporaire(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires)
-{
-	systemeStellaires[0].x = 70;
-	systemeStellaires[0].y = 70;
-	systemeStellaires[0].hyperlane1 = 1;
-	systemeStellaires[0].hyperlane2 = 255;
-	systemeStellaires[0].hyperlane3 = 255;
-	
-	systemeStellaires[1].x = 130;
-	systemeStellaires[1].y = 75;
-	systemeStellaires[1].hyperlane1 = 1;
-	systemeStellaires[1].hyperlane2 = 9;
-	systemeStellaires[1].hyperlane3 = 255;
-	
-	systemeStellaires[2].x = 150;
-	systemeStellaires[2].y = 73;
-	systemeStellaires[2].hyperlane1 = 1;
-	systemeStellaires[2].hyperlane2 = 255;
-	systemeStellaires[2].hyperlane3 = 255;
-	
-	systemeStellaires[3].x = 180;
-	systemeStellaires[3].y = 120;
-	systemeStellaires[3].hyperlane1 = 2;
-	systemeStellaires[3].hyperlane2 = 255;
-	systemeStellaires[3].hyperlane3 = 255;
-	
-	systemeStellaires[4].x = 160;
-	systemeStellaires[4].y = 180;
-	systemeStellaires[4].hyperlane1 = 3;
-	systemeStellaires[4].hyperlane2 = 255;
-	systemeStellaires[4].hyperlane3 = 255;
-	
-	systemeStellaires[5].x = 140;
-	systemeStellaires[5].y = 170;
-	systemeStellaires[5].hyperlane1 = 4;
-	systemeStellaires[5].hyperlane2 = 255;
-	systemeStellaires[5].hyperlane3 = 255;
-	
-	systemeStellaires[6].x = 120;
-	systemeStellaires[6].y = 175;
-	systemeStellaires[6].hyperlane1 = 5;
-	systemeStellaires[6].hyperlane2 = 255;
-	systemeStellaires[6].hyperlane3 = 255;
-	
-	systemeStellaires[7].x = 140;
-	systemeStellaires[7].y = 120;
-	systemeStellaires[7].hyperlane1 = 6;
-	systemeStellaires[7].hyperlane2 = 255;
-	systemeStellaires[7].hyperlane3 = 3;
-	
-	systemeStellaires[8].x = 100;
-	systemeStellaires[8].y = 150;
-	systemeStellaires[8].hyperlane1 = 7;
-	systemeStellaires[8].hyperlane2 = 255;
-	systemeStellaires[8].hyperlane3 = 255;
-	
-	systemeStellaires[9].x = 90 ;
-	systemeStellaires[9].y = 120;
-	systemeStellaires[9].hyperlane1 = 8;
-	systemeStellaires[9].hyperlane2 = 1;
-	systemeStellaires[9].hyperlane3 = 0;
-	ti_Write(systemeStellaires, sizeof(SystemeStellaire)*10, 1, *sauvegarde);
-	return 1;
-}
-
 /******************chargement ancienne partie******************/
-int ChargementAnciennePartie(Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
+int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
 {
 	ti_var_t sauvegarde;
-	int i = 0, compteur = 0;
-	Flotte* pointeur = NULL, *pointeurPrecedent = NULL;
+	int i = 0, j = 0, compteur = 0, compteurFlottes = 0;
+	Flotte* flotte = NULL, *flottePrecedente = NULL;
+	Empire* empire = NULL, *empirePrecedent = NULL;
 	gfx_FillScreen(255);
 	PrintCentered("Chargement de la partie..." ,60 ,1 , 0, 0);
 	/*ouvrir sauvegarde*/
@@ -2214,10 +2079,10 @@ int ChargementAnciennePartie(Empire *joueur, Parametres *parametres, Date *date,
 	{
 		return 1;
 	}
-	ti_Read(joueur, sizeof(Empire), 1, sauvegarde);
 	ti_Read(parametres, sizeof(Parametres), 1, sauvegarde);
 	ti_Read(date, sizeof(Date), 1, sauvegarde);
 	ti_Read(camera, sizeof(Camera), 1, sauvegarde);
+	ti_Read(marche, sizeof(Marche), 1, sauvegarde);
 	
 	i = 0;
 	
@@ -2253,41 +2118,39 @@ int ChargementAnciennePartie(Empire *joueur, Parametres *parametres, Date *date,
 		}
 		i++;
 	}
-	
-	ti_Read(flotteJoueur, sizeof(FlotteListe), 1, sauvegarde);
-	
-	pointeurPrecedent = NULL;
-	i = 0;	
 	ti_Read(&compteur, sizeof(int), 1, sauvegarde);
-	while(i <= compteur) {
-		if(i == 0) {
-			pointeur = malloc(sizeof(Flotte));
-			ti_Read(pointeur, sizeof(Flotte), 1, sauvegarde);
-			flotteJoueur->premier = pointeur;
-			pointeurPrecedent = pointeur;
-		}
-		else {
-			pointeur = malloc(sizeof(Flotte));
-			ti_Read(pointeur, sizeof(Flotte), 1, sauvegarde);
-			pointeurPrecedent->suivant = pointeur;
-			pointeurPrecedent = pointeur;
+
+	i = 0;
+	while(i < compteur){
+		empire = EmpireAjouter(empireListe);
+		ti_Read(empire, sizeof(Empire), 1, sauvegarde);
+		empire->suivant = NULL;
+		empire->flotte = FlotteListeCreer();
+		j = 0;
+		compteurFlottes = 0;
+		ti_Read(&compteurFlottes, sizeof(int), 1, sauvegarde);
+		while(j < compteurFlottes){
+			flotte = FlotteAjouter(empire->flotte);
+			ti_Read(flotte, sizeof(flotte), 1, sauvegarde);
+			flotte->suivant = NULL;
+			j++;
 		}
 		i++;
 	}
-	if(i != 0) {
-		pointeur->suivant = NULL;
-	}
+	joueur = EmpireNumero(empireListe, 1);
+	flotteJoueur = joueur->flotte;
+
 	
-	ti_Read(marche, sizeof(Marche), 1, sauvegarde);
+
 	PrintCentered(joueur->nom ,90 ,1 , 0, 0);
-	camera->fenetre = 0;
-	camera->bloque = 0;
-	StellarisBoucle(&sauvegarde, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+	camera->fenetre = MENU_AUCUN;
+	camera->bloque = FALSE;
+	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
 	return 0;
 }
 
 /**********************************************Jeu principal**********************************************/
-int StellarisBoucle(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
+int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
 {
 	char finBoucle = 1, key = 0;
 	while (finBoucle == 1)
@@ -2303,16 +2166,16 @@ int StellarisBoucle(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres
 		gfx_ZeroScreen();
 
 		/**dessine la map**/
-		StellarisMap(systemeStellaires, camera, &key, flotteJoueur, date, fenetre, joueur);
+		StellarisMap(empireListe, systemeStellaires, camera, &key, flotteJoueur, date, fenetre, joueur);
 
 		
 		/**dessine le hud**/
-		finBoucle = StellarisHUD(joueur, date, &key, camera, systemeStellaires, fenetre, flotteJoueur, parametres, sauvegarde, marche);
+		finBoucle = StellarisHUD(empireListe, joueur, date, &key, camera, systemeStellaires, fenetre, flotteJoueur, parametres, sauvegarde, marche);
 		
 		gfx_SwapDraw();
 		if((boot_CheckOnPressed()) || (finBoucle == 0))
 		{
-			StellarisSauvegarde(sauvegarde, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, marche);
+			StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, marche);
 			return 0;
 		}
 	}
@@ -2320,7 +2183,7 @@ int StellarisBoucle(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres
 }
 
 /******************dessiner le hud******************/
-int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, FlotteListe *flotteJoueur, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche)
+int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, FlotteListe *flotteJoueur, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche)
 {
 	char jourChar[10];
 	char moisChar[7];
@@ -2412,9 +2275,9 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	gfx_SetTextFGColor(8);
 	//barre du haut
 	gfx_TransparentSprite_NoClip(credit, 55 ,1);
-	PrintHUD(camera->y, 0, 40, 13);
+	PrintHUD(joueur->credits, 0, 40, 13);
 	gfx_TransparentSprite_NoClip(minerai, 100 ,1);
-	PrintHUD(camera->x, 0, 85, 13);
+	PrintHUD(joueur->minerais, 0, 85, 13);
 	gfx_TransparentSprite_NoClip(food, 145 ,1);
 	PrintHUD(joueur->nourriture, 0, 130, 13);
 	gfx_TransparentSprite_NoClip(fer, 190 ,1);
@@ -2516,7 +2379,7 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	
 	/*************MENUS*************/
 	//quitter
-	if(camera->fenetre == -1)
+	if(camera->fenetre == MENU_QUITTER)
 	{
 		switch(*key)
 		{
@@ -2528,7 +2391,7 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 				break;
 			case sk_Clear:
 				camera->fenetre = 0;
-				camera->bloque = 0;
+				camera->bloque = FALSE;
 				break;
 		}
 		if (fenetre->selection > 5)
@@ -2585,13 +2448,13 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 			switch(fenetre->selection)
 			{
 				case 1:
-					camera->fenetre = 0;
-					camera->bloque = 0;
+					camera->fenetre = MENU_AUCUN;
+					camera->bloque = FALSE;
 					break;
 				case 2:
-					camera->fenetre = 0;
-					camera->bloque = 0;
-					StellarisSauvegarde(sauvegarde, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, marche);
+					camera->fenetre = MENU_AUCUN;
+					camera->bloque = FALSE;
+					StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, marche);
 					break;
 				case 5:
 					return 0;
@@ -2601,7 +2464,7 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	}
 	
 	//menu systeme
-	else if(camera->fenetre == 1)
+	else if(camera->fenetre == MENU_SYSTEME)
 	{
 		switch(fenetre->ouverte)
 		{
@@ -2615,8 +2478,8 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 						fenetre->selection++;
 						break;
 					case sk_Clear:
-						camera->fenetre = 0;
-						camera->bloque = 0;
+						camera->fenetre = MENU_AUCUN;
+						camera->bloque = FALSE;
 						*key = 0;
 						break;
 					case sk_Right:
@@ -3190,8 +3053,8 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 				switch(*key)
 				{
 					case sk_Clear:
-						camera->fenetre = 0;
-						camera->bloque = 0;
+						camera->fenetre = MENU_AUCUN;
+						camera->bloque = FALSE;
 						*key = 0;
 						break;
 					case sk_Left:
@@ -3760,7 +3623,7 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 								fenetre->ouverte = 1;
 								break;
 							case 2:
-								camera->fenetre = 3;
+								camera->fenetre = MENU_FLOTTE;
 								fenetre->selection = 0;
 								break;
 						}
@@ -3770,35 +3633,63 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 				//dessiner fenetre
 				gfx_SetColor(6);
 				gfx_FillRectangle_NoClip(40, 40, 240, 160);
-				gfx_FillRectangle_NoClip(40, 200, 70, 12); //barre du bas
-				gfx_FillRectangle_NoClip(110, 200, 90, 12);
 				gfx_SetColor(7);
 				gfx_Rectangle_NoClip(40, 40, 240, 160);
 				gfx_HorizLine_NoClip(45, 51, 230);
 				gfx_VertLine_NoClip(100, 42, 8);
-				gfx_Rectangle_NoClip(45, 56, 100, 100);
-				gfx_Rectangle_NoClip(40, 199, 230, 12); //barre du bas
-				gfx_FillRectangle_NoClip(200, 200, 70, 12);
 				gfx_VertLine_NoClip(200, 201, 8);
 				gfx_PrintStringXY("Retour", 48, 42);
 				gfx_SetTextXY(150, 42);
-				gfx_PrintString("Flotte");
+				flotte = FlotteNumero(joueur->flotte, fenetre->selection);
+				gfx_PrintString("Flotte ");
 				if (fenetre->selection > 10) {
 					gfx_PrintInt(fenetre->selection, 2);
 				}
 				else {
 					gfx_PrintInt(fenetre->selection, 1);
 				}
+				gfx_SetTextXY(45, 57);
+				gfx_PrintString("Puissance : ");
+				PrintInt(flotte->puissance);
+				gfx_SetTextXY(45, 71);
+				gfx_PrintString("Coque : ");
+				PrintInt(flotte->coqueVie);
+				gfx_PrintString("|");
+				PrintInt(flotte->coqueTotal);
+				gfx_PrintString("(");
+				PrintInt((flotte->coqueVie * 100) / flotte->coqueTotal);
+				gfx_PrintString("%)");
+				if(flotte->type == FLOTTE_MILITAIRE){
+					gfx_SetTextXY(45, 85);
+					gfx_PrintString("Blindage : ");
+					PrintInt(flotte->blindageVie);
+					gfx_PrintString("|");
+					PrintInt(flotte->blindageTotal);
+					gfx_PrintString("(");
+					PrintInt((flotte->blindageVie * 100) / flotte->blindageTotal);
+					gfx_PrintString("%)");
+					gfx_SetTextXY(45, 99);
+					gfx_PrintString("Bouclier : ");
+					PrintInt(flotte->bouclierVie);
+					gfx_PrintString("|");
+					PrintInt(flotte->bouclierTotal);
+					gfx_PrintString("(");
+					PrintInt((flotte->bouclierVie * 100) / flotte->bouclierTotal);
+					gfx_PrintString("%)");
+				}
+				gfx_SetTextXY(45, 114);
+				PrintInt(flotte->systeme);
 				break;
 		}
 	}
 	
 	//menu marche
-	else if(camera->fenetre == 2)
+	else if(camera->fenetre == MENU_MARCHE)
 	{
 		if(*key == sk_Clear)
 		{
-			camera->fenetre = 0;
+			camera->fenetre = MENU_AUCUN;
+			camera->bloque = FALSE;
 			*key = 0;
 		}
 		//dessiner fenetre
@@ -3879,11 +3770,12 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	}
 	
 	//menu flotte
-	else if (camera->fenetre == 3)
+	else if (camera->fenetre == MENU_FLOTTE)
 	{
 		switch (*key) {
 			case sk_Clear:
-				camera->fenetre = 0;
+				camera->fenetre = MENU_AUCUN;
+				camera->bloque = FALSE;
 				*key = 0;
 				break;
 			case sk_Down:
@@ -3937,18 +3829,19 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 			flotte = flotte->suivant;
 		}
 		if(*key == sk_Enter){
-			camera->fenetre = 1;
+			camera->fenetre = MENU_SYSTEME;
 			fenetre->ouverte = 6;
 			fenetre->precedente = 2;
 		}
 	}
 	
 	//menu recherche
-	else if (camera->fenetre == 4)
+	else if (camera->fenetre == MENU_RECHERCHE)
 	{
 		if(*key == sk_Clear)
 		{
-			camera->fenetre = 0;
+			camera->fenetre = MENU_AUCUN;
+			camera->bloque = FALSE;
 			*key = 0;
 		}
 		//dessiner fenetre
@@ -3962,11 +3855,12 @@ int StellarisHUD(Empire *joueur, Date *date, char *key, Camera *camera, SystemeS
 	}
 	
 	//menu contacts
-	else if (camera->fenetre == 5)
+	else if (camera->fenetre == MENU_CONTACTS)
 	{
 		if(*key == sk_Clear)
 		{
-			camera->fenetre = 0;
+			camera->fenetre = MENU_AUCUN;
+			camera->bloque = FALSE;
 			*key = 0;
 		}
 		//dessiner fenetre
@@ -4043,7 +3937,7 @@ void StellarisTemps(Empire *joueur, Date *date, char *key)
 }
 
 /********dessiner la map********/
-void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur)
+void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur)
 {
 	int i = 0, x = 0, y = 0, xLn = 0, yLn = 0, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, key2 = 0, systeme = 0;
 	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0;
@@ -4052,34 +3946,34 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 	if(camera->mapType == 1)
 	{
 		key2 = 0;
-		if(camera->fenetre == 0)
+		if(camera->fenetre == MENU_AUCUN)
 		{
 			key2 = os_GetCSC();
 		}
 		switch(*key)
 		{
 			case sk_Up:
-				if (camera->bloque != 1) {
-				camera->vecteury -= 5;
+				if (camera->bloque != TRUE) {
+					camera->vecteury -= 5;
 				}
 				break;
 			case sk_Down:
-				if (camera->bloque != 1) {
-				camera->vecteury += 5;
+				if (camera->bloque != TRUE) {
+					camera->vecteury += 5;
 				}
 				break;
 			case sk_Left:
-				if (camera->bloque != 1) {
-				camera->vecteurx -= 5;
+				if (camera->bloque != TRUE) {
+					camera->vecteurx -= 5;
 				}
 				break;
 			case sk_Right:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 					camera->vecteurx += 5;
 				}
 				break;
 			case sk_Mode:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 					camera->zoom -= 1;
 					if(camera->zoom >= 1)
 					{
@@ -4089,7 +3983,7 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 				}
 				break;
 			case sk_Del:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 					camera->zoom += 1;
 					if (camera->zoom < 3 && camera->zoom >= 1)
 					{
@@ -4099,158 +3993,176 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 				}
 				break;
 			case sk_Enter:
-				if ((camera->fenetre == 0)  && (camera->selection != -1))
+				if ((camera->fenetre == MENU_AUCUN)  && (camera->selection != -1))
 				{
-					camera->fenetre = 1;
-					camera->bloque = 1;
+					camera->fenetre = MENU_SYSTEME;
+					camera->bloque = TRUE;
 					fenetre->selection = 1;
 					fenetre->ouverte = 0;
 					*key = 0;
 				}
 				break;
 			case sk_Clear:
-				if (camera->fenetre == 0)
+				if (camera->fenetre == MENU_AUCUN)
 				{
-					camera->fenetre = -1;
-					camera->bloque = 1;
+					camera->fenetre = MENU_QUITTER;
+					camera->bloque = TRUE;
 					date->vitesse = 0;
 					fenetre->selection = 1;
 					*key = 0;
 				}
 				break;
 			case sk_Yequ :
-				if ((camera->fenetre == 0) || (fenetre->selection != 1))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 1))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 1;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 1))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 1))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Window :
-				if ((camera->fenetre == 0) || (fenetre->selection != 2))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 2))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 2;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 2))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 2))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Zoom :
-				if ((camera->fenetre == 0) || (fenetre->selection != 3))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 3))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 3;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 3))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 3))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Trace :
-				if ((camera->fenetre == 0) || (fenetre->selection != 4))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 4))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 4;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 4))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 4))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Graph :
-				if ((camera->fenetre == 0) || (fenetre->selection != 5))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 5))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 5;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 5))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 5))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Recip:
-				if ((camera->fenetre != 2) && (camera->fenetre != -1))
+				if ((camera->fenetre != MENU_MARCHE) && (camera->fenetre != MENU_QUITTER))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 2;
+					camera->bloque = TRUE;
 				}
-				else if (camera->fenetre == 2)
+				else if (camera->fenetre == MENU_MARCHE)
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Math:
-				if ((camera->fenetre != 5) && (camera->fenetre != -1))
+				if ((camera->fenetre != MENU_CONTACTS) && (camera->fenetre != MENU_QUITTER))
 				{
-					camera->fenetre = 5;
+					camera->fenetre = MENU_CONTACTS;
 					fenetre->selection = 0;
+					camera->bloque = TRUE;
 				}
-				else if (camera->fenetre == 5)
+				else if (camera->fenetre == MENU_CONTACTS)
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Square:
-				if ((camera->fenetre != 4) && (camera->fenetre != -1))
+				if ((camera->fenetre != MENU_RECHERCHE) && (camera->fenetre != MENU_QUITTER))
 				{
-					camera->fenetre = 4;
+					camera->fenetre = MENU_RECHERCHE;
 					fenetre->selection = 0;
+					camera->bloque = TRUE;
 				}
-				else if (camera->fenetre == 4)
+				else if (camera->fenetre == MENU_RECHERCHE)
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Log:
-				if ((camera->fenetre != 3) && (camera->fenetre != -1))
+				if ((camera->fenetre != MENU_FLOTTE) && (camera->fenetre != MENU_QUITTER))
 				{
-					camera->fenetre = 3;
+					camera->fenetre = MENU_FLOTTE;
 					fenetre->selection = 0;
+					camera->bloque = TRUE;
 				}
-				else if (camera->fenetre == 3)
+				else if (camera->fenetre == MENU_FLOTTE)
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 		}
 		switch(key2)
 		{
 			case sk_Up:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 				camera->vecteury -= 5;
 				}
 				break;
 			case sk_Down:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 				camera->vecteury += 5;
 				}
 				break;
 			case sk_Left:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 				camera->vecteurx -= 5;
 				}
 				break;
 			case sk_Right:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 					camera->vecteurx += 5;
 				}
 				break;
 			case sk_Mode:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 					camera->zoom -= 1;
 					if(camera->zoom >= 1)
 					{
@@ -4258,9 +4170,9 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 						camera->y *= 0.5;
 					}
 				}
-				break;	
+				break;
 			case sk_Del:
-				if (camera->bloque != 1) {
+				if (camera->bloque != TRUE) {
 					camera->zoom += 1;
 					if (camera->zoom < 3 && camera->zoom >= 1)
 					{
@@ -4270,129 +4182,149 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 				}
 				break;
 			case sk_Enter:
-				if ((camera->fenetre == 0)  && (camera->selection != -1))
+				if ((camera->fenetre == MENU_AUCUN)  && (camera->selection != -1))
 				{
-					camera->fenetre = 1;
-					camera->bloque = 1;
+					camera->fenetre = MENU_SYSTEME;
+					camera->bloque = TRUE;
 					fenetre->selection = 1;
 					fenetre->ouverte = 0;
+					*key = 0;
 				}
 				break;
 			case sk_Clear:
-				if (camera->fenetre == 0)
+				if (camera->fenetre == MENU_AUCUN)
 				{
-					camera->fenetre = -1;
-					camera->bloque = 1;
-					date->vitesse = 1;
+					camera->fenetre = MENU_QUITTER;
+					camera->bloque = TRUE;
+					date->vitesse = 0;
 					fenetre->selection = 1;
+					*key = 0;
 				}
 				break;
 			case sk_Yequ :
-				if ((camera->fenetre == 0) || (fenetre->selection != 1))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 1))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 1;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 1))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 1))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Window :
-				if ((camera->fenetre == 0) || (fenetre->selection != 2))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 2))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 2;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 2))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 2))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Zoom :
-				if ((camera->fenetre == 0) || (fenetre->selection != 3))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 3))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 3;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 3))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 3))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Trace :
-				if ((camera->fenetre == 0) || (fenetre->selection != 4))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 4))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 4;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 4))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 4))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Graph :
-				if ((camera->fenetre == 0) || (fenetre->selection != 5))
+				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 5))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 5;
+					camera->bloque = TRUE;
 				}
-				else if ((camera->fenetre == 2) && (fenetre->selection != 5))
+				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 5))
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Recip:
-				if ((camera->fenetre != 2) && (camera->fenetre != -1))
+				if ((camera->fenetre != MENU_MARCHE) && (camera->fenetre != MENU_QUITTER))
 				{
-					camera->fenetre = 2;
+					camera->fenetre = MENU_MARCHE;
 					fenetre->selection = 2;
+					camera->bloque = TRUE;
 				}
-				else if (camera->fenetre == 2)
+				else if (camera->fenetre == MENU_MARCHE)
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Math:
-				if ((camera->fenetre != 5) && (camera->fenetre != -1))
+				if ((camera->fenetre != MENU_CONTACTS) && (camera->fenetre != MENU_QUITTER))
 				{
-					camera->fenetre = 5;
+					camera->fenetre = MENU_CONTACTS;
 					fenetre->selection = 0;
+					camera->bloque = TRUE;
 				}
-				else if (camera->fenetre == 5)
+				else if (camera->fenetre == MENU_CONTACTS)
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Square:
-				if ((camera->fenetre != 4) && (camera->fenetre != -1))
+				if ((camera->fenetre != MENU_RECHERCHE) && (camera->fenetre != MENU_QUITTER))
 				{
-					camera->fenetre = 4;
+					camera->fenetre = MENU_RECHERCHE;
 					fenetre->selection = 0;
+					camera->bloque = TRUE;
 				}
-				else if (camera->fenetre == 4)
+				else if (camera->fenetre == MENU_RECHERCHE)
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 			case sk_Log:
-				if ((camera->fenetre != 3) && (camera->fenetre != -1))
+				if ((camera->fenetre != MENU_FLOTTE) && (camera->fenetre != MENU_QUITTER))
 				{
-					camera->fenetre = 3;
+					camera->fenetre = MENU_FLOTTE;
 					fenetre->selection = 0;
+					camera->bloque = TRUE;
 				}
-				else if (camera->fenetre == 3)
+				else if (camera->fenetre == MENU_FLOTTE)
 				{
-					camera->fenetre = 0;
+					camera->fenetre = MENU_AUCUN;
 					fenetre->selection = 0;
+					camera->bloque = FALSE;
 				}
 				break;
 		}
@@ -4762,17 +4694,18 @@ void StellarisMap(SystemeStellaire *systemeStellaires, Camera *camera, char *key
 	}
 }
 
-int StellarisSauvegarde(ti_var_t *sauvegarde, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Marche *marche)
+int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Marche *marche)
 {
 	int i = 0;
-	Flotte* pointeur = NULL;
+	Flotte* flotte = NULL, *flottePrecedente = NULL;
+	Empire* empire = NULL, *empirePrecedent = NULL;
 	int compteur = 0;
 	ti_CloseAll();
 	*sauvegarde = ti_Open("sauv", "w");
-	ti_Write(joueur, sizeof(Empire), 1, *sauvegarde);
 	ti_Write(parametres, sizeof(Parametres), 1, *sauvegarde);
 	ti_Write(date, sizeof(Date), 1, *sauvegarde);
 	ti_Write(camera, sizeof(Camera), 1, *sauvegarde);
+	ti_Write(marche, sizeof(Marche), 1, *sauvegarde);
 	i = 0;
 	
 	//enregistrer
@@ -4803,21 +4736,37 @@ int StellarisSauvegarde(ti_var_t *sauvegarde, Empire *joueur, Parametres *parame
 		i++;
 	}
 	
-	ti_Write(flotteJoueur, sizeof(FlotteListe), 1, *sauvegarde);
-	
-	pointeur = flotteJoueur->premier;
-	while(pointeur != NULL) {
+	compteur = 0;
+
+	empire = empireListe->premier;
+	while(empire != NULL) {
 		compteur++;
-		pointeur = pointeur->suivant;
+		empire = empire->suivant;
 	}
+
 	ti_Write(&compteur, sizeof(int), 1, *sauvegarde);
-	pointeur = flotteJoueur->premier;
-	while(pointeur != NULL) {
-		ti_Write(pointeur, sizeof(Flotte), 1, *sauvegarde);
-		pointeur = pointeur->suivant;
+
+	empire = empireListe->premier;
+	while(empire != NULL) {
+		ti_Write(empire, sizeof(Empire), 1, *sauvegarde);
+		
+		//enregistrer flottes
+		compteur = 0;
+		flotte = empire->flotte->premier;
+		while(flotte != NULL) {
+			compteur++;
+			flotte = flotte->suivant;
+		}
+		ti_Write(&compteur, sizeof(int), 1, *sauvegarde);
+		flotte = empire->flotte->premier;
+		while(flotte != NULL) {
+			ti_Write(flotte, sizeof(Flotte), 1, *sauvegarde);
+			flotte = flotte->suivant;
+		}
+
+		empire = empire->suivant;
 	}
 	
-	ti_Write(marche, sizeof(Marche), 1, *sauvegarde);
 	return 1;
 }
 
@@ -4926,6 +4875,28 @@ void PrintText(const char *str, int x, int y, int taille, int color)
     }
 }
 
+void PrintInt(int nombre){
+	if(nombre < 10){
+		gfx_PrintInt(nombre, 1);
+	}
+	else if(nombre < 100){
+		gfx_PrintInt(nombre, 2);
+	}
+	else if(nombre < 1000){
+		gfx_PrintInt(nombre, 3);
+	}
+	else if(nombre < 10000){
+		gfx_PrintInt(nombre, 4);
+	}
+	else  if(nombre < 100000){
+		gfx_PrintInt(nombre, 5);
+	}
+	else{
+		gfx_PrintInt(nombre, 6);		
+	}
+}
+
+
 FlotteListe* FlotteListeCreer() {
 	FlotteListe* flotteliste;
 	flotteliste = malloc(sizeof(FlotteListe));
@@ -4947,7 +4918,7 @@ void FlotteListeSupprimer(FlotteListe* flotteliste) {
 
 Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
 	Flotte *pointeur = 0;
-	int compteur = 0;
+	int compteur = 1;
 	pointeur = flotteliste->premier;
 	while(compteur <= numero) {
 		if(pointeur->suivant != NULL) {
@@ -5018,7 +4989,7 @@ void EmpireListeSupprimer(EmpireListe* empireListe) {
 
 Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
 	Empire *pointeur = 0;
-	int compteur = 0;
+	int compteur = 1;
 	pointeur = empireListe->premier;
 	while(compteur <= numero) {
 		if(pointeur->suivant != NULL) {
