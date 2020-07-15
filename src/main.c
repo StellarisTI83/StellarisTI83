@@ -21,6 +21,8 @@
 #include "main.h"
 #include "noms.c"
 
+#include "locale/locale.h"
+
 int main(void)
 {
 	char fin = 1, partie = 0;
@@ -71,6 +73,7 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
     PrintCentered("Stellaris", 30, 4, 0, 0);
 	gfx_SetMonospaceFont(8);
 	gfx_SetTextBGColor(255);
+	gfx_PrintStringXY(__DATE__, 10, 205);
 	gfx_PrintStringXY(VERSION_LOGICIEL, LCD_WIDTH-strlen(VERSION_LOGICIEL)*8 - 20, 205);
 	/*faire le choix*/
 	while((key = os_GetCSC()) != sk_Enter)
@@ -886,12 +889,15 @@ int NouvellePartiePrincipes(Empire *joueur, Parametres *parametres)
 /*nouvelle partie nom*/
 int NouvellePartieNom(Empire *joueur, Parametres *parametres)
 {
-	char key = 0, fin = 1, lettre = 0, majuscule = 1, curseur = 0, i = 0, finBoucle = 0;
+	char key = 0, fin = 1, lettre = 0, majuscule = 1, curseur = 0, i = 0, finBoucle = 0, erreur = 0;
 	while(fin)
 	{
 		finBoucle = 0;
 		do
 		{
+			if(erreur > 0){
+				erreur--;
+			}
 			gfx_SwapDraw();
 			gfx_FillScreen(255);
 			PrintCentered("Nom", 20, 3, 0, 20);
@@ -900,6 +906,13 @@ int NouvellePartieNom(Empire *joueur, Parametres *parametres)
 			PrintCentered("Entrer quand vous avez fini", 200, 1, 0, 30); 
 			gfx_SetColor(6);
 			
+			if(erreur != 0){
+					gfx_SetTextFGColor(3);
+					gfx_SetTextBGColor(1);
+					gfx_PrintStringXY("Votre nom doit commencer par", 70, 160);
+					gfx_PrintStringXY("une lettre", 70, 170);
+			}
+
 			gfx_FillRectangle(0, 50, 65, LCD_HEIGHT-50);
 			
 			/*barre latérale*/
@@ -1121,10 +1134,7 @@ int NouvellePartieNom(Empire *joueur, Parametres *parametres)
 			{
 				if(joueur->nom[0] == ' ')
 				{
-					gfx_SetTextFGColor(3);
-					gfx_SetTextBGColor(1);
-					gfx_PrintStringXY("Votre nom doit commencer par", 70, 160);
-					gfx_PrintStringXY("une lettre", 70, 170);
+					erreur = 200;
 					finBoucle = 0;
 				}
 				else
@@ -1280,7 +1290,7 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	sauvegarde = ti_Open("sauv", "w");
 	joueur->credits = 100;
 	joueur->minerais = 100;
-	joueur->nourriture = 100;
+	joueur->nourriture = 200;
 	joueur->acier = 100;
 	joueur->biensDeConsommation = 100;
 	joueur->flotte = flotteJoueur;
@@ -1971,7 +1981,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	while(fin == 1)
 	{
 		i = randInt(0, k);
-		if(((systemeStellaires[i].x != 0) && (systemeStellaires[i].y != 0)) && (systemeStellaires[i].etoileType != 7))
+		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && (systemeStellaires[i].etoileType != 7))
 		{
 			systemeStellaires[i].etoileType = 5;
 			systemeStellaires[i].nombrePlanetesHabitables = 1;
@@ -1983,14 +1993,38 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			flotte = FlotteAjouter(flotteJoueur);
 			flotte->systeme = i;
 			flotte->nombreVaisseaux = 3;
-			flotte->puissance = 150;
+			flotte->puissance = 1600;
 			flotte->type = FLOTTE_MILITAIRE;
-			flotte->coqueVie = 100;
+			flotte->coqueVie = 300;
 			flotte->coqueTotal = 300;
 			flotte->blindageVie = 50;
 			flotte->blindageTotal = 50;
 			flotte->bouclierVie = 100;
 			flotte->bouclierTotal = 100;
+
+			flotte = FlotteAjouter(flotteJoueur);
+			flotte->systeme = i;
+			flotte->nombreVaisseaux = 1;
+			flotte->puissance = 0;
+			flotte->type = FLOTTE_DE_CONSTRUCTION;
+			flotte->coqueVie = 300;
+			flotte->coqueTotal = 300;
+			flotte->blindageVie = 0;
+			flotte->blindageTotal = 0;
+			flotte->bouclierVie = 0;
+			flotte->bouclierTotal = 0;
+
+			flotte = FlotteAjouter(flotteJoueur);
+			flotte->systeme = i;
+			flotte->nombreVaisseaux = 1;
+			flotte->puissance = 0;
+			flotte->type = FLOTTE_SCIENTIFIQUE;
+			flotte->coqueVie = 300;
+			flotte->coqueTotal = 300;
+			flotte->blindageVie = 0;
+			flotte->blindageTotal = 0;
+			flotte->bouclierVie = 0;
+			flotte->bouclierTotal = 0;
 
 			camera->x = systemeStellaires[i].x;
 			camera->y = systemeStellaires[i].y;
@@ -2124,7 +2158,6 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 	while(i < compteur){
 		empire = EmpireAjouter(empireListe);
 		ti_Read(empire, sizeof(Empire), 1, sauvegarde);
-		empire->suivant = NULL;
 		empire->flotte = FlotteListeCreer();
 		j = 0;
 		compteurFlottes = 0;
@@ -2132,7 +2165,6 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 		while(j < compteurFlottes){
 			flotte = FlotteAjouter(empire->flotte);
 			ti_Read(flotte, sizeof(flotte), 1, sauvegarde);
-			flotte->suivant = NULL;
 			j++;
 		}
 		i++;
@@ -2201,7 +2233,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	char nomPlanete[20];
 	char population[5];
 	char niveau = 0;
-	int8_t compteur = 0;
+	int8_t compteur = 0, compteurFlotte = 0;
 	Flotte* flotte = NULL;
 	//gcvt(marche->valeurMinerai , 2, valeurMineraiStr);
 	
@@ -3070,12 +3102,6 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						*key = 0;
 						break;
 				}
-				if (fenetre->selection > compteur) {
-					fenetre->selection = 1;
-				}
-				else if (fenetre->selection < 1) {
-					fenetre->selection = 1;
-				}
 
 				//dessiner fenetre
 				gfx_SetColor(6);
@@ -3091,32 +3117,48 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				gfx_PrintStringXY("Flotte", 121, 202);
 				niveau = 57;
 				flotte = joueur->flotte->premier;
-				compteur = 1;
+				compteur = 0;
+				compteurFlotte = 1;
+				while(flotte != NULL){
+					if(flotte->systeme == camera->selection) {
+						compteur++;
+					}
+					flotte = flotte->suivant;
+				}
+
+				if (fenetre->selection > compteur) {
+					fenetre->selection = 1;
+				}
+				else if (fenetre->selection < 1) {
+					fenetre->selection = compteur;
+				}
+				flotte = joueur->flotte->premier;
 				while(flotte != NULL) {
 					if(flotte->systeme == camera->selection) {
-						if (compteur < 10) {
-							gfx_SetTextXY(132, niveau);
-						}
-						else {
-							gfx_SetTextXY(128, niveau);
-						}
-						if(fenetre->selection == compteur) {
+						if(fenetre->selection == compteurFlotte) {
 							gfx_SetTextFGColor(13);
 						}
 						else {
 							gfx_SetTextFGColor(1);
 						}
+						switch(flotte->type){
+							case FLOTTE_MILITAIRE:
+								gfx_PrintStringXY("militaire", 208, niveau);
+								break;
+							case FLOTTE_DE_CONSTRUCTION:
+								gfx_PrintStringXY("construction", 184, niveau);
+								break;
+							case FLOTTE_SCIENTIFIQUE:
+								gfx_PrintStringXY("scientifique", 184, niveau);
+								break;
+						}
+						gfx_SetTextXY(45, niveau);
 						gfx_PrintString("Flotte ");
-						if (compteur < 10) {
-							gfx_PrintInt(compteur, 1);
-						}
-						else {
-							gfx_PrintInt(compteur, 2);
-						}
+						PrintInt(compteurFlotte);
 						gfx_HorizLine_NoClip(50, niveau + 11, 220);
-						niveau += 14;
+						niveau += 17;
 					}
-					compteur++;
+					compteurFlotte++;
 					flotte = flotte->suivant;
 				}
 				if (*key == sk_Enter) {
@@ -3636,8 +3678,13 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				gfx_SetColor(7);
 				gfx_Rectangle_NoClip(40, 40, 240, 160);
 				gfx_HorizLine_NoClip(45, 51, 230);
+				gfx_HorizLine_NoClip(45, 67, 180);
+				gfx_Line_NoClip(225, 67, 235, 55);
+				gfx_HorizLine_NoClip(235, 55, 40);
 				gfx_VertLine_NoClip(100, 42, 8);
 				gfx_VertLine_NoClip(200, 201, 8);
+				gfx_SetColor(1);
+				gfx_SetPixel(275, 55);
 				gfx_PrintStringXY("Retour", 48, 42);
 				gfx_SetTextXY(150, 42);
 				flotte = FlotteNumero(joueur->flotte, fenetre->selection);
@@ -3648,10 +3695,28 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				else {
 					gfx_PrintInt(fenetre->selection, 1);
 				}
-				gfx_SetTextXY(45, 57);
+				niveau = 57;
+				gfx_SetTextXY(45, niveau);
+				niveau += 14;
+				gfx_SetTextFGColor(17);
+				switch(flotte->type){
+					case FLOTTE_MILITAIRE:
+						gfx_PrintString("Flotte militaire");
+						break;
+					case FLOTTE_DE_CONSTRUCTION:
+						gfx_PrintString("Flotte de construction");
+						break;
+					case FLOTTE_SCIENTIFIQUE:
+						gfx_PrintString("Flotte scientifique");
+						break;
+				}
+				gfx_SetTextFGColor(1);
+				gfx_SetTextXY(45, niveau);
+				niveau += 14;
 				gfx_PrintString("Puissance : ");
 				PrintInt(flotte->puissance);
-				gfx_SetTextXY(45, 71);
+				gfx_SetTextXY(45, niveau);
+				niveau += 14;
 				gfx_PrintString("Coque : ");
 				PrintInt(flotte->coqueVie);
 				gfx_PrintString("|");
@@ -3660,7 +3725,8 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				PrintInt((flotte->coqueVie * 100) / flotte->coqueTotal);
 				gfx_PrintString("%)");
 				if(flotte->type == FLOTTE_MILITAIRE){
-					gfx_SetTextXY(45, 85);
+					gfx_SetTextXY(45, niveau);
+					niveau += 14;
 					gfx_PrintString("Blindage : ");
 					PrintInt(flotte->blindageVie);
 					gfx_PrintString("|");
@@ -3668,7 +3734,8 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 					gfx_PrintString("(");
 					PrintInt((flotte->blindageVie * 100) / flotte->blindageTotal);
 					gfx_PrintString("%)");
-					gfx_SetTextXY(45, 99);
+					gfx_SetTextXY(45, niveau);
+					niveau += 14;
 					gfx_PrintString("Bouclier : ");
 					PrintInt(flotte->bouclierVie);
 					gfx_PrintString("|");
@@ -3677,8 +3744,9 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 					PrintInt((flotte->bouclierVie * 100) / flotte->bouclierTotal);
 					gfx_PrintString("%)");
 				}
-				gfx_SetTextXY(45, 114);
-				PrintInt(flotte->systeme);
+				gfx_SetTextXY(45, niveau);
+				niveau += 14;
+				//gfx_PrintString("");
 				break;
 		}
 	}
@@ -3779,19 +3847,13 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				*key = 0;
 				break;
 			case sk_Down:
-				fenetre->selection--;
-				*key = 0;
-				break;
-			case sk_Up:
 				fenetre->selection++;
 				*key = 0;
 				break;
-		}
-		if(fenetre->selection > compteur) {
-			fenetre->selection = 1;
-		}
-		else if(fenetre->selection < 1){
-			fenetre->selection = 1;
+			case sk_Up:
+				fenetre->selection--;
+				*key = 0;
+				break;
 		}
 		//dessiner fenetre
 		gfx_SetColor(6);
@@ -3802,30 +3864,45 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 		gfx_PrintStringXY("Flotte", 136, 41);
 		niveau = 57;
 		flotte = joueur->flotte->premier;
-		compteur = 1;
+		compteur = 0;
+		compteurFlotte = 1;
+		while(flotte != NULL){
+			compteur++;
+			flotte = flotte->suivant;
+		}
+
+		if (fenetre->selection > compteur) {
+			fenetre->selection = 1;
+		}
+		else if (fenetre->selection < 1) {
+			fenetre->selection = compteur;
+		}
+
+		flotte = joueur->flotte->premier;
 		while(flotte != NULL) {
-			if (compteur < 10) {
-				gfx_SetTextXY(132, niveau);
-			}
-			else {
-				gfx_SetTextXY(128, niveau);
-			}
-			if(fenetre->selection == compteur) {
+			if(fenetre->selection == compteurFlotte) {
 				gfx_SetTextFGColor(13);
 			}
 			else {
 				gfx_SetTextFGColor(1);
 			}
+			switch(flotte->type){
+				case FLOTTE_MILITAIRE:
+					gfx_PrintStringXY("militaire", 208, niveau);
+					break;
+				case FLOTTE_DE_CONSTRUCTION:
+					gfx_PrintStringXY("construction", 184, niveau);
+					break;
+				case FLOTTE_SCIENTIFIQUE:
+					gfx_PrintStringXY("scientifique", 184, niveau);
+					break;
+			}
+			gfx_SetTextXY(45, niveau);
 			gfx_PrintString("Flotte ");
-			if (compteur < 10) {
-				gfx_PrintInt(compteur, 1);
-			}
-			else {
-				gfx_PrintInt(compteur, 2);
-			}
+			PrintInt(compteurFlotte);
 			gfx_HorizLine_NoClip(50, niveau + 11, 220);
-			niveau += 14;
-			compteur++;
+			niveau += 17;
+			compteurFlotte++;
 			flotte = flotte->suivant;
 		}
 		if(*key == sk_Enter){
@@ -3940,6 +4017,7 @@ void StellarisTemps(Empire *joueur, Date *date, char *key)
 void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur)
 {
 	int i = 0, x = 0, y = 0, xLn = 0, yLn = 0, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, key2 = 0, systeme = 0;
+	int xFlotte = 0, yFlotte = 0;
 	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0;
 	Flotte* flotte = NULL;
 	gfx_SetColor(1);
@@ -4128,7 +4206,7 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 				if ((camera->fenetre != MENU_FLOTTE) && (camera->fenetre != MENU_QUITTER))
 				{
 					camera->fenetre = MENU_FLOTTE;
-					fenetre->selection = 0;
+					fenetre->selection = 1;
 					camera->bloque = TRUE;
 				}
 				else if (camera->fenetre == MENU_FLOTTE)
@@ -4317,7 +4395,7 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 				if ((camera->fenetre != MENU_FLOTTE) && (camera->fenetre != MENU_QUITTER))
 				{
 					camera->fenetre = MENU_FLOTTE;
-					fenetre->selection = 0;
+					fenetre->selection = 1;
 					camera->bloque = TRUE;
 				}
 				else if (camera->fenetre == MENU_FLOTTE)
@@ -4676,17 +4754,32 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 		flotte = joueur->flotte->premier;
 		while(flotte != NULL) {
 			systeme = flotte->systeme;
-			if(((systemeStellaires[systeme].x*camera->zoom - camera->x + 160 > 0) && (systemeStellaires[systeme].x*camera->zoom - camera->x + 160 < 320)) && ((0 < systemeStellaires[systeme].y*camera->zoom - camera->y + 120)&& (systemeStellaires[systeme].y*camera->zoom - camera->y + 120 < 240)))
+			xFlotte = systemeStellaires[systeme].x*camera->zoom - camera->x + 165;
+			yFlotte = systemeStellaires[systeme].y*camera->zoom - camera->y + 110;
+			if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240)))
 			{
-				gfx_TransparentSprite(ourFleet, systemeStellaires[systeme].x*camera->zoom - camera->x + 170, systemeStellaires[systeme].y*camera->zoom - camera->y + 110);
-				gfx_TransparentSprite(force_our, systemeStellaires[systeme].x*camera->zoom - camera->x + 177, systemeStellaires[systeme].y*camera->zoom - camera->y + 109);
-				if (flotte->puissance > 500)
-				{
-					gfx_TransparentSprite(force_our, systemeStellaires[systeme].x*camera->zoom - camera->x + 181, systemeStellaires[systeme].y*camera->zoom - camera->y + 109);
+				while(gfx_GetPixel(xFlotte + 4, yFlotte + 1) == 19){
+					xFlotte += 11;
 				}
-				if (flotte->puissance > 1500)
-				{
-					gfx_TransparentSprite(force_our, systemeStellaires[systeme].x*camera->zoom - camera->x + 179, systemeStellaires[systeme].y*camera->zoom - camera->y + 106);
+				gfx_TransparentSprite(ourFleet, xFlotte, yFlotte);
+				switch(flotte->type){
+					case FLOTTE_MILITAIRE:
+						gfx_TransparentSprite(force_our, xFlotte + 6, yFlotte - 1);
+						if (flotte->puissance > 500)
+						{
+							gfx_TransparentSprite(force_our, xFlotte + 10, yFlotte - 1);
+						}
+						if (flotte->puissance > 1500)
+						{
+							gfx_TransparentSprite(force_our, xFlotte + 8, yFlotte - 4);
+						}
+						break;
+					case FLOTTE_DE_CONSTRUCTION:
+						gfx_TransparentSprite(construction_ship_our_icon, xFlotte + 6, yFlotte - 4);
+						break;
+					case FLOTTE_SCIENTIFIQUE:
+						gfx_TransparentSprite(science_ship_our_icon, xFlotte + 6, yFlotte - 4);
+						break;
 				}
 			}
 			flotte = flotte->suivant;
@@ -4920,7 +5013,7 @@ Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
 	Flotte *pointeur = 0;
 	int compteur = 1;
 	pointeur = flotteliste->premier;
-	while(compteur <= numero) {
+	while(compteur < numero) {
 		if(pointeur->suivant != NULL) {
 			pointeur = pointeur->suivant;
 		}
@@ -4931,13 +5024,14 @@ Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
 
 Flotte* FlotteAjouter(FlotteListe* flotteliste) {
 	Flotte *pointeur = 0, fin = 0;
-	int compteur = 0;
 	pointeur = flotteliste->premier;
 	if(flotteliste->premier != NULL) {
-	while(pointeur->suivant != NULL) {
+		while(pointeur->suivant != NULL) {
+			pointeur = pointeur->suivant;
+		}
+		pointeur->suivant = malloc(sizeof(Flotte));
 		pointeur = pointeur->suivant;
-	}
-	pointeur->suivant = malloc(sizeof(Flotte));
+		pointeur->suivant = NULL;
 	}
 	else {
 		flotteliste->premier = malloc(sizeof(Flotte));
@@ -4991,7 +5085,7 @@ Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
 	Empire *pointeur = 0;
 	int compteur = 1;
 	pointeur = empireListe->premier;
-	while(compteur <= numero) {
+	while(compteur < numero) {
 		if(pointeur->suivant != NULL) {
 			pointeur = pointeur->suivant;
 		}
@@ -5005,10 +5099,12 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
 	int compteur = 0;
 	pointeur = empireListe->premier;
 	if(empireListe->premier != NULL) {
-	while(pointeur->suivant != NULL) {
+		while(pointeur->suivant != NULL) {
+			pointeur = pointeur->suivant;
+		}
+		pointeur->suivant = malloc(sizeof(Empire));
 		pointeur = pointeur->suivant;
-	}
-	pointeur->suivant = malloc(sizeof(Empire));
+		pointeur->suivant = NULL;
 	}
 	else {
 		empireListe->premier = malloc(sizeof(Empire));

@@ -81,3 +81,11 @@ convert: sprites
     - contact.png
     - science.png
     - market.png
+    - construction_ship_allied_icon.png
+    - construction_ship_our_icon.png
+    - construction_ship_neutral_icon.png
+    - construction_ship_ennemy_icon.png
+    - science_ship_allied_icon.png
+    - science_ship_our_icon.png
+    - science_ship_neutral_icon.png
+    - science_ship_ennemy_icon.png
