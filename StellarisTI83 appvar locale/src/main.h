@@ -3,6 +3,7 @@
 #define _LOCALE_INCLUDE
 
 
+
 #define LC_FR 1
 #define LC_EN 2
 
@@ -15,12 +16,5 @@
 #define LC_CREATE_GALAXIE 7
 
 #define LOCALE_ERROR 0
-
-
-void setLanguage(char languageNumber);
-
-char getLanguage();
-char initializeLanguage();
-char* gettext(int numero);
 
 #endif

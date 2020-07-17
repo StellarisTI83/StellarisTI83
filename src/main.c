@@ -36,20 +36,23 @@ int main(void)
 	FlotteListe* flotteJoueur;
 	Fenetre fenetre;
 	Marche marche;
+
+	ti_CloseAll();
+
 	
 	empireListe = EmpireListeCreer();
 	joueur = EmpireAjouter(empireListe);
 	flotteJoueur = FlotteListeCreer();
 	
+
 	memset(systemeStellaires, 0, sizeof(SystemeStellaire) * LARGEUR_GALAXIE * LARGEUR_GALAXIE);
 	
 	srandom(rtc_Time());
 	
 	gfx_Begin();
-	
 	gfx_SetPalette(global_palette, sizeof_global_palette, 0);
-	dbg_sprintf(dbgout, "Initialized some things...\n");
 
+	setLanguage(LC_FR);	
 	
 	while (fin)
 	{
@@ -67,6 +70,7 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 	char choix = 0, fin = 0, key = 0, erreur = 0;
 	unsigned char car = 'è';
 	unsigned int carInt = (int)car;
+	gfx_SetDrawScreen();
 	/*imprimer tout*/
 	gfx_FillScreen(255);
     //fontlib_SetFont(test_font, 0);
@@ -100,28 +104,28 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 		switch (choix)
 		{
 			case 0:
-				PrintCentered("Charger", 80, 2, 4, 0);
-				PrintCentered("Nouvelle partie", 110, 2, 0, 0);
-				PrintCentered("Options", 140, 2, 0, 0);
-				PrintCentered("Quitter", 170, 2, 0, 0);
+				PrintCentered(_(LC_CHARGER), 80, 2, 4, 0);
+				PrintCentered(_(LC_NOUVELLE_PARTIE), 110, 2, 0, 0);
+				PrintCentered(_(LC_OPTIONS), 140, 2, 0, 0);
+				PrintCentered(_(LC_QUITTER), 170, 2, 0, 0);
 				break;
 			case 1:
-				PrintCentered("Charger", 80, 2, 0, 0);
-				PrintCentered("Nouvelle partie", 110, 2, 4, 0);
-				PrintCentered("Options", 140, 2, 0, 0);
-				PrintCentered("Quitter", 170, 2, 0, 0);
+				PrintCentered(_(LC_CHARGER), 80, 2, 0, 0);
+				PrintCentered(_(LC_NOUVELLE_PARTIE), 110, 2, 4, 0);
+				PrintCentered(_(LC_OPTIONS), 140, 2, 0, 0);
+				PrintCentered(_(LC_QUITTER), 170, 2, 0, 0);
 				break;
 			case 2:
-				PrintCentered("Charger", 80, 2, 0, 0);
-				PrintCentered("Nouvelle partie", 110, 2, 0, 0);
-				PrintCentered("Options", 140, 2, 4, 0);
-				PrintCentered("Quitter", 170, 2, 0, 0);
+				PrintCentered(_(LC_CHARGER), 80, 2, 0, 0);
+				PrintCentered(_(LC_NOUVELLE_PARTIE), 110, 2, 0, 0);
+				PrintCentered(_(LC_OPTIONS), 140, 2, 4, 0);
+				PrintCentered(_(LC_QUITTER), 170, 2, 0, 0);
 				break;
 			case 3:
-				PrintCentered("Charger", 80, 2, 0, 0);
-				PrintCentered("Nouvelle partie", 110, 2, 0, 0);
-				PrintCentered("Options", 140, 2, 0, 0);
-				PrintCentered("Quitter", 170, 2, 4, 0);
+				PrintCentered(_(LC_CHARGER), 80, 2, 0, 0);
+				PrintCentered(_(LC_NOUVELLE_PARTIE), 110, 2, 0, 0);
+				PrintCentered(_(LC_OPTIONS), 140, 2, 0, 0);
+				PrintCentered(_(LC_QUITTER), 170, 2, 4, 0);
 				break;
 		}	
 	}
@@ -146,6 +150,8 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 			}
 			break;
 		case 2:
+			Options();
+			fin = 1;
 			break;
 		case 3:
 			fin = 0;
@@ -154,6 +160,68 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 	return fin;
 }
 
+void Options(){
+	char key = 0, choix = 0, fin = 1;
+	char language = getLanguage();
+	char* languageStr = "Francais";
+	while(fin)
+	{
+		do
+		{
+			gfx_SwapDraw();
+			
+			gfx_FillScreen(255);
+			PrintCentered("Parametres", 20, 3, 0, 0);
+			switch(key)
+			{
+				case sk_Down:
+					choix++;
+					break;
+				case sk_Up:
+					choix--;
+					break;
+				case sk_Left:
+					language--;
+					break;
+				case sk_Right:
+					language++;
+					break;
+			}
+			if (choix > 0) {choix = 0;}
+			if (choix < 0) {choix = 0;}
+			
+			if(language > 2){language = 1;}
+			if(language < 1){language = 2;}
+			/*dessiner le choix*/
+			switch(language){
+				case LC_FR:
+					languageStr = "Francais";
+					break;
+				case LC_EN:
+					languageStr = "English";
+					break;
+			}
+			switch (choix)
+			{
+				case 0:
+					PrintCentered("Langue", 70, 2, 4, 0);
+					PrintCentered(languageStr, 100, 2, 4, 0);
+					break;
+			}
+		} while(((key = os_GetCSC()) != sk_Enter) && (key != sk_Clear));
+		switch (key)
+		{
+			case sk_Clear:
+				return;
+				break;
+			case sk_Enter:
+				setLanguage(language);
+				return;
+				break;
+		}
+	}
+	return;
+}
 
 /*message d'avertissement*/
 int NouvellePartieAvertissement(Empire *joueur, Parametres *parametres)
@@ -222,6 +290,7 @@ int NouvellePartieAvertissement(Empire *joueur, Parametres *parametres)
 int QuitterNouvellePartieAvertissement()
 {
 	char key = 0, choix = 1, fin = 1;
+	gfx_SetDrawScreen();
 	gfx_FillScreen(255);
 	PrintCentered("ATTENTION", 50, 2, 3, 0);
 	PrintCentered("Voulez-vous", 80, 2, 0, 0);
@@ -1309,6 +1378,7 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	camera->mapType = 1;
 	camera->fenetre = MENU_AUCUN;
 	camera->bloque = FALSE;
+	camera->bougerFlotte = FALSE;
 
 	marche->valeurMinerai = 50;
 
@@ -1374,10 +1444,10 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	}
 	gfx_SetDrawScreen();
 	gfx_FillScreen(255);
-	PrintCentered("Cr/ation de la galaxie", 120, 1, 0, 0);
+	PrintCentered(_(LC_CREATE_GALAXIE), 120, 1, 0, 0);
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(49, 159, 222, 7);
-	gfx_SetColor(9);
+	gfx_SetColor(4);
 	//creer matrice
 	while(j < LARGEUR_GALAXIE)
 	{
@@ -2233,7 +2303,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	char nomPlanete[20];
 	char population[5];
 	char niveau = 0;
-	int8_t compteur = 0, compteurFlotte = 0;
+	int8_t compteur = 0, compteurFlotte = 0, maximum = 0;
 	Flotte* flotte = NULL;
 	//gcvt(marche->valeurMinerai , 2, valeurMineraiStr);
 	
@@ -2470,11 +2540,11 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 		gfx_SetColor(7);
 
 		gfx_SetColor(1);
-		gfx_PrintStringXY("Retour", 136, 55);
-		gfx_PrintStringXY("Sauvegarder", 117, 85);
-		gfx_PrintStringXY("Charger", 132, 115);
-		gfx_PrintStringXY("Options", 132, 145);
-		gfx_PrintStringXY("Quitter", 132, 175);
+		gfx_PrintStringXY(_(LC_RETOUR), 160 - strlen(_(LC_RETOUR)) * 4, 55);
+		gfx_PrintStringXY(_(LC_SAUVEGARDER), 160 - strlen(_(LC_SAUVEGARDER)) * 4, 85);
+		gfx_PrintStringXY(_(LC_CHARGER), 160 - strlen(_(LC_CHARGER)) * 4, 115);
+		gfx_PrintStringXY(_(LC_OPTIONS), 160 - strlen(_(LC_OPTIONS)) * 4, 145);
+		gfx_PrintStringXY(_(LC_QUITTER), 160 - strlen(_(LC_QUITTER)) * 4, 175);
 		if(*key == sk_Enter)
 		{
 			switch(fenetre->selection)
@@ -2595,7 +2665,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 					gfx_SetColor(11);
 					gfx_FillCircle_NoClip(110, 115, 1);
 					if(fenetre->selection == 1) {
-						gfx_SetTextFGColor(9);
+						gfx_SetTextFGColor(13);
 						gfx_SetColor(9);
 						gfx_Circle_NoClip(110, 110, 15);
 					}
@@ -2608,7 +2678,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				
 				/*******etoile*******/
 				if(fenetre->selection == 2) {
-					gfx_SetTextFGColor(9);
+					gfx_SetTextFGColor(13);
 					gfx_SetColor(9);
 					gfx_Circle_NoClip(114, 126, 15);
 				}
@@ -2624,56 +2694,9 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				if(systemeStellaires[camera->selection].planete1 != 0) {
 					gfx_SetColor(11);
 					gfx_Circle_NoClip(114, 126, systemeStellaires[camera->selection].planete1->rayonOrbite);
-					switch(systemeStellaires[camera->selection].planete1->type){
-						case 1:
-							gfx_SetColor(20);
-							break;
-						case 2:
-							gfx_SetColor(21);
-							break;
-						case 3:
-							gfx_SetColor(22);
-							break;
-						case 4:
-							gfx_SetColor(23);
-							break;
-						case 5:
-							gfx_SetColor(23);
-							break;
-						case 6:
-							gfx_SetColor(24);
-							break;
-						case 7:
-							gfx_SetColor(25);
-							break;
-						case 8:
-							gfx_SetColor(26);
-							break;
-						case 9:
-							gfx_SetColor(25);
-							break;
-						case 10:
-							gfx_SetColor(20);
-							break;
-						case 11:
-							gfx_SetColor(23);
-							break;
-						case 12:
-							gfx_SetColor(20);
-							break;
-						case 13:
-							gfx_SetColor(23);
-							break;
-						case 14:
-							gfx_SetColor(29);
-							break;
-						case 15:
-							gfx_SetColor(27);
-							break;
-						case 16:
-							gfx_SetColor(28);
-							break;
-					}				
+
+					CouleurPlanete(systemeStellaires[camera->selection].planete1->type);
+
 					gfx_FillCircle_NoClip(systemeStellaires[camera->selection].planete1->x, systemeStellaires[camera->selection].planete1->y, systemeStellaires[camera->selection].planete1->taille);
 					if(systemeStellaires[camera->selection].planete1->type == 12){
 						gfx_SetColor(0);
@@ -2684,7 +2707,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete1->x, systemeStellaires[camera->selection].planete1->y, systemeStellaires[camera->selection].planete1->taille - 1);
 					}
 					if(fenetre->selection == 3) {
-						gfx_SetTextFGColor(9);
+						gfx_SetTextFGColor(13);
 						gfx_SetColor(9);
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete1->x, systemeStellaires[camera->selection].planete1->y, 15);
 					}
@@ -2714,56 +2737,9 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				if(systemeStellaires[camera->selection].planete2 != 0) {
 					gfx_SetColor(11);
 					gfx_Circle_NoClip(114, 126, systemeStellaires[camera->selection].planete2->rayonOrbite);
-					switch(systemeStellaires[camera->selection].planete2->type){
-						case 1:
-							gfx_SetColor(20);
-							break;
-						case 2:
-							gfx_SetColor(21);
-							break;
-						case 3:
-							gfx_SetColor(22);
-							break;
-						case 4:
-							gfx_SetColor(23);
-							break;
-						case 5:
-							gfx_SetColor(23);
-							break;
-						case 6:
-							gfx_SetColor(24);
-							break;
-						case 7:
-							gfx_SetColor(25);
-							break;
-						case 8:
-							gfx_SetColor(26);
-							break;
-						case 9:
-							gfx_SetColor(25);
-							break;
-						case 10:
-							gfx_SetColor(20);
-							break;
-						case 11:
-							gfx_SetColor(23);
-							break;
-						case 12:
-							gfx_SetColor(20);
-							break;
-						case 13:
-							gfx_SetColor(23);
-							break;
-						case 14:
-							gfx_SetColor(29);
-							break;
-						case 15:
-							gfx_SetColor(27);
-							break;
-						case 16:
-							gfx_SetColor(28);
-							break;
-					}
+
+					CouleurPlanete(systemeStellaires[camera->selection].planete2->type);
+
 					gfx_FillCircle_NoClip(systemeStellaires[camera->selection].planete2->x, systemeStellaires[camera->selection].planete2->y, systemeStellaires[camera->selection].planete2->taille);
 					if(systemeStellaires[camera->selection].planete2->type == 12){
 						gfx_SetColor(0);
@@ -2774,7 +2750,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete2->x, systemeStellaires[camera->selection].planete2->y, systemeStellaires[camera->selection].planete2->taille - 1);
 					}
 					if(fenetre->selection == 4) {
-						gfx_SetTextFGColor(9);
+						gfx_SetTextFGColor(13);
 						gfx_SetColor(9);
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete2->x, systemeStellaires[camera->selection].planete2->y, 15);
 					}
@@ -2804,56 +2780,9 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				if(systemeStellaires[camera->selection].planete3 != 0) {
 					gfx_SetColor(11);
 					gfx_Circle_NoClip(114, 126, systemeStellaires[camera->selection].planete3->rayonOrbite);
-					switch(systemeStellaires[camera->selection].planete3->type){
-						case 1:
-							gfx_SetColor(20);
-							break;
-						case 2:
-							gfx_SetColor(21);
-							break;
-						case 3:
-							gfx_SetColor(22);
-							break;
-						case 4:
-							gfx_SetColor(23);
-							break;
-						case 5:
-							gfx_SetColor(23);
-							break;
-						case 6:
-							gfx_SetColor(24);
-							break;
-						case 7:
-							gfx_SetColor(25);
-							break;
-						case 8:
-							gfx_SetColor(26);
-							break;
-						case 9:
-							gfx_SetColor(25);
-							break;
-						case 10:
-							gfx_SetColor(20);
-							break;
-						case 11:
-							gfx_SetColor(23);
-							break;
-						case 12:
-							gfx_SetColor(20);
-							break;
-						case 13:
-							gfx_SetColor(23);
-							break;
-						case 14:
-							gfx_SetColor(29);
-							break;
-						case 15:
-							gfx_SetColor(27);
-							break;
-						case 16:
-							gfx_SetColor(28);
-							break;
-					}
+
+					CouleurPlanete(systemeStellaires[camera->selection].planete3->type);
+
 					gfx_FillCircle_NoClip(systemeStellaires[camera->selection].planete3->x, systemeStellaires[camera->selection].planete3->y, systemeStellaires[camera->selection].planete3->taille);
 					if(systemeStellaires[camera->selection].planete3->type == 12){
 						gfx_SetColor(0);
@@ -2864,7 +2793,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete3->x, systemeStellaires[camera->selection].planete3->y, systemeStellaires[camera->selection].planete3->taille - 1);
 					}
 					if(fenetre->selection == 5) {
-						gfx_SetTextFGColor(9);
+						gfx_SetTextFGColor(13);
 						gfx_SetColor(9);
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete3->x, systemeStellaires[camera->selection].planete3->y, 15);
 					}
@@ -2894,56 +2823,9 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				if(systemeStellaires[camera->selection].planete4 != 0) {
 					gfx_SetColor(11);
 					gfx_Circle_NoClip(114, 126, systemeStellaires[camera->selection].planete4->rayonOrbite);
-					switch(systemeStellaires[camera->selection].planete4->type){
-						case 1:
-							gfx_SetColor(20);
-							break;
-						case 2:
-							gfx_SetColor(21);
-							break;
-						case 3:
-							gfx_SetColor(22);
-							break;
-						case 4:
-							gfx_SetColor(23);
-							break;
-						case 5:
-							gfx_SetColor(23);
-							break;
-						case 6:
-							gfx_SetColor(24);
-							break;
-						case 7:
-							gfx_SetColor(25);
-							break;
-						case 8:
-							gfx_SetColor(26);
-							break;
-						case 9:
-							gfx_SetColor(25);
-							break;
-						case 10:
-							gfx_SetColor(20);
-							break;
-						case 11:
-							gfx_SetColor(23);
-							break;
-						case 12:
-							gfx_SetColor(20);
-							break;
-						case 13:
-							gfx_SetColor(23);
-							break;
-						case 14:
-							gfx_SetColor(29);
-							break;
-						case 15:
-							gfx_SetColor(27);
-							break;
-						case 16:
-							gfx_SetColor(28);
-							break;
-					}
+
+					CouleurPlanete(systemeStellaires[camera->selection].planete4->type);
+
 					gfx_FillCircle_NoClip(systemeStellaires[camera->selection].planete4->x, systemeStellaires[camera->selection].planete4->y, systemeStellaires[camera->selection].planete4->taille);
 					if(systemeStellaires[camera->selection].planete4->type == 12){
 						gfx_SetColor(0);
@@ -2954,7 +2836,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete4->x, systemeStellaires[camera->selection].planete4->y, systemeStellaires[camera->selection].planete4->taille - 1);
 					}
 					if(fenetre->selection == 6) {
-						gfx_SetTextFGColor(9);
+						gfx_SetTextFGColor(13);
 						gfx_SetColor(9);
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete4->x, systemeStellaires[camera->selection].planete4->y, 15);
 					}
@@ -2984,56 +2866,9 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				if(systemeStellaires[camera->selection].planete5 != 0) {
 					gfx_SetColor(11);
 					gfx_Circle_NoClip(114, 126, systemeStellaires[camera->selection].planete5->rayonOrbite);
-					switch(systemeStellaires[camera->selection].planete5->type){
-						case 1:
-							gfx_SetColor(20);
-							break;
-						case 2:
-							gfx_SetColor(21);
-							break;
-						case 3:
-							gfx_SetColor(22);
-							break;
-						case 4:
-							gfx_SetColor(23);
-							break;
-						case 5:
-							gfx_SetColor(23);
-							break;
-						case 6:
-							gfx_SetColor(24);
-							break;
-						case 7:
-							gfx_SetColor(25);
-							break;
-						case 8:
-							gfx_SetColor(26);
-							break;
-						case 9:
-							gfx_SetColor(25);
-							break;
-						case 10:
-							gfx_SetColor(20);
-							break;
-						case 11:
-							gfx_SetColor(23);
-							break;
-						case 12:
-							gfx_SetColor(20);
-							break;
-						case 13:
-							gfx_SetColor(23);
-							break;
-						case 14:
-							gfx_SetColor(29);
-							break;
-						case 15:
-							gfx_SetColor(27);
-							break;
-						case 16:
-							gfx_SetColor(28);
-							break;
-					}
+
+					CouleurPlanete(systemeStellaires[camera->selection].planete5->type);
+
 					gfx_FillCircle_NoClip(systemeStellaires[camera->selection].planete5->x, systemeStellaires[camera->selection].planete5->y, systemeStellaires[camera->selection].planete5->taille);
 					if(systemeStellaires[camera->selection].planete5->type == 12){
 						gfx_SetColor(0);
@@ -3044,7 +2879,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete5->x, systemeStellaires[camera->selection].planete5->y, systemeStellaires[camera->selection].planete5->taille - 1);
 					}
 					if(fenetre->selection == 7) {
-						gfx_SetTextFGColor(9);
+						gfx_SetTextFGColor(13);
 						gfx_SetColor(9);
 						gfx_Circle_NoClip(systemeStellaires[camera->selection].planete5->x, systemeStellaires[camera->selection].planete5->y, 15);
 					}
@@ -3163,6 +2998,8 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				}
 				if (*key == sk_Enter) {
 					fenetre->ouverte = 6;
+					fenetre->flotteSelectionee = fenetre->selection;
+					fenetre->selection = 1;
 					fenetre->precedente = 1;
 				}
 				break;
@@ -3663,13 +3500,26 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						switch(fenetre->precedente){
 							case 1:
 								fenetre->ouverte = 1;
+								fenetre->selection = fenetre->flotteSelectionee;
 								break;
 							case 2:
 								camera->fenetre = MENU_FLOTTE;
-								fenetre->selection = 0;
+								fenetre->selection = fenetre->flotteSelectionee;
 								break;
 						}
 						*key = 0;
+						break;
+					case sk_Up:
+						fenetre->selection -= 4;
+						break;
+					case sk_Down:
+						fenetre->selection += 4;
+						break;
+					case sk_Left:
+						fenetre->selection--;
+						break;
+					case sk_Right:
+						fenetre->selection++;
 						break;
 				}
 				//dessiner fenetre
@@ -3678,22 +3528,49 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				gfx_SetColor(7);
 				gfx_Rectangle_NoClip(40, 40, 240, 160);
 				gfx_HorizLine_NoClip(45, 51, 230);
-				gfx_HorizLine_NoClip(45, 67, 180);
-				gfx_Line_NoClip(225, 67, 235, 55);
-				gfx_HorizLine_NoClip(235, 55, 40);
-				gfx_VertLine_NoClip(100, 42, 8);
-				gfx_VertLine_NoClip(200, 201, 8);
+				gfx_HorizLine_NoClip(45, 67, 180); //*barre en dessous du nom
+				gfx_Line_NoClip(225, 67, 233, 55); //*
+				gfx_HorizLine_NoClip(235, 55, 40); //*
+				gfx_HorizLine_NoClip(45, 162, 230);//barre du bas au dessus des ordres
+				gfx_VertLine_NoClip(100, 42, 8); //barre a coté de retour
 				gfx_SetColor(1);
 				gfx_SetPixel(275, 55);
+				gfx_SetPixel(275, 51);
 				gfx_PrintStringXY("Retour", 48, 42);
 				gfx_SetTextXY(150, 42);
-				flotte = FlotteNumero(joueur->flotte, fenetre->selection);
+				flotte = FlotteNumero(joueur->flotte, fenetre->flotteSelectionee);
+				if(flotte->type == FLOTTE_DE_CONSTRUCTION){
+					if((fenetre->selection == 0) || (fenetre->selection >= 10)){
+						fenetre->selection = 2;
+					}
+					else if((fenetre->selection == 3) || (fenetre->selection == 9)){
+						fenetre->selection = 1;
+					}
+					else if((fenetre->selection == 7) || (fenetre->selection <= -3)){
+						fenetre->selection = 5;
+					}
+					else if((fenetre->selection == 4) || (fenetre->selection == -2)){
+						fenetre->selection = 6;
+					}
+				}
+				else{
+					if(fenetre->selection == 0){
+						fenetre->selection = 2;
+					}
+					else if((fenetre->selection == 3) || (fenetre->selection > 6)){
+						fenetre->selection = 1;
+					}
+					else if(((fenetre->selection == 6) || (fenetre->selection == 4)) || (fenetre->selection < 0)){
+						fenetre->selection = 5;
+					}
+				}
+
 				gfx_PrintString("Flotte ");
-				if (fenetre->selection > 10) {
-					gfx_PrintInt(fenetre->selection, 2);
+				if (fenetre->flotteSelectionee > 10) {
+					gfx_PrintInt(fenetre->flotteSelectionee, 2);
 				}
 				else {
-					gfx_PrintInt(fenetre->selection, 1);
+					gfx_PrintInt(fenetre->flotteSelectionee, 1);
 				}
 				niveau = 57;
 				gfx_SetTextXY(45, niveau);
@@ -3735,7 +3612,6 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 					PrintInt((flotte->blindageVie * 100) / flotte->blindageTotal);
 					gfx_PrintString("%)");
 					gfx_SetTextXY(45, niveau);
-					niveau += 14;
 					gfx_PrintString("Bouclier : ");
 					PrintInt(flotte->bouclierVie);
 					gfx_PrintString("|");
@@ -3744,9 +3620,98 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 					PrintInt((flotte->bouclierVie * 100) / flotte->bouclierTotal);
 					gfx_PrintString("%)");
 				}
+				niveau += 20;
 				gfx_SetTextXY(45, niveau);
+				if(fenetre->selection == FLOTTE_BOUGER){
+					gfx_SetTextFGColor(13);
+				}
+				gfx_PrintString("Bouger");
+				gfx_SetTextFGColor(1);
+				gfx_SetTextXY(165, niveau);
 				niveau += 14;
-				//gfx_PrintString("");
+				switch(flotte->type){
+					case FLOTTE_MILITAIRE:
+						if(fenetre->selection == FLOTTE_ATTAQUER){
+							gfx_SetTextFGColor(13);
+						}
+						gfx_PrintString("Attaquer");
+						gfx_SetTextFGColor(1);
+
+						if(fenetre->selection == FLOTTE_BOMBARDER){
+							gfx_SetTextFGColor(13);
+						}
+						gfx_SetTextXY(45, niveau);
+						niveau += 14;
+						gfx_PrintString("Bombarder");
+						gfx_SetTextFGColor(1);
+						break;
+
+					case FLOTTE_SCIENTIFIQUE:
+						if(fenetre->selection == FLOTTE_INSPECTER){
+							gfx_SetTextFGColor(13);
+						}
+						gfx_PrintString("Inspecter");
+						gfx_SetTextFGColor(1);
+
+						if(fenetre->selection == FLOTTE_RECHERCHER){
+							gfx_SetTextFGColor(13);
+						}
+						gfx_SetTextXY(45, niveau);
+						niveau += 14;
+						gfx_PrintString("Rechercher");
+						gfx_SetTextFGColor(1);
+						break;
+
+					case FLOTTE_DE_CONSTRUCTION:
+						if(fenetre->selection == FLOTTE_CONSTRUIRE_BASE){
+							gfx_SetTextFGColor(13);
+						}
+						gfx_PrintString("Station");
+						gfx_SetTextFGColor(1);
+
+						if(fenetre->selection == FLOTTE_COSNTRUIRE_MINE){
+							gfx_SetTextFGColor(13);
+						}
+						gfx_SetTextXY(45, niveau);
+						gfx_PrintString("Base mini/re");
+						gfx_SetTextFGColor(1);
+
+						if(fenetre->selection == FLOTTE_CONSTRUIRE_BASE_SCIENTIFIQUE){
+							gfx_SetTextFGColor(13);
+						}
+						gfx_SetTextXY(165, niveau);
+						gfx_PrintString("Base scientifique");
+						gfx_SetTextFGColor(1);
+						break;
+				}
+				gfx_SetTextXY(45, 167);
+				switch(flotte->action){
+					case FLOTTE_AUCUNE_ACTION:
+						gfx_PrintString("Aucun ordre");
+						break;
+					case FLOTTE_BOUGER:
+						gfx_PrintString("Se d/place vers");
+						gfx_SetTextFGColor(13);
+						gfx_PrintString(systemeStellaires[flotte->systemeArrive].nom);
+						break;
+					case FLOTTE_ATTAQUER:
+						gfx_PrintString("Attaque");
+						break;
+				}
+				if(*key = sk_Enter){ //effectuer l'action
+					if(fenetre->selection == FLOTTE_BOUGER){
+						FlotteBouger(fenetre->flotteSelectionee, 1, 0, camera, empireListe);
+					}
+					else{
+						switch(flotte->type){
+							case FLOTTE_MILITAIRE:
+								switch(fenetre->selection){
+									case FLOTTE_ATTAQUER:
+										break; 
+								}
+						}
+					}
+				}
 				break;
 		}
 	}
@@ -3907,6 +3872,8 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 		}
 		if(*key == sk_Enter){
 			camera->fenetre = MENU_SYSTEME;
+			fenetre->flotteSelectionee = fenetre->selection;
+			fenetre->selection = 1;
 			fenetre->ouverte = 6;
 			fenetre->precedente = 2;
 		}
@@ -4016,9 +3983,9 @@ void StellarisTemps(Empire *joueur, Date *date, char *key)
 /********dessiner la map********/
 void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur)
 {
-	int i = 0, x = 0, y = 0, xLn = 0, yLn = 0, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, key2 = 0, systeme = 0;
+	int i = 0, x = 0, y = 0, xLn = 0, yLn = 0, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, systeme = 0;
 	int xFlotte = 0, yFlotte = 0;
-	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0;
+	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0, key2 = 0;
 	Flotte* flotte = NULL;
 	gfx_SetColor(1);
 	if(camera->mapType == 1)
@@ -4028,384 +3995,10 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 		{
 			key2 = os_GetCSC();
 		}
-		switch(*key)
-		{
-			case sk_Up:
-				if (camera->bloque != TRUE) {
-					camera->vecteury -= 5;
-				}
-				break;
-			case sk_Down:
-				if (camera->bloque != TRUE) {
-					camera->vecteury += 5;
-				}
-				break;
-			case sk_Left:
-				if (camera->bloque != TRUE) {
-					camera->vecteurx -= 5;
-				}
-				break;
-			case sk_Right:
-				if (camera->bloque != TRUE) {
-					camera->vecteurx += 5;
-				}
-				break;
-			case sk_Mode:
-				if (camera->bloque != TRUE) {
-					camera->zoom -= 1;
-					if(camera->zoom >= 1)
-					{
-						camera->x *= 0.5;
-						camera->y *= 0.5;
-					}
-				}
-				break;
-			case sk_Del:
-				if (camera->bloque != TRUE) {
-					camera->zoom += 1;
-					if (camera->zoom < 3 && camera->zoom >= 1)
-					{
-						camera->x *= 2;
-						camera->y *= 2;
-					}
-				}
-				break;
-			case sk_Enter:
-				if ((camera->fenetre == MENU_AUCUN)  && (camera->selection != -1))
-				{
-					camera->fenetre = MENU_SYSTEME;
-					camera->bloque = TRUE;
-					fenetre->selection = 1;
-					fenetre->ouverte = 0;
-					*key = 0;
-				}
-				break;
-			case sk_Clear:
-				if (camera->fenetre == MENU_AUCUN)
-				{
-					camera->fenetre = MENU_QUITTER;
-					camera->bloque = TRUE;
-					date->vitesse = 0;
-					fenetre->selection = 1;
-					*key = 0;
-				}
-				break;
-			case sk_Yequ :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 1))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 1;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 1))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Window :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 2))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 2;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 2))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Zoom :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 3))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 3;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 3))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Trace :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 4))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 4;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 4))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Graph :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 5))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 5;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 5))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Recip:
-				if ((camera->fenetre != MENU_MARCHE) && (camera->fenetre != MENU_QUITTER))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 2;
-					camera->bloque = TRUE;
-				}
-				else if (camera->fenetre == MENU_MARCHE)
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Math:
-				if ((camera->fenetre != MENU_CONTACTS) && (camera->fenetre != MENU_QUITTER))
-				{
-					camera->fenetre = MENU_CONTACTS;
-					fenetre->selection = 0;
-					camera->bloque = TRUE;
-				}
-				else if (camera->fenetre == MENU_CONTACTS)
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Square:
-				if ((camera->fenetre != MENU_RECHERCHE) && (camera->fenetre != MENU_QUITTER))
-				{
-					camera->fenetre = MENU_RECHERCHE;
-					fenetre->selection = 0;
-					camera->bloque = TRUE;
-				}
-				else if (camera->fenetre == MENU_RECHERCHE)
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Log:
-				if ((camera->fenetre != MENU_FLOTTE) && (camera->fenetre != MENU_QUITTER))
-				{
-					camera->fenetre = MENU_FLOTTE;
-					fenetre->selection = 1;
-					camera->bloque = TRUE;
-				}
-				else if (camera->fenetre == MENU_FLOTTE)
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-		}
-		switch(key2)
-		{
-			case sk_Up:
-				if (camera->bloque != TRUE) {
-				camera->vecteury -= 5;
-				}
-				break;
-			case sk_Down:
-				if (camera->bloque != TRUE) {
-				camera->vecteury += 5;
-				}
-				break;
-			case sk_Left:
-				if (camera->bloque != TRUE) {
-				camera->vecteurx -= 5;
-				}
-				break;
-			case sk_Right:
-				if (camera->bloque != TRUE) {
-					camera->vecteurx += 5;
-				}
-				break;
-			case sk_Mode:
-				if (camera->bloque != TRUE) {
-					camera->zoom -= 1;
-					if(camera->zoom >= 1)
-					{
-						camera->x *= 0.5;
-						camera->y *= 0.5;
-					}
-				}
-				break;
-			case sk_Del:
-				if (camera->bloque != TRUE) {
-					camera->zoom += 1;
-					if (camera->zoom < 3 && camera->zoom >= 1)
-					{
-						camera->x *= 2;
-						camera->y *= 2;
-					}
-				}
-				break;
-			case sk_Enter:
-				if ((camera->fenetre == MENU_AUCUN)  && (camera->selection != -1))
-				{
-					camera->fenetre = MENU_SYSTEME;
-					camera->bloque = TRUE;
-					fenetre->selection = 1;
-					fenetre->ouverte = 0;
-					*key = 0;
-				}
-				break;
-			case sk_Clear:
-				if (camera->fenetre == MENU_AUCUN)
-				{
-					camera->fenetre = MENU_QUITTER;
-					camera->bloque = TRUE;
-					date->vitesse = 0;
-					fenetre->selection = 1;
-					*key = 0;
-				}
-				break;
-			case sk_Yequ :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 1))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 1;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 1))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Window :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 2))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 2;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 2))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Zoom :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 3))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 3;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 3))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Trace :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 4))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 4;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 4))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Graph :
-				if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 5))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 5;
-					camera->bloque = TRUE;
-				}
-				else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 5))
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Recip:
-				if ((camera->fenetre != MENU_MARCHE) && (camera->fenetre != MENU_QUITTER))
-				{
-					camera->fenetre = MENU_MARCHE;
-					fenetre->selection = 2;
-					camera->bloque = TRUE;
-				}
-				else if (camera->fenetre == MENU_MARCHE)
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Math:
-				if ((camera->fenetre != MENU_CONTACTS) && (camera->fenetre != MENU_QUITTER))
-				{
-					camera->fenetre = MENU_CONTACTS;
-					fenetre->selection = 0;
-					camera->bloque = TRUE;
-				}
-				else if (camera->fenetre == MENU_CONTACTS)
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Square:
-				if ((camera->fenetre != MENU_RECHERCHE) && (camera->fenetre != MENU_QUITTER))
-				{
-					camera->fenetre = MENU_RECHERCHE;
-					fenetre->selection = 0;
-					camera->bloque = TRUE;
-				}
-				else if (camera->fenetre == MENU_RECHERCHE)
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-			case sk_Log:
-				if ((camera->fenetre != MENU_FLOTTE) && (camera->fenetre != MENU_QUITTER))
-				{
-					camera->fenetre = MENU_FLOTTE;
-					fenetre->selection = 1;
-					camera->bloque = TRUE;
-				}
-				else if (camera->fenetre == MENU_FLOTTE)
-				{
-					camera->fenetre = MENU_AUCUN;
-					fenetre->selection = 0;
-					camera->bloque = FALSE;
-				}
-				break;
-		}
+
+		KeyAction(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
+		KeyAction(empireListe, systemeStellaires, camera, &key2, flotteJoueur, date, fenetre, joueur);
+
 		if (camera->zoom < 1)
 		{
 			camera->zoom = 1;
@@ -5131,4 +4724,269 @@ void EmpireSupprimer(EmpireListe* empireListe, int numero) {
 		pointeurPrecedent->suivant = pointeur->suivant;
 	}
 	free(pointeur);
+}
+
+void KeyAction(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
+	switch(*key){
+		case sk_Up:
+			if (camera->bloque != TRUE) {
+				camera->vecteury -= 5;
+			}
+			break;
+		case sk_Down:
+			if (camera->bloque != TRUE) {
+				camera->vecteury += 5;
+			}
+			break;
+		case sk_Left:
+			if (camera->bloque != TRUE) {
+				camera->vecteurx -= 5;
+			}
+			break;
+		case sk_Right:
+			if (camera->bloque != TRUE) {
+				camera->vecteurx += 5;
+			}
+			break;
+		case sk_Mode:
+			if (camera->bloque != TRUE) {
+				camera->zoom -= 1;
+				if(camera->zoom >= 1)
+				{
+					camera->x *= 0.5;
+					camera->y *= 0.5;
+				}
+			}
+			break;
+		case sk_Del:
+			if (camera->bloque != TRUE) {
+				camera->zoom += 1;
+				if (camera->zoom < 3 && camera->zoom >= 1)
+				{
+					camera->x *= 2;
+					camera->y *= 2;
+				}
+			}
+			break;
+		case sk_Enter:
+			if (((camera->fenetre == MENU_AUCUN) && (camera->selection != -1)) && (camera->bougerFlotte = FALSE))
+			{
+				camera->fenetre = MENU_SYSTEME;
+				camera->bloque = TRUE;
+				fenetre->selection = 1;
+				fenetre->ouverte = 0;
+				*key = 0;
+			}
+			else if((camera->selection != -1) && (camera->bougerFlotte = TRUE)){
+				FlotteBouger(camera->flotte, camera->empire, fenetre->selection, camera, empireListe);
+			}
+			break;
+		case sk_Clear:
+			if (camera->fenetre == MENU_AUCUN)
+			{
+				camera->fenetre = MENU_QUITTER;
+				camera->bloque = TRUE;
+				date->vitesse = 0;
+				fenetre->selection = 1;
+				*key = 0;
+			}
+			break;
+		case sk_Yequ :
+			if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 1))
+			{
+				camera->fenetre = MENU_MARCHE;
+				fenetre->selection = 1;
+				camera->bloque = TRUE;
+			}
+			else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 1))
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+		case sk_Window :
+			if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 2))
+			{
+				camera->fenetre = MENU_MARCHE;
+				fenetre->selection = 2;
+				camera->bloque = TRUE;
+			}
+			else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 2))
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+		case sk_Zoom :
+			if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 3))
+			{
+				camera->fenetre = MENU_MARCHE;
+				fenetre->selection = 3;
+				camera->bloque = TRUE;
+			}
+			else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 3))
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+		case sk_Trace :
+			if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 4))
+			{
+				camera->fenetre = MENU_MARCHE;
+				fenetre->selection = 4;
+				camera->bloque = TRUE;
+			}
+			else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 4))
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+		case sk_Graph :
+			if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 5))
+			{
+				camera->fenetre = MENU_MARCHE;
+				fenetre->selection = 5;
+				camera->bloque = TRUE;
+			}
+			else if ((camera->fenetre == MENU_MARCHE) && (fenetre->selection != 5))
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+		case sk_Recip:
+			if ((camera->fenetre != MENU_MARCHE) && (camera->fenetre != MENU_QUITTER))
+			{
+				camera->fenetre = MENU_MARCHE;
+				fenetre->selection = 2;
+				camera->bloque = TRUE;
+			}
+			else if (camera->fenetre == MENU_MARCHE)
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+		case sk_Math:
+			if ((camera->fenetre != MENU_CONTACTS) && (camera->fenetre != MENU_QUITTER))
+			{
+				camera->fenetre = MENU_CONTACTS;
+				fenetre->selection = 0;
+				camera->bloque = TRUE;
+			}
+			else if (camera->fenetre == MENU_CONTACTS)
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+		case sk_Square:
+			if ((camera->fenetre != MENU_RECHERCHE) && (camera->fenetre != MENU_QUITTER))
+			{
+				camera->fenetre = MENU_RECHERCHE;
+				fenetre->selection = 0;
+				camera->bloque = TRUE;
+			}
+			else if (camera->fenetre == MENU_RECHERCHE)
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+		case sk_Log:
+			if ((camera->fenetre != MENU_FLOTTE) && (camera->fenetre != MENU_QUITTER))
+			{
+				camera->fenetre = MENU_FLOTTE;
+				fenetre->selection = 1;
+				camera->bloque = TRUE;
+			}
+			else if (camera->fenetre == MENU_FLOTTE)
+			{
+				camera->fenetre = MENU_AUCUN;
+				fenetre->selection = 0;
+				camera->bloque = FALSE;
+			}
+			break;
+	}
+}
+
+void CouleurPlanete(char type){
+	switch(type){
+		case 1:
+			gfx_SetColor(20);
+			break;
+		case 2:
+			gfx_SetColor(21);
+			break;
+		case 3:
+			gfx_SetColor(22);
+			break;
+		case 4:
+			gfx_SetColor(23);
+			break;
+		case 5:
+			gfx_SetColor(23);
+			break;
+		case 6:
+			gfx_SetColor(24);
+			break;
+		case 7:
+			gfx_SetColor(25);
+			break;
+		case 8:
+			gfx_SetColor(26);
+			break;
+		case 9:
+			gfx_SetColor(25);
+			break;
+		case 10:
+			gfx_SetColor(20);
+			break;
+		case 11:
+			gfx_SetColor(23);
+			break;
+		case 12:
+			gfx_SetColor(20);
+			break;
+		case 13:
+			gfx_SetColor(23);
+			break;
+		case 14:
+			gfx_SetColor(29);
+			break;
+		case 15:
+			gfx_SetColor(27);
+			break;
+		case 16:
+			gfx_SetColor(28);
+			break;
+	}
+}
+
+void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, char systeme, Camera *camera, EmpireListe *empireListe){
+	Empire* empire;
+	Flotte* flotte;
+	empire = EmpireNumero(empireListe, numeroDeEmpire);
+	flotte = FlotteNumero(empire->flotte, numeroDeFlotte);
+	if(camera->bougerFlotte == FALSE){
+		camera->bougerFlotte = TRUE;
+		camera->bloque = FALSE;
+		camera->fenetre = MENU_AUCUN;
+		camera->empire = numeroDeEmpire;
+		camera->flotte = numeroDeFlotte;
+	}
+	else{
+		camera->bougerFlotte = FALSE;
+		flotte->systeme = systeme;
+	}
 }

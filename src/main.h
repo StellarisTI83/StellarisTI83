@@ -4,6 +4,8 @@
 #define LIMITE_GAUCHE 180
 #define LIMITE_HAUT 160
 
+#define _(String) gettext(String)
+
 #define TEXT_BG_COLOR 2
 
 #define FLOTTE_MILITAIRE 1
@@ -20,6 +22,18 @@
 #define MENU_FLOTTE 3
 #define MENU_RECHERCHE 4
 #define MENU_CONTACTS 5
+
+#define FLOTTE_AUCUNE_ACTION 0
+#define FLOTTE_BOUGER 1
+#define FLOTTE_ATTAQUER 2
+#define FLOTTE_BOMBARDER 5
+
+#define FLOTTE_INSPECTER 2
+#define FLOTTE_RECHERCHER 5
+
+#define FLOTTE_CONSTRUIRE_BASE 2
+#define FLOTTE_COSNTRUIRE_MINE 5
+#define FLOTTE_CONSTRUIRE_BASE_SCIENTIFIQUE 6
 /**************structures**************/
 
 typedef struct FlotteListeStruct FlotteListe;
@@ -50,6 +64,11 @@ typedef struct {
 	char nombreEmpires;
 } Parametres;
 
+typedef struct{
+	char language;
+	char premierLancement;
+} ParametresGlobaux;
+
 typedef struct {
 	char vitesse;
 	char jour;
@@ -69,6 +88,9 @@ typedef struct {
 	char bloque;
 	int selection;
 	int ouverte;
+	char bougerFlotte;
+	int flotte;
+	int empire;
 } Camera;
 
 typedef struct {
@@ -128,7 +150,8 @@ struct FlotteListeStruct {
 };
 
 typedef struct {
-	char selection;
+	int selection;
+	int flotteSelectionee;
 	char ouverte;
 	char precedente;
 } Fenetre;
@@ -140,6 +163,8 @@ typedef struct {
 } Marche;
 /**************def**************/
 int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
+
+void Options();
 
 int NouvellePartieAvertissement(Empire *joueur, Parametres *parametres);
 
@@ -177,3 +202,7 @@ void EmpireListeSupprimer(EmpireListe*);
 Empire* EmpireNumero(EmpireListe*, int numero);
 Empire* EmpireAjouter(EmpireListe*);
 void EmpireSupprimer(EmpireListe*, int numero);
+
+void KeyAction(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur);
+void CouleurPlanete(char);
+void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, char systeme, Camera *camera, EmpireListe *empireListe);
