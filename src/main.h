@@ -34,6 +34,12 @@
 #define FLOTTE_CONSTRUIRE_BASE 2
 #define FLOTTE_COSNTRUIRE_MINE 5
 #define FLOTTE_CONSTRUIRE_BASE_SCIENTIFIQUE 6
+
+#define NIVEAU_DE_CONNAISSANCE_INCONNU 0
+#define NIVEAU_DE_CONNAISSANCE_FAIBLE 1
+#define NIVEAU_DE_CONNAISSANCE_MOYEN 2
+#define NIVEAU_DE_CONNAISSANCE_ELEVEE 3
+#define NIVEAU_DE_CONNAISSANCE_TOTAL 4
 /**************structures**************/
 
 typedef struct FlotteListeStruct FlotteListe;
@@ -114,10 +120,10 @@ typedef struct {
 	char nombrePlanetesHabitables;
 	char empire;
 	char niveauStation;
-	char hyperlane1;
-	char hyperlane2;
-	char hyperlane3;
-	char hyperlane4;
+	int16_t hyperlane1;
+	int16_t hyperlane2;
+	int16_t hyperlane3;
+	int16_t hyperlane4;
 	char niveauConnaissance; //0 = inconnu, 1 = faible, 2 = moyen, 3 = haut, 4 = total (intel level)
 	Planete* planete1;
 	Planete* planete2;
@@ -182,7 +188,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 
 int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
 int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, FlotteListe *flotteJoueur, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche);
-void StellarisTemps(Empire *joueur, Date *date, char *key);
+void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires);
 void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur);
 
 int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteListe, Marche *marche);
@@ -194,6 +200,7 @@ void PrintInt(int nombre);
 FlotteListe* FlotteListeCreer();
 void FlotteListeSupprimer(FlotteListe* flotteliste);
 Flotte* FlotteNumero(FlotteListe* flotteliste, int numero);
+int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte);
 Flotte* FlotteAjouter(FlotteListe* flotteliste);
 void FlotteSupprimer(FlotteListe* flotteliste, int numero);
 
@@ -205,4 +212,7 @@ void EmpireSupprimer(EmpireListe*, int numero);
 
 void KeyAction(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur);
 void CouleurPlanete(char);
-void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, char systeme, Camera *camera, EmpireListe *empireListe);
+void DessinerHyperlane(int8_t niveauConnaissance1, int8_t niveauConnaissance2, int16_t x, int16_t y, int16_t xLn, int16_t yLn, Camera* camera);
+int DessinerPlanete(Planete* planete, int niveau, int numero, char* nom, Fenetre* fenetre);
+void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
+void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);

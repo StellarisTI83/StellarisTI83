@@ -81,6 +81,7 @@ int main(void)
 					taille = strlen(lc_quitter) + 1;
 					ti_Write(&taille, sizeof(int), 1, languageVar);
 					ti_Write(lc_quitter, taille * sizeof(char), 1, languageVar);
+					break;
 				case LC_SAUVEGARDER:
 					taille = strlen(lc_sauvegarder) + 1;
 					ti_Write(&taille, sizeof(int), 1, languageVar);

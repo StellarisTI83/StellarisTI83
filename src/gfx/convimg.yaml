@@ -38,6 +38,8 @@ palette: global_palette
   fixed-color: {index:27, r:190, g:92, b:33} #couleur planete en fusion
   fixed-color: {index:28, r:126, g:138, b:79} #couleur planete toxique
   fixed-color: {index:29, r:132, g:157, b:173} #couleur planete geante gazeuse
+
+  fixed-color: {index:34, r:0, g:254, b:49} #vert
   images: automatic
 
 convert: sprites

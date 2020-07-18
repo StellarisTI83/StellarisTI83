@@ -86,7 +86,7 @@ extern "C" {
 
 #include "science.h"
 
-#include "market.h"
+#include "market_icon.h"
 
 #include "construction_ship_our_icon.h"
 
@@ -103,6 +103,14 @@ extern "C" {
 #include "science_ship_ennemy_icon.h"
 
 #include "science_ship_allied_icon.h"
+
+#include "life_icon.h"
+
+#include "bouclier_icon.h"
+
+#include "blindage_icon.h"
+
+#include "fleet_power_icon.h"
 
 
 
