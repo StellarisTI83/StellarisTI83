@@ -8,9 +8,6 @@
 
 #define TEXT_BG_COLOR 2
 
-#define X_PLANETE 480
-#define X_PLANETE 360
-
 #define FLOTTE_MILITAIRE 1
 #define FLOTTE_SCIENTIFIQUE 2
 #define FLOTTE_DE_CONSTRUCTION 3
@@ -43,20 +40,6 @@
 #define NIVEAU_DE_CONNAISSANCE_MOYEN 2
 #define NIVEAU_DE_CONNAISSANCE_ELEVEE 3
 #define NIVEAU_DE_CONNAISSANCE_TOTAL 4
-
-#define VUE_TYPE_CARTE 2
-#define VUE_TYPE_NORMAL 1
-#define VUE_TYPE_SYSTEME 0
-
-#define ETOILE_TYPE_B 1
-#define ETOILE_TYPE_A 2
-#define ETOILE_TYPE_F 3
-#define ETOILE_TYPE_G 4
-#define ETOILE_TYPE_K 5
-#define ETOILE_TYPE_M 6
-#define ETOILE_TYPE_TROU_NOIR 7
-#define ETOILE_TYPE_PULSAR 8
-#define ETOILE_TYPE_ETOILE_A_NEUTRONS 9
 /**************structures**************/
 
 typedef struct FlotteListeStruct FlotteListe;
@@ -104,16 +87,13 @@ typedef struct {
 typedef struct {
 	int x;
 	int y;
-	int xSysteme;
-	int ySysteme;
 	int vecteurx;
 	int vecteury;
 	char zoom;
 	char mapType; // 1 = normal, 0 = carte
 	char fenetre;
 	char bloque;
-	int systemeSelectione;
-	int systeme;
+	int selection;
 	int ouverte;
 	char bougerFlotte;
 	int flotte;
@@ -155,8 +135,6 @@ typedef struct {
 
 typedef struct FlotteStruct Flotte;
 struct FlotteStruct {
-	int x;
-	int y;
 	char type;
 	int puissance;
 	int coqueTotal;
@@ -234,15 +212,8 @@ Empire* EmpireAjouter(EmpireListe*);
 void EmpireSupprimer(EmpireListe*, int numero);
 
 void KeyAction(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur);
-void CouleurEtoile(int type);
 void CouleurPlanete(char);
 void DessinerHyperlane(int8_t niveauConnaissance1, int8_t niveauConnaissance2, int16_t x, int16_t y, int16_t xLn, int16_t yLn, Camera* camera);
-void DessinerEtoile(SystemeStellaire*, Camera*);
-void DessinerPlanete(Planete*, Camera*);
+int DessinerPlanete(Planete* planete, int niveau, int numero, char* nom, Fenetre* fenetre);
 void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);
-
-void DessinerPlanetesHabitables(SystemeStellaire* systemeStellaire, int i, int x, int y);
-void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, SystemeStellaire* systemeStellaires, Camera* camera);
-void DessinerVueSysteme(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe);
-void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe);

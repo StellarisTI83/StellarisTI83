@@ -9,6 +9,7 @@
 
 #include <debug.h>
 #include <math.h>
+#include <errno.h>
 
 #include <graphx.h>
 #include <fileioc.h>
@@ -1368,14 +1369,17 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	date->mois = 1;
 	date->annee = 2200;
 	date->vitesse = 0;
+	date->vitesseSauvegardee = 1;
 	date->horloge = 0;
 	
 	camera->x = 380;
 	camera->y = 360;
+	camera->xSysteme = 320;
+	camera->ySysteme = 240;
 	camera->vecteurx = 0;
 	camera->vecteury = 0;
 	camera->zoom = 1;
-	camera->mapType = 1;
+	camera->mapType = VUE_TYPE_NORMAL;
 	camera->fenetre = MENU_AUCUN;
 	camera->bloque = FALSE;
 	camera->bougerFlotte = FALSE;
@@ -1527,40 +1531,40 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			trouNoir = 0;
 			if(etoile <= 10)
 			{
-				etoile = 1;
+				etoile = ETOILE_TYPE_B;
 			}
 			else if(etoile <= 30)
 			{
-				etoile = 2;
+				etoile = ETOILE_TYPE_A;
 			}
 			else if(etoile <= 44)
 			{
-				etoile = 3;
+				etoile = ETOILE_TYPE_F;
 			}
 			else if(etoile <= 57)
 			{
-				etoile = 4;
+				etoile = ETOILE_TYPE_G;
 			}
 			else if(etoile <= 70)
 			{
-				etoile = 5;
+				etoile = ETOILE_TYPE_K;
 			}
 			else if(etoile <= 85)
 			{
-				etoile = 6;
+				etoile = ETOILE_TYPE_M;
 			}
 			else if(etoile <= 90)
 			{
-				etoile = 7;
-				trouNoir = 1;
+				etoile = ETOILE_TYPE_TROU_NOIR;
+				trouNoir = TRUE;
 			}
 			else if(etoile <= 95)
 			{
-				etoile = 8;
+				etoile = ETOILE_TYPE_PULSAR;
 			}
 			else
 			{
-				etoile = 9;
+				etoile = ETOILE_TYPE_ETOILE_A_NEUTRONS;
 			}
 			systemeStellaires[i].niveauStation = 0;
 			systemeStellaires[k].etoileType = etoile;
@@ -1593,7 +1597,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			}
 			systemeStellaires[k].nombrePlanetes = nombrePlanetes;
 			
-			if (((systemeStellaires[k].etoileType == 3) || (systemeStellaires[k].etoileType == 4)) || (systemeStellaires[k].etoileType == 5))
+			if (((systemeStellaires[k].etoileType == ETOILE_TYPE_M) || (systemeStellaires[k].etoileType == ETOILE_TYPE_G)) || (systemeStellaires[k].etoileType == ETOILE_TYPE_K))
 			{
 				nombrePlanetesHabitables = randInt(0, nombrePlanetes);
 				systemeStellaires[k].nombrePlanetesHabitables = nombrePlanetesHabitables;
@@ -1742,8 +1746,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 				case 5:
 					systemeStellaires[k].planete5->habitable = 0;
 					systemeStellaires[k].planete5->rayonOrbite = randInt(62, 70);
-					systemeStellaires[k].planete5->x = randInt(114 - systemeStellaires[k].planete5->rayonOrbite, 114 + systemeStellaires[k].planete5->rayonOrbite); //aleatoire de x
-					systemeStellaires[k].planete5->y = sqrt(pow((double)systemeStellaires[k].planete5->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete5->x - 114), 2.0)) + 126; //calcule de y pour ce x
+					systemeStellaires[k].planete5->x = randInt(X_PLANETE - systemeStellaires[k].planete5->rayonOrbite, X_PLANETE + systemeStellaires[k].planete5->rayonOrbite); //aleatoire de x
+					systemeStellaires[k].planete5->y = sqrt(pow((double)systemeStellaires[k].planete5->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete5->x - X_PLANETE), 2.0)) + Y_PLANETE; //calcule de y pour ce x
 					
 					systemeStellaires[k].planete5->type = randInt(1, 100);
 					if(systemeStellaires[k].planete5->type <= 60) {
@@ -1777,15 +1781,15 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					}
 					
 					if(randInt(0, 1) == 1) {
-						systemeStellaires[k].planete5->y = 126 - (systemeStellaires[k].planete5->y - 126);
+						systemeStellaires[k].planete5->y = Y_PLANETE - (systemeStellaires[k].planete5->y - Y_PLANETE);
 					}
 					systemeStellaires[k].planete5->population = 0;
 				
 				case 4:
 					systemeStellaires[k].planete4->habitable = 0;
 					systemeStellaires[k].planete4->rayonOrbite = randInt(50,56);
-					systemeStellaires[k].planete4->x = randInt(114 - systemeStellaires[k].planete4->rayonOrbite, 114 + systemeStellaires[k].planete4->rayonOrbite);
-					systemeStellaires[k].planete4->y = sqrt(pow((double)systemeStellaires[k].planete4->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete4->x - 114), 2.0)) + 126;	
+					systemeStellaires[k].planete4->x = randInt(X_PLANETE - systemeStellaires[k].planete4->rayonOrbite, X_PLANETE + systemeStellaires[k].planete4->rayonOrbite);
+					systemeStellaires[k].planete4->y = sqrt(pow((double)systemeStellaires[k].planete4->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete4->x - X_PLANETE), 2.0)) + Y_PLANETE;	
 					
 					systemeStellaires[k].planete4->type = randInt(1, 100);
 					if(systemeStellaires[k].planete4->type <= 30) {
@@ -1837,15 +1841,15 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					}
 					if(randInt(0, 1) == 1)
 					{
-						systemeStellaires[k].planete4->y = 126 - (systemeStellaires[k].planete4->y - 126);
+						systemeStellaires[k].planete4->y = Y_PLANETE - (systemeStellaires[k].planete4->y - Y_PLANETE);
 					}
 					systemeStellaires[k].planete4->population = 0;
 					
 				case 3:
 					systemeStellaires[k].planete3->habitable = 0;
 					systemeStellaires[k].planete3->rayonOrbite = randInt(40, 46);
-					systemeStellaires[k].planete3->x = randInt(114 - systemeStellaires[k].planete3->rayonOrbite, 114 + systemeStellaires[k].planete3->rayonOrbite);
-					systemeStellaires[k].planete3->y = sqrt(pow((double)systemeStellaires[k].planete3->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete3->x - 114), 2.0)) + 126;
+					systemeStellaires[k].planete3->x = randInt(X_PLANETE - systemeStellaires[k].planete3->rayonOrbite, X_PLANETE + systemeStellaires[k].planete3->rayonOrbite);
+					systemeStellaires[k].planete3->y = sqrt(pow((double)systemeStellaires[k].planete3->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete3->x - X_PLANETE), 2.0)) + Y_PLANETE;
 					
 					systemeStellaires[k].planete3->type = randInt(1, 100);
 					if(systemeStellaires[k].planete3->type <= 5) {
@@ -1905,15 +1909,15 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					}
 					if(randInt(0, 1) == 1)
 					{
-						systemeStellaires[k].planete3->y = 126 - (systemeStellaires[k].planete3->y - 126);
+						systemeStellaires[k].planete3->y = Y_PLANETE - (systemeStellaires[k].planete3->y - Y_PLANETE);
 					}
 					systemeStellaires[k].planete3->population = 0;
 					
 				case 2:
 					systemeStellaires[k].planete2->habitable = 0;
 					systemeStellaires[k].planete2->rayonOrbite =  randInt(30, 36);
-					systemeStellaires[k].planete2->x = randInt(114 - systemeStellaires[k].planete2->rayonOrbite, 114 + systemeStellaires[k].planete2->rayonOrbite);
-					systemeStellaires[k].planete2->y = sqrt(pow((double)systemeStellaires[k].planete2->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete2->x - 114), 2.0)) + 126;	
+					systemeStellaires[k].planete2->x = randInt(X_PLANETE - systemeStellaires[k].planete2->rayonOrbite, X_PLANETE + systemeStellaires[k].planete2->rayonOrbite);
+					systemeStellaires[k].planete2->y = sqrt(pow((double)systemeStellaires[k].planete2->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete2->x - X_PLANETE), 2.0)) + Y_PLANETE;	
 					
 					systemeStellaires[k].planete2->type = randInt(1, 100);
 					if(systemeStellaires[k].planete2->type <= 2) {
@@ -1965,15 +1969,15 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					}
 					if(randInt(0, 1) == 1)
 					{
-						systemeStellaires[k].planete2->y = 126 - (systemeStellaires[k].planete2->y - 126);
+						systemeStellaires[k].planete2->y = Y_PLANETE - (systemeStellaires[k].planete2->y - Y_PLANETE);
 					}
 					systemeStellaires[k].planete2->population = 0;
 				
 				case 1:
 					systemeStellaires[k].planete1->habitable = 0;
 					systemeStellaires[k].planete1->rayonOrbite = randInt(20, 26);
-					systemeStellaires[k].planete1->x = randInt(114 - systemeStellaires[k].planete1->rayonOrbite, 114 + systemeStellaires[k].planete1->rayonOrbite);
-					systemeStellaires[k].planete1->y = sqrt(pow((double)systemeStellaires[k].planete1->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete1->x - 114), 2.0)) + 126;	
+					systemeStellaires[k].planete1->x = randInt(X_PLANETE - systemeStellaires[k].planete1->rayonOrbite, X_PLANETE + systemeStellaires[k].planete1->rayonOrbite);
+					systemeStellaires[k].planete1->y = sqrt(pow((double)systemeStellaires[k].planete1->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete1->x - X_PLANETE), 2.0)) + Y_PLANETE;	
 					
 					systemeStellaires[k].planete1->type = randInt(1, 100);
 					if(systemeStellaires[k].planete1->type <= 3) {
@@ -2051,9 +2055,9 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	while(fin == 1)
 	{
 		i = randInt(0, k);
-		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && (systemeStellaires[i].etoileType != 7))
+		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && (systemeStellaires[i].etoileType != ETOILE_TYPE_TROU_NOIR))
 		{
-			systemeStellaires[i].etoileType = 5;
+			systemeStellaires[i].etoileType = ETOILE_TYPE_K;
 			systemeStellaires[i].nombrePlanetesHabitables = 1;
 			systemeStellaires[i].nombrePlanetesHabitees = 1;
 			systemeStellaires[i].empire = 1;
@@ -2325,7 +2329,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	gfx_FillTriangle(100, 220, 80, 240, 100, 240);
 	gfx_FillTriangle(220, 220, 240, 240, 220, 240);
 	//nom selection
-	if ((camera->selection != -1) || (camera->mapType == 2))
+	if ((camera->systemeSelectione != -1) || (camera->mapType == VUE_TYPE_CARTE))
 	{
 		gfx_FillRectangle(110, 210, 100, 10);
 		gfx_FillTriangle(110, 210, 100, 220, 110, 220);
@@ -2349,7 +2353,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	gfx_Line_NoClip(100, 220, 81, 239);
 	gfx_Line_NoClip(220, 220, 239, 239);
 	//nom selection
-	if ((camera->selection != -1) || (camera->mapType == 2))
+	if ((camera->systemeSelectione != -1) || (camera->mapType == VUE_TYPE_CARTE))
 	{
 		gfx_HorizLine_NoClip(110, 210, 100);
 		gfx_Line_NoClip(110, 210, 100, 220);
@@ -2379,9 +2383,9 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	gfx_SetTextFGColor(8);
 	//barre du haut
 	gfx_TransparentSprite_NoClip(credit, 55 ,1);
-	PrintHUD(joueur->credits, 0, 40, 13);
+	PrintHUD(camera->xSysteme, 0, 40, 13);
 	gfx_TransparentSprite_NoClip(minerai, 100 ,1);
-	PrintHUD(joueur->minerais, 0, 85, 13);
+	PrintHUD(camera->ySysteme, 0, 85, 13);
 	gfx_TransparentSprite_NoClip(food, 145 ,1);
 	PrintHUD(joueur->nourriture, 0, 130, 13);
 	gfx_TransparentSprite_NoClip(fer, 190 ,1);
@@ -2454,26 +2458,26 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	gfx_SetColor(11);
 	
 	//pointeur
-	if (camera->mapType == 1) {
+	if (camera->mapType == VUE_TYPE_CARTE) {
+		gfx_Line_NoClip(camera->x / 2.5 + 5, camera->y / 2.5 - 30, camera->x / 2.5 + 15, camera->y / 2.5 - 30);
+		gfx_Line_NoClip(camera->x / 2.5 + 10, camera->y / 2.5 - 25, camera->x / 2.5 + 10, camera->y / 2.5 - 35);
+		gfx_FillCircle_NoClip(camera->x / 2.5 + 10, camera->y / 2.5 - 30, 3);
+	}
+	else {
 		gfx_Line_NoClip(150, 120, 170, 120);
 		gfx_Line_NoClip(160, 110, 160, 130);
 		gfx_FillCircle_NoClip(160, 120, 2);
 		gfx_Circle_NoClip(160, 120, 4);
 		gfx_Circle_NoClip(160, 120, 8);
 	}
-	else {
-		gfx_Line_NoClip(camera->x / 2.5 + 5, camera->y / 2.5 - 30, camera->x / 2.5 + 15, camera->y / 2.5 - 30);
-		gfx_Line_NoClip(camera->x / 2.5 + 10, camera->y / 2.5 - 25, camera->x / 2.5 + 10, camera->y / 2.5 - 35);
-		gfx_FillCircle_NoClip(camera->x / 2.5 + 10, camera->y / 2.5 - 30, 3);
-	}
 	//nom galaxie
-	if ((camera->selection != -1) || (camera->mapType == 2)) {
-		if (camera->mapType == 1) {
-			if (systemeStellaires[camera->selection].niveauConnaissance == NIVEAU_DE_CONNAISSANCE_INCONNU) {
+	if ((camera->systemeSelectione != -1) || (camera->mapType == VUE_TYPE_CARTE)) {
+		if (camera->mapType == VUE_TYPE_NORMAL) {
+			if (systemeStellaires[camera->systemeSelectione].niveauConnaissance == NIVEAU_DE_CONNAISSANCE_INCONNU) {
 				gfx_PrintStringXY("Inconnu", 132, 211);
 			}
 			else {
-				gfx_PrintStringXY(systemeStellaires[camera->selection].nom, 160 - strlen(systemeStellaires[camera->selection].nom) * 4, 211);
+				gfx_PrintStringXY(systemeStellaires[camera->systemeSelectione].nom, 160 - strlen(systemeStellaires[camera->systemeSelectione].nom) * 4, 211);
 			}
 		}
 		else {
@@ -2591,13 +2595,13 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						*key = 0;
 						break;
 				}
-				if (fenetre->selection > systemeStellaires[camera->selection].nombrePlanetes + 2)
+				if (fenetre->selection > systemeStellaires[camera->systemeSelectione].nombrePlanetes + 2)
 				{
-					fenetre->selection = systemeStellaires[camera->selection].nombrePlanetes + 2;
+					fenetre->selection = systemeStellaires[camera->systemeSelectione].nombrePlanetes + 2;
 				}
-				else if (fenetre->selection < 1 + (!systemeStellaires[camera->selection].niveauStation))
+				else if (fenetre->selection < 1 + (!systemeStellaires[camera->systemeSelectione].niveauStation))
 				{
-					fenetre->selection = 1 + (!systemeStellaires[camera->selection].niveauStation);
+					fenetre->selection = 1 + (!systemeStellaires[camera->systemeSelectione].niveauStation);
 				}
 				//dessiner fenetre
 				gfx_SetColor(6);
@@ -2616,44 +2620,42 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				gfx_PrintStringXY("Syst~me", 47, 202);
 				gfx_PrintStringXY("Flotte", 121, 202);
 				
-				
-				
 				//dessiner etoile
-				switch(systemeStellaires[camera->selection].etoileType)
+				switch(systemeStellaires[camera->systemeSelectione].etoileType)
 				{
-					case 1: //B
+					case ETOILE_TYPE_B: //B
 						gfx_SetColor(15);
 						gfx_FillCircle(114, 126, 3);
 						break;
-					case 2: //A
+					case ETOILE_TYPE_A: //A
 						gfx_SetColor(14);
 						gfx_FillCircle(114, 126, 4);
 						break;
-					case 3: //F
+					case ETOILE_TYPE_F: //F
 						gfx_SetColor(1);
 						gfx_FillCircle(114, 126, 4);
 						break;
-					case 4: //G
+					case ETOILE_TYPE_G: //G
 						gfx_SetColor(1);
 						gfx_FillCircle(114, 126, 4);
 						break;
-					case 5: //K
+					case ETOILE_TYPE_K: //K
 						gfx_SetColor(13);
 						gfx_FillCircle(114, 126, 2);
 						break;
-					case 6: //M
+					case ETOILE_TYPE_M: //M
 						gfx_SetColor(13);
 						gfx_FillCircle(114, 126, 4);
 						break;
-					case 7: //trou noir
+					case ETOILE_TYPE_TROU_NOIR: //trou noir
 						gfx_SetColor(13);
 						gfx_Circle(114, 126, 4);
 						break;
-					case 8: //pulsar
+					case ETOILE_TYPE_PULSAR: //pulsar
 						gfx_SetColor(14);
 						gfx_FillCircle(114, 126, 1);
 						break;
-					case 9: ///toile a neutrons
+					case ETOILE_TYPE_ETOILE_A_NEUTRONS: ///toile a neutrons
 						gfx_SetColor(14);
 						gfx_FillCircle(114, 126, 1);
 						gfx_Circle(114, 126, 8);
@@ -2663,7 +2665,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				
 				/*******station*******/
 				niveau = 57;
-				if(systemeStellaires[camera->selection].niveauStation > 0) {
+				if(systemeStellaires[camera->systemeSelectione].niveauStation > 0) {
 					gfx_SetColor(11);
 					gfx_FillCircle_NoClip(110, 115, 1);
 					if(fenetre->selection == 1) {
@@ -2693,36 +2695,36 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				niveau += 20;
 				
 				/*******planete1*******/
-				if(systemeStellaires[camera->selection].planete1 != 0) {
-					niveau = DessinerPlanete(systemeStellaires[camera->selection].planete1, niveau, 1, systemeStellaires[camera->selection].nom, fenetre);
+				if(systemeStellaires[camera->systemeSelectione].planete1 != 0) {
+					// niveau = DessinerPlanete(systemeStellaires[camera->systemeSelectione].planete1, niveau, 1, systemeStellaires[camera->systemeSelectione].nom, fenetre);
 				}
 				
 				niveau += 20;
 				
 				/********planete 2*********/
-				if(systemeStellaires[camera->selection].planete2 != 0) {
-					niveau = DessinerPlanete(systemeStellaires[camera->selection].planete2, niveau, 2, systemeStellaires[camera->selection].nom, fenetre);
+				if(systemeStellaires[camera->systemeSelectione].planete2 != 0) {
+					// niveau = DessinerPlanete(systemeStellaires[camera->systemeSelectione].planete2, niveau, 2, systemeStellaires[camera->systemeSelectione].nom, fenetre);
 				}
 				
 				niveau += 20;
 				
 				/*********planete 3*********/
-				if(systemeStellaires[camera->selection].planete3 != 0) {
-					niveau = DessinerPlanete(systemeStellaires[camera->selection].planete3, niveau, 3, systemeStellaires[camera->selection].nom, fenetre);
+				if(systemeStellaires[camera->systemeSelectione].planete3 != 0) {
+					// niveau = DessinerPlanete(systemeStellaires[camera->systemeSelectione].planete3, niveau, 3, systemeStellaires[camera->systemeSelectione].nom, fenetre);
 				}
 				
 				niveau += 20;
 				
 				/*********planete 4********/
-				if(systemeStellaires[camera->selection].planete4 != 0) {
-					niveau = DessinerPlanete(systemeStellaires[camera->selection].planete4, niveau, 4, systemeStellaires[camera->selection].nom, fenetre);
+				if(systemeStellaires[camera->systemeSelectione].planete4 != 0) {
+					// niveau = DessinerPlanete(systemeStellaires[camera->systemeSelectione].planete4, niveau, 4, systemeStellaires[camera->systemeSelectione].nom, fenetre);
 				}
 				
 				niveau += 20;
 				
 				/********planete 5*******/
-				if(systemeStellaires[camera->selection].planete5 != 0) {
-					niveau = DessinerPlanete(systemeStellaires[camera->selection].planete5, niveau, 5, systemeStellaires[camera->selection].nom, fenetre);
+				if(systemeStellaires[camera->systemeSelectione].planete5 != 0) {
+					// niveau = DessinerPlanete(systemeStellaires[camera->systemeSelectione].planete5, niveau, 5, systemeStellaires[camera->systemeSelectione].nom, fenetre);
 				}
 
 				if(*key == sk_Enter)
@@ -2778,7 +2780,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				compteur = 0;
 				compteurFlotte = 1;
 				while(flotte != NULL){
-					if(flotte->systeme == camera->selection) {
+					if(flotte->systeme == camera->systemeSelectione) {
 						flotteDuSysteme[compteur] = flotte;
 						compteur++;
 					}
@@ -2847,54 +2849,54 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				gfx_VertLine_NoClip(100, 42, 8);
 				gfx_Rectangle_NoClip(45, 56, 110, 110);
 				gfx_PrintStringXY("Retour", 48, 42);
-				gfx_SetTextXY(158 - strlen(systemeStellaires[camera->selection].nom)*4, 42);
+				gfx_SetTextXY(158 - strlen(systemeStellaires[camera->systemeSelectione].nom)*4, 42);
 				gfx_PrintString("Proxima ");
-				gfx_PrintString(systemeStellaires[camera->selection].nom);
+				gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 				gfx_SetTextXY(160, 62);
 				gfx_PrintString("Classe : ");
-				switch(systemeStellaires[camera->selection].etoileType)
+				switch(systemeStellaires[camera->systemeSelectione].etoileType)
 				{
-					case 1:
+					case ETOILE_TYPE_B:
 						gfx_PrintString("B");
 						gfx_SetColor(1);
 						gfx_FillCircle_NoClip(100, 111, 45);				
 						gfx_SetColor(15);
 						gfx_Circle_NoClip(100, 111, 45);
 						break;
-					case 2:
+					case ETOILE_TYPE_A:
 						gfx_PrintString("A");
 						gfx_SetColor(1);
 						gfx_FillCircle_NoClip(100, 111, 40);				
 						gfx_SetColor(14);
 						gfx_Circle_NoClip(100, 111, 40);
 						break;
-					case 3:
+					case ETOILE_TYPE_F:
 						gfx_PrintString("F");
 						gfx_SetColor(1);
 						gfx_FillCircle_NoClip(100, 111, 35);				
 						break;
-					case 4:
+					case ETOILE_TYPE_G:
 						gfx_PrintString("G");
 						gfx_SetColor(1);
 						gfx_FillCircle_NoClip(100, 111, 32);				
 						gfx_SetColor(13);
 						gfx_Circle_NoClip(100, 111, 32);
 						break;
-					case 5:
+					case ETOILE_TYPE_K:
 						gfx_PrintString("K");
 						gfx_SetColor(13);
 						gfx_FillCircle_NoClip(100, 111, 30);				
 						gfx_SetColor(9);
 						gfx_Circle_NoClip(100, 111, 30);
 						break;
-					case 6:
+					case ETOILE_TYPE_M:
 						gfx_PrintString("M");
 						gfx_SetColor(9);
 						gfx_FillCircle_NoClip(100, 111, 10);				
 						gfx_SetColor(13);
 						gfx_Circle_NoClip(100, 111, 10);
 						break;
-					case 7:
+					case ETOILE_TYPE_TROU_NOIR:
 						gfx_PrintString("trou noir");
 						gfx_SetColor(1);
 						gfx_Circle_NoClip(100, 111, 40);	
@@ -2919,7 +2921,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						gfx_HorizLine_NoClip(48, 110, 104);
 						gfx_HorizLine_NoClip(48, 112, 104);
 						break;
-					case 8:
+					case ETOILE_TYPE_PULSAR:
 						gfx_PrintString("pulsar");
 						gfx_SetColor(14);
 						gfx_FillCircle_NoClip(100, 111, 4);
@@ -2927,7 +2929,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 						gfx_SetColor(1);
 						gfx_Circle_NoClip(100, 111, 4);
 						break;
-					case 9:
+					case ETOILE_TYPE_ETOILE_A_NEUTRONS:
 						gfx_PrintString("/toile a neutrons");
 						gfx_SetColor(14);
 						gfx_FillCircle_NoClip(100, 111, 4);	
@@ -2972,94 +2974,94 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				switch(fenetre->selection)
 				{
 					case 3:
-						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete1->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete1->nom);
+						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete1->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete1->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" I");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete1->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete1->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 4:
-						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete2->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete2->nom);
+						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete2->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete2->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" II");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete2->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete2->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 5:
-						gfx_SetTextXY(178 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete3->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete3->nom);
+						gfx_SetTextXY(178 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete3->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete3->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" III");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete3->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete3->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 6:
-						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete4->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete4->nom);
+						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete4->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete4->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" IV");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete4->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete4->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 						
 					case 7:
-						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete5->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete5->nom);
+						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete5->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete5->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" V");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete5->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete5->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 				}
@@ -3101,94 +3103,94 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				switch(fenetre->selection)
 				{
 					case 3:
-						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete1->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete1->nom);
+						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete1->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete1->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" I");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete1->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete1->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 4:
-						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete2->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete2->nom);
+						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete2->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete2->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" II");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete2->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete2->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 5:
-						gfx_SetTextXY(178 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete3->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete3->nom);
+						gfx_SetTextXY(178 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete3->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete3->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" III");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete3->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete3->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 6:
-						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete4->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete4->nom);
+						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete4->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete4->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" IV");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete4->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete4->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 						
 					case 7:
-						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete5->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete5->nom);
+						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete5->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete5->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" V");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete5->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete5->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 				}
@@ -3226,94 +3228,94 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 				switch(fenetre->selection)
 				{
 					case 3:
-						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete1->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete1->nom);
+						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete1->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete1->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" I");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete1->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete1->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 4:
-						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete2->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete2->nom);
+						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete2->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete2->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" II");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete2->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete2->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 5:
-						gfx_SetTextXY(178 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete3->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete3->nom);
+						gfx_SetTextXY(178 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete3->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete3->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" III");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete3->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete3->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 					case 6:
-						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete4->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete4->nom);
+						gfx_SetTextXY(182 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete4->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete4->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" IV");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete4->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete4->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 						
 					case 7:
-						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->selection].nom), 42);
-						if(systemeStellaires[camera->selection].planete5->habitable == 1){
-							gfx_PrintString(systemeStellaires[camera->selection].planete5->nom);
+						gfx_SetTextXY(186 - strlen(systemeStellaires[camera->systemeSelectione].nom), 42);
+						if(systemeStellaires[camera->systemeSelectione].planete5->habitable == 1){
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].planete5->nom);
 							gfx_SetTextFGColor(19);
 							gfx_PrintStringXY("Habitable", 150, 62);
 						}
 						else{
-							gfx_PrintString(systemeStellaires[camera->selection].nom);
+							gfx_PrintString(systemeStellaires[camera->systemeSelectione].nom);
 							gfx_PrintString(" V");
 							gfx_SetTextFGColor(3);
 							gfx_PrintStringXY("Non-habitable", 150, 62);
 						}
 						gfx_SetTextFGColor(1);
 						gfx_PrintStringXY("Population", 150, 74);
-						sprintf(population, "%d", systemeStellaires[camera->selection].planete5->population);
+						sprintf(population, "%d", systemeStellaires[camera->systemeSelectione].planete5->population);
 						gfx_PrintStringXY(population, 150, 86);
 						break;
 				}
@@ -3738,10 +3740,17 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 /******************gerer le temps******************/
 void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires)
 {
+	//différentes actions des touches
 	switch(*key)
 	{
-		case sk_0:
-			date->vitesse = 0;
+		case sk_0://pause / dépause
+			if(date->vitesse == 0){
+				date->vitesse = date->vitesseSauvegardee;
+			}
+			else{
+				date->vitesseSauvegardee = date->vitesse;
+				date->vitesse = 0;
+			}
 			break;
 		case sk_Add:
 			date->vitesse += 1;
@@ -3802,26 +3811,23 @@ void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStel
 /********dessiner la map********/
 void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur)
 {
-	int i = 0, x = 0, y = 0, xLn, yLn, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, hyperLane4 = 0, systeme = 0;
-	int xFlotte = 0, yFlotte = 0;
-	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0, key2 = 0;
-	Flotte* flotte = NULL;
+	char key2 = 0;
 	gfx_SetColor(1);
-	if(camera->mapType == 1)
+	if(camera->mapType == VUE_TYPE_NORMAL)
 	{
 		key2 = 0;
 		if(camera->fenetre == MENU_AUCUN)
 		{
 			key2 = os_GetCSC();
 		}
-
+		//gere les événements des touches
 		KeyAction(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
 		KeyAction(empireListe, systemeStellaires, camera, &key2, flotteJoueur, date, fenetre, joueur);
 
 		if (camera->zoom < 1)
 		{
 			camera->zoom = 1;
-			camera->mapType = 2;
+			camera->mapType = VUE_TYPE_CARTE;
 		}
 		else if (camera->zoom > 2)
 		{
@@ -3873,307 +3879,84 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 			camera->y = (LARGEUR_GALAXIE + 1) * 50  * camera->zoom;
 			camera->vecteury = 0;
 		}
-		
-		camera->selection = -1;
+		DessinerVueMap(systemeStellaires, camera, empireListe);
+		DessinerFlottesMap(empireListe, joueur, systemeStellaires, camera);
 	}
-	else
-	{
-		if(camera->mapType != 2)
-		{
-			camera->mapType = 2;
-		}
-		switch(*key)
-		{
+	else if(camera->mapType == VUE_TYPE_CARTE){
+		switch(*key){
 			case sk_Del:
-				camera->mapType = 1;
+				camera->mapType = VUE_TYPE_NORMAL; //dezoomer
 				break;
 		}
+		DessinerVueMap(systemeStellaires, camera, empireListe);
 	}
+	else if(camera->mapType == VUE_TYPE_SYSTEME){
+		switch(*key){
+			case sk_Clear:
+				camera->mapType = VUE_TYPE_NORMAL; //dezoomer
+				camera->vecteurx = 0;
+				camera->vecteury = 0;
+				break;
+			case sk_Up:
+				camera->vecteury -= 5;
+				break;
+			case sk_Down:
+				camera->vecteury += 5;
+				break;
+			case sk_Left:
+				camera->vecteurx -= 5;
+				break;
+			case sk_Right:
+				camera->vecteurx += 5;
+				break;
+		}
 
-	while (i < (LARGEUR_GALAXIE * LARGEUR_GALAXIE) - 1)
-	{
-		hyperLane1 = 255;
-		hyperLane2 = 255;
-		hyperLane3 = 255;
-		
-		nombrePlanetesHabitablesSysteme = 0;
-		nombrePlanetesHabiteesSysteme = 0;
-		
-		xLn = 0;
-		yLn = 0;
-		if(camera->mapType == 1)
+		if(camera->vecteury != 0)
 		{
-			x = systemeStellaires[i].x * camera->zoom - camera->x + 160;
-			y = systemeStellaires[i].y * camera->zoom - camera->y + 120;
+			camera->ySysteme += camera->vecteury;
+			if(camera->vecteury > 0)
+			{
+				camera->vecteury--;
+			}
+			else if(camera->vecteury < 0)
+			{
+				camera->vecteury++;
+			}
 		}
-		else if(camera->mapType == 2)
+		if(camera->vecteurx != 0)
 		{
-			x = systemeStellaires[i].x / 2.5 + 10;
-			y = systemeStellaires[i].y / 2.5 - 30;
+			camera->xSysteme += camera->vecteurx;
+			if(camera->vecteurx > 0)
+			{
+				camera->vecteurx--;
+			}
+			else if(camera->vecteurx < 0)
+			{
+				camera->vecteurx++;
+			}
 		}
-		if ( (((0 <= x) && (x <= 320)) && ((0 <= y)&& (y <= 240))) && ((systemeStellaires[i].x != 0) && (systemeStellaires[i].y != 0)) )
-		{
-			if(systemeStellaires[i].niveauConnaissance != NIVEAU_DE_CONNAISSANCE_INCONNU) {
-				if(systemeStellaires[i].empire == 1)
-				{
-					if(camera->mapType == 1)
-					{
-						gfx_SetColor(9);
-						gfx_Circle(x, y, 20 * camera->zoom);
-						gfx_Circle(x, y, (19 * camera->zoom) + 1);
-					}
-					else {
-						gfx_SetColor(9);
-						gfx_Circle(x, y, 10);
-						gfx_Circle(x, y, 9);
-					}
-				}
-				//dessiner hyperLanes
-				hyperLane1 = systemeStellaires[i].hyperlane1;
-				if (hyperLane1 != 255)
-				{
-					xLn = systemeStellaires[hyperLane1].x;
-					yLn = systemeStellaires[hyperLane1].y;
-					DessinerHyperlane(systemeStellaires[hyperLane1].niveauConnaissance, systemeStellaires[i].niveauConnaissance, x, y, xLn, yLn, camera);
-				}
-				
-				hyperLane2 = systemeStellaires[i].hyperlane2;
-				if (hyperLane2 != 255)
-				{
-					xLn = systemeStellaires[hyperLane2].x;
-					yLn = systemeStellaires[hyperLane2].y;
-					DessinerHyperlane(systemeStellaires[hyperLane2].niveauConnaissance, systemeStellaires[i].niveauConnaissance, x, y, xLn, yLn, camera);
-				}
 
-				hyperLane3 = systemeStellaires[i].hyperlane3;
-				if (hyperLane3 != 255)
-				{
-					xLn = systemeStellaires[hyperLane3].x;
-					yLn = systemeStellaires[hyperLane3].y;
-					DessinerHyperlane(systemeStellaires[hyperLane3].niveauConnaissance, systemeStellaires[i].niveauConnaissance, x, y, xLn, yLn, camera);
-				}
-				
-				hyperLane4 = systemeStellaires[i].hyperlane4;
-				if (hyperLane4 != 255)
-				{
-					xLn = systemeStellaires[hyperLane4].x;
-					yLn = systemeStellaires[hyperLane4].y;
-					DessinerHyperlane(systemeStellaires[hyperLane4].niveauConnaissance, systemeStellaires[i].niveauConnaissance, x, y, xLn, yLn, camera);
-				}
-				
-				if(camera->mapType == 1)
-				{
-					gfx_SetTextFGColor(1);
-					gfx_SetColor(16);
-					//dessiner planetes habitables
-					switch(systemeStellaires[i].nombrePlanetes)
-					{
-						case 5:
-							if(systemeStellaires[i].planete5->habitable == 1) {
-								if(systemeStellaires[i].planete5->population == 0) {
-									nombrePlanetesHabitablesSysteme++;
-								}
-								else {
-									gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-									gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-									nombrePlanetesHabiteesSysteme++;
-								}
-							}
-						case 4:
-							if(systemeStellaires[i].planete4->habitable == 1) {
-								if(systemeStellaires[i].planete4->population == 0) {
-									nombrePlanetesHabitablesSysteme++;
-								}
-								else if(nombrePlanetesHabiteesSysteme == 0){
-									gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-									gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-									nombrePlanetesHabiteesSysteme++;
-								}
-							}
-						case 3:
-							if(systemeStellaires[i].planete3->habitable == 1) {
-								if(systemeStellaires[i].planete3->population == 0) {
-									nombrePlanetesHabitablesSysteme++;
-								}
-								else if(nombrePlanetesHabiteesSysteme == 0) {
-									gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-									gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-									nombrePlanetesHabiteesSysteme++;
-								}
-							}
-						case 2:
-							if(systemeStellaires[i].planete2->habitable == 1) {
-								if(systemeStellaires[i].planete2->population == 0) {
-									nombrePlanetesHabitablesSysteme++;
-								}
-								else if(nombrePlanetesHabiteesSysteme == 0) {
-									gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-									gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-									nombrePlanetesHabiteesSysteme++;
-								}
-							}
-						case 1:
-							if(systemeStellaires[i].planete1->habitable == 1) {
-								if(systemeStellaires[i].planete1->population == 0) {
-									nombrePlanetesHabitablesSysteme++;
-								}
-								else if(nombrePlanetesHabiteesSysteme == 0) {
-									gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-									gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-									nombrePlanetesHabiteesSysteme++;
-								}
-							}
-					}
-					if(nombrePlanetesHabitablesSysteme > 0) {
-						gfx_TransparentSprite(highHabitablePlanet, x - 10, y);
-					}
-					if(nombrePlanetesHabiteesSysteme == 0) {
-						if(systemeStellaires[i].niveauConnaissance >= NIVEAU_DE_CONNAISSANCE_FAIBLE) {
-							
-							if(systemeStellaires[i].niveauConnaissance == NIVEAU_DE_CONNAISSANCE_ELEVEE) {
-								gfx_SetTextFGColor(1);
-							}
-							else {
-								gfx_SetTextFGColor(11);
-							}
-							gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-						}
-					}
-				}
-			}
-			
-			if(((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y)))
-			{
-				gfx_SetColor(9);
-				gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
-				camera->selection = i;
-			}
-			
-			if(camera->mapType == 1)
-			{
-				switch(systemeStellaires[i].etoileType)
-				{
-					case 1: //B
-						gfx_SetColor(15);
-						gfx_FillCircle(x, y, 1 * camera->zoom);
-						break;
-					case 2: //A
-						gfx_SetColor(14);
-						gfx_FillCircle(x, y, 2 * camera->zoom);
-						break;
-					case 3: //F
-						gfx_SetColor(1);
-						gfx_FillCircle(x, y, 2 * camera->zoom);
-						break;
-					case 4: //G
-						gfx_SetColor(1);
-						gfx_FillCircle(x, y, 2 * camera->zoom);
-						break;
-					case 5: //K
-						gfx_SetColor(13);
-						gfx_FillCircle(x, y, 1 * camera->zoom);
-						break;
-					case 6: //M
-						gfx_SetColor(13);
-						gfx_FillCircle(x, y, 2 * camera->zoom);
-						break;
-					case 7: //trou noir
-						gfx_SetColor(13);
-						gfx_Circle(x, y, 2 * camera->zoom);
-						break;
-					case 8: //pulsar
-						gfx_SetColor(14);
-						gfx_FillCircle(x, y, 1 * camera->zoom);
-						break;
-					case 9: ///toile a neutrons
-						gfx_SetColor(14);
-						gfx_FillCircle(x, y, 1 * camera->zoom);
-						gfx_Circle(x, y, 3 * camera->zoom);
-						break;
-				}
-			}
-			else
-			{
-				switch(systemeStellaires[i].etoileType)
-				{
-					case 1: //B
-						gfx_SetColor(15);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-					case 2: //A
-						gfx_SetColor(14);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-					case 3: //F
-						gfx_SetColor(1);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-					case 4: //G
-						gfx_SetColor(1);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-					case 5: //K
-						gfx_SetColor(13);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-					case 6: //M
-						gfx_SetColor(13);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-					case 7: //trou noir
-						gfx_SetColor(13);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-					case 8: //pulsar
-						gfx_SetColor(14);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-					case 9: ///toile a neutrons
-						gfx_SetColor(14);
-						gfx_Circle_NoClip(x, y, 1);
-						break;
-				}
-			}
+		if (camera->xSysteme < 160)
+		{
+			camera->xSysteme = 160;
+			camera->vecteurx = 0;
 		}
-		i++;
-	}
-	
-	if(camera->mapType == 1)
-	{
-		//dessiner flottes
-		flotte = joueur->flotte->premier;
-		while(flotte != NULL) {
-			systeme = flotte->systeme;
-			xFlotte = systemeStellaires[systeme].x*camera->zoom - camera->x + 165;
-			yFlotte = systemeStellaires[systeme].y*camera->zoom - camera->y + 110;
-			if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240)))
-			{
-				while(gfx_GetPixel(xFlotte + 4, yFlotte + 1) == 19){
-					xFlotte += 11;
-				}
-				gfx_TransparentSprite(ourFleet, xFlotte, yFlotte);
-				switch(flotte->type){
-					case FLOTTE_MILITAIRE:
-						gfx_TransparentSprite(force_our, xFlotte + 6, yFlotte - 1);
-						if (flotte->puissance > 500)
-						{
-							gfx_TransparentSprite(force_our, xFlotte + 10, yFlotte - 1);
-						}
-						if (flotte->puissance > 1500)
-						{
-							gfx_TransparentSprite(force_our, xFlotte + 8, yFlotte - 4);
-						}
-						break;
-					case FLOTTE_DE_CONSTRUCTION:
-						gfx_TransparentSprite(construction_ship_our_icon, xFlotte + 6, yFlotte - 4);
-						break;
-					case FLOTTE_SCIENTIFIQUE:
-						gfx_TransparentSprite(science_ship_our_icon, xFlotte + 6, yFlotte - 4);
-						break;
-				}
-			}
-			flotte = flotte->suivant;
+		else if (400 < camera->xSysteme)
+		{
+			camera->xSysteme = 400;
+			camera->vecteurx = 0;
 		}
+		if (camera->ySysteme < 160)
+		{
+			camera->ySysteme = 160;
+			camera->vecteury = 0;
+		}
+		else if(320 < camera->ySysteme)
+		{
+			camera->ySysteme = 320;
+			camera->vecteury = 0;
+		}
+		DessinerVueSysteme(systemeStellaires, camera, empireListe);
 	}
 }
 
@@ -4358,6 +4141,9 @@ void PrintText(const char *str, int x, int y, int taille, int color)
     }
 }
 
+/**
+ *Imprime un entier de la bonne longueur suivant sa taille
+ */
 void PrintInt(int nombre){
 	if(nombre < 10){
 		gfx_PrintInt(nombre, 1);
@@ -4379,7 +4165,9 @@ void PrintInt(int nombre){
 	}
 }
 
-
+/**
+ *Crée une list de flottes
+ */
 FlotteListe* FlotteListeCreer() {
 	FlotteListe* flotteliste;
 	flotteliste = malloc(sizeof(FlotteListe));
@@ -4387,6 +4175,9 @@ FlotteListe* FlotteListeCreer() {
 	return flotteliste;
 }
 
+/**
+ *Supprime une liste des flottes
+ */
 void FlotteListeSupprimer(FlotteListe* flotteliste) {
 	Flotte *pointeur = 0, *pointeursuivant = 0;
 	int compteur = 0;
@@ -4399,6 +4190,9 @@ void FlotteListeSupprimer(FlotteListe* flotteliste) {
 	free(flotteliste);
 }
 
+/**
+ *Renvoi un pointeur vers l'empire numero x
+ */
 Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
 	Flotte *pointeur = 0;
 	int compteur = 1;
@@ -4412,6 +4206,9 @@ Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
 	return pointeur;
 }
 
+/**
+ *Renvoi le numéro de la flotte suivant son pointeur
+ */
 int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte) {
 	Flotte *pointeur = 0;
 	int compteur = 1;
@@ -4424,6 +4221,9 @@ int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte) {
 	return compteur;
 }
 
+/**
+ *Rajoute une flotte à la liste des flotte envoyée
+ */
 Flotte* FlotteAjouter(FlotteListe* flotteliste) {
 	Flotte *pointeur = 0, fin = 0;
 	pointeur = flotteliste->premier;
@@ -4442,6 +4242,9 @@ Flotte* FlotteAjouter(FlotteListe* flotteliste) {
 	return pointeur;
 }
 
+/**
+ *Supprime la flotte numero x à la liste de flottes envoyée
+ */
 void FlotteSupprimer(FlotteListe* flotteliste, int numero) {
 	Flotte *pointeur = 0, *pointeurPrecedent = 0;
 	int compteur = 0;
@@ -4463,7 +4266,9 @@ void FlotteSupprimer(FlotteListe* flotteliste, int numero) {
 }
 
 
-
+/**
+ *Crée une liste d'empires
+ */
 EmpireListe* EmpireListeCreer() {
 	EmpireListe* empireListe;
 	empireListe = malloc(sizeof(EmpireListe));
@@ -4471,18 +4276,25 @@ EmpireListe* EmpireListeCreer() {
 	return empireListe;
 }
 
+/**
+ *Supprime une liste d'empire
+ */
 void EmpireListeSupprimer(EmpireListe* empireListe) {
 	Empire *pointeur = 0, *pointeursuivant = 0;
 	int compteur = 0;
 	pointeur = empireListe->premier;
 	while(pointeur->suivant != NULL) {
 		pointeursuivant = pointeur->suivant;
+		FlotteListeSupprimer(pointeur->flotte);
 		free(pointeur);
 		pointeur = pointeursuivant;
 	}
 	free(empireListe);
 }
 
+/**
+ *Renvoi un pointeur vers l'empire numero x
+ */
 Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
 	Empire *pointeur = 0;
 	int compteur = 1;
@@ -4496,6 +4308,9 @@ Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
 	return pointeur;
 }
 
+/**
+ *Rajoute un empire à la liste des empire
+ */
 Empire* EmpireAjouter(EmpireListe* empireListe) {
 	Empire *pointeur = 0, fin = 0;
 	int compteur = 0;
@@ -4515,6 +4330,9 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
 	return pointeur;
 }
 
+/**
+ *Supprime l'empire numero x à la liste des empires
+ */
 void EmpireSupprimer(EmpireListe* empireListe, int numero) {
 	Empire *pointeur = 0, *pointeurPrecedent = 0;
 	int compteur = 0;
@@ -4532,9 +4350,13 @@ void EmpireSupprimer(EmpireListe* empireListe, int numero) {
 	else {
 		pointeurPrecedent->suivant = pointeur->suivant;
 	}
+	FlotteListeSupprimer(pointeur->flotte);
 	free(pointeur);
 }
 
+/**
+ *Gère les actions des touches pour la boucle StellarisMap
+ */
 void KeyAction(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
 	switch(*key){
 		case sk_Up:
@@ -4578,16 +4400,14 @@ void KeyAction(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Ca
 			}
 			break;
 		case sk_Enter:
-			if (((camera->fenetre == MENU_AUCUN) && (camera->selection != -1)) && (camera->bougerFlotte == FALSE))
+			if (((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && (camera->bougerFlotte == FALSE))
 			{
-				camera->fenetre = MENU_SYSTEME;
-				camera->bloque = TRUE;
-				fenetre->selection = 1;
-				fenetre->ouverte = 0;
-				*key = 0;
+				camera->bloque = FALSE;
+				camera->mapType = VUE_TYPE_SYSTEME;
+				camera->systeme = camera->systemeSelectione;
 			}
-			else if(((camera->fenetre == MENU_AUCUN) && (camera->selection != -1)) && (camera->bougerFlotte == TRUE)){
-				FlotteBouger(camera->flotte, camera->empire, camera->selection, camera, empireListe, systemeStellaires);
+			else if(((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && (camera->bougerFlotte == TRUE)){
+				FlotteBouger(camera->flotte, camera->empire, camera->systemeSelectione, camera, empireListe, systemeStellaires);
 			}
 			break;
 		case sk_Clear:
@@ -4729,6 +4549,9 @@ void KeyAction(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Ca
 	}
 }
 
+/**
+ *Dessine une hyperlane
+ */
 void DessinerHyperlane(int8_t niveauConnaissance1, int8_t niveauConnaissance2, int16_t x, int16_t y, int16_t xLn, int16_t yLn, Camera* camera){
 	if((niveauConnaissance1 == NIVEAU_DE_CONNAISSANCE_INCONNU) || (niveauConnaissance2 == NIVEAU_DE_CONNAISSANCE_INCONNU)) {
 		gfx_SetColor(11);
@@ -4737,7 +4560,7 @@ void DessinerHyperlane(int8_t niveauConnaissance1, int8_t niveauConnaissance2, i
 		gfx_SetColor(12);
 	}
 	
-	if(camera->mapType == 1)
+	if(camera->mapType == VUE_TYPE_NORMAL)
 	{
 		xLn = xLn*camera->zoom - camera->x + 160;
 		yLn = yLn*camera->zoom - camera->y + 120;
@@ -4753,7 +4576,25 @@ void DessinerHyperlane(int8_t niveauConnaissance1, int8_t niveauConnaissance2, i
 	}
 }
 
-int DessinerPlanete(Planete* planete, int niveau, int numero, char* nom, Fenetre* fenetre){
+/**
+ *Dessine l'étoile en vue systeme
+ */
+void DessinerEtoile(SystemeStellaire* systeme, Camera* camera){
+	int xEtoile = 480 - camera->xSysteme, yEtoile = 360 - camera->ySysteme;
+	if(systeme->etoileType < 6){
+		CouleurEtoile(systeme->etoileType);
+		gfx_FillCircle(xEtoile, yEtoile, 3);
+	}
+}
+
+/**
+ *Dessine une planète pour le menu systeme de la fnction StellarisHUD
+ */
+void DessinerPlanete(Planete* planete, Camera* camera){
+	gfx_Circle(480 - camera->xSysteme, 360 - camera->ySysteme, planete->rayonOrbite);
+	gfx_FillCircle(planete->x - camera->xSysteme, planete->y - camera->ySysteme, 5);
+}
+/*int DessinerPlanete(Planete* planete, int niveau, int numero, char* nom, Fenetre* fenetre){
 	int xTexte = 0;
 	switch(numero){
 		case 1:
@@ -4826,8 +4667,11 @@ int DessinerPlanete(Planete* planete, int niveau, int numero, char* nom, Fenetre
 		gfx_PrintStringXY(planete->nom, planete->x - (strlen(planete->nom) * 4), planete->y + 9);
 	}
 	return niveau;
-}
+}*/
 
+/**
+ *Set la bonne couleur suivant le type de la planète
+ */
 void CouleurPlanete(char type){
 	switch(type){
 		case 1:
@@ -4881,6 +4725,37 @@ void CouleurPlanete(char type){
 	}
 }
 
+/**
+ *set la couleur pour une étoile
+ */
+void CouleurEtoile(int type){	
+	//dessiner etoile
+	switch(type)
+	{
+		case ETOILE_TYPE_B: //B
+			gfx_SetColor(15);
+			break;
+		case ETOILE_TYPE_A: //A
+			gfx_SetColor(14);
+			break;
+		case ETOILE_TYPE_F: //F
+			gfx_SetColor(1);
+			break;
+		case ETOILE_TYPE_G: //G
+			gfx_SetColor(1);
+			break;
+		case ETOILE_TYPE_K: //K
+			gfx_SetColor(13);
+			break;
+		case ETOILE_TYPE_M: //M
+			gfx_SetColor(13);
+			break;
+	}
+}
+
+/**
+ *Donne l'ordre de faire bouger la flotte numero x
+ */
 void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires){
 	Empire* empire;
 	Flotte* flotte;
@@ -4903,6 +4778,9 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 	}
 }
 
+/**
+ *Fait effectuer les action des flottes
+ */
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires){
 	Empire* empire = NULL;
 	Flotte* flotte = NULL;
@@ -4925,8 +4803,325 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 	}
 }
 
+void DessinerPlanetesHabitables(SystemeStellaire* systemeStellaires, int i, int x, int y){
+	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0;
+	gfx_SetTextFGColor(1);
+	gfx_SetColor(16);
+	//dessiner planetes habitables
+	switch(systemeStellaires[i].nombrePlanetes)
+	{
+		case 5:
+			if(systemeStellaires[i].planete5->habitable == 1) {
+				if(systemeStellaires[i].planete5->population == 0) {
+					nombrePlanetesHabitablesSysteme++;
+				}
+				else {
+					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
+					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
+					nombrePlanetesHabiteesSysteme++;
+				}
+			}
+		case 4:
+			if(systemeStellaires[i].planete4->habitable == 1) {
+				if(systemeStellaires[i].planete4->population == 0) {
+					nombrePlanetesHabitablesSysteme++;
+				}
+				else if(nombrePlanetesHabiteesSysteme == 0){
+					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
+					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
+					nombrePlanetesHabiteesSysteme++;
+				}
+			}
+		case 3:
+			if(systemeStellaires[i].planete3->habitable == 1) {
+				if(systemeStellaires[i].planete3->population == 0) {
+					nombrePlanetesHabitablesSysteme++;
+				}
+				else if(nombrePlanetesHabiteesSysteme == 0) {
+					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
+					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
+					nombrePlanetesHabiteesSysteme++;
+				}
+			}
+		case 2:
+			if(systemeStellaires[i].planete2->habitable == 1) {
+				if(systemeStellaires[i].planete2->population == 0) {
+					nombrePlanetesHabitablesSysteme++;
+				}
+				else if(nombrePlanetesHabiteesSysteme == 0) {
+					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
+					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
+					nombrePlanetesHabiteesSysteme++;
+				}
+			}
+		case 1:
+			if(systemeStellaires[i].planete1->habitable == 1) {
+				if(systemeStellaires[i].planete1->population == 0) {
+					nombrePlanetesHabitablesSysteme++;
+				}
+				else if(nombrePlanetesHabiteesSysteme == 0) {
+					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
+					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
+					nombrePlanetesHabiteesSysteme++;
+				}
+			}
+	}
+	if(nombrePlanetesHabitablesSysteme > 0) {
+		gfx_TransparentSprite(highHabitablePlanet, x - 10, y);
+	}
+	if(nombrePlanetesHabiteesSysteme == 0) {
+		if(systemeStellaires[i].niveauConnaissance >= NIVEAU_DE_CONNAISSANCE_FAIBLE) {
+			
+			if(systemeStellaires[i].niveauConnaissance == NIVEAU_DE_CONNAISSANCE_ELEVEE) {
+				gfx_SetTextFGColor(1);
+			}
+			else {
+				gfx_SetTextFGColor(11);
+			}
+			gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
+		}
+	}
+}
 
+/**
+ *dessine les flottes sur la map
+ */
+void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, SystemeStellaire* systemeStellaires, Camera* camera){
+	Flotte* flotte;
+	int systeme, xFlotte, yFlotte;
+	//dessiner flottes
+	flotte = joueur->flotte->premier;
+	while(flotte != NULL) {
+		systeme = flotte->systeme;
+		xFlotte = systemeStellaires[systeme].x*camera->zoom - camera->x + 165;
+		yFlotte = systemeStellaires[systeme].y*camera->zoom - camera->y + 110;
+		if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240)))
+		{
+			while(gfx_GetPixel(xFlotte + 4, yFlotte + 1) == 19){
+				xFlotte += 11;
+			}
+			gfx_TransparentSprite(ourFleet, xFlotte, yFlotte);
+			switch(flotte->type){
+				case FLOTTE_MILITAIRE:
+					gfx_TransparentSprite(force_our, xFlotte + 6, yFlotte - 1);
+					if (flotte->puissance > 500)
+					{
+						gfx_TransparentSprite(force_our, xFlotte + 10, yFlotte - 1);
+					}
+					if (flotte->puissance > 1500)
+					{
+						gfx_TransparentSprite(force_our, xFlotte + 8, yFlotte - 4);
+					}
+					break;
+				case FLOTTE_DE_CONSTRUCTION:
+					gfx_TransparentSprite(construction_ship_our_icon, xFlotte + 6, yFlotte - 4);
+					break;
+				case FLOTTE_SCIENTIFIQUE:
+					gfx_TransparentSprite(science_ship_our_icon, xFlotte + 6, yFlotte - 4);
+					break;
+			}
+		}
+		flotte = flotte->suivant;
+	}
+}
 
+/**
+ *dessine le systeme en vision systeme
+ */
+void DessinerVueSysteme(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe){
+	SystemeStellaire* systeme;
+	systeme = &systemeStellaires[camera->systeme];
+	DessinerEtoile(systeme, camera);
+	switch(systeme->nombrePlanetes){
+		case 5:
+			DessinerPlanete(systeme->planete5, camera);
+		case 4:
+			DessinerPlanete(systeme->planete4, camera);
+		case 3:
+			DessinerPlanete(systeme->planete3, camera);
+		case 2:
+			DessinerPlanete(systeme->planete2, camera);
+		case 1:
+			DessinerPlanete(systeme->planete1, camera);
+	}
+	gfx_SetTextXY(50, 60);
+	PrintInt(camera->systeme);	
+}
+
+/**
+ *dessiner la map en vision normale et galactique
+ */
+void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe){
+	int i = 0, x = 0, y = 0, xLn, yLn, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, hyperLane4 = 0, systeme = 0;
+	//dessiner carte
+
+	camera->systemeSelectione = -1;
+	while (i < (LARGEUR_GALAXIE * LARGEUR_GALAXIE) - 1)
+	{
+		hyperLane1 = 255;
+		hyperLane2 = 255;
+		hyperLane3 = 255;
+		
+		xLn = 0;
+		yLn = 0;
+		if(camera->mapType == VUE_TYPE_NORMAL)
+		{
+			x = systemeStellaires[i].x * camera->zoom - camera->x + 160;
+			y = systemeStellaires[i].y * camera->zoom - camera->y + 120;
+		}
+		else if(camera->mapType == VUE_TYPE_CARTE)
+		{
+			x = systemeStellaires[i].x / 2.5 + 10;
+			y = systemeStellaires[i].y / 2.5 - 30;
+		}
+		if ( (((0 <= x) && (x <= 320)) && ((0 <= y)&& (y <= 240))) && ((systemeStellaires[i].x != 0) && (systemeStellaires[i].y != 0)) )
+		{
+			if(systemeStellaires[i].niveauConnaissance != NIVEAU_DE_CONNAISSANCE_INCONNU) {
+				if(systemeStellaires[i].empire == 1)
+				{
+					if(camera->mapType == VUE_TYPE_NORMAL)
+					{
+						gfx_SetColor(9);
+						gfx_Circle(x, y, 20 * camera->zoom);
+						gfx_Circle(x, y, (19 * camera->zoom) + 1);
+						DessinerPlanetesHabitables(systemeStellaires, i, x, y);
+					}
+					else {
+						gfx_SetColor(9);
+						gfx_Circle(x, y, 10);
+						gfx_Circle(x, y, 9);
+					}
+				}
+				//dessiner hyperLanes
+				hyperLane1 = systemeStellaires[i].hyperlane1;
+				if (hyperLane1 != 255)
+				{
+					xLn = systemeStellaires[hyperLane1].x;
+					yLn = systemeStellaires[hyperLane1].y;
+					DessinerHyperlane(systemeStellaires[hyperLane1].niveauConnaissance, systemeStellaires[i].niveauConnaissance, x, y, xLn, yLn, camera);
+				}
+				
+				hyperLane2 = systemeStellaires[i].hyperlane2;
+				if (hyperLane2 != 255)
+				{
+					xLn = systemeStellaires[hyperLane2].x;
+					yLn = systemeStellaires[hyperLane2].y;
+					DessinerHyperlane(systemeStellaires[hyperLane2].niveauConnaissance, systemeStellaires[i].niveauConnaissance, x, y, xLn, yLn, camera);
+				}
+
+				hyperLane3 = systemeStellaires[i].hyperlane3;
+				if (hyperLane3 != 255)
+				{
+					xLn = systemeStellaires[hyperLane3].x;
+					yLn = systemeStellaires[hyperLane3].y;
+					DessinerHyperlane(systemeStellaires[hyperLane3].niveauConnaissance, systemeStellaires[i].niveauConnaissance, x, y, xLn, yLn, camera);
+				}
+				
+				hyperLane4 = systemeStellaires[i].hyperlane4;
+				if (hyperLane4 != 255)
+				{
+					xLn = systemeStellaires[hyperLane4].x;
+					yLn = systemeStellaires[hyperLane4].y;
+					DessinerHyperlane(systemeStellaires[hyperLane4].niveauConnaissance, systemeStellaires[i].niveauConnaissance, x, y, xLn, yLn, camera);
+				}
+			}
+			
+			if(camera->mapType == VUE_TYPE_NORMAL)
+			{
+				switch(systemeStellaires[i].etoileType)
+				{
+					case ETOILE_TYPE_B: //B
+						gfx_SetColor(15);
+						gfx_FillCircle(x, y, 1 * camera->zoom);
+						break;
+					case ETOILE_TYPE_A: //A
+						gfx_SetColor(14);
+						gfx_FillCircle(x, y, 2 * camera->zoom);
+						break;
+					case ETOILE_TYPE_F: //F
+						gfx_SetColor(1);
+						gfx_FillCircle(x, y, 2 * camera->zoom);
+						break;
+					case ETOILE_TYPE_G: //G
+						gfx_SetColor(1);
+						gfx_FillCircle(x, y, 2 * camera->zoom);
+						break;
+					case ETOILE_TYPE_K: //K
+						gfx_SetColor(13);
+						gfx_FillCircle(x, y, 1 * camera->zoom);
+						break;
+					case ETOILE_TYPE_M: //M
+						gfx_SetColor(13);
+						gfx_FillCircle(x, y, 2 * camera->zoom);
+						break;
+					case ETOILE_TYPE_TROU_NOIR: //trou noir
+						gfx_SetColor(13);
+						gfx_Circle(x, y, 2 * camera->zoom);
+						break;
+					case ETOILE_TYPE_PULSAR: //pulsar
+						gfx_SetColor(14);
+						gfx_FillCircle(x, y, 1 * camera->zoom);
+						break;
+					case ETOILE_TYPE_ETOILE_A_NEUTRONS: ///toile a neutrons
+						gfx_SetColor(14);
+						gfx_FillCircle(x, y, 1 * camera->zoom);
+						gfx_Circle(x, y, 3 * camera->zoom);
+						break;
+				}
+			}
+			else
+			{
+				switch(systemeStellaires[i].etoileType)
+				{
+					case ETOILE_TYPE_B: //B
+						gfx_SetColor(15);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+					case ETOILE_TYPE_A: //A
+						gfx_SetColor(14);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+					case ETOILE_TYPE_F: //F
+						gfx_SetColor(1);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+					case ETOILE_TYPE_G: //G
+						gfx_SetColor(1);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+					case ETOILE_TYPE_K: //K
+						gfx_SetColor(13);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+					case ETOILE_TYPE_M: //M
+						gfx_SetColor(13);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+					case ETOILE_TYPE_TROU_NOIR: //trou noir
+						gfx_SetColor(13);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+					case ETOILE_TYPE_PULSAR: //pulsar
+						gfx_SetColor(14);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+					case ETOILE_TYPE_ETOILE_A_NEUTRONS: ///toile a neutrons
+						gfx_SetColor(14);
+						gfx_Circle_NoClip(x, y, 1);
+						break;
+				}
+			}
+		}
+		//Le if suivant teste si la systeme est celui selectionné
+		if(((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y)))
+		{
+			gfx_SetColor(9);
+			gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
+			camera->systemeSelectione = i;
+		}
+		i++;
+	}
+}
 
 
 
