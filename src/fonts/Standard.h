@@ -1,4 +1,5 @@
-	
+#ifndef _FONT_LOGO_INCLUDE
+#define _FONT_LOGO_INCLUDE	
 // Font: Standard.pf
 
 unsigned char font_logo[2048] =
@@ -261,3 +262,4 @@ unsigned char font_logo[2048] =
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00	// Char 255 (.)
 };
 
+#endif

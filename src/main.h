@@ -1,3 +1,5 @@
+#ifndef _MAIN_INCLUDE
+#define _MAIN_INCLUDE
 /**************macros**************/
 #define LARGEUR_GALAXIE 11
 #define VERSION_LOGICIEL "pre-alpha"
@@ -8,8 +10,8 @@
 
 #define TEXT_BG_COLOR 2
 
-#define X_PLANETE 480
-#define X_PLANETE 360
+#define X_CENTRE_SYSTEME 480
+#define Y_CENTRE_SYSTEME 360
 
 #define FLOTTE_MILITAIRE 1
 #define FLOTTE_SCIENTIFIQUE 2
@@ -26,6 +28,13 @@
 #define MENU_RECHERCHE 4
 #define MENU_CONTACTS 5
 
+#define MENU_SYSTEME_FLOTTES 1
+#define MENU_SYSTEME_ETOILE 2
+#define MENU_SYSTEME_PLANETE_RESUME 3
+#define MENU_SYSTEME_PLANETE_POPULATION 4
+#define MENU_SYSTEME_PLANETE_ARMEE 5
+#define MENU_SYSTEME_FLOTTE_DETAILS 6
+
 #define FLOTTE_AUCUNE_ACTION 0
 #define FLOTTE_BOUGER 1
 #define FLOTTE_ATTAQUER 2
@@ -38,15 +47,11 @@
 #define FLOTTE_COSNTRUIRE_MINE 5
 #define FLOTTE_CONSTRUIRE_BASE_SCIENTIFIQUE 6
 
-#define NIVEAU_DE_CONNAISSANCE_INCONNU 0
-#define NIVEAU_DE_CONNAISSANCE_FAIBLE 1
-#define NIVEAU_DE_CONNAISSANCE_MOYEN 2
-#define NIVEAU_DE_CONNAISSANCE_ELEVEE 3
-#define NIVEAU_DE_CONNAISSANCE_TOTAL 4
+typedef enum {INCONNU, FAIBLE, MOYEN, ELEVEE, TOTAL} NiveauDeConnaissance;
 
-#define VUE_TYPE_CARTE 2
-#define VUE_TYPE_NORMAL 1
-#define VUE_TYPE_SYSTEME 0
+typedef enum {CARTE, NORMAL, SYSTEME} VueType;
+
+typedef enum {AUCUNE, AVANT_POSTE, PORT_STELLAIRE, REDOUTE_STELLAIRE, FORTERESSE_STELLAIRE, CITADELLE} NiveauStation;
 
 #define ETOILE_TYPE_B 1
 #define ETOILE_TYPE_A 2
@@ -109,11 +114,12 @@ typedef struct {
 	int vecteurx;
 	int vecteury;
 	char zoom;
-	char mapType; // 1 = normal, 0 = carte
+	VueType mapType; // 1 = normal, 0 = carte
 	char fenetre;
 	char bloque;
 	int systemeSelectione;
 	int systeme;
+	int selection;
 	int ouverte;
 	char bougerFlotte;
 	int flotte;
@@ -140,12 +146,12 @@ typedef struct {
 	char nombrePlanetesHabitees;
 	char nombrePlanetesHabitables;
 	char empire;
-	char niveauStation;
+	NiveauStation niveauStation;
 	int16_t hyperlane1;
 	int16_t hyperlane2;
 	int16_t hyperlane3;
 	int16_t hyperlane4;
-	char niveauConnaissance; //0 = inconnu, 1 = faible, 2 = moyen, 3 = haut, 4 = total (intel level)
+	NiveauDeConnaissance niveauDeConnaissance; //0 = inconnu, 1 = faible, 2 = moyen, 3 = haut, 4 = total (intel level)
 	Planete* planete1;
 	Planete* planete2;
 	Planete* planete3;
@@ -192,32 +198,9 @@ typedef struct {
 } Marche;
 /**************def**************/
 int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
+	void Options();
 
-void Options();
-
-int NouvellePartieAvertissement(Empire *joueur, Parametres *parametres);
-
-int QuitterNouvellePartieAvertissement();
-int NouvellePartieEspece(Empire *joueur, Parametres *parametres);
-int NouvellePartieGouvernement(Empire *joueur, Parametres *parametres);
-int NouvellePartiePrincipes(Empire *joueur, Parametres *parametres);
-int NouvellePartieNom(Empire *joueur, Parametres *parametres);
-int NouvellePartieDrapeau(Empire *joueur, Parametres *parametres);
-int NouvellePartieParametres(Empire *joueur, Parametres *parametres);
-
-void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
-int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires, FlotteListe *flotteJoueur, Camera *camera);
-int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
-
-int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
-int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, FlotteListe *flotteJoueur, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche);
-void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires);
-void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur);
-
-int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteListe, Marche *marche);
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
-void PrintHUD(const unsigned int nombre, const int change, int x, int y);
-void PrintText(const char *str, int x, int y, int taille, int color);
 void PrintInt(int nombre);
 
 FlotteListe* FlotteListeCreer();
@@ -233,16 +216,7 @@ Empire* EmpireNumero(EmpireListe*, int numero);
 Empire* EmpireAjouter(EmpireListe*);
 void EmpireSupprimer(EmpireListe*, int numero);
 
-void KeyAction(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur);
-void CouleurEtoile(int type);
-void CouleurPlanete(char);
-void DessinerHyperlane(int8_t niveauConnaissance1, int8_t niveauConnaissance2, int16_t x, int16_t y, int16_t xLn, int16_t yLn, Camera* camera);
-void DessinerEtoile(SystemeStellaire*, Camera*);
-void DessinerPlanete(Planete*, Camera*);
 void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);
 
-void DessinerPlanetesHabitables(SystemeStellaire* systemeStellaire, int i, int x, int y);
-void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, SystemeStellaire* systemeStellaires, Camera* camera);
-void DessinerVueSysteme(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe);
-void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe);
+#endif

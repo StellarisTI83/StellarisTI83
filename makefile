@@ -8,7 +8,7 @@
 NAME        ?= STELLARI
 COMPRESSED  ?= YES
 ICON        ?= icon.png
-DESCRIPTION ?= "Stellaris"
+DESCRIPTION ?= "Stellaris for TI83PCE and "
 
 # ----------------------------
 # Other Options (Advanced)
