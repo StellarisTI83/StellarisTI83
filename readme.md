@@ -22,4 +22,4 @@ We recommend to use an emulator like [CeMu](https://github.com/CE-Programming/CE
 
 Use `make gfx` command to make the graphx files and `make` to compil the program.
 
-**Warning!!** The gfx cannot be made with the 32 bit version
+**Warning!!** The gfx and the font cannot be made with the 32 bit version

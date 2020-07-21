@@ -22,6 +22,7 @@
 #include "map.h"
 #include "nouvelle_partie.h"
 #include "sauvegarde.h"
+#include "flottes.h"
 
 #include "locale/locale.h"
 
@@ -162,7 +163,7 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 		}
 
 		//fait en sorte que la camera sorte pas des limites
-		while(pow((double)(camera->xSysteme - 320), 2.0) + pow((double)(camera->ySysteme - 240), 2.0) > pow((double)100, 2.0)){
+		while(pow((double)(camera->xSysteme - 320), 2.0) + pow((double)(camera->ySysteme - 240), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)){
 			camera->vecteurx = 0;
 			camera->vecteury = 0;
 			if(camera->xSysteme - 320 > 0){
@@ -843,17 +844,16 @@ void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera* camera
 	gfx_Circle(X_CENTRE_SYSTEME - camera->xSysteme, Y_CENTRE_SYSTEME - camera->ySysteme, planete->rayonOrbite);
 	CouleurPlanete(planete->type);
 	gfx_FillCircle(x, y, planete->taille);
+	gfx_SetTextFGColor(1);
 	if(((50 < x) && (x < 310)) && ((10 < y) && (y < 220))){
 		if(planete->population > 0){
 			gfx_SetColor(6);
 			gfx_FillRectangle(x - strlen(planete->nom) * 4 - 2, y + 8, strlen(planete->nom) * 8 + 4, 10);
 			gfx_SetColor(7);
 			gfx_Rectangle(x - strlen(planete->nom) * 4 - 2, y + 8, strlen(planete->nom) * 8 + 4, 10);
-			gfx_SetTextFGColor(1);
 			gfx_PrintStringXY(planete->nom, x - (strlen(planete->nom) * 4), y + 9);
 		}
 		else{
-			gfx_SetTextFGColor(11);
 			switch(numero){
 				case 1:
 					decalage = 8;
@@ -876,6 +876,9 @@ void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera* camera
 					strcpy(nomNumero, " V");
 					break;
 			}
+			gfx_SetColor(0);
+			gfx_FillRectangle(x - strlen(systeme->nom) * 4 - 2 - decalage, y + 8, strlen(systeme->nom) * 8 + 4 + (decalage * 2), 10);
+			
 			gfx_SetTextXY(x - (strlen(systeme->nom) * 4) - decalage, y + 9);
 			gfx_PrintString(systeme->nom);
 			gfx_PrintString(nomNumero);
@@ -958,48 +961,56 @@ void CouleurPlanete(char type){
  */
 void DessinerBase(SystemeStellaire* systeme, Camera* camera, Fenetre* fenetre, char* key){
 	int x, y;
-	if(systeme->niveauStation != AUCUNE){
+	if(systeme->station->niveauStation != AUCUNE){
 		gfx_SetColor(1);
 		x = 465 - camera->xSysteme;
 		y = 345 - camera->ySysteme;
-		switch(systeme->niveauStation){ //dessine la station
-			case AVANT_POSTE:
-				gfx_SetPixel(x, y);
-				break;
-			case PORT_STELLAIRE:
-				gfx_Line_NoClip(x - 1, y - 1, x + 1, y + 1);
-				break;
-			case REDOUTE_STELLAIRE:
-				gfx_Line_NoClip(x - 1, y - 1, x + 1, y + 1);
-				gfx_Line_NoClip(x - 1, y + 1, x + 1, y - 1);
-				break;
-			case FORTERESSE_STELLAIRE:
-				gfx_Line_NoClip(x - 2, y, x, y - 2);
-				gfx_Line_NoClip(x - 2, y, x, y + 2);
-				gfx_Line_NoClip(x + 2, y, x, y - 2);
-				gfx_Line_NoClip(x + 2, y, x, y + 2);
-				gfx_SetPixel(x, y);
-				break;
-			case CITADELLE:
-				gfx_Line_NoClip(x - 2, y, x, y - 2);
-				gfx_Line_NoClip(x - 2, y, x, y + 2);
-				gfx_Line_NoClip(x + 2, y, x, y - 2);
-				gfx_Line_NoClip(x + 2, y, x, y + 2);
-				gfx_SetPixel(x, y);
-				gfx_SetPixel(x - 2, y - 2);//coins
-				gfx_SetPixel(x - 2, y + 2);
-				gfx_SetPixel(x + 2, y - 2);
-				gfx_SetPixel(x + 2, y + 2);
-				break;
-		}
+		
+		//verifie que la base soit dans l'écran
+		if(((0 < x) && (x < 315)) && ((0 < y) && (y < 235))){
+			switch(systeme->station->niveauStation){ //dessine la station
+				case AVANT_POSTE:
+					gfx_SetPixel(x, y);
+					break;
+				case PORT_STELLAIRE:
+					gfx_Line_NoClip(x - 1, y - 1, x + 1, y + 1);
+					break;
+				case REDOUTE_STELLAIRE:
+					gfx_Line_NoClip(x - 1, y - 1, x + 1, y + 1);
+					gfx_Line_NoClip(x - 1, y + 1, x + 1, y - 1);
+					break;
+				case FORTERESSE_STELLAIRE:
+					gfx_Line_NoClip(x - 2, y, x, y - 2);
+					gfx_Line_NoClip(x - 2, y, x, y + 2);
+					gfx_Line_NoClip(x + 2, y, x, y - 2);
+					gfx_Line_NoClip(x + 2, y, x, y + 2);
+					gfx_SetPixel(x, y);
+					break;
+				case CITADELLE:
+					gfx_Line_NoClip(x - 2, y, x, y - 2);
+					gfx_Line_NoClip(x - 2, y, x, y + 2);
+					gfx_Line_NoClip(x + 2, y, x, y - 2);
+					gfx_Line_NoClip(x + 2, y, x, y + 2);
+					gfx_SetPixel(x, y);
+					gfx_SetPixel(x - 2, y - 2);//coins
+					gfx_SetPixel(x - 2, y + 2);
+					gfx_SetPixel(x + 2, y - 2);
+					gfx_SetPixel(x + 2, y + 2);
+					break;
+			}
 
-	if(((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y)))
-	{
-		gfx_SetColor(9);
-		gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
-		if(*key == sk_Enter){
-			systeme->niveauStation++;
+			if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (camera->bloque == FALSE))))
+			{
+				gfx_SetColor(9);
+				gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
+				if(*key == sk_Enter){
+					camera->fenetre = MENU_SYSTEME;
+					camera->bloque = TRUE;
+					fenetre->ouverte = MENU_SYSTEME_STATION_RESUME;
+					fenetre->selection = 1;
+					*key = 0;
+				}
+			}
 		}
-	}
 	}
 }

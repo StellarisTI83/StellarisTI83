@@ -13,27 +13,8 @@
 #define X_CENTRE_SYSTEME 480
 #define Y_CENTRE_SYSTEME 360
 
-#define FLOTTE_MILITAIRE 1
-#define FLOTTE_SCIENTIFIQUE 2
-#define FLOTTE_DE_CONSTRUCTION 3
-
 #define FALSE 0
 #define TRUE 1
-
-#define MENU_QUITTER -1
-#define MENU_AUCUN 0
-#define MENU_SYSTEME 1
-#define MENU_MARCHE 2
-#define MENU_FLOTTE 3
-#define MENU_RECHERCHE 4
-#define MENU_CONTACTS 5
-
-#define MENU_SYSTEME_FLOTTES 1
-#define MENU_SYSTEME_ETOILE 2
-#define MENU_SYSTEME_PLANETE_RESUME 3
-#define MENU_SYSTEME_PLANETE_POPULATION 4
-#define MENU_SYSTEME_PLANETE_ARMEE 5
-#define MENU_SYSTEME_FLOTTE_DETAILS 6
 
 #define FLOTTE_AUCUNE_ACTION 0
 #define FLOTTE_BOUGER 1
@@ -53,6 +34,8 @@ typedef enum {CARTE, NORMAL, SYSTEME} VueType;
 
 typedef enum {AUCUNE, AVANT_POSTE, PORT_STELLAIRE, REDOUTE_STELLAIRE, FORTERESSE_STELLAIRE, CITADELLE} NiveauStation;
 
+typedef enum {MINIAIRE, MILITAIRE, SCIENTIFIQUE} StationType;
+
 #define ETOILE_TYPE_B 1
 #define ETOILE_TYPE_A 2
 #define ETOILE_TYPE_F 3
@@ -65,6 +48,7 @@ typedef enum {AUCUNE, AVANT_POSTE, PORT_STELLAIRE, REDOUTE_STELLAIRE, FORTERESSE
 /**************structures**************/
 
 typedef struct FlotteListeStruct FlotteListe;
+typedef struct FlotteStruct Flotte;
 typedef struct EmpireStruct Empire;
 
 typedef struct EmpireStruct {
@@ -127,6 +111,19 @@ typedef struct {
 } Camera;
 
 typedef struct {
+	StationType stationType;
+	NiveauStation niveauStation;
+	int avancementOrdreStation;
+	int puissance;
+	int coqueTotal;
+	int coqueVie;
+	int blindageTotal;
+	int blindageVie;
+	int bouclierTotal;
+	int bouclierVie;
+} Station;
+
+typedef struct {
 	char nom[10];
 	int x;
 	int y;
@@ -146,7 +143,6 @@ typedef struct {
 	char nombrePlanetesHabitees;
 	char nombrePlanetesHabitables;
 	char empire;
-	NiveauStation niveauStation;
 	int16_t hyperlane1;
 	int16_t hyperlane2;
 	int16_t hyperlane3;
@@ -157,32 +153,8 @@ typedef struct {
 	Planete* planete3;
 	Planete* planete4;
 	Planete* planete5;
+	Station* station;
 } SystemeStellaire;
-
-typedef struct FlotteStruct Flotte;
-struct FlotteStruct {
-	int x;
-	int y;
-	char type;
-	int puissance;
-	int coqueTotal;
-	int coqueVie;
-	int blindageTotal;
-	int blindageVie;
-	int bouclierTotal;
-	int bouclierVie;
-	char systeme;
-	int nombreVaisseaux;
-	char action;
-	char systemeSuivant;
-	char systemeArrive;
-	char avancement;
-	Flotte* suivant;
-};
-
-struct FlotteListeStruct {
-	Flotte* premier;
-};
 
 typedef struct {
 	int selection;
@@ -203,12 +175,6 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
 void PrintInt(int nombre);
 
-FlotteListe* FlotteListeCreer();
-void FlotteListeSupprimer(FlotteListe* flotteliste);
-Flotte* FlotteNumero(FlotteListe* flotteliste, int numero);
-int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte);
-Flotte* FlotteAjouter(FlotteListe* flotteliste);
-void FlotteSupprimer(FlotteListe* flotteliste, int numero);
 
 EmpireListe* EmpireListeCreer();
 void EmpireListeSupprimer(EmpireListe*);

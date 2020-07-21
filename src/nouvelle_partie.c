@@ -28,6 +28,7 @@
 #include "nouvelle_partie.h"
 #include "noms.c"
 #include "sauvegarde.h"
+#include "flottes.h"
 
 #include "locale/locale.h"
 
@@ -1189,7 +1190,7 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	camera->vecteurx = 0;
 	camera->vecteury = 0;
 	camera->zoom = 1;
-	camera->mapType = NORMAL;
+	camera->mapType = SYSTEME;
 	camera->fenetre = MENU_AUCUN;
 	camera->bloque = FALSE;
 	camera->bougerFlotte = FALSE;
@@ -1198,7 +1199,7 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 
 	fin = ChargementNouvellePartieGalaxie(parametres, &sauvegarde, systemeStellaires, flotteJoueur, camera);
 	
-	StellarisSauvegarde(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
+	//StellarisSauvegarde(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
 	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
 }
 
@@ -1285,8 +1286,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 		j++;
 	}
 	
-	
-	
+	gfx_PrintStringXY("&", 50, 50);
+	k = 0;
 	//enregistrer matrice et generer hyperlane
 	i = 0;
 	j = 0;
@@ -1298,6 +1299,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			y = galaxie[j*LARGEUR_GALAXIE*2+i+1];
 			systemeStellaires[k].x = x;
 			systemeStellaires[k].y = y;
+			//malloc de la station
+			systemeStellaires[k].station = malloc(sizeof(Station));
 			etoile = randInt(1, 100);
 			trouNoir = 0;
 			if(etoile <= 10)
@@ -1337,7 +1340,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			{
 				etoile = ETOILE_TYPE_ETOILE_A_NEUTRONS;
 			}
-			systemeStellaires[i].niveauStation = AUCUNE;
+			systemeStellaires[k].station->niveauStation = AUCUNE;
 			systemeStellaires[k].etoileType = etoile;
 			systemeStellaires[k].nombrePlanetes = 0;
 			nombrePlanetes = 0;
@@ -1516,7 +1519,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			{
 				case 5:
 					systemeStellaires[k].planete5->habitable = 0;
-					systemeStellaires[k].planete5->rayonOrbite = randInt(87, 92);
+					systemeStellaires[k].planete5->rayonOrbite = randInt(RAYON_PLANETE5, RAYON_PLANETE5 + 10);
 					systemeStellaires[k].planete5->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete5->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete5->rayonOrbite); //aleatoire de x
 					systemeStellaires[k].planete5->y = sqrt(pow((double)systemeStellaires[k].planete5->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete5->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME; //calcule de y pour ce x
 					
@@ -1558,7 +1561,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 				
 				case 4:
 					systemeStellaires[k].planete4->habitable = 0;
-					systemeStellaires[k].planete4->rayonOrbite = randInt(70,76);
+					systemeStellaires[k].planete4->rayonOrbite = randInt(RAYON_PLANETE4, RAYON_PLANETE4 + 10);
 					systemeStellaires[k].planete4->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete4->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete4->rayonOrbite);
 					systemeStellaires[k].planete4->y = sqrt(pow((double)systemeStellaires[k].planete4->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete4->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME;	
 					
@@ -1618,7 +1621,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					
 				case 3:
 					systemeStellaires[k].planete3->habitable = 0;
-					systemeStellaires[k].planete3->rayonOrbite = randInt(55, 61);
+					systemeStellaires[k].planete3->rayonOrbite = randInt(RAYON_PLANETE3, RAYON_PLANETE3 + 10);
 					systemeStellaires[k].planete3->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete3->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete3->rayonOrbite);
 					systemeStellaires[k].planete3->y = sqrt(pow((double)systemeStellaires[k].planete3->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete3->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME;
 					
@@ -1686,7 +1689,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					
 				case 2:
 					systemeStellaires[k].planete2->habitable = 0;
-					systemeStellaires[k].planete2->rayonOrbite =  randInt(40, 46);
+					systemeStellaires[k].planete2->rayonOrbite =  randInt(RAYON_PLANETE2, RAYON_PLANETE2 + 10);
 					systemeStellaires[k].planete2->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete2->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete2->rayonOrbite);
 					systemeStellaires[k].planete2->y = sqrt(pow((double)systemeStellaires[k].planete2->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete2->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME;	
 					
@@ -1746,7 +1749,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 				
 				case 1:
 					systemeStellaires[k].planete1->habitable = 0;
-					systemeStellaires[k].planete1->rayonOrbite = randInt(25, 31);
+					systemeStellaires[k].planete1->rayonOrbite = randInt(RAYON_PLANETE1, RAYON_PLANETE1 + 10);
 					systemeStellaires[k].planete1->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete1->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete1->rayonOrbite);
 					systemeStellaires[k].planete1->y = sqrt(pow((double)systemeStellaires[k].planete1->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete1->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME;	
 					
@@ -1832,8 +1835,17 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			systemeStellaires[i].nombrePlanetesHabitables = 1;
 			systemeStellaires[i].nombrePlanetesHabitees = 1;
 			systemeStellaires[i].empire = 1;
-			systemeStellaires[i].niveauStation = PORT_STELLAIRE;
 			systemeStellaires[i].niveauDeConnaissance = TOTAL;
+
+			systemeStellaires[i].station->niveauStation = PORT_STELLAIRE;
+			systemeStellaires[i].station->stationType = MILITAIRE;
+			systemeStellaires[i].station->puissance = 450;
+			systemeStellaires[i].station->coqueTotal = 1000;
+			systemeStellaires[i].station->coqueVie = 1000;
+			systemeStellaires[i].station->blindageTotal = 500;
+			systemeStellaires[i].station->blindageVie = 500;
+			systemeStellaires[i].station->bouclierTotal = 750;
+			systemeStellaires[i].station->bouclierVie = 750;
 
 			flotte = FlotteAjouter(flotteJoueur);
 			flotte->systeme = i;
@@ -1873,6 +1885,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 
 			camera->x = systemeStellaires[i].x;
 			camera->y = systemeStellaires[i].y;
+			camera->systeme = i;
+			camera->systemeSelectione = i;
 
 			fin = 0;
 			switch(randInt(1, systemeStellaires[i].nombrePlanetes))
@@ -1881,30 +1895,40 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					systemeStellaires[i].planete1->habitable = 1;
 					systemeStellaires[i].planete1->type = 7;
 					systemeStellaires[i].planete1->population = 28;
+					camera->xSysteme = systemeStellaires[i].planete1->x - 160;
+					camera->ySysteme = systemeStellaires[i].planete1->y - 120;
 					strcpy(systemeStellaires[i].planete1->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 				case 2:
 					systemeStellaires[i].planete2->habitable = 1;
 					systemeStellaires[i].planete2->type = 7;
 					systemeStellaires[i].planete2->population = 28;
+					camera->xSysteme = systemeStellaires[i].planete2->x - 160;
+					camera->ySysteme = systemeStellaires[i].planete2->y - 120;
 					strcpy(systemeStellaires[i].planete2->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 				case 3:
 					systemeStellaires[i].planete3->habitable = 1;
 					systemeStellaires[i].planete3->type = 7;
 					systemeStellaires[i].planete3->population = 28;
+					camera->xSysteme = systemeStellaires[i].planete3->x - 160;
+					camera->ySysteme = systemeStellaires[i].planete3->y - 120;
 					strcpy(systemeStellaires[i].planete3->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 				case 4:
 					systemeStellaires[i].planete4->habitable = 1;
 					systemeStellaires[i].planete4->type = 7;
 					systemeStellaires[i].planete4->population = 28;
+					camera->xSysteme = systemeStellaires[i].planete4->x - 160;
+					camera->ySysteme = systemeStellaires[i].planete4->y - 120;
 					strcpy(systemeStellaires[i].planete4->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 				case 5:
 					systemeStellaires[i].planete3->habitable = 1;
 					systemeStellaires[i].planete3->type = 7;
 					systemeStellaires[i].planete3->population = 28;
+					camera->xSysteme = systemeStellaires[i].planete3->x - 160;
+					camera->ySysteme = systemeStellaires[i].planete3->y - 120;
 					strcpy(systemeStellaires[i].planete3->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 					break;
 			}

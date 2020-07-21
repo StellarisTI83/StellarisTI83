@@ -28,6 +28,7 @@
 #include "map.h"
 #include "nouvelle_partie.h"
 #include "sauvegarde.h"
+#include "flottes.h"
 
 #include "locale/locale.h"
 
