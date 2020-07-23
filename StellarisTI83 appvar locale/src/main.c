@@ -48,6 +48,7 @@ int main(void)
 				loadFR();
 				break;
 			case LC_EN:
+				ti_SetArchiveStatus(true, languageVar);
 				ti_CloseAll();
 				languageVar = ti_Open("lcEN","w+");
 				ti_Rewind(languageVar);
@@ -107,6 +108,7 @@ int main(void)
 		fin = 1;
 	}
 	while (!os_GetCSC());
+	ti_SetArchiveStatus(true, languageVar);
 	ti_CloseAll();
 	gfx_End();
     return 0;

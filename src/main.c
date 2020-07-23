@@ -285,6 +285,20 @@ void PrintInt(int nombre){
 	}
 }
 
+/**
+ *Renvoie la taille du int envoyé
+ */
+int tailleInt(int nombre){
+	int i = 1;
+	if(nombre < 0){
+		nombre = -nombre;
+	}
+	while(nombre >= 1){
+		nombre /= 10;
+		i++;
+	}
+	return i;
+}
 
 /**
  *Crée une liste d'empires

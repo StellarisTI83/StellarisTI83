@@ -34,7 +34,9 @@ typedef enum {CARTE, NORMAL, SYSTEME} VueType;
 
 typedef enum {AUCUNE, AVANT_POSTE, PORT_STELLAIRE, REDOUTE_STELLAIRE, FORTERESSE_STELLAIRE, CITADELLE} NiveauStation;
 
-typedef enum {MINIAIRE, MILITAIRE, SCIENTIFIQUE} StationType;
+typedef enum {AUCUN, CHANTIER_SPATIAL, ANCRAGE, CANONS, MISSILES, HANGAR, CARREFOUR_COMMERCIAL, PANNEAUX_SOLAIRES} Module;
+
+typedef enum {AUCUN, CONSTRUIRE_MODULE, CONSTRUIRE_PLATEFORME, CONSTRUIRE_VAISSEAU} OrdreStation;
 
 #define ETOILE_TYPE_B 1
 #define ETOILE_TYPE_A 2
@@ -111,8 +113,10 @@ typedef struct {
 } Camera;
 
 typedef struct {
-	StationType stationType;
 	NiveauStation niveauStation;
+	OrdreStation ordreStation;
+	int ordreStationInfos;
+	int ordreStationInfos2;
 	int avancementOrdreStation;
 	int puissance;
 	int coqueTotal;
@@ -121,6 +125,12 @@ typedef struct {
 	int blindageVie;
 	int bouclierTotal;
 	int bouclierVie;
+	Module module1;
+	Module module2;
+	Module module3;
+	Module module4;
+	Module module5;
+	Module module6;
 } Station;
 
 typedef struct {
@@ -161,6 +171,7 @@ typedef struct {
 	int flotteSelectionee;
 	char ouverte;
 	char precedente;
+	int scroll;
 } Fenetre;
 
 typedef struct {
@@ -174,6 +185,7 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
 void PrintInt(int nombre);
+int tailleInt(int nombre);
 
 
 EmpireListe* EmpireListeCreer();

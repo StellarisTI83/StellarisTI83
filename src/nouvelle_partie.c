@@ -1286,7 +1286,6 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 		j++;
 	}
 	
-	gfx_PrintStringXY("&", 50, 50);
 	k = 0;
 	//enregistrer matrice et generer hyperlane
 	i = 0;
@@ -1300,7 +1299,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			systemeStellaires[k].x = x;
 			systemeStellaires[k].y = y;
 			//malloc de la station
-			systemeStellaires[k].station = malloc(sizeof(Station));
+			systemeStellaires[k].station = (Station*)malloc(sizeof(Station));
+			memset(systemeStellaires[k].station, 0, sizeof(Station));
 			etoile = randInt(1, 100);
 			trouNoir = 0;
 			if(etoile <= 10)
@@ -1838,14 +1838,15 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			systemeStellaires[i].niveauDeConnaissance = TOTAL;
 
 			systemeStellaires[i].station->niveauStation = PORT_STELLAIRE;
-			systemeStellaires[i].station->stationType = MILITAIRE;
 			systemeStellaires[i].station->puissance = 450;
-			systemeStellaires[i].station->coqueTotal = 1000;
-			systemeStellaires[i].station->coqueVie = 1000;
-			systemeStellaires[i].station->blindageTotal = 500;
-			systemeStellaires[i].station->blindageVie = 500;
-			systemeStellaires[i].station->bouclierTotal = 750;
-			systemeStellaires[i].station->bouclierVie = 750;
+			systemeStellaires[i].station->coqueTotal = 10000;
+			systemeStellaires[i].station->coqueVie = 10000;
+			systemeStellaires[i].station->blindageTotal = 2000;
+			systemeStellaires[i].station->blindageVie = 2000;
+			systemeStellaires[i].station->bouclierTotal = 4000;
+			systemeStellaires[i].station->bouclierVie = 4000;
+			systemeStellaires[i].station->module1 = CHANTIER_SPATIAL;
+			systemeStellaires[i].station->module2 = CARREFOUR_COMMERCIAL;
 
 			flotte = FlotteAjouter(flotteJoueur);
 			flotte->systeme = i;
