@@ -123,16 +123,16 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 					camera->vecteury = 0;
 					break;
 				case sk_Up:
-					camera->vecteury -= 5;
+					camera->vecteury -= 4;
 					break;
 				case sk_Down:
-					camera->vecteury += 5;
+					camera->vecteury += 4;
 					break;
 				case sk_Left:
-					camera->vecteurx -= 5;
+					camera->vecteurx -= 4;
 					break;
 				case sk_Right:
-					camera->vecteurx += 5;
+					camera->vecteurx += 4;
 					break;
 			}
 		}
@@ -161,6 +161,8 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 				camera->vecteurx++;
 			}
 		}
+
+		KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
 
 		//fait en sorte que la camera sorte pas des limites
 		while(pow((double)(camera->xSysteme - 320), 2.0) + pow((double)(camera->ySysteme - 240), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)){
@@ -261,6 +263,9 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 					DessinerHyperlane(systemeStellaires[hyperLane4].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
 			}
+			gfx_SetTextXY(x - 4, y + 9);
+			PrintInt(i);
+
 			
 			if(camera->mapType == NORMAL)
 			{
@@ -512,77 +517,8 @@ void DessinerHyperlane(int8_t niveauDeConnaissance1, int8_t niveauDeConnaissance
 	}
 }
 
-
-/**
- *Gère les actions des touches pour la boucle StellarisMap
- */
-void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
+void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
 	switch(*key){
-		case sk_Up:
-			if (camera->bloque != TRUE) {
-				camera->vecteury -= 5;
-			}
-			break;
-		case sk_Down:
-			if (camera->bloque != TRUE) {
-				camera->vecteury += 5;
-			}
-			break;
-		case sk_Left:
-			if (camera->bloque != TRUE) {
-				camera->vecteurx -= 5;
-			}
-			break;
-		case sk_Right:
-			if (camera->bloque != TRUE) {
-				camera->vecteurx += 5;
-			}
-			break;
-		case sk_Mode:
-			if (camera->bloque != TRUE) {
-				camera->zoom -= 1;
-				if(camera->zoom >= 1)
-				{
-					camera->x *= 0.5;
-					camera->y *= 0.5;
-				}
-			}
-			break;
-		case sk_Del:
-			if (camera->bloque != TRUE) {
-				camera->zoom += 1;
-				if (camera->zoom < 3 && camera->zoom >= 1)
-				{
-					camera->x *= 2;
-					camera->y *= 2;
-				}
-			}
-			break;
-		case sk_Enter:
-			if (((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && (camera->bougerFlotte == FALSE))
-			{
-				camera->bloque = FALSE;
-				camera->mapType = SYSTEME;
-				if(camera->systeme != camera->systemeSelectione){
-					camera->xSysteme = 320;
-					camera->ySysteme = 240;
-				}
-				camera->systeme = camera->systemeSelectione;
-			}
-			else if(((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && (camera->bougerFlotte == TRUE)){
-				FlotteBouger(camera->flotte, camera->empire, camera->systemeSelectione, camera, empireListe, systemeStellaires);
-			}
-			break;
-		case sk_Clear:
-			if (camera->fenetre == MENU_AUCUN)
-			{
-				camera->fenetre = MENU_QUITTER;
-				camera->bloque = TRUE;
-				date->vitesse = 0;
-				fenetre->selection = 1;
-				*key = 0;
-			}
-			break;
 		case sk_Yequ :
 			if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 1))
 			{
@@ -712,6 +648,80 @@ void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStell
 	}
 }
 
+/**
+ *Gère les actions des touches pour la boucle StellarisMap
+ */
+void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
+	switch(*key){
+		case sk_Up:
+			if (camera->bloque != TRUE) {
+				camera->vecteury -= 5;
+			}
+			break;
+		case sk_Down:
+			if (camera->bloque != TRUE) {
+				camera->vecteury += 5;
+			}
+			break;
+		case sk_Left:
+			if (camera->bloque != TRUE) {
+				camera->vecteurx -= 5;
+			}
+			break;
+		case sk_Right:
+			if (camera->bloque != TRUE) {
+				camera->vecteurx += 5;
+			}
+			break;
+		case sk_Mode:
+			if (camera->bloque != TRUE) {
+				camera->zoom -= 1;
+				if(camera->zoom >= 1)
+				{
+					camera->x *= 0.5;
+					camera->y *= 0.5;
+				}
+			}
+			break;
+		case sk_Del:
+			if (camera->bloque != TRUE) {
+				camera->zoom += 1;
+				if (camera->zoom < 3 && camera->zoom >= 1)
+				{
+					camera->x *= 2;
+					camera->y *= 2;
+				}
+			}
+			break;
+		case sk_Enter:
+			if (((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && (camera->bougerFlotte == FALSE))
+			{
+				camera->bloque = FALSE;
+				camera->mapType = SYSTEME;
+				if(camera->systeme != camera->systemeSelectione){
+					camera->xSysteme = 320;
+					camera->ySysteme = 240;
+				}
+				camera->systeme = camera->systemeSelectione;
+			}
+			else if(((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && (camera->bougerFlotte == TRUE)){
+				FlotteBouger(camera->flotte, camera->empire, camera->systemeSelectione, camera, empireListe, systemeStellaires);
+			}
+			break;
+		case sk_Clear:
+			if (camera->fenetre == MENU_AUCUN)
+			{
+				camera->fenetre = MENU_QUITTER;
+				camera->bloque = TRUE;
+				date->vitesse = 0;
+				fenetre->selection = 1;
+				*key = 0;
+			}
+			break;
+	}
+	KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
+}
+
 
 /**
  *dessine le systeme en vision systeme
@@ -721,6 +731,7 @@ void DessinerVueSysteme(SystemeStellaire* systemeStellaires, Camera* camera, Fen
 	systeme = &systemeStellaires[camera->systeme];
 	DessinerEtoile(systeme, camera, fenetre, key);
 	DessinerBase(systeme, camera, fenetre, key);
+	DessinerFlottesSysteme(empireListe, camera, fenetre, key);
 	switch(systeme->nombrePlanetes){
 		case 5:
 			DessinerPlanete(systeme, systeme->planete5, camera, fenetre, 5, key);
@@ -1012,5 +1023,72 @@ void DessinerBase(SystemeStellaire* systeme, Camera* camera, Fenetre* fenetre, c
 				}
 			}
 		}
+	}
+}
+
+/**
+ *Dessine les flottes du systeme
+ */
+void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fenetre *fenetre, char* key){
+	Empire* empire = NULL;
+	Flotte* flotte = NULL;
+	int x, y;
+	gfx_SetColor(11);
+	empire = empireListe->premier;
+	while(empire != NULL){
+		flotte = empire->flotte->premier;
+		while(flotte != NULL){
+			if(flotte->systeme == camera->systeme){
+				x = flotte->x - camera->xSysteme - 3;
+				y = flotte->y - camera->ySysteme - 3;
+				if(((0 < x) && (x < 315)) && ((0 < y) && (y < 235))){
+					gfx_TransparentSprite(ourFleet, x, y);
+					switch(flotte->type){
+						case FLOTTE_MILITAIRE:
+							gfx_TransparentSprite(force_our, x + 6, y - 1);
+							if (flotte->puissance > 500)
+							{
+								gfx_TransparentSprite(force_our, x + 10, y - 1);
+							}
+							if (flotte->puissance > 1500)
+							{
+								gfx_TransparentSprite(force_our, x + 8, y - 4);
+							}
+							break;
+						case FLOTTE_DE_CONSTRUCTION:
+							gfx_TransparentSprite(construction_ship_our_icon, x + 6, y - 4);
+							break;
+						case FLOTTE_SCIENTIFIQUE:
+							gfx_TransparentSprite(science_ship_our_icon, x + 6, y - 4);
+							break;
+					}
+					if(flotte->avancement == 1){
+						gfx_SetColor(1);
+						gfx_FillCircle_NoClip(x + 3, y, 5);
+						flotte->x = 480; 
+						flotte->y = 360;
+						flotte->systeme = flotte->systemeArrive;
+						flotte->avancement = 0;
+					}
+					x += 3;
+					y += 3;
+					if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (camera->bloque == FALSE)))){
+						gfx_SetColor(9);
+						gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);			
+						if(*key == sk_Enter){
+							camera->fenetre = MENU_SYSTEME;
+							camera->bloque = TRUE;
+							fenetre->ouverte = MENU_SYSTEME_FLOTTE_DETAILS;
+							fenetre->selection = 1;
+							fenetre->flotteSelectionee = FlotteNumeroRecuperer(empire->flotte, flotte) + 1;
+							fenetre->precedente = 1;
+							*key = 0;
+						}
+					}
+				}
+			}
+			flotte = flotte->suivant;
+		}
+		empire = empire->suivant;
 	}
 }

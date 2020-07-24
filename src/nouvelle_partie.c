@@ -1850,6 +1850,10 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 
 			flotte = FlotteAjouter(flotteJoueur);
 			flotte->systeme = i;
+			flotte->x = X_CENTRE_SYSTEME + 10;
+			flotte->y = Y_CENTRE_SYSTEME - 10;
+			flotte->vitesse = 0;
+			flotte->angle = 10;
 			flotte->nombreVaisseaux = 3;
 			flotte->puissance = 150;
 			flotte->type = FLOTTE_MILITAIRE;
@@ -1862,6 +1866,10 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 
 			flotte = FlotteAjouter(flotteJoueur);
 			flotte->systeme = i;
+			flotte->x = X_CENTRE_SYSTEME + 10;
+			flotte->y = Y_CENTRE_SYSTEME + 10;
+			flotte->vitesse = 0;
+			flotte->angle = 10;
 			flotte->nombreVaisseaux = 1;
 			flotte->puissance = 0;
 			flotte->type = FLOTTE_DE_CONSTRUCTION;
@@ -1874,6 +1882,10 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 
 			flotte = FlotteAjouter(flotteJoueur);
 			flotte->systeme = i;
+			flotte->x = X_CENTRE_SYSTEME - 10;
+			flotte->y = Y_CENTRE_SYSTEME + 10;
+			flotte->vitesse = 0;
+			flotte->angle = 10;
 			flotte->nombreVaisseaux = 1;
 			flotte->puissance = 0;
 			flotte->type = FLOTTE_SCIENTIFIQUE;

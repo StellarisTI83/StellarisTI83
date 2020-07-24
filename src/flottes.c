@@ -138,3 +138,194 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, Empire *empire, FlotteType type
 	}
 	return flotte;
 }
+
+/**
+ *Donne l'ordre de faire bouger la flotte numero x
+ */
+void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires){
+	Empire* empire;
+	Flotte* flotte;
+	int path[100];
+	empire = EmpireNumero(empireListe, numeroDeEmpire);
+	flotte = FlotteNumero(empire->flotte, numeroDeFlotte);
+	if(camera->bougerFlotte == FALSE){
+		camera->bougerFlotte = TRUE;
+		camera->bloque = FALSE;
+		camera->mapType = NORMAL;
+		camera->fenetre = MENU_AUCUN;
+		camera->empire = numeroDeEmpire;
+		camera->flotte = numeroDeFlotte;
+	}
+	else if(camera->bougerFlotte == TRUE){
+		camera->bougerFlotte = FALSE;
+		flotte->systemeArrive = systeme;
+		flotte->action = FLOTTE_BOUGER;
+		flotte->avancement = 0;
+		camera->flotte = 0;
+		camera->empire = 0;
+		flotte->vitesse = 20;
+		flotte->angle = atan((double)(systemeStellaires[systeme].y - systemeStellaires[flotte->systeme].y) / (systemeStellaires[systeme].x - systemeStellaires[flotte->systeme].x));
+		camera->mapType = SYSTEME;
+		camera->x = systemeStellaires[flotte->systeme].x;
+		camera->x = systemeStellaires[flotte->systeme].y;
+		// FlottePathFinding(flotte->systeme, systeme, systemeStellaires, path);
+	}
+}
+
+/**
+ *Fait effectuer les action des flottes
+ */
+void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires){
+	Empire* empire = NULL;
+	Flotte* flotte = NULL;
+	empire = empireListe->premier;
+	while(empire != NULL){
+		flotte = empire->flotte->premier;
+		while(flotte != NULL){
+			if(flotte->action == FLOTTE_BOUGER){
+				flotte->x += cos(flotte->angle) * flotte->vitesse;
+				flotte->y += sin(flotte->angle) * flotte->vitesse;
+				if(pow((double)(flotte->x - 480), 2.0) + pow((double)(flotte->y - 360), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)){
+					flotte->avancement = 1;
+					flotte->vitesse = 0;
+					flotte->action = FLOTTE_AUCUNE_ACTION;
+				}
+			}
+			flotte = flotte->suivant;
+		}
+		empire = empire->suivant;
+	}
+}
+
+/*int* FlottePathFinding(int debut, int fin, SystemeStellaire *systemeStellaires, int* path){
+	int i = 0, systemeActuel = 0, j = 0, compteur = 0; //index
+	Noeud depart, arrive, actuel, noeudEnfant;
+	Liste listeOuverte[LARGEUR_GALAXIE * LARGEUR_GALAXIE], listeFermee[LARGEUR_GALAXIE * LARGEUR_GALAXIE];
+	Noeud listeEnfants[4];
+	int numeroEnfantHyperlane = 255;
+	depart.x = systemeStellaires[debut].x;
+	depart.y = systemeStellaires[debut].y;
+	depart.g = 0;
+	depart.h = 0;
+	depart.f = 0;
+	systemeActuel = debut;
+
+	arrive.x = systemeStellaires[fin].x;
+	arrive.y = systemeStellaires[fin].y;
+
+	memset(listeOuverte, 0, sizeof(Liste) * LARGEUR_GALAXIE * LARGEUR_GALAXIE);
+	memset(listeFermee, 0, sizeof(Liste) * LARGEUR_GALAXIE * LARGEUR_GALAXIE);
+	memset(listeEnfants, 0, sizeof(Liste) * 4);
+	AjouterElementListe(listeOuverte, &actuel);
+
+	gfx_SetTextXY(50, 50);
+	while(compteur < 10){
+		CopierNoeud(&actuel, listeOuverte[0].noeud);
+		systemeActuel = actuel.numero;
+		i = 0;
+		while(i < LARGEUR_GALAXIE * LARGEUR_GALAXIE){//prends le noeud actuel
+			if(listeOuverte[i].noeud->f < actuel.f){
+				CopierNoeud(&actuel, listeOuverte[i].noeud);
+			}
+			i++;
+		}
+
+		SupprimerElementListe(listeOuverte, i);
+		AjouterElementListe(listeFermee, &actuel);
+
+		if(actuel.numero == fin){
+			i = 0;
+			while(actuel.parent != NULL){
+				path[i] = actuel.numero;
+				CopierNoeud(&actuel, actuel.parent);
+				i++;
+			}
+			return path;
+		}
+
+		memset(listeEnfants, 0, sizeof(Liste) * 4);
+		//genere les enfants
+		i = 0;
+		while(i < 4){
+			switch(i){
+				case 1:
+					numeroEnfantHyperlane = systemeStellaires[systemeActuel].hyperlane1;
+					break;
+				case 2:
+					numeroEnfantHyperlane = systemeStellaires[systemeActuel].hyperlane2;
+					break;
+				case 3:
+					numeroEnfantHyperlane = systemeStellaires[systemeActuel].hyperlane3;
+					break;
+				case 4:
+					numeroEnfantHyperlane = systemeStellaires[systemeActuel].hyperlane4;
+					break;
+			}
+			if(numeroEnfantHyperlane != 255){
+				listeEnfants[j].numero = numeroEnfantHyperlane;
+				listeEnfants[j].x = systemeStellaires[numeroEnfantHyperlane].x;
+				listeEnfants[j].y = systemeStellaires[numeroEnfantHyperlane].y;
+				listeEnfants[j].parent = &actuel;
+			}
+			i++;
+		}
+
+		// regarde les enfants
+		i = 0;
+		while(i < 4){
+			j = 0;
+			//verifie que le noeuds n'est pas dans la liste des enfants
+			while(j < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
+				if((listeEnfants[i].x == listeFermee[j].noeud->x) && (listeEnfants[i].y == listeFermee[j].noeud->y)){
+					i++;
+					j = LARGEUR_GALAXIE * LARGEUR_GALAXIE;
+				}
+				j++;
+			}
+
+			// calcule f g et h
+			listeEnfants[i].g = actuel.g + 1;
+			listeEnfants[i].h = pow((double)listeEnfants[i].x - arrive.x, 2.0) + pow((double)listeEnfants[i].y - arrive.y, 2.0);
+			listeEnfants[i].f = listeEnfants[i].g + listeEnfants[i].h;
+			j = 0;
+			while(j < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
+				if((listeEnfants[i].x == listeOuverte[j].noeud->x) && (listeEnfants[i].y == listeOuverte[j].noeud->y)){
+					if(listeEnfants[i].g > listeOuverte[j].noeud->g){
+						i++;
+						j = LARGEUR_GALAXIE * LARGEUR_GALAXIE;
+					}
+				}
+				j++;
+			}
+			AjouterElementListe(listeFermee, &listeEnfants[i]);
+			i++;
+		}
+		compteur++;
+	}
+	return path;
+}
+
+void SupprimerElementListe(Liste *liste, int numero){
+	int index = numero;
+	while(index < sizeof(*liste)){
+		liste[index].noeud = liste[index + 1].noeud;
+		index++;
+	}
+}
+void AjouterElementListe(Liste *liste, Noeud *noeud){
+	int index = 0;
+	while(liste[index].noeud != NULL){
+		index++;
+	}
+	liste[index].noeud = noeud;
+}
+
+void CopierNoeud(Noeud *noeud1, Noeud *noeud2){
+	noeud1->numero = noeud2->numero;
+	noeud1->parent = noeud2->parent;
+	noeud1->x = noeud2->x;
+	noeud1->y = noeud2->y;
+	noeud1->g = noeud2->g;
+	noeud1->h = noeud2->h;
+	noeud1->f = noeud2->f;
+}*/

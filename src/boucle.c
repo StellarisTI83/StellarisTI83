@@ -163,6 +163,12 @@ void EffectuerActionsStations(SystemeStellaire *systemeStellaires){
 								break;
 						}
 				}
+				if((systemeStellaires[numero].station->ordreStationInfos2 == CANONS) || (systemeStellaires[numero].station->ordreStationInfos2 == MISSILES)){
+					systemeStellaires[numero].station->coqueTotal += systemeStellaires[numero].station->coqueTotal/10;
+					systemeStellaires[numero].station->coqueVie += systemeStellaires[numero].station->coqueVie/10;
+					systemeStellaires[numero].station->blindageTotal += systemeStellaires[numero].station->blindageTotal/10;
+					systemeStellaires[numero].station->blindageVie += systemeStellaires[numero].station->blindageVie/10;
+				}
 				systemeStellaires[numero].station->ordreStation = AUCUNE;
 				systemeStellaires[numero].station->ordreStationInfos = 0;
 				systemeStellaires[numero].station->ordreStationInfos2 = 0;
@@ -1184,12 +1190,16 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 		case sk_Clear:
 			switch(fenetre->precedente){
 				case 1:
-					fenetre->ouverte = 1;
+					fenetre->ouverte = MENU_SYSTEME_FLOTTES;
 					fenetre->selection = fenetre->flotteSelectionee;
 					break;
 				case 2:
 					camera->fenetre = MENU_FLOTTE;
 					fenetre->selection = fenetre->flotteSelectionee;
+					break;
+				default:
+					camera->fenetre = AUCUN;
+					camera->bloque = FALSE;
 					break;
 			}
 			*key = 0;
@@ -1412,6 +1422,7 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 			*key = 0;
 			break;
 		case sk_Right:
+		fenetre->selection = 1;
 			fenetre->ouverte = MENU_SYSTEME_STATION_MODULES;
 			fenetre->precedente = 0;
 			*key = 0;
@@ -1635,7 +1646,7 @@ char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre){
 			strcpy(nomDeOrdre, "Construit le module ");
 			sprintf(numero, "%d", numeroDuModule);
 			strcat(nomDeOrdre, numero);
-			sprintf(numero, "(%d%)", (12 - station->avancementOrdreStation) * 8);
+			sprintf(numero, "(%d)", (12 - station->avancementOrdreStation) * 8);
 			strcat(nomDeOrdre, numero);
 			break;
 		case CONSTRUIRE_PLATEFORME:

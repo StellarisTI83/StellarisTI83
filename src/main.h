@@ -119,8 +119,8 @@ typedef struct {
 	int ordreStationInfos2;
 	int avancementOrdreStation;
 	int puissance;
-	int coqueTotal;
-	int coqueVie;
+	int coqueTotal;//quantitée normale
+	int coqueVie;//quantitée habituelle
 	int blindageTotal;
 	int blindageVie;
 	int bouclierTotal;
