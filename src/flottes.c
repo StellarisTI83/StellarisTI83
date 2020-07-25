@@ -129,12 +129,90 @@ void FlotteSupprimer(FlotteListe* flotteliste, int numero) {
 /**
  *Crée une nouvelle flotte
  */
-Flotte* NouvelleFlotte(FlotteListe *flotteListe, Empire *empire, FlotteType type, int systeme){
+Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, TypeMilitaire typeMilitaire,int nombreDeVaisseaux){
 	Flotte* flotte = NULL;
 	flotte = FlotteAjouter(flotteListe);
 	flotte->systeme = systeme;
+	flotte->x = X_CENTRE_SYSTEME - 10;
+	flotte->y = Y_CENTRE_SYSTEME + 10;
+	flotte->vitesse = Y_CENTRE_SYSTEME + 10;
+	flotte->action = FLOTTE_AUCUNE_ACTION;
+	flotte->systemeSuivant = 0;
+	flotte->systemeArrive = 0;
+	flotte->avancement = 0;
+	flotte->chemin = NULL;
 	switch(type){
-		
+		case FLOTTE_SCIENTIFIQUE:
+			flotte->nombreVaisseaux = 1;
+			flotte->puissance = 0;
+			flotte->type = FLOTTE_SCIENTIFIQUE;
+			flotte->coqueVie = 300;
+			flotte->coqueTotal = 300;
+			flotte->blindageVie = 50;
+			flotte->blindageTotal = 50;
+			flotte->bouclierVie = 100;
+			flotte->bouclierTotal = 100;
+			break;
+		case FLOTTE_DE_CONSTRUCTION:
+			flotte->nombreVaisseaux = 1;
+			flotte->puissance = 0;
+			flotte->type = FLOTTE_DE_CONSTRUCTION;
+			flotte->coqueVie = 300;
+			flotte->coqueTotal = 300;
+			flotte->blindageVie = 50;
+			flotte->blindageTotal = 50;
+			flotte->bouclierVie = 100;
+			flotte->bouclierTotal = 100;
+			break;
+		case FLOTTE_MILITAIRE:
+			flotte->typeVaisseauxMilitaire = typeMilitaire;
+			switch(typeMilitaire){
+				case CORVETTE:
+					flotte->nombreVaisseaux = 3;
+					flotte->puissance = 150;
+					flotte->type = FLOTTE_MILITAIRE;
+					flotte->coqueVie = 300;
+					flotte->coqueTotal = 300;
+					flotte->blindageVie = 50;
+					flotte->blindageTotal = 50;
+					flotte->bouclierVie = 100;
+					flotte->bouclierTotal = 100;
+					break;
+				case DESTROYER:
+					flotte->nombreVaisseaux = 3;
+					flotte->puissance = 150;
+					flotte->type = FLOTTE_MILITAIRE;
+					flotte->coqueVie = 800;
+					flotte->coqueTotal = 800;
+					flotte->blindageVie = 150;
+					flotte->blindageTotal = 150;
+					flotte->bouclierVie = 300;
+					flotte->bouclierTotal = 300;
+					break;
+				case CROISEUR:
+					flotte->nombreVaisseaux = 3;
+					flotte->puissance = 150;
+					flotte->type = FLOTTE_MILITAIRE;
+					flotte->coqueVie = 1800;
+					flotte->coqueTotal = 1800;
+					flotte->blindageVie = 500;
+					flotte->blindageTotal = 500;
+					flotte->bouclierVie = 800;
+					flotte->bouclierTotal = 800;
+					break;
+				case CUIRASSE:
+					flotte->nombreVaisseaux = 3;
+					flotte->puissance = 150;
+					flotte->type = FLOTTE_MILITAIRE;
+					flotte->coqueVie = 3000;
+					flotte->coqueTotal = 3000;
+					flotte->blindageVie = 1000;
+					flotte->blindageTotal = 1000;
+					flotte->bouclierVie = 1800;
+					flotte->bouclierTotal = 1800;
+					break;
+			}
+			break;
 	}
 	return flotte;
 }

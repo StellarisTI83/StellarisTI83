@@ -3,6 +3,8 @@
 
 typedef enum {FLOTTE_MILITAIRE, FLOTTE_SCIENTIFIQUE, FLOTTE_DE_CONSTRUCTION} FlotteType;
 
+typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
+
 typedef struct NoeudStruct Noeud;
 
 struct FlotteStruct {
@@ -10,7 +12,8 @@ struct FlotteStruct {
 	int y;
 	int vitesse;
 	int angle;
-	char type;
+	FlotteType type;
+	TypeMilitaire typeVaisseauxMilitaire; //corvette, cuirassé...
 	int puissance;
 	int coqueTotal;
 	int coqueVie;
@@ -53,7 +56,7 @@ int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte);
 Flotte* FlotteAjouter(FlotteListe* flotteliste);
 void FlotteSupprimer(FlotteListe* flotteliste, int numero);
 
-Flotte* NouvelleFlotte(FlotteListe *flotteListe, Empire *empire, FlotteType type, int systeme);
+Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, TypeMilitaire typeMilitaire,int nombreDeVaisseaux);
 
 // int* FlottePathFinding(int debut, int fin, SystemeStellaire *systemeStellaires, int* path);
 // void SupprimerElementListe(Liste *liste, int numero);

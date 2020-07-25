@@ -127,15 +127,15 @@ void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStel
 	}
 	if((((date->jour == 30) || (date->jour == 10)) || (date->jour == 20)) && (date->horloge == 0)){
 		EffectuerActionsFlottes(empireListe, systemeStellaires);
-		EffectuerActionsStations(systemeStellaires);
+		EffectuerActionsStations(systemeStellaires, empireListe->premier);
 	}
 }
 
 /**
  *Effectue les actions de station
  */
-void EffectuerActionsStations(SystemeStellaire *systemeStellaires){
-	int numero = 0;
+void EffectuerActionsStations(SystemeStellaire *systemeStellaires, Empire *joueur){
+	int numero = 0, nombreDeVaisseaux = 0;
 	while(numero < (LARGEUR_GALAXIE * LARGEUR_GALAXIE) - 1){
 		if(systemeStellaires[numero].station->avancementOrdreStation > 0){
 			systemeStellaires[numero].station->avancementOrdreStation--;
@@ -162,7 +162,43 @@ void EffectuerActionsStations(SystemeStellaire *systemeStellaires){
 								systemeStellaires[numero].station->module6 = systemeStellaires[numero].station->ordreStationInfos2;
 								break;
 						}
+						break;
+					case CONSTRUIRE_VAISSEAU:
+						switch(systemeStellaires[numero].station->ordreStationInfos){
+							case 1:
+								systemeStellaires[numero].station->ordreStationInfos = FLOTTE_SCIENTIFIQUE;
+								nombreDeVaisseaux = 1;
+								break;
+							case 2:
+								systemeStellaires[numero].station->ordreStationInfos = FLOTTE_DE_CONSTRUCTION;
+								nombreDeVaisseaux = 1;
+								break;
+							case 3:
+								systemeStellaires[numero].station->ordreStationInfos = FLOTTE_MILITAIRE;
+								systemeStellaires[numero].station->ordreStationInfos2 = CORVETTE;
+								nombreDeVaisseaux = 3;
+								break;
+							case 4:
+								systemeStellaires[numero].station->ordreStationInfos = FLOTTE_MILITAIRE;
+								systemeStellaires[numero].station->ordreStationInfos2 = DESTROYER;
+								nombreDeVaisseaux = 3;
+								break;
+							case 5:
+								systemeStellaires[numero].station->ordreStationInfos = FLOTTE_MILITAIRE;
+								systemeStellaires[numero].station->ordreStationInfos2 = CROISEUR;
+								nombreDeVaisseaux = 3;
+								break;
+							case 6:
+								systemeStellaires[numero].station->ordreStationInfos = FLOTTE_MILITAIRE;
+								systemeStellaires[numero].station->ordreStationInfos2 = CUIRASSE;
+								nombreDeVaisseaux = 3;
+								break;
+						}
+						NouvelleFlotte(joueur->flotte, numero, systemeStellaires[numero].station->ordreStationInfos, systemeStellaires[numero].station->ordreStationInfos2, nombreDeVaisseaux);
+						break;
+
 				}
+				//rajoute des points de vie en cas de canons ou missiles
 				if((systemeStellaires[numero].station->ordreStationInfos2 == CANONS) || (systemeStellaires[numero].station->ordreStationInfos2 == MISSILES)){
 					systemeStellaires[numero].station->coqueTotal += systemeStellaires[numero].station->coqueTotal/10;
 					systemeStellaires[numero].station->coqueVie += systemeStellaires[numero].station->coqueVie/10;
@@ -181,9 +217,9 @@ void EffectuerActionsStations(SystemeStellaire *systemeStellaires){
 /******************dessiner le hud******************/
 int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche)
 {
-	char jourChar[10];
-	char moisChar[7];
-	char anneeChar[4];
+	char jourChar[11];
+	char moisChar[8];
+	char anneeChar[5];
 	//point de l'hexagone
 	int drapeau[12] = {
 		17, 0,
@@ -1595,7 +1631,7 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 	//ecrire ordre
 	gfx_SetTextFGColor(1);
 	gfx_SetTextXY(45, 190);
-	gfx_PrintString(OrdreStationNom(systemeStellaires[camera->systeme].station, systemeStellaires[camera->systeme].station->ordreStationInfos, ordreStation));
+	OrdreStationNom(systemeStellaires[camera->systeme].station, systemeStellaires[camera->systeme].station->ordreStationInfos, ordreStation, niveau);
 
 	//effectuer action
 	if(*key == sk_Enter){
@@ -1636,11 +1672,11 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 /**
  *Renvoie le nom du module
  */
-char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre){
+char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre, int niveau){
 	char numero[20];
 	switch(station->ordreStation){
 		case AUCUN:
-			strcpy(nomDeOrdre, "Aucun ordre");
+			gfx_PrintStringXY("Aucun ordre", 55, niveau);
 			break;
 		case CONSTRUIRE_MODULE:
 			strcpy(nomDeOrdre, "Construit le module ");
@@ -1648,12 +1684,40 @@ char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre){
 			strcat(nomDeOrdre, numero);
 			sprintf(numero, "(%d)", (12 - station->avancementOrdreStation) * 8);
 			strcat(nomDeOrdre, numero);
+			gfx_PrintStringXY(nomDeOrdre, 55, niveau);
 			break;
 		case CONSTRUIRE_PLATEFORME:
 			strcpy(nomDeOrdre, "Construit une plateforme");
+			gfx_PrintStringXY(nomDeOrdre, 55, niveau);
 			break;
 		case CONSTRUIRE_VAISSEAU:
-			strcpy(nomDeOrdre, "Construit un vaisseau");
+			strcpy(nomDeOrdre, "Construit un vaisseau ");
+			gfx_PrintStringXY(nomDeOrdre, 55, niveau);
+			niveau += 14;
+			memset(nomDeOrdre, 0, sizeof(nomDeOrdre));
+			switch(station->ordreStationInfos) {
+				case 1:
+					strcat(nomDeOrdre, "Scientifique");
+					break;
+				case 2:
+					strcat(nomDeOrdre, "Construction");
+					break;
+				case 3:
+					strcat(nomDeOrdre, "Corvette");
+					break;
+				case 4:
+					strcat(nomDeOrdre, "Destroyer");
+					break;
+				case 5:
+					strcat(nomDeOrdre, "Croiseur");
+					break;
+				case 6:
+					strcat(nomDeOrdre, "Cuirass/");
+					break;
+			}
+			sprintf(numero, "(%d)", (12 - station->avancementOrdreStation) * 8);
+			strcat(nomDeOrdre, numero);
+			gfx_PrintStringXY(nomDeOrdre, 55, niveau);
 			break;
 	}
 	return nomDeOrdre;
@@ -1683,6 +1747,7 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 			break;
 		case sk_Right:
 			fenetre->ouverte = MENU_SYSTEME_STATION_CHANTIER;
+			fenetre->selection = 1;
 			*key = 0;
 			break;
 		case sk_Left:
@@ -1767,6 +1832,7 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 		if(*module != fenetre->precedente){
 			if(fenetre->precedente == 8){
 				fenetre->precedente = 0;
+				*module = AUCUN;
 			}
 			if(fenetre->precedente != 0){
 				if(joueur->acier >= 50){
@@ -2044,7 +2110,7 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre){
 	char evolution[25] = {0};
 	int prixAmelioration = 0;
-	int niveau = 120;
+	int niveau = 55, nombreDeChantiers = 0;
 	switch(*key){
 		case sk_Clear:
 			camera->fenetre = MENU_AUCUN;
@@ -2065,8 +2131,8 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 			*key = 0;
 			break;
 	}
-	if(fenetre->selection > 2){
-		fenetre->selection = 2;
+	if(fenetre->selection > 6){
+		fenetre->selection = 6;
 	}
 	else if(fenetre->selection < 1){
 		fenetre->selection = 1;
@@ -2096,23 +2162,86 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Station de ");
 	gfx_PrintString(systemeStellaires[camera->systeme].nom);
-	gfx_SetTextXY(150, 62);
-	switch(systemeStellaires[camera->systeme].station->niveauStation){
-		case AVANT_POSTE:
-			gfx_PrintString("Base stellaire");
-			break;
-		case PORT_STELLAIRE:
-			gfx_PrintString("Port stellaire");
-			break;
-		case REDOUTE_STELLAIRE:
-			gfx_PrintString("Redoute stellaire");
-			break;
-		case FORTERESSE_STELLAIRE:
-			gfx_PrintString("Forteresse stellaire");
-			break;
-		case CITADELLE:
-			gfx_PrintString("Citadelle");
-			break;
+	if(systemeStellaires[camera->systeme].station->module1 == CHANTIER_SPATIAL){
+		nombreDeChantiers++;
+	}
+	if(systemeStellaires[camera->systeme].station->module2 == CHANTIER_SPATIAL){
+		nombreDeChantiers++;
+	}
+	if(systemeStellaires[camera->systeme].station->module3 == CHANTIER_SPATIAL){
+		nombreDeChantiers++;
+	}
+	if(systemeStellaires[camera->systeme].station->module4 == CHANTIER_SPATIAL){
+		nombreDeChantiers++;
+	}
+	if(systemeStellaires[camera->systeme].station->module5 == CHANTIER_SPATIAL){
+		nombreDeChantiers++;
+	}
+	if(systemeStellaires[camera->systeme].station->module6 == CHANTIER_SPATIAL){
+		nombreDeChantiers++;
+	}
+	//verifie que la station soit avec un chantier spatial
+	if(nombreDeChantiers > 0){
+		gfx_SetTextXY(45, niveau);
+		gfx_PrintString("Chantiers : ");
+		gfx_PrintInt(nombreDeChantiers, 1);
+
+		if(fenetre->selection == 1){
+			gfx_SetTextFGColor(13);
+		}
+		niveau += 20;
+    	gfx_SetTextXY(45, niveau);
+		gfx_PrintString("Scientifique");
+		
+		gfx_SetTextFGColor(1);
+		if(fenetre->selection == 2){
+			gfx_SetTextFGColor(13);
+		}
+		niveau += 14;
+    	gfx_SetTextXY(45, niveau);
+		gfx_PrintString("Construction");
+		
+		gfx_SetTextFGColor(1);
+		if(fenetre->selection == 3){
+			gfx_SetTextFGColor(13);
+		}
+		niveau += 14;
+    	gfx_SetTextXY(45, niveau);
+		gfx_PrintString("Corvette");
+		
+		gfx_SetTextFGColor(1);
+		if(fenetre->selection == 4){
+			gfx_SetTextFGColor(13);
+		}
+		niveau += 14;
+    	gfx_SetTextXY(45, niveau);
+		gfx_PrintString("Destroyer");
+		
+		gfx_SetTextFGColor(1);
+		if(fenetre->selection == 5){
+			gfx_SetTextFGColor(13);
+		}
+		niveau += 14;
+    	gfx_SetTextXY(45, niveau);
+		gfx_PrintString("Croiseur");
+		
+		gfx_SetTextFGColor(1);
+		if(fenetre->selection == 6){
+			gfx_SetTextFGColor(13);
+		}
+		niveau += 14;
+    	gfx_SetTextXY(45, niveau);
+		gfx_PrintString("Cuirass/"); //battleship
+		if(*key = sk_Enter){
+			systemeStellaires[camera->systeme].station->ordreStation = CONSTRUIRE_VAISSEAU;
+			systemeStellaires[camera->systeme].station->ordreStationInfos = fenetre->selection;
+			systemeStellaires[camera->systeme].station->ordreStationInfos2 = 1;
+			systemeStellaires[camera->systeme].station->avancementOrdreStation = 12;
+		}
+	
+	}
+	else{
+		gfx_PrintStringXY("Pas de chantier spatial", 68, 115);
 	}
 }
 

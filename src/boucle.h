@@ -22,7 +22,7 @@
 
 int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);	
 void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires);
-void EffectuerActionsStations(SystemeStellaire *systemeStellaires);
+void EffectuerActionsStations(SystemeStellaire *systemeStellaires, Empire *joueur);
 
 void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur);
 
@@ -46,7 +46,7 @@ void MenuSystemePlaneteArmee(char *key, SystemeStellaire *systemeStellaires, Cam
 void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, EmpireListe *empireListe, Empire* joueur, Camera *camera, Fenetre *fenetre);
 
 void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
-char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDuModule);
+char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDuModule, int niveau);
 
 void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 char* ModuleNom(Module module, char* nomDuModule);

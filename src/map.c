@@ -694,7 +694,7 @@ void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStell
 			}
 			break;
 		case sk_Enter:
-			if (((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && (camera->bougerFlotte == FALSE))
+			if (((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && ((camera->bougerFlotte == FALSE) && (systemeStellaires[camera->systemeSelectione].niveauDeConnaissance != INCONNU)))
 			{
 				camera->bloque = FALSE;
 				camera->mapType = SYSTEME;

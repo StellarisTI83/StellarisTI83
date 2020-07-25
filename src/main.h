@@ -115,8 +115,8 @@ typedef struct {
 typedef struct {
 	NiveauStation niveauStation;
 	OrdreStation ordreStation;
-	int ordreStationInfos;
-	int ordreStationInfos2;
+	int ordreStationInfos; //numero du module / type de flotte
+	int ordreStationInfos2; //type du module / nombre de vaisseaux dans la flotte
 	int avancementOrdreStation;
 	int puissance;
 	int coqueTotal;//quantitée normale
@@ -179,9 +179,10 @@ typedef struct {
 	int valeurNourriture;
 	int valeurFer;
 } Marche;
+
 /**************def**************/
 int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
-	void Options();
+void Options();
 
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
 void PrintInt(int nombre);
