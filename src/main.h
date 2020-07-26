@@ -118,6 +118,7 @@ typedef struct {
 	int ordreStationInfos; //numero du module / type de flotte
 	int ordreStationInfos2; //type du module / nombre de vaisseaux dans la flotte
 	int avancementOrdreStation;
+	// int totalOrdreStation;
 	int puissance;
 	int coqueTotal;//quantitée normale
 	int coqueVie;//quantitée habituelle

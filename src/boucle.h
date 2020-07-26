@@ -19,6 +19,7 @@
 #define MENU_SYSTEME_STATION_MODULES 8
 #define MENU_SYSTEME_STATION_MODULES_CHOIX 9
 #define MENU_SYSTEME_STATION_CHANTIER 10
+#define MENU_SYSTEME_STATION_CHANTIER_CHOIX 11
 
 int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);	
 void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires);
@@ -54,6 +55,7 @@ char* ModuleNom(Module module, char* nomDuModule);
 void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 
 void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
+void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 
 void MenuMarche(char *key, Empire* joueur, Marche *marche, Camera *camera, Fenetre *fenetre);
 

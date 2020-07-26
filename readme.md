@@ -25,15 +25,18 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
 **Warning!!** The gfx and the font cannot be made with the 32 bit version
 
 ##To do list
- - [ ] Menus stations
+ - [x] Menus stations
+ - [ ] Menu flottes
+ - [ ] Actions flottes
  - [ ] Pathfinding flottes
- - [ ] Flottes de plusieurs types
+ - [ ] Flottes militaires de plusieurs types
  - [ ] Menu planètes
  - [ ] Recherches
  - [ ] Rajout de plusieurs civilisations
  - [ ] Rajout de l'ia
  - [ ] Rajout des notifications
  - [ ] Menu marché
+ - [ ] Revenus
  - [ ] Changement des sprites de local à appvar
  - [ ] Création de sauvegardes
  - [ ] Traduction totale
