@@ -91,3 +91,9 @@ convert: sprites
     - science_ship_our_icon.png
     - science_ship_neutral_icon.png
     - science_ship_ennemy_icon.png
+    - pop_icon.png
+    - free_job_icon.png
+    - criminality_pop_icon.png
+    - free_houses_icon.png
+    - amienties_icon.png
+    - unemployed_pop_icon.png

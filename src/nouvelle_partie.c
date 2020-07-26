@@ -1848,53 +1848,17 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			systemeStellaires[i].station->module1 = CHANTIER_SPATIAL;
 			systemeStellaires[i].station->module2 = CARREFOUR_COMMERCIAL;
 
-			flotte = FlotteAjouter(flotteJoueur);
-			flotte->systeme = i;
+			flotte = NouvelleFlotte(flotteJoueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
 			flotte->x = X_CENTRE_SYSTEME + 10;
 			flotte->y = Y_CENTRE_SYSTEME - 10;
-			flotte->vitesse = 0;
-			flotte->angle = 10;
-			flotte->nombreVaisseaux = 3;
-			flotte->puissance = 150;
-			flotte->type = FLOTTE_MILITAIRE;
-			flotte->coqueVie = 300;
-			flotte->coqueTotal = 300;
-			flotte->blindageVie = 50;
-			flotte->blindageTotal = 50;
-			flotte->bouclierVie = 100;
-			flotte->bouclierTotal = 100;
 
-			flotte = FlotteAjouter(flotteJoueur);
-			flotte->systeme = i;
+			flotte = NouvelleFlotte(flotteJoueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
 			flotte->x = X_CENTRE_SYSTEME + 10;
 			flotte->y = Y_CENTRE_SYSTEME + 10;
-			flotte->vitesse = 0;
-			flotte->angle = 10;
-			flotte->nombreVaisseaux = 1;
-			flotte->puissance = 0;
-			flotte->type = FLOTTE_DE_CONSTRUCTION;
-			flotte->coqueVie = 300;
-			flotte->coqueTotal = 300;
-			flotte->blindageVie = 50;
-			flotte->blindageTotal = 50;
-			flotte->bouclierVie = 100;
-			flotte->bouclierTotal = 100;
 
-			flotte = FlotteAjouter(flotteJoueur);
-			flotte->systeme = i;
+			flotte = NouvelleFlotte(flotteJoueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 			flotte->x = X_CENTRE_SYSTEME - 10;
 			flotte->y = Y_CENTRE_SYSTEME + 10;
-			flotte->vitesse = 0;
-			flotte->angle = 10;
-			flotte->nombreVaisseaux = 1;
-			flotte->puissance = 0;
-			flotte->type = FLOTTE_SCIENTIFIQUE;
-			flotte->coqueVie = 300;
-			flotte->coqueTotal = 300;
-			flotte->blindageVie = 50;
-			flotte->blindageTotal = 50;
-			flotte->bouclierVie = 100;
-			flotte->bouclierTotal = 100;
 
 			camera->x = systemeStellaires[i].x;
 			camera->y = systemeStellaires[i].y;

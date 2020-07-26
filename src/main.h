@@ -38,6 +38,8 @@ typedef enum {AUCUN, CHANTIER_SPATIAL, ANCRAGE, CANONS, MISSILES, HANGAR, CARREF
 
 typedef enum {AUCUN, CONSTRUIRE_MODULE, CONSTRUIRE_PLATEFORME, CONSTRUIRE_VAISSEAU} OrdreStation;
 
+typedef enum {AUCUN, CAPITALE, FONDERIE, LABORATOIRE, USINE_CIVILE, THEATRE} Batiment;
+
 #define ETOILE_TYPE_B 1
 #define ETOILE_TYPE_A 2
 #define ETOILE_TYPE_F 3
@@ -118,7 +120,6 @@ typedef struct {
 	int ordreStationInfos; //numero du module / type de flotte
 	int ordreStationInfos2; //type du module / nombre de vaisseaux dans la flotte
 	int avancementOrdreStation;
-	// int totalOrdreStation;
 	int puissance;
 	int coqueTotal;//quantitée normale
 	int coqueVie;//quantitée habituelle
@@ -143,6 +144,18 @@ typedef struct {
 	char habitable;
 	char type; //1 = arid, 2 = Desert, 3 = Savanna	, 4 = Alpine, 5 = Arctic, 6 = Tundra, 7 = continental, 8 = ocean, 9 = tropical, 10 = monde aride, 11 = monde aride froid, 12 = brisé, 13 = monde gelé, 14 = géante gazeuse, 15 = monde en fusion, 16 = toxic world
 	short population;
+	Batiment batiment1;
+	int niveauBatiment1;
+	Batiment batiment2;
+	int niveauBatiment2;
+	Batiment batiment3;
+	int niveauBatiment3;
+	Batiment batiment4;
+	int niveauBatiment4;
+	Batiment batiment5;
+	int niveauBatiment5;
+	Batiment batiment6;
+	int niveauBatiment6;
 } Planete;
 
 typedef struct {

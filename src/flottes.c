@@ -129,9 +129,22 @@ void FlotteSupprimer(FlotteListe* flotteliste, int numero) {
 /**
  *Crée une nouvelle flotte
  */
-Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, TypeMilitaire typeMilitaire, int nombreDeVaisseaux){
+Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
 	Flotte* flotte = NULL;
 	flotte = FlotteAjouter(flotteListe);
+	flotte->puissance = 0;
+	flotte->coqueVie = 0;
+	flotte->coqueTotal = 0;
+	flotte->blindageVie = 0;
+	flotte->blindageTotal = 0;
+	flotte->bouclierVie = 0;
+	flotte->bouclierTotal = 0;
+	flotte->nombreDeCorvette = 0;
+	flotte->nombreDeDestroyer = 0;
+	flotte->nombreDeCroiseur = 0;
+	flotte->nombreDeCuirasse = 0;
+	flotte->nombreVaisseaux = 0;
+
 	flotte->systeme = systeme;
 	flotte->x = X_CENTRE_SYSTEME - 10;
 	flotte->y = Y_CENTRE_SYSTEME + 10;
@@ -165,53 +178,47 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, T
 			flotte->bouclierTotal = 100;
 			break;
 		case FLOTTE_MILITAIRE:
-			flotte->typeVaisseauxMilitaire = typeMilitaire;
-			switch(typeMilitaire){
-				case CORVETTE:
-					flotte->nombreVaisseaux = nombreDeVaisseaux;
-					flotte->puissance = 150 * nombreDeVaisseaux;
-					flotte->type = FLOTTE_MILITAIRE;
-					flotte->coqueVie = 300 * nombreDeVaisseaux;
-					flotte->coqueTotal = 300 * nombreDeVaisseaux;
-					flotte->blindageVie = 50 * nombreDeVaisseaux;
-					flotte->blindageTotal = 50 * nombreDeVaisseaux;
-					flotte->bouclierVie = 100 * nombreDeVaisseaux;
-					flotte->bouclierTotal = 100 * nombreDeVaisseaux;
-					break;
-				case DESTROYER:
-					flotte->nombreVaisseaux = nombreDeVaisseaux;
-					flotte->puissance = 500;
-					flotte->type = FLOTTE_MILITAIRE;
-					flotte->coqueVie = 800 * nombreDeVaisseaux;
-					flotte->coqueTotal = 800 * nombreDeVaisseaux;
-					flotte->blindageVie = 150 * nombreDeVaisseaux;
-					flotte->blindageTotal = 150 * nombreDeVaisseaux;
-					flotte->bouclierVie = 300 * nombreDeVaisseaux;
-					flotte->bouclierTotal = 300 * nombreDeVaisseaux;
-					break;
-				case CROISEUR:
-					flotte->nombreVaisseaux = nombreDeVaisseaux;
-					flotte->puissance = 1000 * nombreDeVaisseaux;
-					flotte->type = FLOTTE_MILITAIRE;
-					flotte->coqueVie = 1800 * nombreDeVaisseaux;
-					flotte->coqueTotal = 1800 * nombreDeVaisseaux;
-					flotte->blindageVie = 500 * nombreDeVaisseaux;
-					flotte->blindageTotal = 500 * nombreDeVaisseaux;
-					flotte->bouclierVie = 800 * nombreDeVaisseaux;
-					flotte->bouclierTotal = 800 * nombreDeVaisseaux;
-					break;
-				case CUIRASSE:
-					flotte->nombreVaisseaux = nombreDeVaisseaux;
-					flotte->puissance = 2000 * nombreDeVaisseaux;
-					flotte->type = FLOTTE_MILITAIRE;
-					flotte->coqueVie = 3000 * nombreDeVaisseaux;
-					flotte->coqueTotal = 3000 * nombreDeVaisseaux;
-					flotte->blindageVie = 1000 * nombreDeVaisseaux;
-					flotte->blindageTotal = 1000 * nombreDeVaisseaux;
-					flotte->bouclierVie = 1800 * nombreDeVaisseaux;
-					flotte->bouclierTotal = 1800 * nombreDeVaisseaux;
-					break;
-			}
+			flotte->type = FLOTTE_MILITAIRE;
+
+			flotte->nombreVaisseaux += nombreDeCorvettes;
+			flotte->puissance += 150 * nombreDeCorvettes;
+			flotte->coqueVie += 300 * nombreDeCorvettes;
+			flotte->coqueTotal += 300 * nombreDeCorvettes;
+			flotte->blindageVie += 50 * nombreDeCorvettes;
+			flotte->blindageTotal += 50 * nombreDeCorvettes;
+			flotte->bouclierVie += 100 * nombreDeCorvettes;
+			flotte->bouclierTotal += 100 * nombreDeCorvettes;
+			flotte->nombreDeCorvette = nombreDeCorvettes;
+
+			flotte->nombreVaisseaux += nombreDeDestroyers;
+			flotte->puissance += 500 * nombreDeDestroyers;
+			flotte->coqueVie += 800 * nombreDeDestroyers;
+			flotte->coqueTotal += 800 * nombreDeDestroyers;
+			flotte->blindageVie += 150 * nombreDeDestroyers;
+			flotte->blindageTotal += 150 * nombreDeDestroyers;
+			flotte->bouclierVie += 300 * nombreDeDestroyers;
+			flotte->bouclierTotal += 300 * nombreDeDestroyers;
+			flotte->nombreDeDestroyer = nombreDeDestroyers;
+
+			flotte->nombreVaisseaux += nombreDeCroiseurs;
+			flotte->puissance += 1000 * nombreDeCroiseurs;
+			flotte->coqueVie += 1800 * nombreDeCroiseurs;
+			flotte->coqueTotal += 1800 * nombreDeCroiseurs;
+			flotte->blindageVie += 500 * nombreDeCroiseurs;
+			flotte->blindageTotal += 500 * nombreDeCroiseurs;
+			flotte->bouclierVie += 800 * nombreDeCroiseurs;
+			flotte->bouclierTotal += 800 * nombreDeCroiseurs;
+			flotte->nombreDeCroiseur = nombreDeCroiseurs;
+
+			flotte->nombreVaisseaux += nombreDeCuirasses;
+			flotte->puissance += 2000 * nombreDeCuirasses;
+			flotte->coqueVie += 3000 * nombreDeCuirasses;
+			flotte->coqueTotal += 3000 * nombreDeCuirasses;
+			flotte->blindageVie += 1000 * nombreDeCuirasses;
+			flotte->blindageTotal += 1000 * nombreDeCuirasses;
+			flotte->bouclierVie += 1800 * nombreDeCuirasses;
+			flotte->bouclierTotal += 1800 * nombreDeCuirasses;
+			flotte->nombreDeCuirasse = nombreDeCuirasses;
 			break;
 	}
 	return flotte;

@@ -112,6 +112,16 @@ extern "C" {
 
 #include "fleet_power_icon.h"
 
+#include "pop_icon.h"
+
+#include "free_job_icon.h"
+
+#include "criminality_pop_icon.h"
+
+#include "amienties_icon.h"
+
+#include "unemployed_pop_icon.h"
+
 
 
 #ifdef __cplusplus

@@ -12,7 +12,7 @@
 #define MENU_SYSTEME_FLOTTES 1
 #define MENU_SYSTEME_ETOILE 2
 #define MENU_SYSTEME_PLANETE_RESUME 3
-#define MENU_SYSTEME_PLANETE_POPULATION 4
+#define MENU_SYSTEME_PLANETE_DISTRICT 4
 #define MENU_SYSTEME_PLANETE_ARMEE 5
 #define MENU_SYSTEME_FLOTTE_DETAILS 6
 #define MENU_SYSTEME_STATION_RESUME 7
@@ -40,7 +40,7 @@ void MenuSystemeEtoile(char *key, SystemeStellaire *systemeStellaires, Camera *c
 
 void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 
-void MenuSystemePlanetePopulation(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
+void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 
 void MenuSystemePlaneteArmee(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 

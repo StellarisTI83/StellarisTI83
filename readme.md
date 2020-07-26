@@ -1,16 +1,16 @@
 # STELLARIS TI remake
 
-##Presentation
+## Presentation
 
 This is a remake of Stellaris (by _Paradox Development Studio_) for TI-83 Premium CE and TI-84 Plus CE.
 
 The game is actually on a dev stage. It is in French and will soon be in English.
 
-##Getting started
+## Getting started
 
 Thes instructions help you to run this program on your machine
 
-###Installing
+### Installing
 
 The game need the toolchain [CeDev](https://github.com/CE-Programming/toolchain) to be make
 - 64 bit can use the last version ([v8.8](https://github.com/CE-Programming/toolchain/releases/tag/v8.8))
@@ -24,12 +24,13 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
 
 **Warning!!** The gfx and the font cannot be made with the 32 bit version
 
-##To do list
+## To do list (French)
  - [x] Menus stations
+ - [ ] Rajout des stations scientifiques et minières
+ - [x] Flottes militaires de plusieurs types
  - [ ] Menu flottes
  - [ ] Actions flottes
  - [ ] Pathfinding flottes
- - [ ] Flottes militaires de plusieurs types
  - [ ] Menu planètes
  - [ ] Recherches
  - [ ] Rajout de plusieurs civilisations
