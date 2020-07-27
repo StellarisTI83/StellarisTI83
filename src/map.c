@@ -806,7 +806,7 @@ void DessinerEtoile(SystemeStellaire* systeme, Camera* camera, Fenetre *fenetre,
 	{
 		gfx_SetColor(9);
 		gfx_Rectangle_NoClip(xEtoile - 8, yEtoile - 8, 16, 16);
-		if(*key == sk_Enter){
+		if((*key == sk_Enter) && (camera->bloque == false)){
 			camera->fenetre = MENU_SYSTEME;
 			fenetre->ouverte = MENU_SYSTEME_ETOILE;
 			camera->bloque = TRUE;
@@ -901,10 +901,11 @@ void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera* camera
 		gfx_SetColor(9);
 		gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
 		camera->selection = numero;
-		if(*key == sk_Enter){
+		if((*key == sk_Enter) && (camera->bloque == false)){
 			camera->fenetre = MENU_SYSTEME;
 			fenetre->ouverte = MENU_SYSTEME_PLANETE_RESUME;
-			fenetre->selection = numero;
+			fenetre->planete = numero;
+			fenetre->selection = 1;
 			camera->bloque = TRUE;
 			*key = 0;
 		}
@@ -1014,7 +1015,7 @@ void DessinerBase(SystemeStellaire* systeme, Camera* camera, Fenetre* fenetre, c
 			{
 				gfx_SetColor(9);
 				gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
-				if(*key == sk_Enter){
+				if((*key == sk_Enter) && (camera->bloque == false)){
 					camera->fenetre = MENU_SYSTEME;
 					camera->bloque = TRUE;
 					fenetre->ouverte = MENU_SYSTEME_STATION_RESUME;
@@ -1062,7 +1063,7 @@ void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fenetre *f
 							gfx_TransparentSprite(science_ship_our_icon, x + 6, y - 4);
 							break;
 					}
-					if(flotte->avancement == 1){
+					if(flotte->avancement == 1){//bouge la flotte dans son systeme
 						gfx_SetColor(1);
 						gfx_FillCircle_NoClip(x + 3, y, 5);
 						flotte->x = 480; 
@@ -1075,7 +1076,7 @@ void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fenetre *f
 					if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (camera->bloque == FALSE)))){
 						gfx_SetColor(9);
 						gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);			
-						if(*key == sk_Enter){
+						if((*key == sk_Enter) && (camera->bloque == false)){
 							camera->fenetre = MENU_SYSTEME;
 							camera->bloque = TRUE;
 							fenetre->ouverte = MENU_SYSTEME_FLOTTE_DETAILS;

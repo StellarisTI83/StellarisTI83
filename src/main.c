@@ -387,3 +387,54 @@ void EmpireSupprimer(EmpireListe* empireListe, int numero) {
 	FlotteListeSupprimer(pointeur->flotte);
 	free(pointeur);
 }
+
+OrdreFile *CreerFileOrdres(){
+	OrdreFile *ordreFile = NULL;
+	ordreFile = malloc(sizeof(OrdreFile));
+	ordreFile->premierOrdre = NULL;
+	return ordreFile;
+}
+
+void SupprimerFileOrdres(OrdreFile *ordreFile){
+	Ordre *ordre = NULL, *ordreSuivant = NULL;
+	ordre = ordreFile->premierOrdre;
+	while(ordre != NULL){
+		ordreSuivant = ordre->ordreSuivant;
+		free(ordre);
+		ordre = ordreSuivant;
+	}
+	free(ordreFile);
+}
+
+void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal){
+	Ordre *ordreElement = NULL;
+	if(ordreFile->premierOrdre == NULL){
+		ordreFile->premierOrdre = calloc(1, sizeof(Ordre));
+		ordreElement = ordreFile->premierOrdre;
+	}
+	else{
+		ordreElement = ordreFile->premierOrdre;
+		while(ordreElement->ordreSuivant != NULL){
+			ordreElement = ordreElement->ordreSuivant;
+		}
+	}
+	ordreElement->ordre = ordre;
+	ordreElement->tempsTotal = tempsTotal;
+	ordreElement->tempsActuel = tempsTotal;
+	ordreElement->ordreSuivant = NULL;
+}
+
+void FinirOrdre(OrdreFile *ordreFile){
+	Ordre *ordre;
+	ordre = ordreFile->premierOrdre;
+	if(ordre != NULL){
+		ordreFile->premierOrdre = ordre->ordreSuivant;
+		free(ordre);
+	}
+}
+
+Ordre* RecupererOrdre(OrdreFile *ordreFile){
+	Ordre *ordre = NULL;
+	ordre = ordreFile->premierOrdre;
+	return ordre;
+}

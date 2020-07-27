@@ -274,6 +274,7 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 					flotte->avancement = 1;
 					flotte->vitesse = 0;
 					flotte->action = FLOTTE_AUCUNE_ACTION;
+					systemeStellaires[flotte->systemeArrive].niveauDeConnaissance = TOTAL;
 				}
 			}
 			flotte = flotte->suivant;

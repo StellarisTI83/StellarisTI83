@@ -24,6 +24,7 @@
 int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);	
 void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires);
 void EffectuerActionsStations(SystemeStellaire *systemeStellaires, Empire *joueur);
+void EffectuerActionsPlanetes(SystemeStellaire *systemeStellaires, Empire *joueur);
 
 void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur);
 
@@ -40,7 +41,8 @@ void MenuSystemeEtoile(char *key, SystemeStellaire *systemeStellaires, Camera *c
 
 void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 
-void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
+void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe);
+void OrdreDistrictNom(Villes *villes);
 
 void MenuSystemePlaneteArmee(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 

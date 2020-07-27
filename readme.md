@@ -26,12 +26,13 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
 
 ## To do list (French)
  - [x] Menus stations
- - [ ] Rajout des stations scientifiques et minières
+ - [ ] Menu planètes
+ - [ ] Plusieurs actions de suite
  - [x] Flottes militaires de plusieurs types
  - [ ] Menu flottes
+ - [ ] Rajout des stations scientifiques et minières
  - [ ] Actions flottes
  - [ ] Pathfinding flottes
- - [ ] Menu planètes
  - [ ] Recherches
  - [ ] Rajout de plusieurs civilisations
  - [ ] Rajout de l'ia

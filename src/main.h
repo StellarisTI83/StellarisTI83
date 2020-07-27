@@ -40,6 +40,8 @@ typedef enum {AUCUN, CONSTRUIRE_MODULE, CONSTRUIRE_PLATEFORME, CONSTRUIRE_VAISSE
 
 typedef enum {AUCUN, CAPITALE, FONDERIE, LABORATOIRE, USINE_CIVILE, THEATRE} Batiment;
 
+typedef enum {AUCUN, CONSTRUIRE_DISTRICT_URBAIN, CONSTRUIRE_DISTRICT_GENERATEUR, CONSTRUIRE_DISTRICT_MINIER, CONSTRUIRE_DISTRICT_AGRICOLE} OrdreConstruction;
+
 #define ETOILE_TYPE_B 1
 #define ETOILE_TYPE_A 2
 #define ETOILE_TYPE_F 3
@@ -54,6 +56,18 @@ typedef enum {AUCUN, CAPITALE, FONDERIE, LABORATOIRE, USINE_CIVILE, THEATRE} Bat
 typedef struct FlotteListeStruct FlotteListe;
 typedef struct FlotteStruct Flotte;
 typedef struct EmpireStruct Empire;
+
+typedef struct OrdreElement Ordre;
+struct OrdreElement{
+	int ordre;
+	int tempsTotal;
+	int tempsActuel;
+	Ordre* ordreSuivant;
+};
+
+typedef struct {
+	Ordre* premierOrdre;
+}OrdreFile;
 
 typedef struct EmpireStruct {
 	char nom[31];
@@ -135,6 +149,36 @@ typedef struct {
 	Module module6;
 } Station;
 
+typedef struct{
+	Batiment batiment1;
+	int niveauBatiment1;
+
+	Batiment batiment2;
+	int niveauBatiment2;
+
+	Batiment batiment3;
+	int niveauBatiment3;
+
+	Batiment batiment4;
+	int niveauBatiment4;
+
+	Batiment batiment5;
+	int niveauBatiment5;
+
+	Batiment batiment6;
+	int niveauBatiment6;
+
+	char districtsUrbains;
+	char districtsGenerateurs;
+	char districtsMiniers;
+	char districtsAgricoles;
+	char criminatlitee;
+	int emplois;
+	int amienties;
+
+	OrdreFile *ordreFile;
+} Villes;
+
 typedef struct {
 	char nom[10];
 	int x;
@@ -143,19 +187,8 @@ typedef struct {
 	char taille;
 	char habitable;
 	char type; //1 = arid, 2 = Desert, 3 = Savanna	, 4 = Alpine, 5 = Arctic, 6 = Tundra, 7 = continental, 8 = ocean, 9 = tropical, 10 = monde aride, 11 = monde aride froid, 12 = brisé, 13 = monde gelé, 14 = géante gazeuse, 15 = monde en fusion, 16 = toxic world
-	short population;
-	Batiment batiment1;
-	int niveauBatiment1;
-	Batiment batiment2;
-	int niveauBatiment2;
-	Batiment batiment3;
-	int niveauBatiment3;
-	Batiment batiment4;
-	int niveauBatiment4;
-	Batiment batiment5;
-	int niveauBatiment5;
-	Batiment batiment6;
-	int niveauBatiment6;
+	int population;
+	Villes *villes;
 } Planete;
 
 typedef struct {
@@ -182,6 +215,7 @@ typedef struct {
 
 typedef struct {
 	int selection;
+	int planete;
 	int flotteSelectionee;
 	char ouverte;
 	char precedente;
@@ -211,5 +245,12 @@ void EmpireSupprimer(EmpireListe*, int numero);
 
 void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);
+
+OrdreFile *CreerFileOrdres();
+void SupprimerFileOrdres(OrdreFile *ordreFile);
+void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal);
+void FinirOrdre(OrdreFile *ordreFile);
+Ordre* RecupererOrdre(OrdreFile *ordreFile);
+
 
 #endif

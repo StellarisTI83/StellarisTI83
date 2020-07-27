@@ -128,6 +128,7 @@ void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStel
 	if((((date->jour == 30) || (date->jour == 10)) || (date->jour == 20)) && (date->horloge == 0)){
 		EffectuerActionsFlottes(empireListe, systemeStellaires);
 		EffectuerActionsStations(systemeStellaires, empireListe->premier);
+		EffectuerActionsPlanetes(systemeStellaires, empireListe->premier);
 	}
 }
 
@@ -209,6 +210,65 @@ void EffectuerActionsStations(SystemeStellaire *systemeStellaires, Empire *joueu
 			}
 		}
 		numero++;
+	}
+}
+
+
+/**
+ *Effectue les actions des planetes
+ */
+void EffectuerActionsPlanetes(SystemeStellaire *systemeStellaires, Empire *joueur){
+	int i = 0, j = 0;
+	Villes *villes = NULL;
+	Ordre *ordre;
+	while(i < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
+		j = 1;
+		while(j < 6){
+			switch(j){
+				case 1:
+					villes = systemeStellaires[i].planete1->villes;
+					break;
+				case 2:
+					villes = systemeStellaires[i].planete2->villes;
+					break;
+				case 3:
+					villes = systemeStellaires[i].planete3->villes;
+					break;
+				case 4:
+					villes = systemeStellaires[i].planete4->villes;
+					break;
+				case 5:
+					villes = systemeStellaires[i].planete5->villes;
+					break;
+			}
+			if(villes != NULL){
+				ordre = RecupererOrdre(villes->ordreFile);
+				if(ordre != NULL){
+					if(ordre->tempsActuel > 1){
+						ordre->tempsActuel--;
+					}
+					else if(ordre->tempsActuel == 1){
+						switch(ordre->ordre){
+							case CONSTRUIRE_DISTRICT_URBAIN:
+								villes->districtsUrbains++;
+								break;
+							case CONSTRUIRE_DISTRICT_GENERATEUR:
+								villes->districtsGenerateurs++;
+								break;
+							case CONSTRUIRE_DISTRICT_MINIER:
+								villes->districtsMiniers++;
+								break;
+							case CONSTRUIRE_DISTRICT_AGRICOLE:
+								villes->districtsAgricoles++;
+								break;
+						}
+						FinirOrdre(villes->ordreFile);
+					}
+				}
+			}
+			j++;
+		}
+		i++;
 	}
 }
 
@@ -616,7 +676,7 @@ void MenuSysteme(char* key, EmpireListe* empireListe, Empire* joueur, Parametres
 			break;
 			
 		case MENU_SYSTEME_PLANETE_DISTRICT: //planete districts
-			MenuSystemePlaneteDistrict(key, systemeStellaires, camera, fenetre);
+			MenuSystemePlaneteDistrict(key, systemeStellaires, camera, fenetre, empireListe);
 			break;
 			
 		case MENU_SYSTEME_PLANETE_ARMEE: //planete armee
@@ -870,7 +930,7 @@ void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Ca
 	int niveau = 40;
 	Planete* planete = NULL;
 
-	switch(fenetre->selection)
+	switch(fenetre->planete)
 	{
 		case 1:
 			decalage = 186;
@@ -964,19 +1024,32 @@ void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Ca
 	gfx_TransparentSprite_NoClip(pop_icon, 150, 74);
 	sprintf(populationChar, "%d", planete->population);
 	gfx_PrintString(populationChar);
+	
+	if(planete->population > 0){
+		gfx_SetTextXY(157, 84);
+		gfx_TransparentSprite_NoClip(free_job_icon, 150, 84);
+		PrintInt(planete->villes->emplois);
+		
+		gfx_SetTextXY(157, 94);
+		gfx_TransparentSprite_NoClip(criminality_pop_icon, 150, 94);
+		PrintInt(planete->villes->criminatlitee);
+		
+		gfx_SetTextXY(157, 104);
+		gfx_TransparentSprite_NoClip(amienties_icon, 150, 104);
+		PrintInt(planete->villes->amienties);
+		
+		gfx_SetTextXY(157, 114);
+		gfx_TransparentSprite_NoClip(unemployed_pop_icon, 150, 114);
+		PrintInt(planete->population - planete->villes->emplois);
 
-	gfx_TransparentSprite_NoClip(free_job_icon, 150, 84);
-	gfx_TransparentSprite_NoClip(criminality_pop_icon, 150, 94);
-	gfx_TransparentSprite_NoClip(amienties_icon, 150, 104);
-	gfx_TransparentSprite_NoClip(unemployed_pop_icon, 150, 114);
+		niveau = 158;
+		gfx_SetTextXY(45, niveau);
+		gfx_PrintString("Production");
 
-	niveau = 158;
-	gfx_SetTextXY(45, niveau);
-	gfx_PrintString("Production");
-
-	niveau += 14;
-	gfx_SetTextXY(45, niveau);
-	gfx_PrintString("D/ficit");
+		niveau += 14;
+		gfx_SetTextXY(45, niveau);
+		gfx_PrintString("D/ficit");
+	}
 
 	switch(*key)
 	{
@@ -998,13 +1071,13 @@ void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Ca
 /**
  *Dessine le menu des districts de planète
  */
-void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre){
+void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
 	int8_t nomPlanete[20];
 	int8_t decalage = 0;
 	int niveau = 40;
 	Planete* planete = NULL;
 
-	switch(fenetre->selection)
+	switch(fenetre->planete)
 	{
 		case 1:
 			decalage = 186;
@@ -1078,7 +1151,84 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 		gfx_PrintString(systemeStellaires[camera->systeme].nom);
 		gfx_PrintString(nomPlanete);
 	}
+	if(planete->villes != NULL){
+		if(fenetre->selection == 1){
+			gfx_SetColor(13);
+		}
+		else{
+			gfx_SetColor(7);
+		}
+		gfx_Rectangle_NoClip(45, 70, 190, 21);
+		gfx_SetTextFGColor(17);
+		gfx_SetTextXY(50, 72);
+		gfx_PrintString("Districts urbains");
+		gfx_SetTextXY(50, 82);
+		PrintInt(planete->villes->districtsUrbains);
+		gfx_PrintString("|10");
 
+		if(fenetre->selection == 2){
+			gfx_SetColor(13);
+		}
+		else{
+			gfx_SetColor(7);
+		}
+		gfx_Rectangle_NoClip(45, 94, 190, 21);
+		gfx_SetTextFGColor(18);
+		gfx_SetTextXY(50, 96);
+		gfx_PrintString("Districts g/n/rateurs");
+		gfx_SetTextXY(50, 106);
+		PrintInt(planete->villes->districtsGenerateurs);
+		gfx_PrintString("|10");
+
+		if(fenetre->selection == 3){
+			gfx_SetColor(13);
+		}
+		else{
+			gfx_SetColor(7);
+		}
+		gfx_Rectangle_NoClip(45, 118, 190, 21);
+		gfx_SetTextFGColor(3);
+		gfx_SetTextXY(50, 120);
+		gfx_PrintString("Districts miniers");
+		gfx_SetTextXY(50, 130);
+		PrintInt(planete->villes->districtsMiniers);
+		gfx_PrintString("|10");
+
+		if(fenetre->selection == 4){
+			gfx_SetColor(13);
+		}
+		else{
+			gfx_SetColor(7);
+		}
+		gfx_Rectangle_NoClip(45, 142, 190, 21);
+		gfx_SetTextFGColor(19);
+		gfx_SetTextXY(50, 144);
+		gfx_PrintString("Districts agricoles");
+		gfx_SetTextXY(50, 154);
+		PrintInt(planete->villes->districtsAgricoles);
+		gfx_PrintString("|10");
+	}
+	OrdreDistrictNom(planete->villes);
+	if(*key == sk_Enter){
+		if(empireListe->premier->minerais >= 300){
+			empireListe->premier->minerais -= 300;
+			switch(fenetre->selection){
+				case 1:
+					NouvelOrdre(planete->villes->ordreFile, CONSTRUIRE_DISTRICT_URBAIN, 12);
+					break;
+				case 2:
+					NouvelOrdre(planete->villes->ordreFile, CONSTRUIRE_DISTRICT_GENERATEUR, 12);
+					break;
+				case 3:
+					NouvelOrdre(planete->villes->ordreFile, CONSTRUIRE_DISTRICT_MINIER, 12);
+					break;
+				case 4:
+					NouvelOrdre(planete->villes->ordreFile, CONSTRUIRE_DISTRICT_AGRICOLE, 12);
+					break;
+			}
+		}
+		*key = 0;
+	}
 	switch(*key)
 	{
 		case sk_Clear:
@@ -1091,6 +1241,61 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 			fenetre->ouverte = MENU_SYSTEME_PLANETE_RESUME;
 			*key = 0;
 			break;
+		case sk_Down:
+			fenetre->selection++;
+			*key = 0;
+			break;
+		case sk_Up:
+			fenetre->selection--;
+			*key = 0;
+			break;
+	}
+	if(fenetre->selection < 1){
+		fenetre->selection = 1;
+	}
+	if(fenetre->selection > 4){
+		fenetre->selection = 4;
+	}
+}
+
+/**
+ *Ecrie le nom de l'ordre de district
+ */
+void OrdreDistrictNom(Villes *villes){
+	Ordre *ordre;
+	ordre = RecupererOrdre(villes->ordreFile);
+	gfx_SetTextXY(45, 170);
+	gfx_SetTextFGColor(1);
+	if(ordre != NULL){
+		switch(ordre->ordre){
+			case AUCUN:
+				gfx_PrintString("Aucun ordre");
+				break;
+			case CONSTRUIRE_DISTRICT_URBAIN:
+				gfx_PrintString("Construit district urbain");
+				break;
+			case CONSTRUIRE_DISTRICT_GENERATEUR:
+				gfx_PrintString("Construit district g/n/rateur");
+				break;
+			case CONSTRUIRE_DISTRICT_MINIER:
+				gfx_PrintString("Construit district minier");
+				break;
+			case CONSTRUIRE_DISTRICT_AGRICOLE:
+				gfx_PrintString("Construit district agicole");
+				break;
+		}
+		if(ordre->ordre != AUCUN){
+			gfx_SetTextXY(45, 180);
+			gfx_PrintString("(");
+			gfx_SetTextFGColor(13);
+			PrintInt((12 - ordre->tempsActuel) * 100 / 12);
+			gfx_PrintString("%");
+			gfx_SetTextFGColor(1);
+			gfx_PrintString(")");
+		}
+	}
+	else{
+		gfx_PrintString("Aucun ordre");
 	}
 }
 
@@ -1706,7 +1911,7 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 }
 
 /**
- *Renvoie le nom du module
+ *Ecrie et renvoie le nom de l'ordre
  */
 char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre, int niveau){
 	char numero[20];
