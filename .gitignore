@@ -1,2 +1,12 @@
 obj
 bin
+.vscode
+.project
+.cproject
+Stellaris.gpl
+Stellaris.sublime-project
+Stellaris.sublime-workspace
+StellarisBuild.sublime-build
+version.h
+src/gfx/convpng.log
+src/version/version.h

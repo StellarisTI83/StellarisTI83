@@ -23,6 +23,7 @@
 #include "nouvelle_partie.h"
 #include "sauvegarde.h"
 #include "flottes.h"
+#include "updating.h"
 
 #include "locale/locale.h"
 
@@ -680,8 +681,8 @@ void MenuSysteme(char* key, EmpireListe* empireListe, Empire* joueur, Parametres
 			MenuSystemePlaneteDistrict(key, systemeStellaires, camera, fenetre, empireListe);
 			break;
 			
-		case MENU_SYSTEME_PLANETE_ARMEE: //planete armee
-			MenuSystemePlaneteArmee(key, systemeStellaires, camera, fenetre);
+		case MENU_SYSTEME_PLANETE_BATIMENT: //planete armee
+			MenuSystemePlaneteBatiments(key, systemeStellaires, camera, fenetre, empireListe);
 			break;
 
 		case MENU_SYSTEME_FLOTTE_DETAILS: //menu flotte details
@@ -984,9 +985,9 @@ void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Ca
 	if(planete->population == 0){
 		gfx_SetColor(11);
 	}
-	gfx_FillRectangle_NoClip(niveau, 200, strlen("Arm/e") * 8 + 10, 10);
-	gfx_PrintStringXY("Arm/e", niveau + 5, 201);
-	niveau += strlen("Arm/e") * 8 + 10;
+	gfx_FillRectangle_NoClip(niveau, 200, strlen("Batiments") * 8 + 10, 10);
+	gfx_PrintStringXY("Batiments", niveau + 5, 201);
+	niveau += strlen("Batiments") * 8 + 10;
 
 
 	gfx_SetColor(7);
@@ -1028,20 +1029,34 @@ void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Ca
 	
 	if(planete->population > 0){
 		gfx_SetTextXY(157, 84);
-		gfx_TransparentSprite_NoClip(free_job_icon, 150, 84);
-		PrintInt(planete->villes->emplois);
+		gfx_TransparentSprite_NoClip(criminality_pop_icon, 150, 84);
+		PrintInt(planete->villes->criminatlitee);
 		
 		gfx_SetTextXY(157, 94);
-		gfx_TransparentSprite_NoClip(criminality_pop_icon, 150, 94);
-		PrintInt(planete->villes->criminatlitee);
+		gfx_TransparentSprite_NoClip(free_houses_icon, 150, 94);
+		PrintInt(planete->villes->districtsUrbains);
 		
 		gfx_SetTextXY(157, 104);
 		gfx_TransparentSprite_NoClip(amienties_icon, 150, 104);
 		PrintInt(planete->villes->amienties);
-		
+
 		gfx_SetTextXY(157, 114);
-		gfx_TransparentSprite_NoClip(unemployed_pop_icon, 150, 114);
-		PrintInt(planete->population - planete->villes->emplois);
+		gfx_TransparentSprite_NoClip(free_job_icon, 150, 114);
+		if(planete->population - planete->villes->emplois > 0){
+			PrintInt(planete->population - planete->villes->emplois);
+		}
+		else{
+			PrintInt(0);
+		}
+		
+		gfx_SetTextXY(157, 124);
+		gfx_TransparentSprite_NoClip(unemployed_pop_icon, 150, 124);
+		if(planete->population - planete->villes->emplois < 0) {
+			PrintInt(-(planete->population - planete->villes->emplois));
+		}
+		else{
+			PrintInt(0);
+		}
 
 		niveau = 158;
 		gfx_SetTextXY(45, niveau);
@@ -1131,9 +1146,9 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 	if(planete->population == 0){
 		gfx_SetColor(11);
 	}
-	gfx_FillRectangle_NoClip(niveau, 200, strlen("Arm/e") * 8 + 10, 10);
-	gfx_PrintStringXY("Arm/e", niveau + 5, 201);
-	niveau += strlen("Arm/e") * 8 + 10;
+	gfx_FillRectangle_NoClip(niveau, 200, strlen("Batiments") * 8 + 10, 10);
+	gfx_PrintStringXY("Batiments", niveau + 5, 201);
+	niveau += strlen("Batiments") * 8 + 10;
 
 
 	gfx_SetColor(7);
@@ -1144,6 +1159,8 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
 	gfx_HorizLine_NoClip(230, 45, 40); //***
 
+	gfx_HorizLine_NoClip(45, 167, 230);//barre du bas au dessus des ordres
+	
 	gfx_SetColor(1);
 	gfx_SetPixel(270, 45);//point au bout de la ligne du titre
 
@@ -1264,6 +1281,11 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 			fenetre->ouverte = MENU_SYSTEME_PLANETE_RESUME;
 			*key = 0;
 			break;
+			break;
+		case sk_Right:
+			fenetre->ouverte = MENU_SYSTEME_PLANETE_BATIMENT;
+			*key = 0;
+			break;
 		case sk_Down:
 			fenetre->selection++;
 			*key = 0;
@@ -1286,6 +1308,7 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
  */
 void OrdreDistrictNom(Villes *villes){
 	Ordre *ordre;
+	int nombredOrdres = 0;
 	ordre = RecupererOrdre(villes->ordreFile);
 	gfx_SetTextXY(45, 170);
 	gfx_SetTextFGColor(1);
@@ -1315,6 +1338,12 @@ void OrdreDistrictNom(Villes *villes){
 			gfx_PrintString("%");
 			gfx_SetTextFGColor(1);
 			gfx_PrintString(")");
+			nombredOrdres = NombredOrdres(villes->ordreFile);
+			if(nombredOrdres > 1){
+				gfx_PrintString(" (+");
+				PrintInt(nombredOrdres - 1);
+				gfx_PrintString(")");
+			}
 		}
 	}
 	else{
@@ -1323,134 +1352,264 @@ void OrdreDistrictNom(Villes *villes){
 }
 
 /**
- *Dessine le menu de l'armée de planète
+ *Dessine le menu de les batiments de planète
  */
-void MenuSystemePlaneteArmee(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre){
-	int8_t populationChar[5];
-	switch(*key)
+void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
+	int8_t nomPlanete[20];
+	int8_t decalage = 0;
+	int niveau = 40, nombreDeBatiment = 0;
+	int supprimer = 0;
+	Planete* planete = NULL;
+	Ordre *ordre = NULL;
+
+	switch(fenetre->planete)
 	{
-	case sk_Clear:
-		camera->fenetre = MENU_AUCUN;
-		fenetre->ouverte = FALSE;
-		camera->bloque = FALSE;
-		*key = 0;
-		break;				
-	case sk_Left:
-		fenetre->ouverte = MENU_SYSTEME_PLANETE_DISTRICT;
-		*key = 0;
-		break;
+		case 1:
+			decalage = 186;
+			planete = systemeStellaires[camera->systeme].planete1;
+			strcpy(nomPlanete, " I");
+			break;
+		case 2:
+			decalage = 182;
+			planete = systemeStellaires[camera->systeme].planete2;
+			strcpy(nomPlanete, " II");
+			break;
+		case 3:
+			decalage = 178;
+			planete = systemeStellaires[camera->systeme].planete3;
+			strcpy(nomPlanete, " III");
+			break;
+		case 4:
+			decalage = 182;
+			planete = systemeStellaires[camera->systeme].planete4;
+			strcpy(nomPlanete, " IV");
+			break;
+			
+		case 5:
+			decalage = 186;
+			planete = systemeStellaires[camera->systeme].planete5;
+			strcpy(nomPlanete, " V");
+			break;
 	}
+
+	ordre = RecupererOrdre(planete->villes->ordreFile);	
+
 	//dessiner fenetre
 	gfx_SetColor(6);
 	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-	gfx_FillRectangle_NoClip(40, 200, 70, 12); //barre du bas
-	gfx_FillRectangle_NoClip(110, 200, 90, 12);
+
+	gfx_FillRectangle_NoClip(40, 200, strlen("R/sum/") * 8 + 10, 10);
+	gfx_PrintStringXY("R/sum/", 45, 201);
+	niveau += strlen("R/sum/") * 8 + 10;
 	gfx_SetColor(7);
+	gfx_VertLine_NoClip(niveau - 1, 201, 8);//barre de séparation
+	gfx_SetColor(6);
+
+	gfx_FillRectangle_NoClip(niveau, 200, strlen("Districts") * 8 + 10, 10);
+	gfx_PrintStringXY("Districts", niveau + 5, 201);
+	niveau += strlen("Districts") * 8 + 10;
+
+	gfx_SetColor(7);
+	gfx_FillRectangle_NoClip(niveau, 200, strlen("Batiments") * 8 + 10, 10);
+	gfx_PrintStringXY("Batiments", niveau + 5, 201);
+	niveau += strlen("Batiments") * 8 + 10;
+
+
 	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(45, 51, 230);
-	gfx_VertLine_NoClip(100, 42, 8);
-	gfx_Rectangle_NoClip(45, 56, 100, 100);
-	gfx_Rectangle_NoClip(40, 199, 230, 13); //barre du bas
-	gfx_VertLine_NoClip(110, 201, 8);
-	gfx_FillRectangle_NoClip(200, 200, 70, 12);
-	gfx_PrintStringXY("R/sum/ ", 51, 201);
-	gfx_PrintStringXY("Population", 115, 201);
-	gfx_PrintStringXY("Arm/e", 215, 201);
-	gfx_PrintStringXY("Retour", 48, 42);
-	switch(fenetre->selection)
-	{
-	case 1:
-		gfx_SetTextXY(186 - strlen(systemeStellaires[camera->systeme].nom), 42);
-		if(systemeStellaires[camera->systeme].planete1->habitable == 1){
-			gfx_PrintString(systemeStellaires[camera->systeme].planete1->nom);
-			gfx_SetTextFGColor(19);
-			gfx_PrintStringXY("Habitable", 150, 62);
-		}
-		else{
-			gfx_PrintString(systemeStellaires[camera->systeme].nom);
-			gfx_PrintString(" I");
-			gfx_SetTextFGColor(3);
-			gfx_PrintStringXY("Non-habitable", 150, 62);
-		}
-		gfx_SetTextFGColor(1);
-		gfx_PrintStringXY("Population", 150, 74);
-		sprintf(populationChar, "%d", systemeStellaires[camera->systeme].planete1->population);
-		gfx_PrintStringXY(populationChar, 150, 86);
-		break;
-	case 2:
-		gfx_SetTextXY(182 - strlen(systemeStellaires[camera->systeme].nom), 42);
-		if(systemeStellaires[camera->systeme].planete2->habitable == 1){
-			gfx_PrintString(systemeStellaires[camera->systeme].planete2->nom);
-			gfx_SetTextFGColor(19);
-			gfx_PrintStringXY("Habitable", 150, 62);
-		}
-		else{
-			gfx_PrintString(systemeStellaires[camera->systeme].nom);
-			gfx_PrintString(" II");
-			gfx_SetTextFGColor(3);
-			gfx_PrintStringXY("Non-habitable", 150, 62);
-		}
-		gfx_SetTextFGColor(1);
-		gfx_PrintStringXY("Population", 150, 74);
-		sprintf(populationChar, "%d", systemeStellaires[camera->systeme].planete2->population);
-		gfx_PrintStringXY(populationChar, 150, 86);
-		break;
-	case 3:
-		gfx_SetTextXY(178 - strlen(systemeStellaires[camera->systeme].nom), 42);
-		if(systemeStellaires[camera->systeme].planete3->habitable == 1){
-			gfx_PrintString(systemeStellaires[camera->systeme].planete3->nom);
-			gfx_SetTextFGColor(19);
-			gfx_PrintStringXY("Habitable", 150, 62);
-		}
-		else{
-			gfx_PrintString(systemeStellaires[camera->systeme].nom);
-			gfx_PrintString(" III");
-			gfx_SetTextFGColor(3);
-			gfx_PrintStringXY("Non-habitable", 150, 62);
-		}
-		gfx_SetTextFGColor(1);
-		gfx_PrintStringXY("Population", 150, 74);
-		sprintf(populationChar, "%d", systemeStellaires[camera->systeme].planete3->population);
-		gfx_PrintStringXY(populationChar, 150, 86);
-		break;
-	case 4:
-		gfx_SetTextXY(182 - strlen(systemeStellaires[camera->systeme].nom), 42);
-		if(systemeStellaires[camera->systeme].planete4->habitable == 1){
-			gfx_PrintString(systemeStellaires[camera->systeme].planete4->nom);
-			gfx_SetTextFGColor(19);
-			gfx_PrintStringXY("Habitable", 150, 62);
-		}
-		else{
-			gfx_PrintString(systemeStellaires[camera->systeme].nom);
-			gfx_PrintString(" IV");
-			gfx_SetTextFGColor(3);
-			gfx_PrintStringXY("Non-habitable", 150, 62);
-		}
-		gfx_SetTextFGColor(1);
-		gfx_PrintStringXY("Population", 150, 74);
-		sprintf(populationChar, "%d", systemeStellaires[camera->systeme].planete4->population);
-		gfx_PrintStringXY(populationChar, 150, 86);
-		break;
-		
-	case 5:
-		gfx_SetTextXY(186 - strlen(systemeStellaires[camera->systeme].nom), 42);
-		if(systemeStellaires[camera->systeme].planete5->habitable == 1){
-			gfx_PrintString(systemeStellaires[camera->systeme].planete5->nom);
-			gfx_SetTextFGColor(19);
-			gfx_PrintStringXY("Habitable", 150, 62);
-		}
-		else{
-			gfx_PrintString(systemeStellaires[camera->systeme].nom);
-			gfx_PrintString(" V");
-			gfx_SetTextFGColor(3);
-			gfx_PrintStringXY("Non-habitable", 150, 62);
-		}
-		gfx_SetTextFGColor(1);
-		gfx_PrintStringXY("Population", 150, 74);
-		sprintf(populationChar, "%d", systemeStellaires[camera->systeme].planete5->population);
-		gfx_PrintStringXY(populationChar, 150, 86);
-		break;	
+	gfx_Rectangle_NoClip(40, 199, niveau - 40, 11);
+
+	gfx_HorizLine_NoClip(45, 51, 180); //***
+	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
+	gfx_HorizLine_NoClip(230, 45, 40); //***
+
+	gfx_HorizLine_NoClip(45, 167, 230);//barre du bas au dessus des ordres
+
+	gfx_SetColor(1);
+	gfx_SetPixel(270, 45);//point au bout de la ligne du titre
+
+	gfx_SetTextXY(45, 42);//écrie le nom de la planète
+	if(planete->habitable == 1){
+		gfx_PrintString(planete->nom);
 	}
+	else{
+		gfx_PrintString(systemeStellaires[camera->systeme].nom);
+		gfx_PrintString(nomPlanete);
+	}
+	niveau = 55;
+	if(planete->villes != NULL){
+		gfx_SetTextXY(45, niveau);
+		if(planete->population >= 0){
+			gfx_SetTextFGColor(1);
+			if(fenetre->selection == 1){
+				gfx_SetTextFGColor(13);
+			}
+			PlaneteBatimentNom(planete->villes->batiment1, planete->villes->niveauBatiment1);
+			nombreDeBatiment++;
+		}
+		else{
+			gfx_SetTextFGColor(3);
+			gfx_PrintString("0");
+		}
+		niveau += 14;
+		gfx_SetTextXY(45, niveau);
+		if(planete->population >= 10){
+			gfx_SetTextFGColor(1);
+			if(fenetre->selection == 2){
+				gfx_SetTextFGColor(13);
+			}
+			PlaneteBatimentNom(planete->villes->batiment2, planete->villes->niveauBatiment2);
+			nombreDeBatiment++;
+		}
+		else{
+			gfx_SetTextFGColor(3);
+			gfx_PrintString("10");
+		}
+		niveau += 14;
+		gfx_SetTextXY(45, niveau);
+		if(planete->population >= 20){
+			gfx_SetTextFGColor(1);
+			if(fenetre->selection == 3){
+				gfx_SetTextFGColor(13);
+			}
+			PlaneteBatimentNom(planete->villes->batiment3, planete->villes->niveauBatiment3);
+			nombreDeBatiment++;
+		}
+		else{
+			gfx_SetTextFGColor(3);
+			gfx_PrintString("20");
+		}
+		niveau += 14;
+		gfx_SetTextXY(45, niveau);
+		if(planete->population >= 30){
+			gfx_SetTextFGColor(1);
+			if(fenetre->selection == 4){
+				gfx_SetTextFGColor(13);
+			}
+			PlaneteBatimentNom(planete->villes->batiment4, planete->villes->niveauBatiment4);
+			nombreDeBatiment++;
+		}
+		else{
+			gfx_SetTextFGColor(3);
+			gfx_PrintString("30");
+		}
+		niveau += 14;
+		gfx_SetTextXY(45, niveau);
+		if(planete->population >= 40){
+			gfx_SetTextFGColor(1);
+			if(fenetre->selection == 5){
+				gfx_SetTextFGColor(13);
+			}
+			PlaneteBatimentNom(planete->villes->batiment5, planete->villes->niveauBatiment5);
+			nombreDeBatiment++;
+		}
+		else{
+			gfx_SetTextFGColor(3);
+			gfx_PrintString("40");
+		}
+		niveau += 14;
+		gfx_SetTextXY(45, niveau);
+		if(planete->population >= 50){
+			gfx_SetTextFGColor(1);
+			if(fenetre->selection == 6){
+				gfx_SetTextFGColor(13);
+			}
+			PlaneteBatimentNom(planete->villes->batiment6, planete->villes->niveauBatiment6);
+			nombreDeBatiment++;
+		}
+		else{
+			gfx_SetTextFGColor(3);
+			gfx_PrintString("50");
+		}
+		niveau += 14;
+	}
+	OrdreDistrictNom(planete->villes);
+	
+	if(ordre != NULL){
+		if(fenetre->selection == 7){
+			gfx_SetColor(13);
+		}
+		else{
+			gfx_SetColor(3);
+		}
+		supprimer = 1;
+		gfx_Line_NoClip(265, 170, 275, 180);
+		gfx_Line_NoClip(265, 180, 275, 170);
+	}
+	
+	if(*key == sk_Enter){
+		if((supprimer == 1) && (fenetre->selection == 7)){
+			empireListe->premier->minerais += ordre->prix;
+			FinirOrdre(planete->villes->ordreFile);
+		}
+		else{
+
+		}
+		*key = 0;
+	}
+	switch(*key)
+	{
+		case sk_Clear:
+			camera->fenetre = MENU_AUCUN;
+			fenetre->ouverte = FALSE;
+			camera->bloque = FALSE;
+			*key = 0;
+			break;
+		case sk_Left:
+			fenetre->ouverte = MENU_SYSTEME_PLANETE_DISTRICT;
+			*key = 0;
+			break;
+			break;
+		case sk_Down:
+			fenetre->selection++;
+			*key = 0;
+			break;
+		case sk_Up:
+			fenetre->selection--;
+			*key = 0;
+			break;
+	}
+	if(fenetre->selection < 1){
+		fenetre->selection = 1;
+	}
+	if((fenetre->selection > nombreDeBatiment) && (supprimer == 0)){
+		fenetre->selection = nombreDeBatiment;
+	}
+	if((fenetre->selection > nombreDeBatiment) && (supprimer == 1)){
+		fenetre->selection = 7;
+	}
+	if((fenetre->selection == 6) && (nombreDeBatiment != 6)){
+		fenetre->selection = nombreDeBatiment;
+	}
+}
+
+/**
+ * Ecrit le nom du batiment
+ * */
+void PlaneteBatimentNom(Batiment batiment, int niveau){
+	if(batiment != AUCUN){
+		switch(batiment){
+			case CAPITALE:
+				gfx_PrintString("Capitale");
+				break;
+			case FONDERIE:
+				gfx_PrintString("Fonderie");
+				break;
+			case LABORATOIRE:
+				gfx_PrintString("Laboratoire");
+				break;
+			case USINE_CIVILE:
+				gfx_PrintString("Usine civile");
+				break;
+			case THEATRE:
+				gfx_PrintString("Theatre");
+		}
+		gfx_PrintString(" lvl.");
+		PrintInt(niveau);
+	}
+	else{
+		gfx_PrintString("Aucun batiment");
+	}
+
 }
 
 /**
@@ -1959,7 +2118,7 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
  */
 char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre, int niveau){
 	char numero[20];
-	int travail = 0;
+	int travail = 0, nombredOrdres = 0;
 	Ordre *ordre = RecupererOrdre(station->ordreFile);
 	if(ordre == NULL){
 		gfx_PrintStringXY("Aucun ordre", 55, niveau);
@@ -2017,6 +2176,12 @@ char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre, in
 				strcat(nomDeOrdre, numero);
 				gfx_PrintString(nomDeOrdre);
 				gfx_PrintString("%)");
+				nombredOrdres = NombredOrdres(station->ordreFile);
+				if(nombredOrdres > 1){
+					gfx_PrintString(" (+");
+					PrintInt(nombredOrdres - 1);
+					gfx_PrintString(")");
+				}
 				break;
 		}
 	}
@@ -2574,15 +2739,17 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 				fenetre->nombreDeVaisseaux = 1;
 			}
 			else{
-				// joueur->acier -= prix;
-				NouvelOrdre(systemeStellaires[camera->systeme].station->ordreFile,
-					CONSTRUIRE_VAISSEAU,
-					travail,
-					fenetre->selection,
-					1,
-					prix
-				);
-				fenetre->ouverte = MENU_SYSTEME_STATION_RESUME;
+				if(joueur->acier >= prix){
+					joueur->acier -= prix;
+					NouvelOrdre(systemeStellaires[camera->systeme].station->ordreFile,
+						CONSTRUIRE_VAISSEAU,
+						travail,
+						fenetre->selection,
+						1,
+						prix
+					);
+					fenetre->ouverte = MENU_SYSTEME_STATION_RESUME;
+				}
 			}
 		}
 	
@@ -2707,8 +2874,8 @@ void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire
 	PrintInt(fenetre->nombreDeVaisseaux * prix);
 
 	if(*key == sk_Enter){
-		// if(joueur->acier >= prix * fenetre->nombreDeVaisseaux){
-			// joueur->acier -= prix * fenetre->nombreDeVaisseaux;
+		if(joueur->acier >= prix * fenetre->nombreDeVaisseaux){
+			joueur->acier -= prix * fenetre->nombreDeVaisseaux;
 			NouvelOrdre(systemeStellaires[camera->systeme].station->ordreFile,
 				CONSTRUIRE_VAISSEAU,
 				travail * fenetre->nombreDeVaisseaux,
@@ -2717,10 +2884,10 @@ void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire
 				prix * fenetre->nombreDeVaisseaux
 			);
 			fenetre->ouverte = MENU_SYSTEME_STATION_RESUME;
-		// }
-		// else{
-		// 	gfx_PrintStringXY("Pas assez de fer", 45, 100);
-		// }
+		}
+		else{
+			gfx_PrintStringXY("Pas assez de fer", 45, 100);
+		}
 		*key = 0;
 	}
 }

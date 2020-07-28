@@ -86,7 +86,7 @@ int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte) {
  *Rajoute une flotte à la liste des flotte envoyée
  */
 Flotte* FlotteAjouter(FlotteListe* flotteliste) {
-	Flotte *pointeur = 0, fin = 0;
+	Flotte *pointeur = 0;
 	pointeur = flotteliste->premier;
 	if(flotteliste->premier != NULL) {
 		while(pointeur->suivant != NULL) {

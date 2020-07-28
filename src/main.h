@@ -252,6 +252,7 @@ void SupprimerFileOrdres(OrdreFile *ordreFile);
 void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal, int info1, int info2, int prix);
 void FinirOrdre(OrdreFile *ordreFile);
 Ordre* RecupererOrdre(OrdreFile *ordreFile);
+int NombredOrdres(OrdreFile *ordreFile);
 
 
 #endif

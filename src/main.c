@@ -346,7 +346,7 @@ Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
  *Rajoute un empire à la liste des empire
  */
 Empire* EmpireAjouter(EmpireListe* empireListe) {
-	Empire *pointeur = 0, fin = 0;
+	Empire *pointeur = 0;
 	int compteur = 0;
 	pointeur = empireListe->premier;
 	if(empireListe->premier != NULL) {
@@ -444,4 +444,16 @@ Ordre* RecupererOrdre(OrdreFile *ordreFile){
 	Ordre *ordre = NULL;
 	ordre = ordreFile->premierOrdre;
 	return ordre;
+}
+
+//renvoie le nombre d'ordres
+int NombredOrdres(OrdreFile *ordreFile){
+	int nombre = 0;
+	Ordre *ordre = NULL;
+	ordre = ordreFile->premierOrdre;
+	while(ordre != NULL){
+		ordre = ordre->ordreSuivant;
+		nombre++;
+	}
+	return(nombre);
 }

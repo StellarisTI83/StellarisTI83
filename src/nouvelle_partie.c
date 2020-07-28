@@ -1897,13 +1897,19 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			camera->ySysteme = planete->y - 120;
 			strcpy(planete->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 			planete->villes = calloc(1, sizeof(Villes));
-			planete->population = 28;
+			planete->population = 27;
 			planete->villes->districtsUrbains = 4;
 			planete->villes->districtsGenerateurs = 3;
 			planete->villes->districtsMiniers = 3;
 			planete->villes->districtsAgricoles = 3;
-			planete->villes->emplois = 18;
+			planete->villes->emplois = 27;
 			planete->villes->ordreFile = CreerFileOrdres();
+			planete->villes->batiment1 = CAPITALE;
+			planete->villes->niveauBatiment1 = 3;
+			planete->villes->batiment2 = USINE_CIVILE;
+			planete->villes->niveauBatiment2 = 1;
+			planete->villes->batiment3 = FONDERIE;
+			planete->villes->niveauBatiment3 = 1;
 		}
 	}
 	return 1;

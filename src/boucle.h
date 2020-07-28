@@ -13,7 +13,7 @@
 #define MENU_SYSTEME_ETOILE 2
 #define MENU_SYSTEME_PLANETE_RESUME 3
 #define MENU_SYSTEME_PLANETE_DISTRICT 4
-#define MENU_SYSTEME_PLANETE_ARMEE 5
+#define MENU_SYSTEME_PLANETE_BATIMENT 5
 #define MENU_SYSTEME_FLOTTE_DETAILS 6
 #define MENU_SYSTEME_STATION_RESUME 7
 #define MENU_SYSTEME_STATION_MODULES 8
@@ -44,7 +44,8 @@ void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Ca
 void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe);
 void OrdreDistrictNom(Villes *villes);
 
-void MenuSystemePlaneteArmee(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
+void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe);
+void PlaneteBatimentNom(Batiment batiment, int niveau);
 
 void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, EmpireListe *empireListe, Empire* joueur, Camera *camera, Fenetre *fenetre);
 

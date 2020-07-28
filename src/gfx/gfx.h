@@ -122,6 +122,8 @@ extern "C" {
 
 #include "unemployed_pop_icon.h"
 
+#include "free_houses_icon.h"
+
 
 
 #ifdef __cplusplus
