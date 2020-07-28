@@ -60,6 +60,9 @@ typedef struct EmpireStruct Empire;
 typedef struct OrdreElement Ordre;
 struct OrdreElement{
 	int ordre;
+	int info1; //numero du module / type de flotte
+	int info2; //type du module / nombre de vaisseaux dans la flotte
+	int prix;
 	int tempsTotal;
 	int tempsActuel;
 	Ordre* ordreSuivant;
@@ -130,10 +133,7 @@ typedef struct {
 
 typedef struct {
 	NiveauStation niveauStation;
-	OrdreStation ordreStation;
-	int ordreStationInfos; //numero du module / type de flotte
-	int ordreStationInfos2; //type du module / nombre de vaisseaux dans la flotte
-	int avancementOrdreStation;
+	OrdreFile *ordreFile;
 	int puissance;
 	int coqueTotal;//quantitée normale
 	int coqueVie;//quantitée habituelle
@@ -220,6 +220,7 @@ typedef struct {
 	char ouverte;
 	char precedente;
 	int scroll;
+	int nombreDeVaisseaux; //utilisé dans la création de flottes
 } Fenetre;
 
 typedef struct {
@@ -248,7 +249,7 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 
 OrdreFile *CreerFileOrdres();
 void SupprimerFileOrdres(OrdreFile *ordreFile);
-void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal);
+void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal, int info1, int info2, int prix);
 void FinirOrdre(OrdreFile *ordreFile);
 Ordre* RecupererOrdre(OrdreFile *ordreFile);
 

@@ -406,8 +406,9 @@ void SupprimerFileOrdres(OrdreFile *ordreFile){
 	free(ordreFile);
 }
 
-void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal){
-	Ordre *ordreElement = NULL;
+void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal, int info1, int info2, int prix){
+	Ordre *ordreElement = NULL, *ordrePrecedent = NULL;
+
 	if(ordreFile->premierOrdre == NULL){
 		ordreFile->premierOrdre = calloc(1, sizeof(Ordre));
 		ordreElement = ordreFile->premierOrdre;
@@ -417,10 +418,16 @@ void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal){
 		while(ordreElement->ordreSuivant != NULL){
 			ordreElement = ordreElement->ordreSuivant;
 		}
+		ordreElement->ordreSuivant = calloc(1, sizeof(Ordre));
+		ordreElement = ordreElement->ordreSuivant;
 	}
+
 	ordreElement->ordre = ordre;
 	ordreElement->tempsTotal = tempsTotal;
 	ordreElement->tempsActuel = tempsTotal;
+	ordreElement->info1 = info1;
+	ordreElement->info2 = info2;
+	ordreElement->prix = prix;
 	ordreElement->ordreSuivant = NULL;
 }
 

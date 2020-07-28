@@ -1302,6 +1302,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			//malloc de la station
 			systemeStellaires[k].station = (Station*)malloc(sizeof(Station));
 			memset(systemeStellaires[k].station, 0, sizeof(Station));
+			systemeStellaires[k].station->ordreFile = CreerFileOrdres();
 			etoile = randInt(1, 100);
 			trouNoir = 0;
 			if(etoile <= 10)
@@ -1901,6 +1902,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			planete->villes->districtsGenerateurs = 3;
 			planete->villes->districtsMiniers = 3;
 			planete->villes->districtsAgricoles = 3;
+			planete->villes->emplois = 18;
 			planete->villes->ordreFile = CreerFileOrdres();
 		}
 	}
