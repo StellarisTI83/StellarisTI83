@@ -29,10 +29,12 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
 ## To do list (French)
 
 - [x] Menus stations
-- [ ] Menu planètes
+- [x] Menu planètes
+- [ ] Niveaux des batiments
 - [x] Plusieurs actions de suite
 - [x] Flottes militaires de plusieurs types
 - [ ] Gèrer l'update des données du joueur
+- [ ] Rajout d'une console
 - [ ] Menu flottes
 - [ ] Rajout des stations scientifiques et minières
 - [ ] Actions flottes
@@ -44,5 +46,6 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
 - [ ] Menu marché
 - [ ] Revenus
 - [ ] Changement des sprites de local à appvar
+- [ ] Refaire le menu d'entrée
 - [ ] Création de sauvegardes
 - [ ] Traduction totale

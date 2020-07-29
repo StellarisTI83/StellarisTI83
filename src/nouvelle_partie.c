@@ -1195,6 +1195,8 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	camera->bloque = FALSE;
 	camera->bougerFlotte = FALSE;
 
+	fenetre->villes = NULL;
+	fenetre->error = NO_ERROR;
 	marche->valeurMinerai = 50;
 
 	fin = ChargementNouvellePartieGalaxie(parametres, &sauvegarde, systemeStellaires, flotteJoueur, camera);

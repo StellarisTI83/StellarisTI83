@@ -2,7 +2,7 @@
 #define _MAIN_INCLUDE
 /**************macros**************/
 #define LARGEUR_GALAXIE 11
-#define VERSION_LOGICIEL "pre-alpha"
+#define VERSION_LOGICIEL "Alpha"
 #define LIMITE_GAUCHE 180
 #define LIMITE_HAUT 160
 
@@ -36,11 +36,13 @@ typedef enum {AUCUNE, AVANT_POSTE, PORT_STELLAIRE, REDOUTE_STELLAIRE, FORTERESSE
 
 typedef enum {AUCUN, CHANTIER_SPATIAL, ANCRAGE, CANONS, MISSILES, HANGAR, CARREFOUR_COMMERCIAL, PANNEAUX_SOLAIRES} Module;
 
-typedef enum {AUCUN, CONSTRUIRE_MODULE, CONSTRUIRE_PLATEFORME, CONSTRUIRE_VAISSEAU} OrdreStation;
+typedef enum {AUCUN, AMELIORER_STATION, CONSTRUIRE_MODULE, CONSTRUIRE_PLATEFORME, CONSTRUIRE_VAISSEAU} OrdreStation;
 
-typedef enum {AUCUN, CAPITALE, FONDERIE, LABORATOIRE, USINE_CIVILE, THEATRE} Batiment;
+typedef enum {AUCUN = 1, CAPITALE, FONDERIE, LABORATOIRE, USINE_CIVILE, THEATRE} Batiment;
 
-typedef enum {AUCUN, CONSTRUIRE_DISTRICT_URBAIN, CONSTRUIRE_DISTRICT_GENERATEUR, CONSTRUIRE_DISTRICT_MINIER, CONSTRUIRE_DISTRICT_AGRICOLE} OrdreConstruction;
+typedef enum {AUCUN, CONSTRUIRE_DISTRICT_URBAIN, CONSTRUIRE_DISTRICT_GENERATEUR, CONSTRUIRE_DISTRICT_MINIER, CONSTRUIRE_DISTRICT_AGRICOLE, CONSTRUIRE_BATIMENT} OrdreConstruction;
+
+typedef enum {NO_ERROR, ACIER_MANQUE, MINERAI_MANQUE} Error;
 
 #define ETOILE_TYPE_B 1
 #define ETOILE_TYPE_A 2
@@ -60,7 +62,7 @@ typedef struct EmpireStruct Empire;
 typedef struct OrdreElement Ordre;
 struct OrdreElement{
 	int ordre;
-	int info1; //numero du module / type de flotte
+	int info1; //numero du module / type de flotte / numero du batiment
 	int info2; //type du module / nombre de vaisseaux dans la flotte
 	int prix;
 	int tempsTotal;
@@ -220,7 +222,10 @@ typedef struct {
 	char ouverte;
 	char precedente;
 	int scroll;
+	Error error;
+	int errorCountDown;
 	int nombreDeVaisseaux; //utilisé dans la création de flottes
+	Villes *villes; //utilisé dans le chanement de batiment
 } Fenetre;
 
 typedef struct {

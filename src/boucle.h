@@ -14,12 +14,13 @@
 #define MENU_SYSTEME_PLANETE_RESUME 3
 #define MENU_SYSTEME_PLANETE_DISTRICT 4
 #define MENU_SYSTEME_PLANETE_BATIMENT 5
-#define MENU_SYSTEME_FLOTTE_DETAILS 6
-#define MENU_SYSTEME_STATION_RESUME 7
-#define MENU_SYSTEME_STATION_MODULES 8
-#define MENU_SYSTEME_STATION_MODULES_CHOIX 9
-#define MENU_SYSTEME_STATION_CHANTIER 10
-#define MENU_SYSTEME_STATION_CHANTIER_CHOIX 11
+#define MENU_SYSTEME_PLANETE_BATIMENT_CHOIX 6
+#define MENU_SYSTEME_FLOTTE_DETAILS 7
+#define MENU_SYSTEME_STATION_RESUME 8
+#define MENU_SYSTEME_STATION_MODULES 9
+#define MENU_SYSTEME_STATION_MODULES_CHOIX 10
+#define MENU_SYSTEME_STATION_CHANTIER 11
+#define MENU_SYSTEME_STATION_CHANTIER_CHOIX 12
 
 int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);	
 void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires);
@@ -45,7 +46,8 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 void OrdreDistrictNom(Villes *villes);
 
 void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe);
-void PlaneteBatimentNom(Batiment batiment, int niveau);
+void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
+char *PlaneteBatimentNom(Batiment batiment, int niveau, char* nom);
 
 void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, EmpireListe *empireListe, Empire* joueur, Camera *camera, Fenetre *fenetre);
 

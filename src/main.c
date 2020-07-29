@@ -56,6 +56,8 @@ int main(void)
 	gfx_Begin();
 	gfx_SetPalette(global_palette, sizeof_global_palette, 0);
 	gfx_SetFontData(font_logo);
+	gfx_SetMonospaceFont(8);
+	gfx_SetTextBGColor(255);
 
 	setLanguage(LC_FR);	
 	
@@ -76,14 +78,19 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 	unsigned char car = 'è';
 	unsigned int carInt = (int)car;
 	gfx_SetDrawScreen();
+
 	/*imprimer tout*/
 	gfx_FillScreen(255);
-    //fontlib_SetFont(test_font, 0);
     PrintCentered("Stellaris", 30, 4, 0, 0);
 	gfx_SetMonospaceFont(8);
 	gfx_SetTextBGColor(255);
-	gfx_PrintStringXY(__DATE__, 10, 205);
-	gfx_PrintStringXY(VERSION_LOGICIEL, LCD_WIDTH-strlen(VERSION_LOGICIEL)*8 - 20, 205);
+	gfx_SetTextXY(LCD_WIDTH - strlen(VERSION_LOGICIEL)*8 - strlen(__DATE__) * 8 - strlen(__TIME__) * 8 - 36, 205);
+	gfx_PrintString(VERSION_LOGICIEL);
+	gfx_PrintString(" ");
+	gfx_PrintString(__DATE__);
+	gfx_PrintString(" ");
+	gfx_PrintString(__TIME__);
+
 	/*faire le choix*/
 	while((key = os_GetCSC()) != sk_Enter)
 	{
@@ -388,6 +395,7 @@ void EmpireSupprimer(EmpireListe* empireListe, int numero) {
 	free(pointeur);
 }
 
+//crèe une file d'ordre
 OrdreFile *CreerFileOrdres(){
 	OrdreFile *ordreFile = NULL;
 	ordreFile = malloc(sizeof(OrdreFile));
@@ -395,6 +403,7 @@ OrdreFile *CreerFileOrdres(){
 	return ordreFile;
 }
 
+//supprime une file d'ordre
 void SupprimerFileOrdres(OrdreFile *ordreFile){
 	Ordre *ordre = NULL, *ordreSuivant = NULL;
 	ordre = ordreFile->premierOrdre;
@@ -406,6 +415,7 @@ void SupprimerFileOrdres(OrdreFile *ordreFile){
 	free(ordreFile);
 }
 
+//crèe un ordre
 void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal, int info1, int info2, int prix){
 	Ordre *ordreElement = NULL, *ordrePrecedent = NULL;
 
@@ -431,6 +441,7 @@ void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal, int info1, int
 	ordreElement->ordreSuivant = NULL;
 }
 
+//fini le dernier ordre
 void FinirOrdre(OrdreFile *ordreFile){
 	Ordre *ordre;
 	ordre = ordreFile->premierOrdre;
@@ -440,6 +451,7 @@ void FinirOrdre(OrdreFile *ordreFile){
 	}
 }
 
+//renvoie un ordre
 Ordre* RecupererOrdre(OrdreFile *ordreFile){
 	Ordre *ordre = NULL;
 	ordre = ordreFile->premierOrdre;

@@ -24,6 +24,7 @@
 #include "sauvegarde.h"
 #include "flottes.h"
 #include "updating.h"
+#include "console.h"
 
 #include "locale/locale.h"
 
@@ -148,6 +149,9 @@ void EffectuerActionsStations(SystemeStellaire *systemeStellaires, Empire *joueu
 			}
 			else{
 				switch(ordre->ordre){
+					case AMELIORER_STATION:
+						systemeStellaires[numero].station->niveauStation++;
+						break;
 					case CONSTRUIRE_MODULE:
 						switch(ordre->info1){
 							case 1:
@@ -222,6 +226,7 @@ void EffectuerActionsStations(SystemeStellaire *systemeStellaires, Empire *joueu
 void EffectuerActionsPlanetes(SystemeStellaire *systemeStellaires, Empire *joueur){
 	int i = 0, j = 0;
 	Villes *villes = NULL;
+	Batiment *batiment = NULL;
 	Ordre *ordre;
 	while(i < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
 		j = 1;
@@ -262,6 +267,35 @@ void EffectuerActionsPlanetes(SystemeStellaire *systemeStellaires, Empire *joueu
 								break;
 							case CONSTRUIRE_DISTRICT_AGRICOLE:
 								villes->districtsAgricoles++;
+								break;
+							case CONSTRUIRE_BATIMENT:
+								switch(ordre->info1){
+									case 1:
+										batiment = &villes->batiment1;
+										villes->niveauBatiment1 = 1;
+										break;
+									case 2:
+										batiment = &villes->batiment2;
+										villes->niveauBatiment2 = 1;
+										break;
+									case 3:
+										batiment = &villes->batiment3;
+										villes->niveauBatiment3 = 1;
+										break;
+									case 4:
+										batiment = &villes->batiment4;
+										villes->niveauBatiment4 = 1;
+										break;
+									case 5:
+										batiment = &villes->batiment5;
+										villes->niveauBatiment5 = 1;
+										break;
+									case 6:
+										batiment = &villes->batiment6;
+										villes->niveauBatiment6 = 1;
+										break;
+								}
+								*batiment = ordre->info2;
 								break;
 						}
 						FinirOrdre(villes->ordreFile);
@@ -681,8 +715,12 @@ void MenuSysteme(char* key, EmpireListe* empireListe, Empire* joueur, Parametres
 			MenuSystemePlaneteDistrict(key, systemeStellaires, camera, fenetre, empireListe);
 			break;
 			
-		case MENU_SYSTEME_PLANETE_BATIMENT: //planete armee
+		case MENU_SYSTEME_PLANETE_BATIMENT: //planete planete baiment
 			MenuSystemePlaneteBatiments(key, systemeStellaires, camera, fenetre, empireListe);
+			break;
+
+		case MENU_SYSTEME_PLANETE_BATIMENT_CHOIX: //menu planete changer batiment
+			MenuSystemePlaneteBatimentChoix(key, joueur, systemeStellaires, camera, fenetre);
 			break;
 
 		case MENU_SYSTEME_FLOTTE_DETAILS: //menu flotte details
@@ -1159,7 +1197,7 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
 	gfx_HorizLine_NoClip(230, 45, 40); //***
 
-	gfx_HorizLine_NoClip(45, 167, 230);//barre du bas au dessus des ordres
+	gfx_HorizLine_NoClip(45, 179, 230);//barre du bas au dessus des ordres
 	
 	gfx_SetColor(1);
 	gfx_SetPixel(270, 45);//point au bout de la ligne du titre
@@ -1173,65 +1211,70 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 		gfx_PrintString(nomPlanete);
 	}
 	if(planete->villes != NULL){
+		niveau = 55;
 		if(fenetre->selection == 1){
 			gfx_SetColor(13);
 		}
 		else{
 			gfx_SetColor(7);
 		}
-		gfx_Rectangle_NoClip(45, 70, 190, 21);
+		gfx_Rectangle_NoClip(45, niveau, 190, 21);
 		gfx_SetTextFGColor(17);
-		gfx_SetTextXY(50, 72);
+		gfx_SetTextXY(50, niveau + 2);
 		gfx_PrintString("Districts urbains");
-		gfx_SetTextXY(50, 82);
+		gfx_SetTextXY(50, niveau + 12);
 		PrintInt(planete->villes->districtsUrbains);
 		gfx_PrintString("|10");
 
+		niveau += 24;
 		if(fenetre->selection == 2){
 			gfx_SetColor(13);
 		}
 		else{
 			gfx_SetColor(7);
 		}
-		gfx_Rectangle_NoClip(45, 94, 190, 21);
+		gfx_Rectangle_NoClip(45, niveau, 190, 21);
 		gfx_SetTextFGColor(18);
-		gfx_SetTextXY(50, 96);
+		gfx_SetTextXY(50, niveau + 2);
 		gfx_PrintString("Districts g/n/rateurs");
-		gfx_SetTextXY(50, 106);
+		gfx_SetTextXY(50, niveau + 12);
 		PrintInt(planete->villes->districtsGenerateurs);
 		gfx_PrintString("|10");
 
+		niveau += 24;
 		if(fenetre->selection == 3){
 			gfx_SetColor(13);
 		}
 		else{
 			gfx_SetColor(7);
 		}
-		gfx_Rectangle_NoClip(45, 118, 190, 21);
+		gfx_Rectangle_NoClip(45, niveau, 190, 21);
 		gfx_SetTextFGColor(3);
-		gfx_SetTextXY(50, 120);
+		gfx_SetTextXY(50, niveau + 2);
 		gfx_PrintString("Districts miniers");
-		gfx_SetTextXY(50, 130);
+		gfx_SetTextXY(50, niveau + 12);
 		PrintInt(planete->villes->districtsMiniers);
 		gfx_PrintString("|10");
 
+		niveau += 24;
 		if(fenetre->selection == 4){
 			gfx_SetColor(13);
 		}
 		else{
 			gfx_SetColor(7);
 		}
-		gfx_Rectangle_NoClip(45, 142, 190, 21);
+		gfx_Rectangle_NoClip(45, niveau, 190, 21);
 		gfx_SetTextFGColor(19);
-		gfx_SetTextXY(50, 144);
+		gfx_SetTextXY(50, niveau + 2);
 		gfx_PrintString("Districts agricoles");
-		gfx_SetTextXY(50, 154);
+		gfx_SetTextXY(50, niveau + 12);
 		PrintInt(planete->villes->districtsAgricoles);
 		gfx_PrintString("|10");
 	}
 	OrdreDistrictNom(planete->villes);
 	
 	if(ordre != NULL){
+		niveau = 181;
 		maximum = 5;
 		if(fenetre->selection == 5){
 			gfx_SetColor(13);
@@ -1239,8 +1282,17 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 		else{
 			gfx_SetColor(3);
 		}
-		gfx_Line_NoClip(265, 170, 275, 180);
-		gfx_Line_NoClip(265, 180, 275, 170);
+		gfx_Line_NoClip(265, niveau + 2, 275, niveau + 12);
+		gfx_Line_NoClip(265, niveau + 12, 275, niveau + 2);
+	}
+
+	if(fenetre->error == MINERAI_MANQUE){
+		fenetre->errorCountDown--;
+		gfx_SetTextFGColor(3);
+		gfx_PrintStringXY("Pas assez de minerais", 45, 160);
+		if(fenetre->errorCountDown == 0){
+			fenetre->error = NO_ERROR;
+		}
 	}
 
 	if(*key == sk_Enter){
@@ -1265,6 +1317,10 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 						NouvelOrdre(planete->villes->ordreFile, CONSTRUIRE_DISTRICT_AGRICOLE, 12, 0, 0, 50);
 						break;
 				}
+			}
+			else{
+				fenetre->error = MINERAI_MANQUE;
+				fenetre->errorCountDown = 50;
 			}
 		}
 		*key = 0;
@@ -1309,8 +1365,9 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 void OrdreDistrictNom(Villes *villes){
 	Ordre *ordre;
 	int nombredOrdres = 0;
+	int niveau = 181;
 	ordre = RecupererOrdre(villes->ordreFile);
-	gfx_SetTextXY(45, 170);
+	gfx_SetTextXY(45, niveau);
 	gfx_SetTextFGColor(1);
 	if(ordre != NULL){
 		switch(ordre->ordre){
@@ -1329,12 +1386,17 @@ void OrdreDistrictNom(Villes *villes){
 			case CONSTRUIRE_DISTRICT_AGRICOLE:
 				gfx_PrintString("Construit district agicole");
 				break;
+				break;
+			case CONSTRUIRE_BATIMENT:
+				gfx_PrintString("Construit batiment ");
+				PrintInt(ordre->info1);
+				break;
 		}
 		if(ordre->ordre != AUCUN){
-			gfx_SetTextXY(45, 180);
+			gfx_SetTextXY(45, niveau += 9);
 			gfx_PrintString("(");
 			gfx_SetTextFGColor(13);
-			PrintInt((12 - ordre->tempsActuel) * 100 / 12);
+			PrintInt((ordre->tempsTotal - ordre->tempsActuel) * 100 / 12);
 			gfx_PrintString("%");
 			gfx_SetTextFGColor(1);
 			gfx_PrintString(")");
@@ -1355,7 +1417,7 @@ void OrdreDistrictNom(Villes *villes){
  *Dessine le menu de les batiments de planète
  */
 void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
-	int8_t nomPlanete[20];
+	int8_t nomPlanete[20], nom[50];
 	int8_t decalage = 0;
 	int niveau = 40, nombreDeBatiment = 0;
 	int supprimer = 0;
@@ -1402,7 +1464,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 	gfx_PrintStringXY("R/sum/", 45, 201);
 	niveau += strlen("R/sum/") * 8 + 10;
 	gfx_SetColor(7);
-	gfx_VertLine_NoClip(niveau - 1, 201, 8);//barre de séparation
+	gfx_VertLine_NoClip(niveau - 1, 201, 7);//barre de séparation
 	gfx_SetColor(6);
 
 	gfx_FillRectangle_NoClip(niveau, 200, strlen("Districts") * 8 + 10, 10);
@@ -1422,7 +1484,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
 	gfx_HorizLine_NoClip(230, 45, 40); //***
 
-	gfx_HorizLine_NoClip(45, 167, 230);//barre du bas au dessus des ordres
+	gfx_HorizLine_NoClip(45, 179, 230);//barre du bas au dessus des ordres
 
 	gfx_SetColor(1);
 	gfx_SetPixel(270, 45);//point au bout de la ligne du titre
@@ -1443,7 +1505,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 			if(fenetre->selection == 1){
 				gfx_SetTextFGColor(13);
 			}
-			PlaneteBatimentNom(planete->villes->batiment1, planete->villes->niveauBatiment1);
+			gfx_PrintString(PlaneteBatimentNom(planete->villes->batiment1, planete->villes->niveauBatiment1, nom));
 			nombreDeBatiment++;
 		}
 		else{
@@ -1457,7 +1519,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 			if(fenetre->selection == 2){
 				gfx_SetTextFGColor(13);
 			}
-			PlaneteBatimentNom(planete->villes->batiment2, planete->villes->niveauBatiment2);
+			gfx_PrintString(PlaneteBatimentNom(planete->villes->batiment2, planete->villes->niveauBatiment2, nom));
 			nombreDeBatiment++;
 		}
 		else{
@@ -1471,7 +1533,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 			if(fenetre->selection == 3){
 				gfx_SetTextFGColor(13);
 			}
-			PlaneteBatimentNom(planete->villes->batiment3, planete->villes->niveauBatiment3);
+			gfx_PrintString(PlaneteBatimentNom(planete->villes->batiment3, planete->villes->niveauBatiment3, nom));
 			nombreDeBatiment++;
 		}
 		else{
@@ -1485,7 +1547,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 			if(fenetre->selection == 4){
 				gfx_SetTextFGColor(13);
 			}
-			PlaneteBatimentNom(planete->villes->batiment4, planete->villes->niveauBatiment4);
+			gfx_PrintString(PlaneteBatimentNom(planete->villes->batiment4, planete->villes->niveauBatiment4, nom));
 			nombreDeBatiment++;
 		}
 		else{
@@ -1499,7 +1561,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 			if(fenetre->selection == 5){
 				gfx_SetTextFGColor(13);
 			}
-			PlaneteBatimentNom(planete->villes->batiment5, planete->villes->niveauBatiment5);
+			gfx_PrintString(PlaneteBatimentNom(planete->villes->batiment5, planete->villes->niveauBatiment5, nom));
 			nombreDeBatiment++;
 		}
 		else{
@@ -1513,7 +1575,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 			if(fenetre->selection == 6){
 				gfx_SetTextFGColor(13);
 			}
-			PlaneteBatimentNom(planete->villes->batiment6, planete->villes->niveauBatiment6);
+			gfx_PrintString(PlaneteBatimentNom(planete->villes->batiment6, planete->villes->niveauBatiment6, nom));
 			nombreDeBatiment++;
 		}
 		else{
@@ -1525,6 +1587,7 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 	OrdreDistrictNom(planete->villes);
 	
 	if(ordre != NULL){
+		niveau = 181;
 		if(fenetre->selection == 7){
 			gfx_SetColor(13);
 		}
@@ -1532,8 +1595,8 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 			gfx_SetColor(3);
 		}
 		supprimer = 1;
-		gfx_Line_NoClip(265, 170, 275, 180);
-		gfx_Line_NoClip(265, 180, 275, 170);
+		gfx_Line_NoClip(265, niveau + 2, 275, niveau + 12);
+		gfx_Line_NoClip(265, niveau + 12, 275, niveau + 2);
 	}
 	
 	if(*key == sk_Enter){
@@ -1541,8 +1604,11 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 			empireListe->premier->minerais += ordre->prix;
 			FinirOrdre(planete->villes->ordreFile);
 		}
-		else{
-
+		else if (fenetre->selection != 1){
+			fenetre->ouverte = MENU_SYSTEME_PLANETE_BATIMENT_CHOIX;
+			fenetre->precedente = fenetre->selection;
+			fenetre->selection = 1;
+			fenetre->villes = planete->villes;
 		}
 		*key = 0;
 	}
@@ -1571,45 +1637,215 @@ void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires,
 	if(fenetre->selection < 1){
 		fenetre->selection = 1;
 	}
+	if((fenetre->selection == 6) && (nombreDeBatiment != 6)){
+		fenetre->selection = nombreDeBatiment;
+	}
 	if((fenetre->selection > nombreDeBatiment) && (supprimer == 0)){
 		fenetre->selection = nombreDeBatiment;
 	}
 	if((fenetre->selection > nombreDeBatiment) && (supprimer == 1)){
 		fenetre->selection = 7;
 	}
-	if((fenetre->selection == 6) && (nombreDeBatiment != 6)){
-		fenetre->selection = nombreDeBatiment;
+}
+
+/**
+ *Choisi un batiment
+ */
+void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre){
+	int niveau = 53;
+	char nomDuBatiment[50];
+	int i = 0, prix = 0;
+	Batiment *batiment = NULL;
+	int niveauDuBatiment = 0;
+	switch(*key){
+		case sk_Clear:
+			fenetre->ouverte = MENU_SYSTEME_PLANETE_BATIMENT;
+			fenetre->selection = fenetre->precedente;
+			fenetre->precedente = 1;
+			*key = 0;
+			break;
+		case sk_Down:
+			fenetre->selection++;
+			*key = 0;
+			break;
+		case sk_Up:
+			fenetre->selection--;
+			*key = 0;
+			break;
+	}
+	if(fenetre->selection > 5){
+		fenetre->selection = 5;
+	}
+	else if(fenetre->selection < 1){
+		fenetre->selection = 1;
+	}
+	if(fenetre->villes == NULL){
+		fenetre->ouverte = MENU_SYSTEME_PLANETE_BATIMENT;
+		return;
+	}
+	switch(fenetre->precedente){
+		case 1:
+			batiment = &fenetre->villes->batiment1;
+			niveauDuBatiment = fenetre->villes->niveauBatiment1;
+			break;
+		case 2:
+			batiment = &fenetre->villes->batiment2;
+			niveauDuBatiment = fenetre->villes->niveauBatiment2;
+			break;
+		case 3:
+			batiment = &fenetre->villes->batiment3;
+			niveauDuBatiment = fenetre->villes->niveauBatiment3;
+			break;
+		case 4:
+			batiment = &fenetre->villes->batiment4;
+			niveauDuBatiment = fenetre->villes->niveauBatiment4;
+			break;
+		case 5:
+			batiment = &fenetre->villes->batiment5;
+			niveauDuBatiment = fenetre->villes->niveauBatiment5;
+			break;
+		case 6:
+			batiment = &fenetre->villes->batiment6;
+			niveauDuBatiment = fenetre->villes->niveauBatiment6;
+			break;
+	}
+	gfx_SetColor(6);
+	gfx_FillRectangle_NoClip(40, 40, 240, 160);
+
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(40, 40, 240, 160);
+
+	gfx_HorizLine_NoClip(45, 51, 180);
+	gfx_Line_NoClip(225, 51, 230, 46);
+	gfx_HorizLine_NoClip(230, 45, 40);
+
+	gfx_SetTextXY(45, 42);
+	gfx_PrintString("Batiment ");
+	PrintInt(fenetre->precedente);
+	
+	gfx_SetTextFGColor(1);
+	if(fenetre->selection == 1){
+		gfx_SetTextFGColor(13);
+		prix = 0;
+	}
+	gfx_PrintStringXY("D/manteler", 45, niveau);
+	niveau += 10;
+	gfx_SetTextXY(60, niveau);
+	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	PrintInt(0);
+	niveau += 15;
+
+	gfx_SetTextFGColor(1);
+	if(fenetre->selection == 2){
+		gfx_SetTextFGColor(13);
+		prix = 400;
+	}
+	gfx_PrintStringXY(PlaneteBatimentNom(FONDERIE, 1, nomDuBatiment), 45, niveau);
+	niveau += 10;
+	gfx_SetTextXY(60, niveau);
+	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	if(joueur->acier < 400){
+		gfx_SetTextFGColor(3);
+	}
+	PrintInt(400);
+	niveau += 15;
+
+	gfx_SetTextFGColor(1);
+	if(fenetre->selection == 3){
+		gfx_SetTextFGColor(13);
+		prix = 400;
+	}
+	gfx_PrintStringXY(PlaneteBatimentNom(LABORATOIRE, 1, nomDuBatiment), 45, niveau);
+	niveau += 10;
+	gfx_SetTextXY(60, niveau);
+	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	if(joueur->acier < 400){
+		gfx_SetTextFGColor(3);
+	}
+	PrintInt(400);
+	niveau += 15;
+
+	gfx_SetTextFGColor(1);
+	if(fenetre->selection == 4){
+		gfx_SetTextFGColor(13);
+		prix = 400;
+	}
+	gfx_PrintStringXY(PlaneteBatimentNom(USINE_CIVILE, 1, nomDuBatiment), 45, niveau);
+	niveau += 10;
+	gfx_SetTextXY(60, niveau);
+	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	if(joueur->acier < 400){
+		gfx_SetTextFGColor(3);
+	}
+	PrintInt(400);
+	niveau += 15;
+
+	gfx_SetTextFGColor(1);
+	if(fenetre->selection == 5){
+		gfx_SetTextFGColor(13);
+		prix = 400;
+	}
+	gfx_PrintStringXY(PlaneteBatimentNom(THEATRE, 1, nomDuBatiment), 45, niveau);
+	niveau += 10;
+	gfx_SetTextXY(60, niveau);
+	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	if(joueur->acier < 400){
+		gfx_SetTextFGColor(3);
+	}
+	PrintInt(400);
+	niveau += 15;
+
+	if(*key == sk_Enter){
+		fenetre->ouverte = MENU_SYSTEME_PLANETE_BATIMENT;
+		if(fenetre->selection != 0){
+			fenetre->selection++;
+		}
+		if(joueur->acier >= prix){
+			joueur->acier -= prix;
+			NouvelOrdre(fenetre->villes->ordreFile,
+				CONSTRUIRE_BATIMENT,
+				10,
+				fenetre->precedente,
+				fenetre->selection,
+				prix
+			);
+			fenetre->selection = fenetre->precedente;
+			fenetre->precedente = 1;
+		}
+		*key = 0;
 	}
 }
 
 /**
  * Ecrit le nom du batiment
  * */
-void PlaneteBatimentNom(Batiment batiment, int niveau){
+char *PlaneteBatimentNom(Batiment batiment, int niveau, char* nom){
+	char levelStr[10];
 	if(batiment != AUCUN){
 		switch(batiment){
 			case CAPITALE:
-				gfx_PrintString("Capitale");
+				strcpy(nom, "Capitale");
 				break;
 			case FONDERIE:
-				gfx_PrintString("Fonderie");
+				strcpy(nom, "Fonderie");
 				break;
 			case LABORATOIRE:
-				gfx_PrintString("Laboratoire");
+				strcpy(nom, "Laboratoire");
 				break;
 			case USINE_CIVILE:
-				gfx_PrintString("Usine civile");
+				strcpy(nom, "Usine civile");
 				break;
 			case THEATRE:
-				gfx_PrintString("Theatre");
+				strcpy(nom, "Theatre");
 		}
-		gfx_PrintString(" lvl.");
-		PrintInt(niveau);
+		strcat(nom, " lvl.");
+		sprintf(levelStr, "%d", niveau);
+		strcat(nom, levelStr);
 	}
 	else{
-		gfx_PrintString("Aucun batiment");
+		strcpy(nom, "Aucun batiment");
 	}
-
+	return nom;
 }
 
 /**
@@ -1863,7 +2099,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre){
 	char evolution[25] = {0};
 	char ordreStation[50];
-	int prixAmelioration = 0;
+	int prixAmelioration = 0, tempsAmelioration = 0;
 	int maximum = 2;
 	Ordre *ordre = RecupererOrdre(systemeStellaires[camera->systeme].station->ordreFile);
 	int niveau = 120;
@@ -1892,9 +2128,9 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 			break;
 	}
 	if(fenetre->selection > maximum){
-		fenetre->selection = 3;
+		fenetre->selection = maximum;
 	}
-	else if(fenetre->selection < maximum){
+	else if(fenetre->selection < 1){
 		fenetre->selection = 1;
 	}
 	//dessiner fenetre
@@ -1916,6 +2152,8 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 	gfx_Rectangle_NoClip(40, 199, 180, 11);
 	gfx_VertLine_NoClip(152, 201, 8);
 
+	gfx_HorizLine_NoClip(45, 178, 230);//barre du bas au dessus des ordres
+
 	gfx_Rectangle_NoClip(148, 77, 129, 38);//cadre ameliorer
 	gfx_Rectangle_NoClip(148, 125, 129, 18);//cadre retrograder
 
@@ -1934,21 +2172,25 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 		case AVANT_POSTE:
 			gfx_PrintString("Base stellaire");
 			strcpy(evolution, "Port stellaire");
+			tempsAmelioration = 36;
 			prixAmelioration = 200;
 			break;
 		case PORT_STELLAIRE:
 			gfx_PrintString("Port stellaire");
 			strcpy(evolution, "Redoute stellaire");
+			tempsAmelioration = 72;
 			prixAmelioration = 500;
 			break;
 		case REDOUTE_STELLAIRE:
 			gfx_PrintString("Redoute stellaire");
 			strcpy(evolution, "Forteresse stellaire");
+			tempsAmelioration = 108;
 			prixAmelioration = 1200;
 			break;
 		case FORTERESSE_STELLAIRE:
 			gfx_PrintString("Forteresse stellaire");
 			strcpy(evolution, "Citadelle");
+			tempsAmelioration = 144;
 			prixAmelioration = 3500;
 			break;
 		case CITADELLE:
@@ -2015,6 +2257,9 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 		gfx_PrintString(evolution);
 		gfx_SetTextXY(227 - tailleInt(prixAmelioration) * 4, 104);
 		gfx_TransparentSprite_NoClip(fer, 212 - tailleInt(prixAmelioration) * 4, 103);
+		if(joueur->acier < prixAmelioration){
+			gfx_SetTextFGColor(3);
+		}
 		PrintInt(prixAmelioration);
 	}
 	else{
@@ -2045,7 +2290,7 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 	gfx_TransparentSprite_NoClip(blindage_icon, 165, niveau + 1);
 	PrintInt((systemeStellaires[camera->systeme].station->blindageVie * 100) / systemeStellaires[camera->systeme].station->blindageTotal);
 	gfx_PrintString("%");
-	niveau += 14;
+	niveau += 9;
 	gfx_SetTextXY(50, niveau);
 	gfx_TransparentSprite_NoClip(bouclier_icon, 45, niveau);
 	PrintInt((systemeStellaires[camera->systeme].station->bouclierVie * 100) / systemeStellaires[camera->systeme].station->bouclierTotal);
@@ -2055,7 +2300,7 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 	gfx_TransparentSprite_NoClip(fleet_power_icon, 165, niveau + 2);
 	PrintInt(systemeStellaires[camera->systeme].station->puissance);
 	
-	niveau += 9;
+	niveau = 181;
 	
 	if(ordre != NULL){
 		if(fenetre->selection == 3){
@@ -2064,8 +2309,8 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 		else{
 			gfx_SetColor(3);
 		}
-		gfx_Line_NoClip(265, niveau, 275, niveau + 10);
-		gfx_Line_NoClip(265, niveau + 10, 275, niveau);
+		gfx_Line_NoClip(265, niveau + 2, 275, niveau + 12);// croix
+		gfx_Line_NoClip(265, niveau + 12, 275, niveau + 2);// croix
 	}
 
 	//ecrire ordre
@@ -2078,8 +2323,14 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 		switch(fenetre->selection){
 			case 1:
 				if((joueur->acier >= prixAmelioration) && (systemeStellaires[camera->systeme].station->niveauStation < CITADELLE)){
-					systemeStellaires[camera->systeme].station->niveauStation++;
 					joueur->acier -= prixAmelioration;
+					NouvelOrdre(systemeStellaires[camera->systeme].station->ordreFile,
+						AMELIORER_STATION,
+						tempsAmelioration,
+						0,
+						0,
+						prixAmelioration
+					);
 				}
 				break;
 			case 2:
@@ -2128,11 +2379,35 @@ char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre, in
 			case AUCUN:
 				gfx_PrintStringXY("Aucun ordre", 55, niveau);
 				break;
+			case AMELIORER_STATION:
+				gfx_PrintStringXY("S'am/liore en ", 55, niveau);
+				gfx_SetTextFGColor(13);
+				switch(station->niveauStation){
+					case AVANT_POSTE:
+						strcpy(nomDeOrdre, "port stellaire");
+						break;
+					case PORT_STELLAIRE:
+						strcpy(nomDeOrdre, "redoute stellaire");
+						break;
+					case REDOUTE_STELLAIRE:
+						strcpy(nomDeOrdre, "forteresse stellaire");
+						break;
+					case FORTERESSE_STELLAIRE:
+						strcpy(nomDeOrdre, "citadelle");
+						break;
+				}
+				niveau += 9;
+				gfx_SetTextXY(55, niveau);
+				gfx_PrintString(nomDeOrdre);
+				sprintf(numero, "(%d", ((ordre->tempsTotal - ordre->tempsActuel) * 100) / ordre->tempsTotal);
+				gfx_PrintString(numero);
+				gfx_PrintString("%)");
+				break;
 			case CONSTRUIRE_MODULE:
 				strcpy(nomDeOrdre, "Construit le module ");
 				sprintf(numero, "%d", numeroDuModule);
 				strcat(nomDeOrdre, numero);
-				sprintf(numero, "(%d)", (12 - ordre->tempsActuel) * 8);
+				sprintf(numero, "(%d)", (ordre->tempsTotal - ordre->tempsActuel) * 8);
 				strcat(nomDeOrdre, numero);
 				gfx_PrintStringXY(nomDeOrdre, 55, niveau);
 				break;
@@ -2172,17 +2447,19 @@ char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre, in
 						break;
 				}
 				gfx_SetTextXY(55, niveau);
-				sprintf(numero, "(%d", (((ordre->info2 * travail) - ordre->tempsActuel) * 100) / (ordre->info2 * travail));
+				sprintf(numero, "(%d", ((ordre->tempsTotal - ordre->tempsActuel) * 100) / ordre->tempsTotal);
 				strcat(nomDeOrdre, numero);
 				gfx_PrintString(nomDeOrdre);
 				gfx_PrintString("%)");
-				nombredOrdres = NombredOrdres(station->ordreFile);
-				if(nombredOrdres > 1){
-					gfx_PrintString(" (+");
-					PrintInt(nombredOrdres - 1);
-					gfx_PrintString(")");
-				}
 				break;
+		}
+		nombredOrdres = NombredOrdres(station->ordreFile);
+		if(nombredOrdres > 1){
+			gfx_PrintString("(+");
+			gfx_SetTextFGColor(13);
+			PrintInt(nombredOrdres - 1);
+			gfx_SetTextFGColor(1);
+			gfx_PrintString(")");
 		}
 	}
 	return nomDeOrdre;
@@ -2192,8 +2469,10 @@ char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre, in
  *Dessine le menu des modules de la station du systeme
  */
 void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre){
-	int niveau = 0;
-	int modules = 0;
+	Ordre *ordre = RecupererOrdre(systemeStellaires[camera->systeme].station->ordreFile);
+	int niveau = 120;
+	char ordreStation[50];
+	int modules = 0, supprimer = 0;
 	Module *module = NULL;
 	int numero = 0;
 	char nomDuModule[50];
@@ -2235,6 +2514,8 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 	gfx_FillRectangle_NoClip(92, 200, 60, 10);//barre du bas
 	gfx_Rectangle_NoClip(40, 199, 180, 11);
 
+	gfx_HorizLine_NoClip(45, 178, 230);//barre du bas au dessus des ordres
+
 	gfx_SetColor(1);
 	gfx_SetPixel(270, 45);
 
@@ -2262,11 +2543,20 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 			modules = 0;
 			break;
 	}
-	if(fenetre->selection > modules){
+	if(ordre != NULL){
+		supprimer = 1;
+	}
+	if(fenetre->selection < 1){
 		fenetre->selection = 1;
 	}
-	else if(fenetre->selection < 1){
+	if((fenetre->selection == 6) && (modules != 6)){
 		fenetre->selection = modules;
+	}
+	if((fenetre->selection > modules) && (supprimer == 0)){
+		fenetre->selection = modules;
+	}
+	if((fenetre->selection > modules) && (supprimer == 1)){
+		fenetre->selection = 7;
 	}
 	if(fenetre->precedente != 0){
 		switch(fenetre->selection){
@@ -2385,12 +2675,35 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 		gfx_PrintString(nomDuModule);
 		niveau += 15;
 	}
+
+	//écrire ordre
+	niveau = 181;
+	if(ordre != NULL){
+		if(fenetre->selection == 7){
+			gfx_SetColor(13);
+		}
+		else{
+			gfx_SetColor(3);
+		}
+		gfx_Line_NoClip(265, niveau + 2, 275, niveau + 12);// croix
+		gfx_Line_NoClip(265, niveau + 12, 275, niveau + 2);// croix
+	}
+	gfx_SetTextFGColor(1);
+	gfx_SetTextXY(45, 190);
+	OrdreStationNom(systemeStellaires[camera->systeme].station, ordre->info1, ordreStation, niveau);
+	
 	if(*key == sk_Enter){
-		fenetre->ouverte = MENU_SYSTEME_STATION_MODULES_CHOIX;
-		fenetre->precedente = fenetre->selection;
-		fenetre->selection = 0;
-		fenetre->scroll = 1;
-		*key = 0;
+		if((supprimer == 1) && (fenetre->selection == 7)){
+			joueur->acier += ordre->prix;
+			FinirOrdre(systemeStellaires[camera->systeme].station->ordreFile);
+		}
+		else{
+			fenetre->ouverte = MENU_SYSTEME_STATION_MODULES_CHOIX;
+			fenetre->precedente = fenetre->selection;
+			fenetre->selection = 0;
+			fenetre->scroll = 1;
+			*key = 0;
+		}
 	}
 }
 
@@ -2500,6 +2813,9 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
 		gfx_TransparentSprite_NoClip(fer, 45, niveau);
+		if(joueur->acier < 50){
+			gfx_SetTextFGColor(3);
+		}
 		PrintInt(50);
 		niveau += 15;
 	}
@@ -2510,6 +2826,9 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	if(joueur->acier < 50){
+		gfx_SetTextFGColor(3);
+	}
 	PrintInt(50);
 	niveau += 15;
 
@@ -2519,6 +2838,9 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	if(joueur->acier < 50){
+		gfx_SetTextFGColor(3);
+	}
 	PrintInt(50);
 	niveau += 15;
 
@@ -2528,6 +2850,9 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	if(joueur->acier < 50){
+		gfx_SetTextFGColor(3);
+	}
 	PrintInt(50);
 	niveau += 15;
 
@@ -2537,6 +2862,9 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	if(joueur->acier < 50){
+		gfx_SetTextFGColor(3);
+	}
 	PrintInt(50);
 	niveau += 15;
 
@@ -2547,6 +2875,9 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
 		gfx_TransparentSprite_NoClip(fer, 45, niveau);
+		if(joueur->acier < 50){
+			gfx_SetTextFGColor(3);
+		}
 		PrintInt(50);
 		niveau += 15;
 	}
@@ -2558,19 +2889,24 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
 		gfx_TransparentSprite_NoClip(fer, 45, niveau);
+		if(joueur->acier < 50){
+			gfx_SetTextFGColor(3);
+		}
 		PrintInt(50);
 		niveau += 15;
 	}
 
 	if(*key == sk_Enter){
-		if(fenetre->selection == 0){
-			fenetre->selection = 8;
+		if((joueur->acier >= 50) && (fenetre->selection != 1)){
+			if(fenetre->selection == 0){
+				fenetre->selection = 8;
+			}
+			fenetre->ouverte = MENU_SYSTEME_STATION_MODULES;
+			i = fenetre->precedente;
+			fenetre->precedente = fenetre->selection;	
+			fenetre->selection = i;
+			*key = 0;
 		}
-		fenetre->ouverte = MENU_SYSTEME_STATION_MODULES;
-		i = fenetre->precedente;
-		fenetre->precedente = fenetre->selection;	
-		fenetre->selection = i;
-		*key = 0;
 	}
 }
 
@@ -2580,7 +2916,9 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre){
 	char evolution[25] = {0};
 	int prixAmelioration = 0;
+	char ordreStation[50];
 	int niveau = 55, nombreDeChantiers = 0, travail = 0, prix = 0;
+	Ordre *ordre = RecupererOrdre(systemeStellaires[camera->systeme].station->ordreFile);
 	switch(*key){
 		case sk_Clear:
 			camera->fenetre = MENU_AUCUN;
@@ -2601,11 +2939,14 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 			*key = 0;
 			break;
 	}
-	if(fenetre->selection > 6){
-		fenetre->selection = 6;
-	}
-	else if(fenetre->selection < 1){
+	if(fenetre->selection < 1){
 		fenetre->selection = 1;
+	}
+	else if((fenetre->selection > 7) && (ordre != NULL)){
+		fenetre->selection = 7;
+	}
+	else if(fenetre->selection > 6){
+		fenetre->selection = 6;
 	}
 	//dessiner fenetre
 	gfx_SetColor(6);
@@ -2621,6 +2962,8 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 	gfx_FillRectangle_NoClip(152, 200, 68, 10);//barre du bas
 	gfx_Rectangle_NoClip(40, 199, 180, 11);
 	gfx_VertLine_NoClip(92, 201, 8);
+
+	gfx_HorizLine_NoClip(45, 178, 230);//barre du bas au dessus des ordres
 
 	gfx_SetColor(1);
 	gfx_SetPixel(270, 45);
@@ -2667,6 +3010,9 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 		gfx_PrintString("Scientifique ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
+		if(joueur->acier < 100){
+			gfx_SetTextFGColor(3);
+		}
 		gfx_PrintString("100");
 		
 		gfx_SetTextFGColor(1);
@@ -2680,6 +3026,9 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 		gfx_PrintString("Construction ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
+		if(joueur->acier < 100){
+			gfx_SetTextFGColor(3);
+		}
 		gfx_PrintString("100");
 		
 		gfx_SetTextFGColor(1);
@@ -2693,6 +3042,9 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 		gfx_PrintString("Corvette ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
+		if(joueur->acier < 100){
+			gfx_SetTextFGColor(3);
+		}
 		gfx_PrintString("100");
 		
 		gfx_SetTextFGColor(1);
@@ -2706,6 +3058,9 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 		gfx_PrintString("Destroyer ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
+		if(joueur->acier < 200){
+			gfx_SetTextFGColor(3);
+		}
 		gfx_PrintString("200");
 		
 		gfx_SetTextFGColor(1);
@@ -2719,6 +3074,9 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 		gfx_PrintString("Croiseur ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
+		if(joueur->acier < 500){
+			gfx_SetTextFGColor(3);
+		}
 		gfx_PrintString("500");
 		
 		gfx_SetTextFGColor(1);
@@ -2732,9 +3090,34 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 		gfx_PrintString("Cuirass/ "); //battleship
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
+		if(joueur->acier < 1000){
+			gfx_SetTextFGColor(3);
+		}
 		gfx_PrintString("1000");
+		
+		//écrire ordre
+		niveau = 181;
+		if(ordre != NULL){
+			if(fenetre->selection == 7){
+				gfx_SetColor(13);
+			}
+			else{
+				gfx_SetColor(3);
+			}
+			gfx_Line_NoClip(265, niveau + 2, 275, niveau + 12);// croix
+			gfx_Line_NoClip(265, niveau + 12, 275, niveau + 2);// croix
+		}
+		gfx_SetTextFGColor(1);
+		gfx_SetTextXY(45, 190);
+		OrdreStationNom(systemeStellaires[camera->systeme].station, ordre->info1, ordreStation, niveau);
+		
+
 		if(*key == sk_Enter){
-			if(fenetre->selection >= 3){
+			if(fenetre->selection == 7){
+				joueur->acier += ordre->prix;
+				FinirOrdre(systemeStellaires[camera->systeme].station->ordreFile);
+			}
+			else if(fenetre->selection >= 3){
 				fenetre->ouverte = MENU_SYSTEME_STATION_CHANTIER_CHOIX;
 				fenetre->nombreDeVaisseaux = 1;
 			}
@@ -2748,11 +3131,11 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 						1,
 						prix
 					);
-					fenetre->ouverte = MENU_SYSTEME_STATION_RESUME;
 				}
 			}
 		}
 	
+
 	}
 	else{
 		gfx_PrintStringXY("Pas de chantier spatial", 68, 90);
@@ -2871,6 +3254,9 @@ void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire
 	PrintInt(fenetre->nombreDeVaisseaux);
 	gfx_SetTextXY(60, 74);
 	gfx_TransparentSprite_NoClip(fer, 45, 74);
+	if(fenetre->nombreDeVaisseaux * prix > joueur->acier){
+		gfx_SetTextFGColor(3);
+	}
 	PrintInt(fenetre->nombreDeVaisseaux * prix);
 
 	if(*key == sk_Enter){
@@ -2884,9 +3270,6 @@ void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire
 				prix * fenetre->nombreDeVaisseaux
 			);
 			fenetre->ouverte = MENU_SYSTEME_STATION_RESUME;
-		}
-		else{
-			gfx_PrintStringXY("Pas assez de fer", 45, 100);
 		}
 		*key = 0;
 	}
