@@ -224,6 +224,7 @@ typedef struct {
 	int scroll;
 	Error error;
 	int errorCountDown;
+	bool commandPrompt;
 	int nombreDeVaisseaux; //utilisé dans la création de flottes
 	Villes *villes; //utilisé dans le chanement de batiment
 } Fenetre;

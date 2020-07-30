@@ -29,8 +29,7 @@
 #include "locale/locale.h"
 
 /**********************************************Jeu principal**********************************************/
-int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
-{
+int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche, Console *console){
 	char finBoucle = 1, key = 0;
 	while (finBoucle == 1)
 	{
@@ -39,17 +38,17 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joue
 		key = os_GetCSC();
 		
 		/**gere le temps**/
-		StellarisTemps(empireListe, date, &key, systemeStellaires);
+		StellarisTemps(empireListe, date, &key, systemeStellaires, fenetre);
 		
 		//efface l'ecran
 		gfx_ZeroScreen();
 
 		/**dessine la map**/
-		StellarisMap(empireListe, systemeStellaires, camera, &key, flotteJoueur, date, fenetre, joueur);
+		StellarisMap(empireListe, systemeStellaires, camera, &key, flotteJoueur, date, fenetre, joueur, console);
 
 		
 		/**dessine le hud**/
-		finBoucle = StellarisHUD(empireListe, joueur, date, &key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
+		finBoucle = StellarisHUD(empireListe, joueur, date, &key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche, console);
 		
 		gfx_SwapDraw();
 		if((boot_CheckOnPressed()) || (finBoucle == 0))
@@ -62,26 +61,27 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joue
 }
 
 /******************gerer le temps******************/
-void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires)
+void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires, Fenetre *fenetre)
 {
 	//différentes actions des touches
-	switch(*key)
-	{
-		case sk_0://pause / dépause
-			if(date->vitesse == 0){
-				date->vitesse = date->vitesseSauvegardee;
-			}
-			else{
-				date->vitesseSauvegardee = date->vitesse;
-				date->vitesse = 0;
-			}
-			break;
-		case sk_Add:
-			date->vitesse += 1;
-			break;
-		case sk_Sub:
-			date->vitesse -= 1;
-			break;
+	if(fenetre->commandPrompt == false){
+		switch(*key){
+			case sk_0://pause / dépause
+				if(date->vitesse == 0){
+					date->vitesse = date->vitesseSauvegardee;
+				}
+				else{
+					date->vitesseSauvegardee = date->vitesse;
+					date->vitesse = 0;
+				}
+				break;
+			case sk_Add:
+				date->vitesse += 1;
+				break;
+			case sk_Sub:
+				date->vitesse -= 1;
+				break;
+		}
 	}
 	if(date->vitesse > 3)
 	{
@@ -309,8 +309,7 @@ void EffectuerActionsPlanetes(SystemeStellaire *systemeStellaires, Empire *joueu
 }
 
 /******************dessiner le hud******************/
-int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche)
-{
+int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche, Console *console){
 	char jourChar[11];
 	char moisChar[8];
 	char anneeChar[5];
@@ -325,7 +324,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	};
 	char valeurMineraiStr[4];
 	char nomPlanete[20];
-	int16_t systeme = 0;
+	int16_t systeme = 0, menu = 0;
 	//gcvt(marche->valeurMinerai , 2, valeurMineraiStr);
 	
 	//dessine le fond du hud
@@ -505,7 +504,11 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	if (camera->mapType == CARTE) {
 		gfx_PrintStringXY("Carte", 140, 211);
 	}	
-	return Menus(empireListe, joueur, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
+	menu = Menus(empireListe, joueur, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
+	if(fenetre->commandPrompt == true){ 
+		AfficherConsole(console, key, fenetre, empireListe, camera, date);
+	}
+	return menu;
 }
 
 /**

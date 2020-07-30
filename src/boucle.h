@@ -1,6 +1,8 @@
 #ifndef _BOUCLE_INCLUDE
 #define _BOUCLE_INCLUDE
 
+#include "console.h"
+
 #define MENU_QUITTER -1
 #define MENU_AUCUN 0
 #define MENU_SYSTEME 1
@@ -22,14 +24,14 @@
 #define MENU_SYSTEME_STATION_CHANTIER 11
 #define MENU_SYSTEME_STATION_CHANTIER_CHOIX 12
 
-int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);	
-void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires);
+int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche, Console *console);	
+void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires, Fenetre *fenetre);
 void EffectuerActionsStations(SystemeStellaire *systemeStellaires, Empire *joueur);
 void EffectuerActionsPlanetes(SystemeStellaire *systemeStellaires, Empire *joueur);
 
-void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur);
+void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteListe, Date *date, Fenetre *fenetre, Empire *joueur, Console *console);
 
-int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t* sauvegarde, Marche *marche);
+int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t* sauvegarde, Marche *marche, Console *console);
 void PrintHUD(const unsigned int nombre, const int change, int x, int y);
 
 int Menus(EmpireListe *empireListe, Empire *joueur, Date *date, char *key, Camera *camera, SystemeStellaire *systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche);

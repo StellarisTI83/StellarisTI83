@@ -8,7 +8,7 @@
 NAME        ?= STELLARI
 COMPRESSED  ?= YES
 ICON        ?= icon.png
-DESCRIPTION ?= "Stellaris for TI83PCE and "
+DESCRIPTION ?= "Stellaris for TI83PCE"
 
 # ----------------------------
 # Other Options (Advanced)
@@ -17,8 +17,8 @@ DESCRIPTION ?= "Stellaris for TI83PCE and "
 #EXTRA_CFLAGS        ?=
 #USE_FLASH_FUNCTIONS ?= YES|NO
 #OUTPUT_MAP          ?= YES|NO
-#ARCHIVED            ?= YES|NO
-#OPT_MODE            ?= -optsize|-optspeed
+ARCHIVED            ?= NO
+OPT_MODE            ?= -optsize
 #SRCDIR              ?= src
 #OBJDIR              ?= obj
 #BINDIR              ?= bin

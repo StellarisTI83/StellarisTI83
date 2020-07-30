@@ -29,6 +29,7 @@
 #include "noms.c"
 #include "sauvegarde.h"
 #include "flottes.h"
+#include "console.h"
 
 #include "locale/locale.h"
 
@@ -984,14 +985,12 @@ int NouvellePartieNom(Empire *joueur, Parametres *parametres)
 						break;
 				}
 			}
-			if (((lettre != '.') && (key &&  29 >= curseur)) && ((key != sk_Del && key != sk_Alpha) && key != sk_Enter))
-			{
+			if (((lettre != '.') && (key &&  29 >= curseur)) && ((key != sk_Del && key != sk_Alpha) && key != sk_Enter)){
 				joueur->nom[curseur] = lettre;
 				lettre = '.';
 				curseur++;
 			}
-			else if ((key == sk_Del) && (curseur > 0))
-			{
+			else if ((key == sk_Del) && (curseur > 0)){
 				curseur--;
 				joueur->nom[curseur] = ' ';
 			}
@@ -1165,7 +1164,10 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	char fin = 0;
 	Flotte* flotte = NULL;
 	Empire* empire = NULL;
-	int compteur = 0, compteurEmpires = 0;;
+	int compteur = 0, compteurEmpires = 0;
+	Console console;
+	memset(&console, 0, sizeof(Console));
+
 	/*creer sauvegarde*/
 	ti_CloseAll();
 	sauvegarde = ti_Open("sauv", "w");
@@ -1197,12 +1199,13 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 
 	fenetre->villes = NULL;
 	fenetre->error = NO_ERROR;
+	fenetre->commandPrompt = false;
 	marche->valeurMinerai = 50;
 
 	fin = ChargementNouvellePartieGalaxie(parametres, &sauvegarde, systemeStellaires, flotteJoueur, camera);
 	
 	//StellarisSauvegarde(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
-	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche, &console);
 }
 
 int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires, FlotteListe *flotteJoueur, Camera *camera)
@@ -1840,6 +1843,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 		i = randInt(0, k);
 		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && (systemeStellaires[i].etoileType != ETOILE_TYPE_TROU_NOIR))
 		{
+			fin = 0;
+			
 			systemeStellaires[i].etoileType = ETOILE_TYPE_K;
 			systemeStellaires[i].nombrePlanetesHabitables = 1;
 			systemeStellaires[i].nombrePlanetesHabitees = 1;
@@ -1874,7 +1879,6 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			camera->systeme = i;
 			camera->systemeSelectione = i;
 
-			fin = 0;
 			switch(randInt(1, systemeStellaires[i].nombrePlanetes))
 			{
 				case 1:

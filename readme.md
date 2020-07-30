@@ -34,7 +34,7 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
 - [x] Plusieurs actions de suite
 - [x] Flottes militaires de plusieurs types
 - [ ] Gèrer l'update des données du joueur
-- [ ] Rajout d'une console
+- [x] Rajout d'une console
 - [ ] Menu flottes
 - [ ] Rajout des stations scientifiques et minières
 - [ ] Actions flottes

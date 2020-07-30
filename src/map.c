@@ -32,20 +32,21 @@
  *
  *contient aussi la gestion des évenements
  */
-void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur)
-{
+void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur, Console *console){
 	char key2 = 0;
 	gfx_SetColor(1);
 	if(camera->mapType == NORMAL)
 	{
 		key2 = 0;
-		if(camera->fenetre == MENU_AUCUN)
+		if((camera->fenetre == MENU_AUCUN) && (fenetre->commandPrompt == false))
 		{
 			key2 = os_GetCSC();
 		}
 		//gere les événements des touches
-		KeyActionNormalMap(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
-		KeyActionNormalMap(empireListe, systemeStellaires, camera, &key2, flotteJoueur, date, fenetre, joueur);
+		if(fenetre->commandPrompt == false){
+			KeyActionNormalMap(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur, console);
+			KeyActionNormalMap(empireListe, systemeStellaires, camera, &key2, flotteJoueur, date, fenetre, joueur, console);
+		}
 
 		if (camera->zoom < 1)
 		{
@@ -161,8 +162,10 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 				camera->vecteurx++;
 			}
 		}
+		if(fenetre->commandPrompt == false){
+			KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur, console);
+		}
 
-		KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
 
 		//fait en sorte que la camera sorte pas des limites
 		while(pow((double)(camera->xSysteme - 320), 2.0) + pow((double)(camera->ySysteme - 240), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)){
@@ -215,10 +218,8 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 		if ( (((0 <= x) && (x <= 320)) && ((0 <= y)&& (y <= 240))) && ((systemeStellaires[i].x != 0) && (systemeStellaires[i].y != 0)) )
 		{
 			if(systemeStellaires[i].niveauDeConnaissance != INCONNU) {
-				if(systemeStellaires[i].empire == 1)
-				{
-					if(camera->mapType == NORMAL)
-					{
+				if(systemeStellaires[i].empire == 1){
+					if(camera->mapType == NORMAL){
 						gfx_SetColor(9);
 						gfx_Circle(x, y, 20 * camera->zoom);
 						gfx_Circle(x, y, (19 * camera->zoom) + 1);
@@ -232,45 +233,40 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 				}
 				//dessiner hyperLanes
 				hyperLane1 = systemeStellaires[i].hyperlane1;
-				if (hyperLane1 != 255)
-				{
+				if (hyperLane1 != 255){
 					xLn = systemeStellaires[hyperLane1].x;
 					yLn = systemeStellaires[hyperLane1].y;
 					DessinerHyperlane(systemeStellaires[hyperLane1].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
 				
 				hyperLane2 = systemeStellaires[i].hyperlane2;
-				if (hyperLane2 != 255)
-				{
+				if (hyperLane2 != 255){
 					xLn = systemeStellaires[hyperLane2].x;
 					yLn = systemeStellaires[hyperLane2].y;
 					DessinerHyperlane(systemeStellaires[hyperLane2].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
 
 				hyperLane3 = systemeStellaires[i].hyperlane3;
-				if (hyperLane3 != 255)
-				{
+				if (hyperLane3 != 255){
 					xLn = systemeStellaires[hyperLane3].x;
 					yLn = systemeStellaires[hyperLane3].y;
 					DessinerHyperlane(systemeStellaires[hyperLane3].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
 				
 				hyperLane4 = systemeStellaires[i].hyperlane4;
-				if (hyperLane4 != 255)
-				{
+				if (hyperLane4 != 255){
 					xLn = systemeStellaires[hyperLane4].x;
 					yLn = systemeStellaires[hyperLane4].y;
 					DessinerHyperlane(systemeStellaires[hyperLane4].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
 			}
-			gfx_SetTextXY(x - 4, y + 9);
-			PrintInt(i);
+			// ecrit le numéro de l'étoile
+			// gfx_SetTextXY(x - 4, y + 9);
+			// PrintInt(i);
 
 			
-			if(camera->mapType == NORMAL)
-			{
-				switch(systemeStellaires[i].etoileType)
-				{
+			if(camera->mapType == NORMAL){
+				switch(systemeStellaires[i].etoileType){
 					case ETOILE_TYPE_B: //B
 						gfx_SetColor(15);
 						gfx_FillCircle(x, y, 1 * camera->zoom);
@@ -310,10 +306,8 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 						break;
 				}
 			}
-			else
-			{
-				switch(systemeStellaires[i].etoileType)
-				{
+			else{
+				switch(systemeStellaires[i].etoileType){
 					case ETOILE_TYPE_B: //B
 						gfx_SetColor(15);
 						gfx_Circle_NoClip(x, y, 1);
@@ -353,6 +347,7 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 				}
 			}
 		}
+
 		//Le if suivant teste si la systeme est celui selectionné
 		if(((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y)))
 		{
@@ -517,7 +512,7 @@ void DessinerHyperlane(int8_t niveauDeConnaissance1, int8_t niveauDeConnaissance
 	}
 }
 
-void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
+void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur, Console *console){
 	switch(*key){
 		case sk_Yequ :
 			if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 1))
@@ -645,13 +640,20 @@ void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellair
 				camera->bloque = FALSE;
 			}
 			break;
+		case sk_2nd:
+			fenetre->commandPrompt = true;
+			date->vitesse = 0;
+			camera->bloque = true;
+			console->cursor = 0;
+			*key = 0;
+			break;
 	}
 }
 
 /**
  *Gère les actions des touches pour la boucle StellarisMap
  */
-void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
+void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur, Console *console){
 	switch(*key){
 		case sk_Up:
 			if (camera->bloque != TRUE) {
@@ -719,7 +721,7 @@ void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStell
 			}
 			break;
 	}
-	KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
+	KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur, console);
 }
 
 
