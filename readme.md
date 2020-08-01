@@ -30,22 +30,22 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
 
 - [x] Menus stations
 - [x] Menu planètes
-- [ ] Niveaux des batiments
+  - [ ] Niveaux des batiments
 - [x] Plusieurs actions de suite
-- [x] Flottes militaires de plusieurs types
 - [ ] Gèrer l'update des données du joueur
 - [x] Rajout d'une console
+- [ ] Changement des sprites de local à appvar
 - [ ] Menu flottes
-- [ ] Rajout des stations scientifiques et minières
-- [ ] Actions flottes
-- [ ] Pathfinding flottes
+  - [ ] Rajout des stations scientifiques et minières
+  - [ ] Actions flottes
+  - [x] Pathfinding flottes
+  - [x] Flottes militaires de plusieurs types
 - [ ] Recherches
 - [ ] Rajout de plusieurs civilisations
-- [ ] Rajout de l'ia
+  - [ ] Rajout de l'ia
 - [ ] Rajout des notifications
 - [ ] Menu marché
 - [ ] Revenus
-- [ ] Changement des sprites de local à appvar
 - [ ] Refaire le menu d'entrée
 - [ ] Création de sauvegardes
 - [ ] Traduction totale

@@ -1165,8 +1165,6 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	Flotte* flotte = NULL;
 	Empire* empire = NULL;
 	int compteur = 0, compteurEmpires = 0;
-	Console console;
-	memset(&console, 0, sizeof(Console));
 
 	/*creer sauvegarde*/
 	ti_CloseAll();
@@ -1205,7 +1203,7 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	fin = ChargementNouvellePartieGalaxie(parametres, &sauvegarde, systemeStellaires, flotteJoueur, camera);
 	
 	//StellarisSauvegarde(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
-	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche, &console);
+	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
 }
 
 int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires, FlotteListe *flotteJoueur, Camera *camera)
@@ -1300,6 +1298,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	{
 		while(i < LARGEUR_GALAXIE*2)
 		{
+			memset_fast(&systemeStellaires[k], 0, sizeof(SystemeStellaire));
 			x = galaxie[j*LARGEUR_GALAXIE*2+i];
 			y = galaxie[j*LARGEUR_GALAXIE*2+i+1];
 			systemeStellaires[k].x = x;
@@ -1310,6 +1309,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			systemeStellaires[k].station->ordreFile = CreerFileOrdres();
 			etoile = randInt(1, 100);
 			trouNoir = 0;
+			systemeStellaires[k].niveauDeConnaissance = INCONNU;
 			if(etoile <= 10)
 			{
 				etoile = ETOILE_TYPE_B;
@@ -1812,7 +1812,6 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 					systemeStellaires[k].planete1->villes = NULL;
 			}
 			
-			systemeStellaires[k].niveauDeConnaissance = INCONNU;
 			
 			k++;
 			i += 2;

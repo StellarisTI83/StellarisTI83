@@ -40,8 +40,6 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 	int i = 0, j = 0, compteur = 0, compteurFlottes = 0;
 	Flotte* flotte = NULL, *flottePrecedente = NULL;
 	Empire* empire = NULL, *empirePrecedent = NULL;
-	Console console;
-	memset(&console, 0, sizeof(Console));
 	gfx_FillScreen(255);
 	PrintCentered("Chargement de la partie..." ,60 ,1 , 0, 0);
 	/*ouvrir sauvegarde*/
@@ -115,7 +113,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 	PrintCentered(joueur->nom ,90 ,1 , 0, 0);
 	camera->fenetre = MENU_AUCUN;
 	camera->bloque = FALSE;
-	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche, &console);
+	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
 	return 0;
 }
 

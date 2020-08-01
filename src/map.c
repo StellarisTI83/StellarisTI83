@@ -32,7 +32,7 @@
  *
  *contient aussi la gestion des évenements
  */
-void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur, Console *console){
+void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
 	char key2 = 0;
 	gfx_SetColor(1);
 	if(camera->mapType == NORMAL)
@@ -44,8 +44,8 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 		}
 		//gere les événements des touches
 		if(fenetre->commandPrompt == false){
-			KeyActionNormalMap(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur, console);
-			KeyActionNormalMap(empireListe, systemeStellaires, camera, &key2, flotteJoueur, date, fenetre, joueur, console);
+			KeyActionNormalMap(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
+			KeyActionNormalMap(empireListe, systemeStellaires, camera, &key2, flotteJoueur, date, fenetre, joueur);
 		}
 
 		if (camera->zoom < 1)
@@ -163,7 +163,7 @@ void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires,
 			}
 		}
 		if(fenetre->commandPrompt == false){
-			KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur, console);
+			KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
 		}
 
 
@@ -512,7 +512,7 @@ void DessinerHyperlane(int8_t niveauDeConnaissance1, int8_t niveauDeConnaissance
 	}
 }
 
-void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur, Console *console){
+void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
 	switch(*key){
 		case sk_Yequ :
 			if ((camera->fenetre == MENU_AUCUN) || (fenetre->selection != 1))
@@ -644,7 +644,6 @@ void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellair
 			fenetre->commandPrompt = true;
 			date->vitesse = 0;
 			camera->bloque = true;
-			console->cursor = 0;
 			*key = 0;
 			break;
 	}
@@ -653,7 +652,7 @@ void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellair
 /**
  *Gère les actions des touches pour la boucle StellarisMap
  */
-void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur, Console *console){
+void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur){
 	switch(*key){
 		case sk_Up:
 			if (camera->bloque != TRUE) {
@@ -721,7 +720,7 @@ void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStell
 			}
 			break;
 	}
-	KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur, console);
+	KeyActionNormal(empireListe, systemeStellaires, camera, key, flotteJoueur, date, fenetre, joueur);
 }
 
 
@@ -1045,8 +1044,9 @@ void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fenetre *f
 				x = flotte->x - camera->xSysteme - 3;
 				y = flotte->y - camera->ySysteme - 3;
 				if(((0 < x) && (x < 315)) && ((0 < y) && (y < 235))){
-					gfx_TransparentSprite(ourFleet, x, y);
-					switch(flotte->type){
+					if(flotte->avancement == 0){
+						gfx_TransparentSprite(ourFleet, x, y);
+						switch(flotte->type){
 						case FLOTTE_MILITAIRE:
 							gfx_TransparentSprite(force_our, x + 6, y - 1);
 							if (flotte->puissance > 500)
@@ -1064,14 +1064,11 @@ void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fenetre *f
 						case FLOTTE_SCIENTIFIQUE:
 							gfx_TransparentSprite(science_ship_our_icon, x + 6, y - 4);
 							break;
-					}
-					if(flotte->avancement == 1){//bouge la flotte dans son systeme
+						}
+					} else if(flotte->avancement == 1) {//dessinne l'hypervitesse
 						gfx_SetColor(1);
 						gfx_FillCircle_NoClip(x + 3, y, 5);
-						flotte->x = 480; 
-						flotte->y = 360;
-						flotte->systeme = flotte->systemeArrive;
-						flotte->avancement = 0;
+						flotte->avancement = 2;
 					}
 					x += 3;
 					y += 3;

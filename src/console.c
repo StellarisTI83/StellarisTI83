@@ -28,14 +28,38 @@
 
 #include "locale/locale.h"
 
-void AfficherConsole(Console *console, char *key, Fenetre *fenetre, EmpireListe *empireListe, Camera *camera, Date *date){
+typedef struct LigneDeCommande Ligne;
+struct LigneDeCommande{
+    char commande[50];
+    char reponse[50];
+    Ligne *commandeSuivante;
+};
+typedef struct{
+    char deniereCommande[50];
+    int8_t cursor;
+    bool nombreActive;
+    char reponse[50];
+    Ligne *premiereLigne;
+} Console;
+
+Console console;
+
+static void FermerConsole();
+static void NouvelleLigneConsole(char *commande, char *reponse);
+static void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date);
+
+void EcrireConsole(char *chaine){
+	NouvelleLigneConsole("", chaine);
+}
+
+void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Camera *camera, Date *date){
 	int largeur = 200, hauteur = 10;
 	Ligne *ligneDeCommande = NULL;
 	char character = '.';
 	char *resultat = NULL;
 	int x = 0, y = 40;
 	gfx_SetColor(0);
-	ligneDeCommande = console->premiereLigne;
+	ligneDeCommande = console.premiereLigne;
 	x += 5;
 	while(ligneDeCommande != NULL){
 		gfx_FillRectangle_NoClip(x, y, largeur, hauteur);
@@ -51,10 +75,10 @@ void AfficherConsole(Console *console, char *key, Fenetre *fenetre, EmpireListe 
 	gfx_FillRectangle_NoClip(x, y, largeur, hauteur);
 	gfx_SetTextXY(x, y);
 	gfx_PrintString("> ");
-	gfx_PrintString(console->deniereCommande);
+	gfx_PrintString(console.deniereCommande);
 
 	if(*key != 0){
-		if(console->nombreActive == false){
+		if(console.nombreActive == false){
 			switch(*key){
 				case sk_Math:
 					character = 'a';
@@ -143,15 +167,15 @@ void AfficherConsole(Console *console, char *key, Fenetre *fenetre, EmpireListe 
 				case sk_2nd:
 					fenetre->commandPrompt = false;
 					camera->bloque = false;
-					FermerConsole(console);
+					FermerConsole(&console);
 					break;
 				case sk_Alpha:
-					console->nombreActive = true;
+					console.nombreActive = true;
 					break;
 			}
 		}	
 		else{
-			console->nombreActive = true;
+			console.nombreActive = true;
 			switch(*key){
 				case sk_1:
 					character = '1';
@@ -187,40 +211,40 @@ void AfficherConsole(Console *console, char *key, Fenetre *fenetre, EmpireListe 
 					character = ' ';
 					break;
 				case sk_Alpha:
-					console->nombreActive = false;
+					console.nombreActive = false;
 					break;
 				case sk_2nd:
 					fenetre->commandPrompt = false;
 					camera->bloque = false;
-					FermerConsole(console);
+					FermerConsole(&console);
 					break;
 			}
 		}
-		if((((character != '.') && (*key)) &&  ((29 >= console->cursor) && (*key != sk_Del))) && ((*key != sk_Alpha) && (*key != sk_Enter))){
-			console->deniereCommande[console->cursor] = character;
-			console->cursor++;
+		if((((character != '.') && (*key)) &&  ((29 >= console.cursor) && (*key != sk_Del))) && ((*key != sk_Alpha) && (*key != sk_Enter))){
+			console.deniereCommande[console.cursor] = character;
+			console.cursor++;
 		}
-		else if((*key == sk_Del) && (console->cursor > 0)){
-			console->cursor--;
-			console->deniereCommande[console->cursor]= ' ';
+		else if((*key == sk_Del) && (console.cursor > 0)){
+			console.cursor--;
+			console.deniereCommande[console.cursor]= ' ';
 		}
 		else if(*key == sk_Enter){
-			RechercherCommande(console->deniereCommande, console, empireListe, date);
-			NouvelleLigneConsole(console->deniereCommande, console->reponse, console);
-			memset(console->deniereCommande, 0, sizeof(console->deniereCommande));
-			console->cursor = 0;
-			memset(console->reponse, 0, sizeof(console->reponse));
+			RechercherCommande(console.deniereCommande, empireListe, date);
+			NouvelleLigneConsole(console.deniereCommande, console.reponse);
+			memset(console.deniereCommande, 0, sizeof(console.deniereCommande));
+			console.cursor = 0;
+			memset(console.reponse, 0, sizeof(console.reponse));
 		}
 		*key = 0;
 	}
 }
 
-void NouvelleLigneConsole(char *commande, char *reponse, Console *console){
+void NouvelleLigneConsole(char *commande, char *reponse){
 	Ligne *ligneDeCommande = NULL;
-	ligneDeCommande = console->premiereLigne;
+	ligneDeCommande = console.premiereLigne;
 	if(ligneDeCommande == NULL){
-		console->premiereLigne = malloc(sizeof(Ligne));
-		ligneDeCommande = console->premiereLigne;
+		console.premiereLigne = malloc(sizeof(Ligne));
+		ligneDeCommande = console.premiereLigne;
 	}
 	else{
 		while(ligneDeCommande->commandeSuivante != NULL){
@@ -235,17 +259,17 @@ void NouvelleLigneConsole(char *commande, char *reponse, Console *console){
 	strcpy(ligneDeCommande->reponse, reponse);
 }
 
-void FermerConsole(Console *console){
-	Ligne *ligneDeCommandePrecedent = NULL, *ligneDeCommande = console->premiereLigne;
+void FermerConsole(){
+	Ligne *ligneDeCommandePrecedent = NULL, *ligneDeCommande = console.premiereLigne;
 	while(ligneDeCommande != NULL){
 		ligneDeCommandePrecedent = ligneDeCommande;
 		ligneDeCommande = ligneDeCommande->commandeSuivante;
 		free(ligneDeCommande);
 	}
-	console->premiereLigne = NULL;
+	console.premiereLigne = NULL;
 }
 
-void RechercherCommande(char *commande, Console *console, EmpireListe *empireListe, Date *date){
+void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date){
 	char *resultat = NULL;
 	char *fin = NULL;
 	int i = 0, nombre = 0;
@@ -253,12 +277,12 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 	int jour = 0, mois = 0, annee = 0;
 	resultat = strstr(commande, "cash");
 	if(resultat == commande){
-		strcpy(console->reponse, "added ");
+		strcpy(console.reponse, "added ");
 
 		nombre = strtol(&(commande[5]), &fin, 10);
 
 		if(nombre > 99999){
-			strcpy(console->reponse, "number must be inferior to 99999");
+			strcpy(console.reponse, "number must be inferior to 99999");
 			return;
 		}
 		else if(nombre == 0){
@@ -266,8 +290,8 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 		}
 		else{
 			sprintf(nombreChar, "%d", nombre);
-			strcat(console->reponse, nombreChar);
-			strcat(console->reponse, " cash");
+			strcat(console.reponse, nombreChar);
+			strcat(console.reponse, " cash");
 			empireListe->premier->credits += nombre;
 			return;
 		}
@@ -275,12 +299,12 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 
 	resultat = strstr(commande, "minerals");
 	if(resultat == commande){
-		strcpy(console->reponse, "added ");
+		strcpy(console.reponse, "added ");
 
 		nombre = strtol(&(commande[9]), &fin, 10);
 
 		if(nombre > 99999){
-			strcpy(console->reponse, "number must be inferior to 99999");
+			strcpy(console.reponse, "number must be inferior to 99999");
 			return;
 		}
 		else if(nombre == 0){
@@ -288,8 +312,8 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 		}
 		else{
 			sprintf(nombreChar, "%d", nombre);
-			strcat(console->reponse, nombreChar);
-			strcat(console->reponse, " minerals");
+			strcat(console.reponse, nombreChar);
+			strcat(console.reponse, " minerals");
 			empireListe->premier->minerais += nombre;
 			return;
 		}
@@ -297,12 +321,12 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 
 	resultat = strstr(commande, "alloys");
 	if(resultat == commande){
-		strcpy(console->reponse, "added ");
+		strcpy(console.reponse, "added ");
 
 		nombre = strtol(&(commande[7]), &fin, 10);
 
 		if(nombre > 99999){
-			strcpy(console->reponse, "number must be inferior to 99999");
+			strcpy(console.reponse, "number must be inferior to 99999");
 			return;
 		}
 		else if(nombre == 0){
@@ -310,8 +334,8 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 		}
 		else{
 			sprintf(nombreChar, "%d", nombre);
-			strcat(console->reponse, nombreChar);
-			strcat(console->reponse, " alloys");
+			strcat(console.reponse, nombreChar);
+			strcat(console.reponse, " alloys");
 			empireListe->premier->acier += nombre;
 			return;
 		}
@@ -319,12 +343,12 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 
 	resultat = strstr(commande, "foods");
 	if(resultat == commande){
-		strcpy(console->reponse, "added ");
+		strcpy(console.reponse, "added ");
 
 		nombre = strtol(&(commande[6]), &fin, 10);
 
 		if(nombre > 99999){
-			strcpy(console->reponse, "number must be inferior to 99999");
+			strcpy(console.reponse, "number must be inferior to 99999");
 			return;
 		}
 		else if(nombre == 0){
@@ -332,8 +356,8 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 		}
 		else{
 			sprintf(nombreChar, "%d", nombre);
-			strcat(console->reponse, nombreChar);
-			strcat(console->reponse, " food");
+			strcat(console.reponse, nombreChar);
+			strcat(console.reponse, " food");
 			empireListe->premier->nourriture += nombre;
 			return;
 		}
@@ -359,12 +383,12 @@ void RechercherCommande(char *commande, Console *console, EmpireListe *empireLis
 			date->jour = jour;
 			date->mois = mois;
 			date->annee = annee;
-			strcpy(console->reponse, "time sat");
+			strcpy(console.reponse, "time sat");
 			return;
 		}
 	}
 
 
 	syntax_err:
-		strcpy(console->reponse, "syntax error");
+		strcpy(console.reponse, "syntax error");
 }

@@ -12,8 +12,9 @@ struct FlotteStruct {
 	int y;
 	int vitesse;
 	int angle;
+
 	FlotteType type;
-	// TypeMilitaire typeVaisseauxMilitaire; //corvette, cuirassé...
+
 	int puissance;
 	int coqueTotal;
 	int coqueVie;
@@ -21,12 +22,15 @@ struct FlotteStruct {
 	int blindageVie;
 	int bouclierTotal;
 	int bouclierVie;
+
 	char systeme;
 	char action;
-	char systemeSuivant;
+	char avancementTrajet;
 	char systemeArrive;
 	char avancement;
-	int* chemin;
+
+	int chemin[50];
+
 	int nombreVaisseaux;
 	int nombreDeCorvette;
 	int nombreDeDestroyer;

@@ -10,9 +10,9 @@ void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, SystemeStellai
 
 void DessinerHyperlane(int8_t niveauConnaissance1, int8_t niveauConnaissance2, int16_t x, int16_t y, int16_t xLn, int16_t yLn, Camera* camera);
 
-void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur, Console *console);
+void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur);
 
-void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur, Console *console);
+void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, FlotteListe *flotteJoueur, Date *date, Fenetre *fenetre, Empire *joueur);
 
 void DessinerVueSysteme(SystemeStellaire* systemeStellaires, Camera* camera, Fenetre *fenetre, EmpireListe* empireListe, char *key);
 void DessinerEtoile(SystemeStellaire*, Camera*, Fenetre*, char*);

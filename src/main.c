@@ -77,15 +77,19 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 	char choix = 0, fin = 0, key = 0, erreur = 0;
 	unsigned char car = 'è';
 	unsigned int carInt = (int)car;
+	int espacement = 0, niveau = 0;
+
 	gfx_SetDrawScreen();
 
 	/*imprimer tout*/
-	gfx_FillScreen(255);
-    PrintCentered("Stellaris", 30, 4, 0, 0);
+	gfx_ZeroScreen();
+    PrintCentered("Stellaris", 40, 3, 1, -30);
 	gfx_SetMonospaceFont(8);
 	gfx_SetTextBGColor(255);
-	gfx_SetTextXY(LCD_WIDTH - strlen(VERSION_LOGICIEL)*8 - strlen(__DATE__) * 8 - strlen(__TIME__) * 8 - 36, 205);
-	gfx_PrintString(VERSION_LOGICIEL);
+	gfx_SetTextFGColor(1);
+	gfx_SetColor(1);
+	gfx_PrintStringXY(VERSION_LOGICIEL, 5, 205);
+	gfx_SetTextXY(LCD_WIDTH - strlen(__DATE__) * 8 - strlen(__TIME__) * 8 - 36, 205);
 	gfx_PrintString(" ");
 	gfx_PrintString(__DATE__);
 	gfx_PrintString(" ");
@@ -112,33 +116,91 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 		}
 		if (choix > 3) {choix = 0;}
 		if (choix < 0) {choix = 3;}
+		gfx_SetTextXY(5, 140);
+		niveau = 100;
+		espacement = 15;
 		/*dessiner le choix*/
-		switch (choix)
-		{
-			case 0:
-				PrintCentered(_(LC_CHARGER), 80, 2, 4, 0);
-				PrintCentered(_(LC_NOUVELLE_PARTIE), 110, 2, 0, 0);
-				PrintCentered(_(LC_OPTIONS), 140, 2, 0, 0);
-				PrintCentered(_(LC_QUITTER), 170, 2, 0, 0);
-				break;
-			case 1:
-				PrintCentered(_(LC_CHARGER), 80, 2, 0, 0);
-				PrintCentered(_(LC_NOUVELLE_PARTIE), 110, 2, 4, 0);
-				PrintCentered(_(LC_OPTIONS), 140, 2, 0, 0);
-				PrintCentered(_(LC_QUITTER), 170, 2, 0, 0);
-				break;
-			case 2:
-				PrintCentered(_(LC_CHARGER), 80, 2, 0, 0);
-				PrintCentered(_(LC_NOUVELLE_PARTIE), 110, 2, 0, 0);
-				PrintCentered(_(LC_OPTIONS), 140, 2, 4, 0);
-				PrintCentered(_(LC_QUITTER), 170, 2, 0, 0);
-				break;
-			case 3:
-				PrintCentered(_(LC_CHARGER), 80, 2, 0, 0);
-				PrintCentered(_(LC_NOUVELLE_PARTIE), 110, 2, 0, 0);
-				PrintCentered(_(LC_OPTIONS), 140, 2, 0, 0);
-				PrintCentered(_(LC_QUITTER), 170, 2, 4, 0);
-				break;
+		switch (choix){
+		case 0:
+			gfx_SetTextFGColor(13);
+			gfx_SetColor(13);
+			gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_CHARGER)) * 8);
+			gfx_SetTextFGColor(1);
+			gfx_SetColor(1);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_NOUVELLE_PARTIE), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_NOUVELLE_PARTIE)) * 8);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_OPTIONS), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_OPTIONS)) * 8);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_QUITTER)) * 8);
+			break;
+		case 1:
+			gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_CHARGER)) * 8);
+
+			niveau += espacement;
+			gfx_SetTextFGColor(13);
+			gfx_SetColor(13);
+			gfx_PrintStringXY(_(LC_NOUVELLE_PARTIE), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_NOUVELLE_PARTIE)) * 8);
+			gfx_SetTextFGColor(1);
+			gfx_SetColor(1);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_OPTIONS), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_OPTIONS)) * 8);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_QUITTER)) * 8);
+			break;
+		case 2:
+			gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_CHARGER)) * 8);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_NOUVELLE_PARTIE), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_NOUVELLE_PARTIE)) * 8);
+
+			niveau += espacement;
+			gfx_SetTextFGColor(13);
+			gfx_SetColor(13);
+			gfx_PrintStringXY(_(LC_OPTIONS), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_OPTIONS)) * 8);
+			gfx_SetTextFGColor(1);
+			gfx_SetColor(1);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_QUITTER)) * 8);
+			break;
+		case 3:
+			gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_CHARGER)) * 8);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_NOUVELLE_PARTIE), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_NOUVELLE_PARTIE)) * 8);
+
+			niveau += espacement;
+			gfx_PrintStringXY(_(LC_OPTIONS), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_OPTIONS)) * 8);
+
+			niveau += espacement;
+			gfx_SetTextFGColor(13);
+			gfx_SetColor(13);
+			gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_QUITTER)) * 8);
+			gfx_SetTextFGColor(1);
+			gfx_SetColor(1);
+			break;
 		}	
 	}
 	switch (choix)
