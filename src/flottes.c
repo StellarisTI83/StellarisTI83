@@ -250,10 +250,15 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 		camera->flotte = 0;
 		camera->empire = 0;
 		flotte->vitesse = 20;
-		flotte->angle = atan((double)(systemeStellaires[systeme].y - systemeStellaires[flotte->systeme].y) / (systemeStellaires[systeme].x - systemeStellaires[flotte->systeme].x));
+		flotte->angle = atan((double)(systemeStellaires[flotte->systeme].y - systemeStellaires[systeme].y) / (systemeStellaires[flotte->systeme].x - systemeStellaires[systeme].x));
+		EcrireConsoleInt(systemeStellaires[systeme].y);
+		EcrireConsoleInt(systemeStellaires[flotte->systeme].y);
+		EcrireConsoleInt(systemeStellaires[systeme].x);
+		EcrireConsoleInt(systemeStellaires[flotte->systeme].x);
+		EcrireConsoleInt(flotte->angle);
 		camera->mapType = SYSTEME;
 		camera->x = systemeStellaires[flotte->systeme].x;
-		camera->x = systemeStellaires[flotte->systeme].y;
+		camera->y = systemeStellaires[flotte->systeme].y;
 		PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
 	}
 }
@@ -269,8 +274,21 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 		flotte = empire->flotte->premier;
 		while(flotte != NULL){
 			if(flotte->action == FLOTTE_BOUGER){
-				flotte->x += cos(flotte->angle) * flotte->vitesse;
-				flotte->y += sin(flotte->angle) * flotte->vitesse;
+				//bouger la flotte
+				if(systemeStellaires[flotte->systeme].x < systemeStellaires[flotte->systemeArrive].x){
+					flotte->x += cos(flotte->angle) * flotte->vitesse;
+				}
+				else{
+					flotte->x -= cos(flotte->angle) * flotte->vitesse;
+				}
+				if(systemeStellaires[flotte->systeme].y < systemeStellaires[flotte->systemeArrive].y){
+					flotte->y += sin(flotte->angle) * flotte->vitesse;
+				}
+				else{
+					flotte->y -= sin(flotte->angle) * flotte->vitesse;
+				}
+
+				//calculer si la flotte sort du systeme
 				if(pow((double)(flotte->x - 480), 2.0) + pow((double)(flotte->y - 360), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)){
 					if(flotte->avancement >= 1){
 						flotte->avancement = 0;

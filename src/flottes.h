@@ -11,7 +11,7 @@ struct FlotteStruct {
 	int x;
 	int y;
 	int vitesse;
-	int angle;
+	double angle;
 
 	FlotteType type;
 

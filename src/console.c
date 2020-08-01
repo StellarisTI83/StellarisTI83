@@ -48,7 +48,13 @@ static void FermerConsole();
 static void NouvelleLigneConsole(char *commande, char *reponse);
 static void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date);
 
-void EcrireConsole(char *chaine){
+void EcrireConsoleString(char *chaine){
+	NouvelleLigneConsole("", chaine);
+}
+
+void EcrireConsoleInt(int nombre){
+	char chaine[50];
+	sprintf(chaine, "%d", nombre);
 	NouvelleLigneConsole("", chaine);
 }
 

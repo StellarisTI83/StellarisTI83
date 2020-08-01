@@ -449,14 +449,14 @@ void DessinerPlanetesHabitables(SystemeStellaire* systemeStellaires, int i, int 
 void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, SystemeStellaire* systemeStellaires, Camera* camera){
 	Flotte* flotte;
 	int systeme, xFlotte, yFlotte;
+	int index = 0, x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 	//dessiner flottes
 	flotte = joueur->flotte->premier;
 	while(flotte != NULL) {
 		systeme = flotte->systeme;
 		xFlotte = systemeStellaires[systeme].x*camera->zoom - camera->x + 165;
 		yFlotte = systemeStellaires[systeme].y*camera->zoom - camera->y + 110;
-		if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240)))
-		{
+		if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240))){
 			while(gfx_GetPixel(xFlotte + 4, yFlotte + 1) == 19){
 				xFlotte += 11;
 			}
@@ -480,6 +480,19 @@ void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, SystemeStellai
 					gfx_TransparentSprite(science_ship_our_icon, xFlotte + 6, yFlotte - 4);
 					break;
 			}
+		}
+		//dessiner chemin
+		index = flotte->avancementTrajet - 1;
+		gfx_SetColor(13);
+		while((flotte->chemin[index] != 0) && (flotte->chemin[index + 1] != 0)){
+			x1 = systemeStellaires[flotte->chemin[index]].x*camera->zoom - camera->x + 160;
+			y1 = systemeStellaires[flotte->chemin[index]].y*camera->zoom - camera->y + 120;
+			x2 = systemeStellaires[flotte->chemin[index + 1]].x*camera->zoom - camera->x + 160;
+			y2 = systemeStellaires[flotte->chemin[index + 1]].y*camera->zoom - camera->y + 120;
+			if((((x1 > 0) && (x1 < 320)) && ((0 < y1) && (y1 < 240))) && (((x2 > 0) && (x2 < 320)) && ((0 < y2) && (y2 < 240)))){
+				gfx_Line_NoClip(x1, y1, x2, y2);
+			}
+			index++;
 		}
 		flotte = flotte->suivant;
 	}
