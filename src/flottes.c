@@ -247,24 +247,23 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 		flotte->action = FLOTTE_BOUGER;
 		flotte->avancement = 0;
 		flotte->avancementTrajet = 1;
+		
 		camera->flotte = 0;
 		camera->empire = 0;
+		
 		flotte->vitesse = 20;
-		flotte->angle = atan((double)(systemeStellaires[flotte->systeme].y - systemeStellaires[systeme].y) / (systemeStellaires[flotte->systeme].x - systemeStellaires[systeme].x));
-		EcrireConsoleInt(systemeStellaires[systeme].y);
-		EcrireConsoleInt(systemeStellaires[flotte->systeme].y);
-		EcrireConsoleInt(systemeStellaires[systeme].x);
-		EcrireConsoleInt(systemeStellaires[flotte->systeme].x);
-		EcrireConsoleInt(flotte->angle);
+
 		camera->mapType = SYSTEME;
 		camera->x = systemeStellaires[flotte->systeme].x;
 		camera->y = systemeStellaires[flotte->systeme].y;
+		
 		PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
+		flotte->angle = atan2(systemeStellaires[flotte->chemin[1]].y - systemeStellaires[flotte->systeme].y, systemeStellaires[flotte->chemin[1]].x - systemeStellaires[flotte->systeme].y);
 	}
 }
 
 /**
- *Fait effectuer les action des flottes
+ * Fait effectuer les action des flottes
  */
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires){
 	Empire* empire = NULL; 
@@ -275,35 +274,27 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 		while(flotte != NULL){
 			if(flotte->action == FLOTTE_BOUGER){
 				//bouger la flotte
-				if(systemeStellaires[flotte->systeme].x < systemeStellaires[flotte->systemeArrive].x){
-					flotte->x += cos(flotte->angle) * flotte->vitesse;
-				}
-				else{
-					flotte->x -= cos(flotte->angle) * flotte->vitesse;
-				}
-				if(systemeStellaires[flotte->systeme].y < systemeStellaires[flotte->systemeArrive].y){
-					flotte->y += sin(flotte->angle) * flotte->vitesse;
-				}
-				else{
-					flotte->y -= sin(flotte->angle) * flotte->vitesse;
-				}
+				flotte->x += cos(flotte->angle) * flotte->vitesse;
+				flotte->y += sin(flotte->angle) * flotte->vitesse;
 
 				//calculer si la flotte sort du systeme
-				if(pow((double)(flotte->x - 480), 2.0) + pow((double)(flotte->y - 360), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)){
+				if(pow((double)(flotte->x - 480), 2.0) + pow((double)(flotte->y - 360), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)) {
+
 					if(flotte->avancement >= 1){
+						if(flotte->chemin[flotte->avancementTrajet] == flotte->systemeArrive) {
+							flotte->vitesse = 0;
+							flotte->action = FLOTTE_AUCUNE_ACTION;
+						}
 						flotte->avancement = 0;
 						flotte->x = 470; 
 						flotte->y = 380;
 						flotte->systeme = flotte->chemin[flotte->avancementTrajet];
-						flotte->avancementTrajet++;
-						flotte->avancement = 0;
-					} else{
+						flotte->avancementTrajet++;			
+						flotte->angle = atan2(systemeStellaires[flotte->chemin[flotte->avancementTrajet]].y - systemeStellaires[flotte->systeme].y, systemeStellaires[flotte->chemin[flotte->avancementTrajet]].x - systemeStellaires[flotte->systeme].y);
+					} else {
 						flotte->avancement = 1;
 					}
-					if(flotte->chemin[flotte->avancementTrajet] == flotte->systemeArrive){
-						flotte->vitesse = 0;
-						flotte->action = FLOTTE_AUCUNE_ACTION;
-					}
+
 					systemeStellaires[flotte->systeme].niveauDeConnaissance = TOTAL;
 				}
 			}

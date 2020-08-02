@@ -83,13 +83,13 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 
 	/*imprimer tout*/
 	gfx_ZeroScreen();
-    PrintCentered("Stellaris", 40, 3, 1, -30);
+    PrintCentered("Stellaris", 10, 3, 1, -30);
 	gfx_SetMonospaceFont(8);
 	gfx_SetTextBGColor(255);
 	gfx_SetTextFGColor(1);
 	gfx_SetColor(1);
-	gfx_PrintStringXY(VERSION_LOGICIEL, 5, 205);
-	gfx_SetTextXY(LCD_WIDTH - strlen(__DATE__) * 8 - strlen(__TIME__) * 8 - 36, 205);
+	gfx_PrintStringXY(VERSION_LOGICIEL, 5, 220);
+	gfx_SetTextXY(LCD_WIDTH - strlen(__DATE__) * 8 - strlen(__TIME__) * 8 - 36, 220);
 	gfx_PrintString(" ");
 	gfx_PrintString(__DATE__);
 	gfx_PrintString(" ");
@@ -141,6 +141,7 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 			gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
 			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_QUITTER)) * 8);
 			break;
+
 		case 1:
 			gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
 			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_CHARGER)) * 8);
@@ -161,6 +162,7 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 			gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
 			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_QUITTER)) * 8);
 			break;
+
 		case 2:
 			gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
 			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_CHARGER)) * 8);
@@ -181,6 +183,7 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 			gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
 			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_QUITTER)) * 8);
 			break;
+
 		case 3:
 			gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
 			gfx_HorizLine_NoClip(5, niveau + 10, strlen(_(LC_CHARGER)) * 8);
