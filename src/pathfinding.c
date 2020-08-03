@@ -131,7 +131,7 @@ static void ReverseArray(int array[], int size){
     }
 }
 
-void PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], int path[50], int debut, int fin){
+int PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], int path[50], int debut, int fin){
     NodeArray *listeOuverte = NULL;
     NodeArray *listeFermee = NULL;
     NodeArray *listeEnfants = NULL;
@@ -141,7 +141,7 @@ void PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], in
     Node *temporary_node = NULL;
     Node *children = NULL;
 
-    int index = 0, current_index = 0, children_index = 0;
+    int index = 0, current_index = 0, children_index = 0, nombre_de_boucles = 0;
     int enfant[4], parent;
 
 
@@ -168,7 +168,8 @@ void PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], in
     listeEnfants = CreateNodeArray();
     CopyNode(CreateNode(listeOuverte), depart);
 
-    while(ArraySize(listeOuverte) > 0){
+    while((ArraySize(listeOuverte) > 0) && (nombre_de_boucles < 50)){
+        nombre_de_boucles++;
         current_node = listeOuverte->firstNode;
         current_index = 0;
         index = 0;
@@ -197,7 +198,7 @@ void PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], in
                     path[current_index] = current_node->parent;
                     parent = current_node->parent;
                     index = 0;
-                    while((current_node->numero != parent) && (index < 100)){
+                    while((current_node->numero != parent) && (index < 50)){
                         current_node = NodeNumber(listeFermee, index);
                         index++;
                     }
@@ -208,27 +209,14 @@ void PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], in
                     current_index++;
                 }
                 ReverseArray(path, 50);
-                return;
+                return 0;
         }
 
         memset(enfant, 0, sizeof(int) * 4);
         children_index = 0;
         while(children_index < 4){
             enfant[children_index] = current_node->numero;
-            switch(children_index){
-            case 0:
-                index = galaxie[current_node->numero].hyperlane1;
-                break;
-            case 1:
-                index = galaxie[current_node->numero].hyperlane2;
-                break;
-            case 2:
-                index = galaxie[current_node->numero].hyperlane3;
-                break;
-            case 3:
-                index = galaxie[current_node->numero].hyperlane4;
-                break;
-            }
+            index = galaxie[current_node->numero].hyperlane[children_index].destination;
             if(index != 255){
                 children = CreateNode(listeEnfants);
                 children->numero = index;
@@ -267,4 +255,5 @@ void PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], in
             children_index++;
         }
     }
+    return 1;
 }

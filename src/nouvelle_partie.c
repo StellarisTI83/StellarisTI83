@@ -1393,8 +1393,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			{
 				do
 				{
-					hyperlaneSup1 = randInt(1, 3);
-					hyperlaneSup2 = randInt(1, 3);
+					hyperlaneSup1 = randInt(1, 2);
+					hyperlaneSup2 = randInt(1, 2);
 				} while(hyperlaneSup1 == hyperlaneSup2);
 				switch(hyperlaneSup1)
 					{
@@ -1444,30 +1444,24 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 				//hyperLane3 = 1;
 			}
 			
-			/*if((systemeStellaires[k - LARGEUR_GALAXIE].x == 0)||((systemeStellaires[k - 1].x == 0)||(systemeStellaires[k + 1].x == 0)))
-			{
-				hyperLane1 = 1;
-				hyperLane2 = 1;
-				hyperLane3 = 1;
-			}*/
-			
-			systemeStellaires[k].hyperlane1 = 255;
+			systemeStellaires[k].hyperlane[0].destination = 255;
 			if((systemeStellaires[k - LARGEUR_GALAXIE].x != 0) && (hyperLane1))
 			{
-				systemeStellaires[k].hyperlane1 = k - LARGEUR_GALAXIE;
+				systemeStellaires[k].hyperlane[0].destination = k - LARGEUR_GALAXIE;
 			}
 			
-			systemeStellaires[k].hyperlane2 = 255;
+			systemeStellaires[k].hyperlane[1].destination = 255;
 			if((systemeStellaires[k - 1].x != 0) && (hyperLane2))
 			{
-				systemeStellaires[k].hyperlane2 = k - 1;
+				systemeStellaires[k].hyperlane[1].destination = k - 1;
 			}
 			
-			systemeStellaires[k].hyperlane3 = 255;
+			systemeStellaires[k].hyperlane[2].destination = 255;
 			if((systemeStellaires[k + 1].x != 0) && (hyperLane3))
 			{
-				systemeStellaires[k].hyperlane3 = k + 1;
+				systemeStellaires[k].hyperlane[2].destination = k + 1;
 			}
+			systemeStellaires[k].hyperlane[3].destination = 255;
 			
 			nomInt = randInt(0, (sizeof(nomGalaxies)/sizeof(nomGalaxies[0])) - 1);
 			strcpy(systemeStellaires[k].nom, nomGalaxies[nomInt]);
@@ -1825,11 +1819,35 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	i = 0;
 	//recreation des hyperlanes
 	while(i < k) {
-		if(systemeStellaires[i].hyperlane1 != 255) {
-			systemeStellaires[systemeStellaires[i].hyperlane1].hyperlane3 = i;
+		SystemeStellaire *systeme;
+		systeme = &systemeStellaires[i];
+		if(systeme->hyperlane[0].destination != 255) {
+			systemeStellaires[systeme->hyperlane[0].destination].hyperlane[2].destination = i;
 		}
-		if(systemeStellaires[k].hyperlane2 != 255) {
-			systemeStellaires[systemeStellaires[i].hyperlane2].hyperlane4 = i;
+		if(systeme->hyperlane[1].destination != 255) {
+			systemeStellaires[systeme->hyperlane[1].destination].hyperlane[3].destination = i;
+		}
+		i++;
+	}
+
+	i = 0;
+	j = 0;
+	while(i < k){
+		SystemeStellaire *systeme;
+		systeme = &systemeStellaires[i];
+		//calcul des positions de sortie
+		j = 0;
+		while(j < 4){
+			if(systeme->hyperlane[j].destination != 255){
+				double angle = 0;
+
+				angle = atan2(systemeStellaires[systeme->hyperlane[j].destination].y - systeme->y, systemeStellaires[systeme->hyperlane[j].destination].x - systeme->x);
+				
+				systeme->hyperlane[j].x = X_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * cos(angle));
+
+				systeme->hyperlane[j].y = Y_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * sin(angle));
+			}
+			j++;
 		}
 		i++;
 	}

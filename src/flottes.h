@@ -7,11 +7,15 @@ typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
 
 typedef struct NoeudStruct Noeud;
 
+typedef struct {
+	double xVecteur;
+	double yVecteur;
+} Vecteur;
+
 struct FlotteStruct {
 	int x;
 	int y;
-	int vitesse;
-	double angle;
+	Vecteur vecteur;
 
 	FlotteType type;
 

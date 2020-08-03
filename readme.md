@@ -39,7 +39,7 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
   - [ ] Rajout des stations scientifiques et minières
   - [ ] Actions flottes
   - [x] Pathfinding flottes
-  - [ ] Faire bouger flottes un systeme par un systeme
+  - [x] Faire bouger flottes un systeme par un systeme
   - [x] Flottes militaires de plusieurs types
 - [ ] Recherches
 - [ ] Rajout de plusieurs civilisations

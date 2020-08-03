@@ -38,7 +38,7 @@ static void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeS
 
 static void DessinerVueSysteme(SystemeStellaire* systemeStellaires, Camera* camera, Fenetre *fenetre, EmpireListe* empireListe, char *key);
 static void DessinerHyperlanesSysteme(SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, char *key);
-static void CalculerHyperlaneXY(double *x, double *y, SystemeStellaire *systeme, SystemeStellaire *hyperlane, Camera *camera);
+// static void CalculerHyperlaneXY(double *x, double *y, SystemeStellaire *systeme, SystemeStellaire *hyperlane, Camera *camera);
 
 static void DessinerEtoile(SystemeStellaire*, Camera*, Fenetre*, char*);
 static void CouleurEtoile(int type);
@@ -225,6 +225,7 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 		hyperLane1 = 255;
 		hyperLane2 = 255;
 		hyperLane3 = 255;
+		hyperLane4 = 255;
 		
 		xLn = 0;
 		yLn = 0;
@@ -240,7 +241,7 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 		}
 		if ( (((0 <= x) && (x <= 320)) && ((0 <= y)&& (y <= 240))) && ((systemeStellaires[i].x != 0) && (systemeStellaires[i].y != 0)) )
 		{
-			if(systemeStellaires[i].niveauDeConnaissance != INCONNU) {
+			//if(systemeStellaires[i].niveauDeConnaissance != INCONNU) {
 				if(systemeStellaires[i].empire == 1){
 					if(camera->mapType == NORMAL){
 						gfx_SetColor(9);
@@ -255,34 +256,34 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 					}
 				}
 				//dessiner hyperLanes
-				hyperLane1 = systemeStellaires[i].hyperlane1;
+				hyperLane1 = systemeStellaires[i].hyperlane[0].destination;
 				if (hyperLane1 != 255){
 					xLn = systemeStellaires[hyperLane1].x;
 					yLn = systemeStellaires[hyperLane1].y;
 					DessinerHyperlane(systemeStellaires[hyperLane1].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
 				
-				hyperLane2 = systemeStellaires[i].hyperlane2;
+				hyperLane2 = systemeStellaires[i].hyperlane[1].destination;
 				if (hyperLane2 != 255){
 					xLn = systemeStellaires[hyperLane2].x;
 					yLn = systemeStellaires[hyperLane2].y;
 					DessinerHyperlane(systemeStellaires[hyperLane2].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
 
-				hyperLane3 = systemeStellaires[i].hyperlane3;
+				hyperLane3 = systemeStellaires[i].hyperlane[2].destination;
 				if (hyperLane3 != 255){
 					xLn = systemeStellaires[hyperLane3].x;
 					yLn = systemeStellaires[hyperLane3].y;
 					DessinerHyperlane(systemeStellaires[hyperLane3].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
 				
-				hyperLane4 = systemeStellaires[i].hyperlane4;
+				hyperLane4 = systemeStellaires[i].hyperlane[3].destination;
 				if (hyperLane4 != 255){
 					xLn = systemeStellaires[hyperLane4].x;
 					yLn = systemeStellaires[hyperLane4].y;
 					DessinerHyperlane(systemeStellaires[hyperLane4].niveauDeConnaissance, systemeStellaires[i].niveauDeConnaissance, x, y, xLn, yLn, camera);
 				}
-			}
+			//}
 			// ecrit le numéro de l'étoile
 			// gfx_SetTextXY(x - 4, y + 9);
 			// PrintInt(i);
@@ -789,58 +790,31 @@ void DessinerVueSysteme(SystemeStellaire* systemeStellaires, Camera* camera, Fen
  * Dessine les fleches des hyperlane en vue systeme
  * */
 void DessinerHyperlanesSysteme(SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, char *key){
-	SystemeStellaire *systeme, *hyperlane;
-	double x, y;
-	double angle = 0, oppose, adjacent;
+	SystemeStellaire *systeme;
+	Hyperlane *hyperlane;
+	int x, y;
 	char angleChar[10];
+	int index;
 
 	systeme = &systemeStellaires[camera->systeme];
 	
 	gfx_SetColor(11);
-
+	index = 0;
 	// verifie que les hyperlane existent
-	if (systeme->hyperlane1 != 255)
-	{
-		hyperlane = &systemeStellaires[systeme->hyperlane1];
+	while(index < 4){
+		hyperlane = &systeme->hyperlane[index];
+		if(hyperlane->destination != 255){
+			x = hyperlane->x - camera->xSysteme;
+			y = hyperlane->y - camera->ySysteme;
 
-		CalculerHyperlaneXY(&x, &y, systeme, hyperlane, camera);
-
-		if(((0 < x) && (x < 310)) && ((0 < y) && (y < 230))){
-			gfx_Rectangle_NoClip(x, y, 10, 10);
+			if(((0 < x) && (x < 310)) && ((0 < y) && (y < 230))){
+				gfx_Rectangle_NoClip(x, y, 10, 10);
+			}
 		}
-	}
-	if (systeme->hyperlane2 != 255)
-	{
-		hyperlane = &systemeStellaires[systeme->hyperlane2];
-
-		CalculerHyperlaneXY(&x, &y, systeme, hyperlane, camera);
-
-		if(((0 < x) && (x < 310)) && ((0 < y) && (y < 230))){
-			gfx_Rectangle_NoClip(x, y, 10, 10);
-		}
-	}
-	if (systeme->hyperlane3 != 255)
-	{
-		hyperlane = &systemeStellaires[systeme->hyperlane3];
-
-		CalculerHyperlaneXY(&x, &y, systeme, hyperlane, camera);
-
-		if(((0 < x) && (x < 310)) && ((0 < y) && (y < 230))){
-			gfx_Rectangle_NoClip(x, y, 10, 10);
-		}
-	}
-	if (systeme->hyperlane4 != 255)
-	{
-		hyperlane = &systemeStellaires[systeme->hyperlane4];
-
-		CalculerHyperlaneXY(&x, &y, systeme, hyperlane, camera);
-
-		if(((0 < x) && (x < 310)) && ((0 < y) && (y < 230))){
-			gfx_Rectangle_NoClip(x, y, 10, 10);
-		}
+		index++;
 	}
 }
-
+/*
 void CalculerHyperlaneXY(double *x, double *y, SystemeStellaire *systeme, SystemeStellaire *hyperlane, Camera *camera){
 		if((hyperlane->x != 0) &&(hyperlane->y != 0)){
 			int adjacent = 0, oppose = 0;
@@ -855,7 +829,7 @@ void CalculerHyperlaneXY(double *x, double *y, SystemeStellaire *systeme, System
 			*y = Y_CENTRE_SYSTEME - camera->ySysteme + (RAYON_DE_VUE_SYSTEME * sin(angle));
 
 		}
-}
+}*/
 
 /**
  *Dessine l'étoile en vue systeme

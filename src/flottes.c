@@ -27,6 +27,8 @@
 
 #include "locale/locale.h"
 
+static Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2);
+
 /**
  *Crée une list de flottes
  */
@@ -149,7 +151,7 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 	flotte->systeme = systeme;
 	flotte->x = X_CENTRE_SYSTEME - 10;
 	flotte->y = Y_CENTRE_SYSTEME + 10;
-	flotte->vitesse = Y_CENTRE_SYSTEME + 10;
+	memset(&flotte->vecteur, 0, sizeof(Vecteur));
 	flotte->action = FLOTTE_AUCUNE_ACTION;
 	flotte->avancementTrajet = 0;
 	flotte->systemeArrive = 0;
@@ -230,7 +232,11 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires){
 	Empire* empire;
 	Flotte* flotte;
-	int path[100];
+	int path[50];
+	int error;
+	int index = 0;
+	double norme = 0;
+
 	empire = EmpireNumero(empireListe, numeroDeEmpire);
 	flotte = FlotteNumero(empire->flotte, numeroDeFlotte);
 	if(camera->bougerFlotte == FALSE){
@@ -250,15 +256,21 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 		
 		camera->flotte = 0;
 		camera->empire = 0;
-		
-		flotte->vitesse = 20;
 
 		camera->mapType = SYSTEME;
 		camera->x = systemeStellaires[flotte->systeme].x;
 		camera->y = systemeStellaires[flotte->systeme].y;
 		
-		PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
-		flotte->angle = atan2(systemeStellaires[flotte->chemin[1]].y - systemeStellaires[flotte->systeme].y, systemeStellaires[flotte->chemin[1]].x - systemeStellaires[flotte->systeme].y);
+		error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
+		if(error != 0){
+			flotte->action = FLOTTE_AUCUNE_ACTION;
+		}
+
+
+		while((index < 4) && (systemeStellaires[flotte->systeme].hyperlane[index].destination != flotte->chemin[flotte->avancementTrajet])){
+			index++;
+		}
+		flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, systemeStellaires[flotte->systeme].hyperlane[index].x, systemeStellaires[flotte->systeme].hyperlane[index].y);
 	}
 }
 
@@ -268,29 +280,43 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires){
 	Empire* empire = NULL; 
 	Flotte* flotte = NULL;
+	int index = 0;
+	int norme = 0;
 	empire = empireListe->premier;
 	while(empire != NULL){
 		flotte = empire->flotte->premier;
 		while(flotte != NULL){
-			if(flotte->action == FLOTTE_BOUGER){
-				//bouger la flotte
-				flotte->x += cos(flotte->angle) * flotte->vitesse;
-				flotte->y += sin(flotte->angle) * flotte->vitesse;
+			
+			//bouger la flotte
+			if(flotte->action == FLOTTE_BOUGER) {
+				flotte->x += flotte->vecteur.xVecteur;
+				flotte->y += flotte->vecteur.yVecteur;
 
 				//calculer si la flotte sort du systeme
-				if(pow((double)(flotte->x - 480), 2.0) + pow((double)(flotte->y - 360), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)) {
-
+				if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)) {
 					if(flotte->avancement >= 1){
 						if(flotte->chemin[flotte->avancementTrajet] == flotte->systemeArrive) {
-							flotte->vitesse = 0;
+							flotte->vecteur.xVecteur = 0;
+							flotte->vecteur.yVecteur = 0;
 							flotte->action = FLOTTE_AUCUNE_ACTION;
 						}
+
+						index = 0;
+						while((index < 4) && (systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].destination != flotte->systeme)){
+							index++;
+						}
+						flotte->x = systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].x;
+						flotte->y = systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].y;
+
 						flotte->avancement = 0;
-						flotte->x = 470; 
-						flotte->y = 380;
 						flotte->systeme = flotte->chemin[flotte->avancementTrajet];
-						flotte->avancementTrajet++;			
-						flotte->angle = atan2(systemeStellaires[flotte->chemin[flotte->avancementTrajet]].y - systemeStellaires[flotte->systeme].y, systemeStellaires[flotte->chemin[flotte->avancementTrajet]].x - systemeStellaires[flotte->systeme].y);
+						flotte->avancementTrajet++;
+
+						index = 0;
+						while((index < 4) && (systemeStellaires[flotte->systeme].hyperlane[index].destination != flotte->chemin[flotte->avancementTrajet])){
+							index++;
+						}
+						flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, systemeStellaires[flotte->systeme].hyperlane[index].x, systemeStellaires[flotte->systeme].hyperlane[index].y);
 					} else {
 						flotte->avancement = 1;
 					}
@@ -302,4 +328,21 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 		}
 		empire = empire->suivant;
 	}
+}
+
+/**
+ * Calculer Vecteur
+ * */
+Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
+	Vecteur vecteur;
+	double norme = 0;
+	int index = 0;
+	if(norme == 0){
+		norme = 1;
+	}
+	//calcule du vecteur
+	norme = sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0));
+	vecteur.xVecteur = ((x2 - x1) / norme) * 20.0;
+	vecteur.yVecteur = ((y2 - y1) / norme) * 20.0;
+	return vecteur;
 }

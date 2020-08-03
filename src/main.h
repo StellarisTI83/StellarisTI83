@@ -193,19 +193,25 @@ typedef struct {
 	Villes *villes;
 } Planete;
 
+typedef struct{
+	int destination;
+	int x;
+	int y;
+} Hyperlane;
+
 typedef struct {
 	char nom[10];
 	int x;
 	int y;
+
 	char etoileType; //1 = B, 2 = A, 3 = F, 4 = G, 5 = K, 6 = M, 7 = trou noir, 8 = pulsar, 9 = etoile a neutron / B : violet, A : Bleu, F : Blanc, G K et M: orange
 	char nombrePlanetes;
 	char nombrePlanetesHabitees;
 	char nombrePlanetesHabitables;
 	char empire;
-	int16_t hyperlane1;
-	int16_t hyperlane2;
-	int16_t hyperlane3;
-	int16_t hyperlane4;
+
+	Hyperlane hyperlane[4];
+
 	NiveauDeConnaissance niveauDeConnaissance; //0 = inconnu, 1 = faible, 2 = moyen, 3 = haut, 4 = total (intel level)
 	Planete* planete1;
 	Planete* planete2;
