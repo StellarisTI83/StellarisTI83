@@ -57,7 +57,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 	i = 0;
 	
 	//ourvir
-	while(i <= LARGEUR_GALAXIE * LARGEUR_GALAXIE)
+	/*while(i <= LARGEUR_GALAXIE * LARGEUR_GALAXIE)
 	{
 		ti_Read(&systemeStellaires[i], sizeof(SystemeStellaire), 1, sauvegarde);
 		
@@ -87,7 +87,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 			ti_Read(systemeStellaires[i].planete5, sizeof(Planete), 1, sauvegarde);
 		}
 		i++;
-	}
+	}*/
 	ti_Read(&compteur, sizeof(int), 1, sauvegarde);
 
 	i = 0;
@@ -135,7 +135,7 @@ int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *
 	i = 0;
 	
 	//enregistrer
-	while(i <= LARGEUR_GALAXIE * LARGEUR_GALAXIE)
+	/*while(i <= LARGEUR_GALAXIE * LARGEUR_GALAXIE)
 	{
 		ti_Write(&systemeStellaires[i], sizeof(SystemeStellaire), 1, *sauvegarde);
 		
@@ -160,7 +160,7 @@ int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *
 			ti_Write(systemeStellaires[i].planete5, sizeof(Planete), 1, *sauvegarde);
 		}
 		i++;
-	}
+	}*/
 	
 	compteur = 0;
 

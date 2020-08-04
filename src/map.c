@@ -389,66 +389,22 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
  */
 void DessinerPlanetesHabitables(SystemeStellaire* systemeStellaires, int i, int x, int y){
 	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0;
+	int j = 0;
 	gfx_SetTextFGColor(1);
 	gfx_SetColor(16);
 	//dessiner planetes habitables
-	switch(systemeStellaires[i].nombrePlanetes)
-	{
-		case 5:
-			if(systemeStellaires[i].planete5->habitable == 1) {
-				if(systemeStellaires[i].planete5->population == 0) {
-					nombrePlanetesHabitablesSysteme++;
-				}
-				else {
-					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-					nombrePlanetesHabiteesSysteme++;
-				}
+	while(j < 5){
+		if(systemeStellaires[i].planetes[j]->habitable == 1) {
+			if(systemeStellaires[i].planetes[j]->habitable == 0) {
+				nombrePlanetesHabitablesSysteme++;
 			}
-		case 4:
-			if(systemeStellaires[i].planete4->habitable == 1) {
-				if(systemeStellaires[i].planete4->population == 0) {
-					nombrePlanetesHabitablesSysteme++;
-				}
-				else if(nombrePlanetesHabiteesSysteme == 0){
-					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-					nombrePlanetesHabiteesSysteme++;
-				}
+			else {
+				gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
+				gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
+				nombrePlanetesHabiteesSysteme++;
 			}
-		case 3:
-			if(systemeStellaires[i].planete3->habitable == 1) {
-				if(systemeStellaires[i].planete3->population == 0) {
-					nombrePlanetesHabitablesSysteme++;
-				}
-				else if(nombrePlanetesHabiteesSysteme == 0) {
-					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-					nombrePlanetesHabiteesSysteme++;
-				}
-			}
-		case 2:
-			if(systemeStellaires[i].planete2->habitable == 1) {
-				if(systemeStellaires[i].planete2->population == 0) {
-					nombrePlanetesHabitablesSysteme++;
-				}
-				else if(nombrePlanetesHabiteesSysteme == 0) {
-					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-					nombrePlanetesHabiteesSysteme++;
-				}
-			}
-		case 1:
-			if(systemeStellaires[i].planete1->habitable == 1) {
-				if(systemeStellaires[i].planete1->population == 0) {
-					nombrePlanetesHabitablesSysteme++;
-				}
-				else if(nombrePlanetesHabiteesSysteme == 0) {
-					gfx_FillRectangle(x - strlen(systemeStellaires[i].nom) * 4, y + 8, strlen(systemeStellaires[i].nom) * 8, 10);
-					gfx_PrintStringXY(systemeStellaires[i].nom, x - (strlen(systemeStellaires[i].nom) * 4), y + 9);
-					nombrePlanetesHabiteesSysteme++;
-				}
-			}
+		}
+		j++;
 	}
 	if(nombrePlanetesHabitablesSysteme > 0) {
 		gfx_TransparentSprite(highHabitablePlanet, x - 10, y);
@@ -766,22 +722,18 @@ void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStell
  */
 void DessinerVueSysteme(SystemeStellaire* systemeStellaires, Camera* camera, Fenetre *fenetre, EmpireListe* empireListe, char *key){
 	SystemeStellaire* systeme;
+	int j = 0;
+
 	systeme = &systemeStellaires[camera->systeme];
 	DessinerEtoile(systeme, camera, fenetre, key);
 	DessinerBase(systeme, camera, fenetre, key);
 	DessinerFlottesSysteme(empireListe, camera, fenetre, key);
 	DessinerHyperlanesSysteme(systemeStellaires, camera, fenetre, key);
-	switch(systeme->nombrePlanetes){
-		case 5:
-			DessinerPlanete(systeme, systeme->planete5, camera, fenetre, 5, key);
-		case 4:
-			DessinerPlanete(systeme, systeme->planete4, camera, fenetre, 4, key);
-		case 3:
-			DessinerPlanete(systeme, systeme->planete3, camera, fenetre, 3, key);
-		case 2:
-			DessinerPlanete(systeme, systeme->planete2, camera, fenetre, 2, key);
-		case 1:
-			DessinerPlanete(systeme, systeme->planete1, camera, fenetre, 1, key);
+	PrintInt(systeme->nombrePlanetes);
+	while(j < systeme->nombrePlanetes){
+		if(systeme->planetes[j] != NULL)
+			DessinerPlanete(systeme, systeme->planetes[j], camera, fenetre, j, key);
+		j++;
 	}
 }
 
@@ -937,7 +889,7 @@ void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera* camera
 	y = planete->y - camera->ySysteme;
 	gfx_SetColor(11);
 	gfx_Circle(X_CENTRE_SYSTEME - camera->xSysteme, Y_CENTRE_SYSTEME - camera->ySysteme, planete->rayonOrbite);
-	CouleurPlanete(planete->type);
+	CouleurPlanete(planete->planetType);
 	gfx_FillCircle(x, y, planete->taille);
 	gfx_SetTextFGColor(1);
 	if(((50 < x) && (x < 310)) && ((10 < y) && (y < 220))){
@@ -949,7 +901,7 @@ void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera* camera
 			gfx_PrintStringXY(planete->nom, x - (strlen(planete->nom) * 4), y + 9);
 		}
 		else{
-			switch(numero){
+			switch(numero + 1){
 				case 1:
 					decalage = 8;
 					strcpy(nomNumero, " I");

@@ -214,25 +214,9 @@ void EffectuerActionsPlanetes(SystemeStellaire *systemeStellaires, Empire *joueu
 	Batiment *batiment = NULL;
 	Ordre *ordre;
 	while(i < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
-		j = 1;
-		while(j < 6){
-			switch(j){
-				case 1:
-					villes = systemeStellaires[i].planete1->villes;
-					break;
-				case 2:
-					villes = systemeStellaires[i].planete2->villes;
-					break;
-				case 3:
-					villes = systemeStellaires[i].planete3->villes;
-					break;
-				case 4:
-					villes = systemeStellaires[i].planete4->villes;
-					break;
-				case 5:
-					villes = systemeStellaires[i].planete5->villes;
-					break;
-			}
+		j = 0;
+		while(j < 5){
+			villes = systemeStellaires[i].planetes[j]->villes;
 			if(villes != NULL){
 				ordre = RecupererOrdre(villes->ordreFile);
 				if(ordre != NULL){

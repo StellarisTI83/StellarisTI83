@@ -37,6 +37,7 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, Empire* joueu
 static void MenuSystemeEtoile(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
 
 static void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
+static void NumeroPlanete(int numero, int *decalage, Planete *planete, char *nomPlanete, SystemeStellaire *systeme);
 
 static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe);
 static void OrdreDistrictNom(Villes *villes);
@@ -483,39 +484,11 @@ void MenuSystemeEtoile(char *key, SystemeStellaire *systemeStellaires, Camera *c
  */
 void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre){
 	int8_t populationChar[5], nomPlanete[20];
-	int8_t decalage = 0;
+	int decalage = 0;
 	int niveau = 40;
 	Planete* planete = NULL;
-
-	switch(fenetre->planete)
-	{
-		case 1:
-			decalage = 186;
-			planete = systemeStellaires[camera->systeme].planete1;
-			strcpy(nomPlanete, " I");
-			break;
-		case 2:
-			decalage = 182;
-			planete = systemeStellaires[camera->systeme].planete2;
-			strcpy(nomPlanete, " II");
-			break;
-		case 3:
-			decalage = 178;
-			planete = systemeStellaires[camera->systeme].planete3;
-			strcpy(nomPlanete, " III");
-			break;
-		case 4:
-			decalage = 182;
-			planete = systemeStellaires[camera->systeme].planete4;
-			strcpy(nomPlanete, " IV");
-			break;
-			
-		case 5:
-			decalage = 186;
-			planete = systemeStellaires[camera->systeme].planete5;
-			strcpy(nomPlanete, " V");
-			break;
-	}
+	planete = systemeStellaires[camera->systeme].planetes[fenetre->planete];
+	NumeroPlanete(fenetre->planete, &decalage, planete, &nomPlanete, &systemeStellaires[camera->systeme]);
 
 	//dessiner fenetre
 	gfx_SetColor(6);
@@ -639,45 +612,48 @@ void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Ca
 	}
 }
 
+void NumeroPlanete(int numero, int *decalage, Planete *planete, char *nomPlanete, SystemeStellaire *systeme){
+	switch(numero){
+	case 1:
+		*decalage = 186;
+		planete = systeme->planetes[0];
+		strcpy(nomPlanete, " I");
+		break;
+	case 2:
+		*decalage = 182;
+		planete = systeme->planetes[1];
+		strcpy(nomPlanete, " II");
+		break;
+	case 3:
+		*decalage = 178;
+		planete = systeme->planetes[2];
+		strcpy(nomPlanete, " III");
+		break;
+	case 4:
+		*decalage = 182;
+		planete = systeme->planetes[3];
+		strcpy(nomPlanete, " IV");
+		break;
+		
+	case 5:
+		*decalage = 186;
+		planete = systeme->planetes[4];
+		strcpy(nomPlanete, " V");
+		break;
+	}
+}
+
 /**
  *Dessine le menu des districts de planète
  */
 void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
 	int8_t nomPlanete[20];
-	int8_t decalage = 0;
+	int decalage = 0;
 	int niveau = 40, maximum = 4;
 	Planete* planete = NULL;
 	Ordre *ordre = NULL;
-
-	switch(fenetre->planete)
-	{
-		case 1:
-			decalage = 186;
-			planete = systemeStellaires[camera->systeme].planete1;
-			strcpy(nomPlanete, " I");
-			break;
-		case 2:
-			decalage = 182;
-			planete = systemeStellaires[camera->systeme].planete2;
-			strcpy(nomPlanete, " II");
-			break;
-		case 3:
-			decalage = 178;
-			planete = systemeStellaires[camera->systeme].planete3;
-			strcpy(nomPlanete, " III");
-			break;
-		case 4:
-			decalage = 182;
-			planete = systemeStellaires[camera->systeme].planete4;
-			strcpy(nomPlanete, " IV");
-			break;
-			
-		case 5:
-			decalage = 186;
-			planete = systemeStellaires[camera->systeme].planete5;
-			strcpy(nomPlanete, " V");
-			break;
-	}
+	planete = systemeStellaires[camera->systeme].planetes[fenetre->planete];
+	NumeroPlanete(fenetre->planete, &decalage, planete, &nomPlanete, &systemeStellaires[camera->systeme]);
 
 	ordre = RecupererOrdre(planete->villes->ordreFile);	
 
@@ -935,41 +911,13 @@ void OrdreDistrictNom(Villes *villes){
  */
 void MenuSystemePlaneteBatiments(char *key, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
 	int8_t nomPlanete[20], nom[50];
-	int8_t decalage = 0;
+	int decalage = 0;
 	int niveau = 40, nombreDeBatiment = 0;
 	int supprimer = 0;
 	Planete* planete = NULL;
 	Ordre *ordre = NULL;
-
-	switch(fenetre->planete)
-	{
-		case 1:
-			decalage = 186;
-			planete = systemeStellaires[camera->systeme].planete1;
-			strcpy(nomPlanete, " I");
-			break;
-		case 2:
-			decalage = 182;
-			planete = systemeStellaires[camera->systeme].planete2;
-			strcpy(nomPlanete, " II");
-			break;
-		case 3:
-			decalage = 178;
-			planete = systemeStellaires[camera->systeme].planete3;
-			strcpy(nomPlanete, " III");
-			break;
-		case 4:
-			decalage = 182;
-			planete = systemeStellaires[camera->systeme].planete4;
-			strcpy(nomPlanete, " IV");
-			break;
-			
-		case 5:
-			decalage = 186;
-			planete = systemeStellaires[camera->systeme].planete5;
-			strcpy(nomPlanete, " V");
-			break;
-	}
+	planete = systemeStellaires[camera->systeme].planetes[fenetre->planete];
+	NumeroPlanete(fenetre->planete, &decalage, planete, &nomPlanete, &systemeStellaires[camera->systeme]);
 
 	ordre = RecupererOrdre(planete->villes->ordreFile);	
 

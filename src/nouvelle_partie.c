@@ -33,6 +33,8 @@
 
 #include "locale/locale.h"
 
+static void CreatePlanetSystem(Planete *planete, int numeroPlanete, int habitable);
+
 /*message d'avertissement*/
 int NouvellePartieAvertissement(Empire *joueur, Parametres *parametres)
 {
@@ -1214,7 +1216,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	int x = LIMITE_GAUCHE;
 	int y = LIMITE_HAUT;
 	int nombreHyperlanes = 0, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, hyperlaneSup1, hyperlaneSup2;
-	int planeteHabitable1 = 0, planeteHabitable2 = 0, planeteHabitable3 = 0, planeteHabitable4 = 0, planeteHabitable5 = 0, nombreAleatoire = 0;
+	int planeteHabitable[5] = {0}, nombreAleatoire = 0;
+	int planetIndex = 0;
 	Flotte* flotte = NULL;
 	Planete *planete = NULL;
 	galaxie = malloc(LARGEUR_GALAXIE * LARGEUR_GALAXIE * 2 * sizeof(int));
@@ -1228,6 +1231,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(49, 159, 222, 7);
 	gfx_SetColor(4);
+	gfx_SetTextXY(50, 50);
+	gfx_PrintString("1");
 	//creer matrice
 	while(j < LARGEUR_GALAXIE)
 	{
@@ -1245,6 +1250,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 		j++;
 	}
 	
+	gfx_PrintString("2");
 	//aleatoire matrice
 	i = 0;
 	j = 0;
@@ -1267,6 +1273,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 		j++;
 	}
 	
+	gfx_PrintString("3");
 	//arrondir matrice
 	i = 0;
 	j = 0;
@@ -1291,6 +1298,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	}
 	
 	k = 0;
+	gfx_PrintString("4");
 	//enregistrer matrice et generer hyperlane
 	i = 0;
 	j = 0;
@@ -1468,345 +1476,39 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			
 			
 			//gestion des planetes
-			
-			if(nombrePlanetes >= 1)
-			{
-				planeteHabitable1 = randInt(1, 10);
-			}			
-			if(nombrePlanetes >= 2)
-			{
-				planeteHabitable2 = randInt(1, 10);
-			}			
-			if(nombrePlanetes >= 3)
-			{
-				planeteHabitable3 = randInt(1, 10);
-			}			
-			if(nombrePlanetes >= 4)
-			{
-				planeteHabitable4 = randInt(1, 10);
-			}			
-			if(nombrePlanetes == 5)
-			{
-				planeteHabitable5 = randInt(1, 10);
-			} 
-			systemeStellaires[k].planete1 = 0;
-			systemeStellaires[k].planete2 = 0;
-			systemeStellaires[k].planete3 = 0;
-			systemeStellaires[k].planete4 = 0;
-			systemeStellaires[k].planete5 = 0;
-			
-			if(nombrePlanetes >= 1) //allouer l'espace memoire des planetes
-			{
-				systemeStellaires[k].planete1 = (Planete*)malloc(sizeof(Planete));
-				memset(systemeStellaires[k].planete1, 0, sizeof(Planete));
-			}			
-			if(nombrePlanetes >= 2)
-			{
-				systemeStellaires[k].planete2 = (Planete*)malloc(sizeof(Planete));
-				memset(systemeStellaires[k].planete2, 0, sizeof(Planete));
-			}			
-			if(nombrePlanetes >= 3)
-			{
-				systemeStellaires[k].planete3 = (Planete*)malloc(sizeof(Planete));
-				memset(systemeStellaires[k].planete3, 0, sizeof(Planete));
-			}			
-			if(nombrePlanetes >= 4)
-			{
-				systemeStellaires[k].planete4 = (Planete*)malloc(sizeof(Planete));
-				memset(systemeStellaires[k].planete4, 0, sizeof(Planete));
-			}			
-			if(nombrePlanetes == 5)
-			{
-				systemeStellaires[k].planete5 = (Planete*)malloc(sizeof(Planete));
-				memset(systemeStellaires[k].planete5, 0, sizeof(Planete));
+			switch(nombrePlanetes){
+			case 5:
+				planeteHabitable[4] = randInt(1, 10);
+			case 4:
+				planeteHabitable[3] = randInt(1, 10);
+			case 3:
+				planeteHabitable[2] = randInt(1, 10);
+			case 2:
+				planeteHabitable[1] = randInt(1, 10);
+			case 1:
+				planeteHabitable[0] = randInt(1, 10);
 			}
-			
-			switch(nombrePlanetes) //initialiser les planetes
-			{
-				case 5:
-					systemeStellaires[k].planete5->habitable = 0;
-					systemeStellaires[k].planete5->rayonOrbite = randInt(RAYON_PLANETE5, RAYON_PLANETE5 + 10);
-					systemeStellaires[k].planete5->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete5->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete5->rayonOrbite); //aleatoire de x
-					systemeStellaires[k].planete5->y = sqrt(pow((double)systemeStellaires[k].planete5->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete5->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME; //calcule de y pour ce x
-					
-					systemeStellaires[k].planete5->type = randInt(1, 100);
-					if(systemeStellaires[k].planete5->type <= 60) {
-						systemeStellaires[k].planete5->type = 14; //geante gazeuse
-						systemeStellaires[k].planete5->habitable = 0;
-					}
-					else if (systemeStellaires[k].planete5->type <= 90){
-						systemeStellaires[k].planete5->type = 11; //monde aride froid
-						systemeStellaires[k].planete5->habitable = 0;
-					}
-					else {
-						systemeStellaires[k].planete5->type = 12; //monde brisé
-						systemeStellaires[k].planete5->habitable = 0;
-					}
-					
-					systemeStellaires[k].planete5->taille = randInt(1, 100);
-					if(systemeStellaires[k].planete5->type == 14) {
-						systemeStellaires[k].planete5->taille = 5;
-					}
-					if(systemeStellaires[k].planete5->taille <= 10) {
-						systemeStellaires[k].planete5->taille = 2;
-					}
-					else if(systemeStellaires[k].planete5->taille <= 70) {
-						systemeStellaires[k].planete5->taille = 3;
-					}
-					else if(systemeStellaires[k].planete5->taille <= 90) {
-						systemeStellaires[k].planete5->taille = 4;
-					}
-					else {
-						systemeStellaires[k].planete5->taille = 5;
-					}
-					
-					if(randInt(0, 1) == 1) {
-						systemeStellaires[k].planete5->y = Y_CENTRE_SYSTEME - (systemeStellaires[k].planete5->y - Y_CENTRE_SYSTEME);
-					}
-					systemeStellaires[k].planete5->villes = NULL;
-				
-				case 4:
-					systemeStellaires[k].planete4->habitable = 0;
-					systemeStellaires[k].planete4->rayonOrbite = randInt(RAYON_PLANETE4, RAYON_PLANETE4 + 10);
-					systemeStellaires[k].planete4->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete4->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete4->rayonOrbite);
-					systemeStellaires[k].planete4->y = sqrt(pow((double)systemeStellaires[k].planete4->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete4->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME;	
-					
-					systemeStellaires[k].planete4->type = randInt(1, 100);
-					if(systemeStellaires[k].planete4->type <= 30) {
-						systemeStellaires[k].planete4->type = 14; //geante gazeuse
-						systemeStellaires[k].planete4->habitable = 0;
-					}
-					else if (systemeStellaires[k].planete4->type <= 70){
-						systemeStellaires[k].planete4->type = 11; //monde aride froid
-						systemeStellaires[k].planete4->habitable = 0;
-					}
-					else if (systemeStellaires[k].planete4->type <= 75){
-						systemeStellaires[k].planete4->type = 4; //monde Alpine habitable
-						systemeStellaires[k].planete4->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete4->type <= 80){
-						systemeStellaires[k].planete4->type = 5; //monde Arctic froid
-						systemeStellaires[k].planete4->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete4->type <= 85){
-						systemeStellaires[k].planete4->type = 6; //monde Tundra habitable
-						systemeStellaires[k].planete4->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete4->type <= 90){
-						systemeStellaires[k].planete4->type = 7; //monde continental froid
-						systemeStellaires[k].planete4->habitable = 1;
-					}
-					else {
-						systemeStellaires[k].planete4->type = 12; //monde brisé
-						systemeStellaires[k].planete4->habitable = 0;
-					}
-					
-					if(systemeStellaires[k].planete4->habitable == 1) {
-						strcpy(systemeStellaires[k].planete4->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
-						// strcpy(systemeStellaires[k].planete4->nom, "habitabl");
-					}
-					
-					systemeStellaires[k].planete4->taille = randInt(1, 100);
-					if(systemeStellaires[k].planete4->taille <= 10) {
-						systemeStellaires[k].planete4->taille = 2;
-					}
-					else if(systemeStellaires[k].planete4->taille <= 70) {
-						systemeStellaires[k].planete4->taille = 3;
-					}
-					else if(systemeStellaires[k].planete4->taille <= 90) {
-						systemeStellaires[k].planete4->taille = 4;
-					}
-					else {
-						systemeStellaires[k].planete4->taille = 5;
-					}
-					if(randInt(0, 1) == 1)
-					{
-						systemeStellaires[k].planete4->y = Y_CENTRE_SYSTEME - (systemeStellaires[k].planete4->y - Y_CENTRE_SYSTEME);
-					}
-					systemeStellaires[k].planete4->villes = NULL;
-					
-				case 3:
-					systemeStellaires[k].planete3->habitable = 0;
-					systemeStellaires[k].planete3->rayonOrbite = randInt(RAYON_PLANETE3, RAYON_PLANETE3 + 10);
-					systemeStellaires[k].planete3->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete3->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete3->rayonOrbite);
-					systemeStellaires[k].planete3->y = sqrt(pow((double)systemeStellaires[k].planete3->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete3->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME;
-					
-					systemeStellaires[k].planete3->type = randInt(1, 100);
-					if(systemeStellaires[k].planete3->type <= 5) {
-						systemeStellaires[k].planete3->type = 14; //geante gazeuse
-						systemeStellaires[k].planete3->habitable = 0;
-					}
-					else if (systemeStellaires[k].planete3->type <= 20){
-						systemeStellaires[k].planete3->type = 16; //monde toxique
-						systemeStellaires[k].planete3->habitable = 0;
-					}					
-					else if (systemeStellaires[k].planete3->type <= 60){
-						systemeStellaires[k].planete3->type = 11; //monde aride froid
-						systemeStellaires[k].planete3->habitable = 0;
-					}
-					else if (systemeStellaires[k].planete3->type <= 70){
-						systemeStellaires[k].planete3->type = 4; //monde Alpine habitable
-						systemeStellaires[k].planete3->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete3->type <= 74){
-						systemeStellaires[k].planete3->type = 5; //monde Arctic froid
-						systemeStellaires[k].planete3->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete3->type <= 78){
-						systemeStellaires[k].planete3->type = 6; //monde Tundra habitable
-						systemeStellaires[k].planete3->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete3->type <= 82){
-						systemeStellaires[k].planete3->type = 7; //monde continental froid
-						systemeStellaires[k].planete3->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete3->type <= 86){
-						systemeStellaires[k].planete3->type = 8; //monde ocean
-						systemeStellaires[k].planete3->habitable = 1;
-					}
-					else {
-						systemeStellaires[k].planete3->type = 12; //monde brisé
-						systemeStellaires[k].planete3->habitable = 0;
-					}
-					
-					if(systemeStellaires[k].planete3->habitable == 1){
-						strcpy(systemeStellaires[k].planete3->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
-						//strcpy(systemeStellaires[k].planete3->nom, "habitabl");
-					}
-					
-					systemeStellaires[k].planete3->taille = randInt(1, 100);
-					if(systemeStellaires[k].planete3->taille <= 10) {
-						systemeStellaires[k].planete3->taille = 2;
-					}
-					else if(systemeStellaires[k].planete3->taille <= 70) {
-						systemeStellaires[k].planete3->taille = 3;
-					}
-					else if(systemeStellaires[k].planete3->taille <= 90) {
-						systemeStellaires[k].planete3->taille = 4;
-					}
-					else {
-						systemeStellaires[k].planete3->taille = 5;
-					}
-					if(randInt(0, 1) == 1)
-					{
-						systemeStellaires[k].planete3->y = Y_CENTRE_SYSTEME - (systemeStellaires[k].planete3->y - Y_CENTRE_SYSTEME);
-					}
-					systemeStellaires[k].planete3->villes = NULL;
-					
-				case 2:
-					systemeStellaires[k].planete2->habitable = 0;
-					systemeStellaires[k].planete2->rayonOrbite =  randInt(RAYON_PLANETE2, RAYON_PLANETE2 + 10);
-					systemeStellaires[k].planete2->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete2->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete2->rayonOrbite);
-					systemeStellaires[k].planete2->y = sqrt(pow((double)systemeStellaires[k].planete2->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete2->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME;	
-					
-					systemeStellaires[k].planete2->type = randInt(1, 100);
-					if(systemeStellaires[k].planete2->type <= 2) {
-						systemeStellaires[k].planete2->type = 14; //geante gazeuse
-						systemeStellaires[k].planete2->habitable = 0;
-					}
-					else if (systemeStellaires[k].planete2->type <= 30){
-						systemeStellaires[k].planete2->type = 16; //monde toxique
-						systemeStellaires[k].planete2->habitable = 0;
-					}					
-					else if (systemeStellaires[k].planete2->type <= 80){
-						systemeStellaires[k].planete2->type = 10; //monde arid 
-						systemeStellaires[k].planete2->habitable = 0;
-					}
-					else if (systemeStellaires[k].planete2->type <= 83){
-						systemeStellaires[k].planete2->type = 7; //monde continental habitable
-						systemeStellaires[k].planete2->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete2->type <= 86){
-						systemeStellaires[k].planete2->type = 8; //monde ocean habitable
-						systemeStellaires[k].planete2->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete2->type <= 89){
-						systemeStellaires[k].planete2->type = 9; //monde tropical habitable
-						systemeStellaires[k].planete2->habitable = 1;
-					}
-					else {
-						systemeStellaires[k].planete2->type = 12; //monde brisé
-						systemeStellaires[k].planete2->habitable = 0;
-					}
-					
-					if(systemeStellaires[k].planete2->habitable == 1){
-						strcpy(systemeStellaires[k].planete2->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
-						//strcpy(systemeStellaires[k].planete2->nom, "habitabl");
-					}
-					
-					systemeStellaires[k].planete2->taille = randInt(1, 100);
-					if(systemeStellaires[k].planete2->taille <= 10) {
-						systemeStellaires[k].planete2->taille = 2;
-					}
-					else if(systemeStellaires[k].planete2->taille <= 70) {
-						systemeStellaires[k].planete2->taille = 3;
-					}
-					else if(systemeStellaires[k].planete2->taille <= 90) {
-						systemeStellaires[k].planete2->taille = 4;
-					}
-					else {
-						systemeStellaires[k].planete2->taille = 5;
-					}
-					if(randInt(0, 1) == 1)
-					{
-						systemeStellaires[k].planete2->y = Y_CENTRE_SYSTEME - (systemeStellaires[k].planete2->y - Y_CENTRE_SYSTEME);
-					}
-					systemeStellaires[k].planete2->villes = NULL;
-				
-				case 1:
-					systemeStellaires[k].planete1->habitable = 0;
-					systemeStellaires[k].planete1->rayonOrbite = randInt(RAYON_PLANETE1, RAYON_PLANETE1 + 10);
-					systemeStellaires[k].planete1->x = randInt(X_CENTRE_SYSTEME - systemeStellaires[k].planete1->rayonOrbite, X_CENTRE_SYSTEME + systemeStellaires[k].planete1->rayonOrbite);
-					systemeStellaires[k].planete1->y = sqrt(pow((double)systemeStellaires[k].planete1->rayonOrbite, 2.0) - pow((double)(systemeStellaires[k].planete1->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME;	
-					
-					systemeStellaires[k].planete1->type = randInt(1, 100);
-					if(systemeStellaires[k].planete1->type <= 3) {
-						systemeStellaires[k].planete1->type = 1; //monde arid
-						systemeStellaires[k].planete1->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete1->type <= 6){
-						systemeStellaires[k].planete1->type = 2; //monde Desert
-						systemeStellaires[k].planete1->habitable = 1;
-					}					
-					else if (systemeStellaires[k].planete1->type <= 9){
-						systemeStellaires[k].planete1->type = 3; //monde Savanna
-						systemeStellaires[k].planete1->habitable = 1;
-					}
-					else if (systemeStellaires[k].planete1->type <= 40){
-						systemeStellaires[k].planete1->type = 10; //monde aride
-						systemeStellaires[k].planete1->habitable = 0;
-					}
-					else if (systemeStellaires[k].planete1->type <= 50){
-						systemeStellaires[k].planete1->type = 12; //monde brisé
-						systemeStellaires[k].planete1->habitable = 0;
-					}
-					else{
-						systemeStellaires[k].planete1->type = 15; //monde en fusion
-						systemeStellaires[k].planete1->habitable = 0;
-					}
-
-					if(systemeStellaires[k].planete1->habitable == 1){
-						strcpy(systemeStellaires[k].planete1->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
-						//strcpy(systemeStellaires[k].planete1->nom, "habitabl");
-					}
-
-					systemeStellaires[k].planete1->taille = randInt(1, 100);
-					if(systemeStellaires[k].planete1->taille <= 10) {
-						systemeStellaires[k].planete1->taille = 2;
-					}
-					else if(systemeStellaires[k].planete1->taille <= 70) {
-						systemeStellaires[k].planete1->taille = 3;
-					}
-					else if(systemeStellaires[k].planete1->taille <= 90) {
-						systemeStellaires[k].planete1->taille = 4;
-					}
-					else {
-						systemeStellaires[k].planete1->taille = 5;
-					}
-					systemeStellaires[k].planete1->villes = NULL;
+			planetIndex = 0;
+			while(planetIndex < 5){
+				systemeStellaires[k].planetes[planetIndex] = NULL;
+				planetIndex++;
 			}
-			
-			
+
+			planetIndex = 0;
+			while(planetIndex < nombrePlanetes){
+				systemeStellaires[k].planetes[planetIndex] = (Planete*)malloc(sizeof(Planete));
+				planetIndex++;
+			}	
+
+			planetIndex = 0;	
+			while(planetIndex < nombrePlanetes){
+				gfx_SetTextXY(50, 60);
+				if(planetIndex == 0)
+					PrintInt(planetIndex);
+				CreatePlanetSystem(systemeStellaires[k].planetes[planetIndex], planetIndex, randInt(1, 10));
+				planetIndex++;
+			}
+
 			k++;
 			i += 2;
 		}
@@ -1816,6 +1518,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	}
 	free(galaxie);
 	
+	gfx_PrintString("5");
 	i = 0;
 	//recreation des hyperlanes
 	while(i < k) {
@@ -1895,30 +1598,14 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			camera->y = systemeStellaires[i].y;
 			camera->systeme = i;
 			camera->systemeSelectione = i;
+			planete = systemeStellaires[i].planetes[randInt(0, systemeStellaires[i].nombrePlanetes - 1)];
 
-			switch(randInt(1, systemeStellaires[i].nombrePlanetes))
-			{
-				case 1:
-					planete = systemeStellaires[i].planete1;
-					break;
-				case 2:
-					planete = systemeStellaires[i].planete2;
-					break;
-				case 3:
-					planete = systemeStellaires[i].planete3;
-					break;
-				case 4:
-					planete = systemeStellaires[i].planete4;
-					break;
-				case 5:
-					planete = systemeStellaires[i].planete3;
-					break;
-			}
 			planete->habitable = 1;
-			planete->type = 7;
+			planete->planetType = HABITABLE_CONTINENTAL;
 			camera->xSysteme = planete->x - 160;
 			camera->ySysteme = planete->y - 120;
 			strcpy(planete->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+
 			planete->villes = calloc(1, sizeof(Villes));
 			planete->population = 27;
 			planete->villes->districtsUrbains = 4;
@@ -1966,4 +1653,209 @@ void PrintText(const char *str, int x, int y, int taille, int color)
 		x += 8 * taille;
 		i++;
     }
+}
+
+
+void CreatePlanetSystem(Planete *planete, int numeroPlanete, int habitable){
+	int rayonOrbite = 0, taille = 0, type = 0;
+
+	memset(planete, 0, sizeof(Planete));
+
+	type = randInt(1, 100);
+	switch(numeroPlanete + 1){
+	case 5:
+		if(type <= 60) {
+			type = GAS_GIANT; //geante gazeuse
+			habitable = 0;
+		} else if (type <= 90){
+			type = COLD_ARID; //monde aride froid
+			habitable = 0;
+		} else {
+			type = BROKE; //monde brisé
+			habitable = 0;
+		}
+		break;
+	case 4:
+		if(type <= 30) {
+			type = GAS_GIANT; //geante gazeuse
+			habitable = 0;
+		} else if (type <= 70){
+			type = COLD_ARID; //monde aride froid
+			habitable = 0;
+		} else if (type <= 75){
+			type = HABITABLE_ALPINE; //monde Alpine habitable
+			habitable = 1;
+		} else if (type <= 80){
+			type = HABITABLE_ARCTIC; //monde Arctic froid
+			habitable = 1;
+		} else if (type <= 85){
+			type = HABITABLE_TUNDRA; //monde Tundra habitable
+			habitable = 1;
+		} else if (type <= 90){
+			type = HABITABLE_CONTINENTAL; //monde continental froid
+			habitable = 1;
+		} else {
+			type = BROKE; //monde brisé
+			habitable = 0;
+		}	
+		break;
+	case 3:
+		if(type <= 5) {
+			type = GAS_GIANT; //geante gazeuse
+			habitable = 0;
+		} else if (type <= 20){
+			type = TOXIC; //monde toxique
+			habitable = 0;
+		} else if (type <= 60){
+			type = COLD_ARID; //monde aride froid
+			habitable = 0;
+		} else if (type <= 70){
+			type = HABITABLE_ALPINE; //monde Alpine habitable
+			habitable = 1;
+		} else if (type <= 74){
+			type = HABITABLE_ARCTIC; //monde Arctic froid
+			habitable = 1;
+		} else if (type <= 78){
+			type = HABITABLE_TUNDRA; //monde Tundra habitable
+			habitable = 1;
+		} else if (type <= 82){
+			type = HABITABLE_CONTINENTAL; //monde continental froid
+			habitable = 1;
+		} else if (type <= 86){
+			type = HABITABLE_OCEAN; //monde ocean
+			habitable = 1;
+		} else {
+			type = BROKE; //monde brisé
+			habitable = 0;
+		}
+		break;
+	case 2:
+		if(type <= 2) {
+			type = GAS_GIANT; //geante gazeuse
+			habitable = 0;
+		} else if (type <= 30){
+			type = TOXIC; //monde toxique
+			habitable = 0;
+		} else if (type <= 80){
+			type = ARID; //monde arid 
+			habitable = 0;
+		} else if (type <= 83){
+			type = HABITABLE_CONTINENTAL; //monde continental habitable
+			habitable = 1;
+		} else if (type <= 86){
+			type = HABITABLE_OCEAN; //monde ocean habitable
+			habitable = 1;
+		} else if (type <= 89){
+			type = HABITABLE_TROPICAL; //monde tropical habitable
+			habitable = 1;
+		} else {
+			type = BROKE; //monde brisé
+			habitable = 0;
+		}
+		break;
+	case 1:
+		if(type <= 3) {
+			type = HABITABLE_ARID; //monde arid
+			habitable = 1;
+		} else if (type <= 6){
+			type = HABITABLE_DESERT; //monde Desert
+			habitable = 1;
+		} else if (type <= 9){
+			type = HABITABLE_SAVANNA; //monde Savanna
+			habitable = 1;
+		} else if (type <= 40){
+			type = ARID; //monde aride
+			habitable = 0;
+		} else if (type <= 50){
+			type = BROKE; //monde brisé
+			habitable = 0;
+		} else{
+			type = MOLTEN; //monde en fusion
+			habitable = 0;
+		}
+		break;
+	}
+
+	taille = randInt(1, 100);
+	switch(numeroPlanete + 1){
+	case 1:
+		rayonOrbite = randInt(RAYON_PLANETE1, RAYON_PLANETE1 + 10);
+		if(taille <= 10) {
+			taille = 2;
+		} else if(taille <= 70) {
+			taille = 3;
+		} else if(taille <= 90) {
+			taille = 4;
+		} else {
+			taille = 5;
+		}
+		break;
+	case 2:
+		rayonOrbite = randInt(RAYON_PLANETE2, RAYON_PLANETE2 + 10);
+		if(taille <= 10) {
+			taille = 2;
+		} else if(taille <= 70) {
+			taille = 3;
+		} else if(taille <= 90) {
+			taille = 4;
+		} else {
+			taille = 5;
+		}
+		break;
+	case 3:
+		rayonOrbite = randInt(RAYON_PLANETE3, RAYON_PLANETE3 + 10);
+		if(taille <= 10) {
+			taille = 2;
+		} else if(taille <= 70) {
+			taille = 3;
+		} else if(taille <= 90) {
+			taille = 4;
+		} else {
+			taille = 5;
+		}
+		break;
+	case 4:
+		rayonOrbite = randInt(RAYON_PLANETE4, RAYON_PLANETE4 + 10);
+		if(taille <= 10) {
+			taille = 2;
+		} else if(taille <= 70) {
+			taille = 3;
+		} else if(taille <= 90) {
+			taille = 4;
+		} else {
+			taille = 5;
+		}
+		break;
+	case 5:
+		rayonOrbite = randInt(RAYON_PLANETE5, RAYON_PLANETE5 + 10);
+		if(type == 14) {
+			taille = 5;
+		}
+		if(taille <= 10) {
+			taille = 2;
+		} else if(taille <= 70) {
+			taille = 3;
+		} else if(taille <= 90) {
+			taille = 4;
+		} else {
+			taille = 5;
+		}
+		break;
+	}
+
+	planete->habitable = habitable;
+	planete->rayonOrbite = rayonOrbite;
+	planete->x = randInt(X_CENTRE_SYSTEME - rayonOrbite, X_CENTRE_SYSTEME + rayonOrbite); //aleatoire de x
+	planete->y = sqrt(pow((double)rayonOrbite, 2.0) - pow((double)(planete->x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME; //calcule de y pour ce x
+	if(randInt(0, 1) == 1) {
+		planete->y = Y_CENTRE_SYSTEME - (planete->y - Y_CENTRE_SYSTEME);
+	}
+
+	planete->villes = NULL;
+	planete->planetType = type;
+	planete->taille = taille;
+
+	if(habitable == 1) {
+		strcpy(planete->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+	}
 }

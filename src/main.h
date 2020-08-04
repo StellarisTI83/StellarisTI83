@@ -44,6 +44,9 @@ typedef enum {AUCUN, CONSTRUIRE_DISTRICT_URBAIN, CONSTRUIRE_DISTRICT_GENERATEUR,
 
 typedef enum {NO_ERROR, ACIER_MANQUE, MINERAI_MANQUE} Error;
 
+typedef enum {HABITABLE_ARID = 1, HABITABLE_DESERT, HABITABLE_SAVANNA, HABITABLE_ALPINE, HABITABLE_ARCTIC, HABITABLE_TUNDRA, HABITABLE_CONTINENTAL, HABITABLE_OCEAN, HABITABLE_TROPICAL, ARID, COLD_ARID, BROKE, FROZEN, GAS_GIANT, MOLTEN, TOXIC} PlanetType;
+//1 = arid, 2 = Desert, 3 = Savanna	, 4 = Alpine, 5 = Arctic, 6 = Tundra, 7 = continental, 8 = ocean, 9 = tropical, 10 = monde aride, 11 = monde aride froid, 12 = brisé, 13 = monde gelé, 14 = géante gazeuse, 15 = monde en fusion, 16 = toxic world
+
 #define ETOILE_TYPE_B 1
 #define ETOILE_TYPE_A 2
 #define ETOILE_TYPE_F 3
@@ -183,7 +186,7 @@ typedef struct {
 	char rayonOrbite;
 	char taille;
 	char habitable;
-	char type; //1 = arid, 2 = Desert, 3 = Savanna	, 4 = Alpine, 5 = Arctic, 6 = Tundra, 7 = continental, 8 = ocean, 9 = tropical, 10 = monde aride, 11 = monde aride froid, 12 = brisé, 13 = monde gelé, 14 = géante gazeuse, 15 = monde en fusion, 16 = toxic world
+	PlanetType planetType; 
 	int population;
 	Villes *villes;
 } Planete;
@@ -208,11 +211,8 @@ typedef struct {
 	Hyperlane hyperlane[4];
 
 	NiveauDeConnaissance niveauDeConnaissance; //0 = inconnu, 1 = faible, 2 = moyen, 3 = haut, 4 = total (intel level)
-	Planete* planete1;
-	Planete* planete2;
-	Planete* planete3;
-	Planete* planete4;
-	Planete* planete5;
+
+	Planete *planetes[5];
 	Station* station;
 } SystemeStellaire;
 
