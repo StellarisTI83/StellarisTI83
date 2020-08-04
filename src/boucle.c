@@ -33,7 +33,7 @@ static void PrintHUD(const unsigned int nombre, const int change, int x, int y);
 
 
 /**********************************************Jeu principal**********************************************/
-int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche){
+int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche){
 	char finBoucle = 1, key = 0;
 	while (finBoucle == 1)
 	{
@@ -48,7 +48,7 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joue
 		gfx_ZeroScreen();
 
 		/**dessine la map**/
-		StellarisMap(empireListe, systemeStellaires, camera, &key, flotteJoueur, date, fenetre, joueur);
+		StellarisMap(empireListe, systemeStellaires, camera, &key, date, fenetre, joueur, parametres);
 
 		
 		/**dessine le hud**/
@@ -402,6 +402,9 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	strcat(moisChar, anneeChar);
 	strcat(jourChar, moisChar);
 	gfx_PrintStringXY(jourChar, 125, 225);
+	if(camera->bougerFlotte == TRUE){
+		gfx_PrintStringXY("Choisir destination", 10, 225);
+	}
 	
 	//pause / avance
 	switch (date->vitesse)
@@ -455,7 +458,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	}
 
 	//nom galaxie
-	if ((camera->systemeSelectione != -1) || (camera->systeme != -1)) {
+	if (((camera->systemeSelectione != -1) || (camera->systeme != -1)) && (camera->mapType != CARTE)) {
 		if (camera->mapType == NORMAL) {
 			systeme = camera->systemeSelectione;
 		}
@@ -475,7 +478,7 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	}	
 	menu = Menus(empireListe, joueur, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
 	if(fenetre->commandPrompt == true){ 
-		AfficherConsole(key, fenetre, empireListe, camera, date);
+		AfficherConsole(key, fenetre, empireListe, camera, date, parametres);
 	}
 	return menu;
 }
@@ -490,36 +493,24 @@ void PrintHUD(const unsigned int nombre, const int change, int x, int y)
 	char changeStr[5];
 	gfx_SetTextTransparentColor(2);
 	gfx_SetTextBGColor(2);
-	if(change >= 0)
-	{
+	if(change >= 0){
 		gfx_SetTextFGColor(1);
-	}
-	else
-	{
+	}else{
 		gfx_SetTextFGColor(3);
 	}
-	if(nombre < 1000)
-	{
+	if(nombre < 1000){
 		sprintf(nombreStr, "%d", nombre);
-		if (change >= 0)
-		{
+		if (change >= 0){
 		sprintf(changeStr, "+%d", change);
-		}
-		else
-		{
+		}else{
 		sprintf(changeStr, "%d", change);
 		}
 		strcat(nombreStr, changeStr);
-	}
-	else
-	{
+	}else{
 		sprintf(nombreStr, "%d", nombre/1000);
-		if (change >=0)
-		{
+		if (change >=0){
 		sprintf(changeStr, "+%d", change);
-		}
-		else
-		{
+		}else{
 		sprintf(changeStr, "%d", change);
 		}
 		strcat(nombreStr, "K");

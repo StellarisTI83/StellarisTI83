@@ -2,7 +2,7 @@
 #define _MAIN_INCLUDE
 /**************macros**************/
 #define LARGEUR_GALAXIE 11
-#define VERSION_LOGICIEL "Alpha"
+#define VERSION_LOGICIEL "v0.1.0-a"
 #define LIMITE_GAUCHE 180
 #define LIMITE_HAUT 160
 
@@ -79,16 +79,20 @@ typedef struct {
 
 typedef struct EmpireStruct {
 	char nom[31];
+	char couleur; //couleur sur la map
 	char espece;
 	char gouvernement;
+
 	char principe1;
 	char principe2;
 	char principe3;
+
 	int credits;
 	int minerais;
 	int nourriture;
 	int acier;
 	int biensDeConsommation;
+
 	FlotteListe* flotte;
 	Empire* suivant;
 };
@@ -100,6 +104,7 @@ typedef struct {
 typedef struct {
 	char nombreEtoiles;
 	char nombreEmpires;
+	bool seeAll;
 } Parametres;
 
 typedef struct{
@@ -237,19 +242,12 @@ typedef struct {
 } Marche;
 
 /**************def**************/
-int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche);
+int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche);
 void Options();
 
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
 void PrintInt(int nombre);
 int tailleInt(int nombre);
-
-
-EmpireListe* EmpireListeCreer();
-void EmpireListeSupprimer(EmpireListe*);
-Empire* EmpireNumero(EmpireListe*, int numero);
-Empire* EmpireAjouter(EmpireListe*);
-void EmpireSupprimer(EmpireListe*, int numero);
 
 void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);
@@ -260,6 +258,7 @@ void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal, int info1, int
 void FinirOrdre(OrdreFile *ordreFile);
 Ordre* RecupererOrdre(OrdreFile *ordreFile);
 int NombredOrdres(OrdreFile *ordreFile);
+
 
 
 #endif

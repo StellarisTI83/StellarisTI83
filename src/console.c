@@ -46,7 +46,7 @@ Console console;
 
 static void FermerConsole();
 static void NouvelleLigneConsole(char *commande, char *reponse);
-static void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date);
+static void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Parametres *parametres);
 
 void EcrireConsoleString(char *chaine){
 	NouvelleLigneConsole("", chaine);
@@ -58,7 +58,7 @@ void EcrireConsoleInt(int nombre){
 	NouvelleLigneConsole("", chaine);
 }
 
-void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Camera *camera, Date *date){
+void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Camera *camera, Date *date, Parametres *parametres){
 	int largeur = 200, hauteur = 10;
 	Ligne *ligneDeCommande = NULL;
 	char character = '.';
@@ -235,7 +235,7 @@ void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Came
 			console.deniereCommande[console.cursor]= ' ';
 		}
 		else if(*key == sk_Enter){
-			RechercherCommande(console.deniereCommande, empireListe, date);
+			RechercherCommande(console.deniereCommande, empireListe, date, parametres);
 			NouvelleLigneConsole(console.deniereCommande, console.reponse);
 			memset(console.deniereCommande, 0, sizeof(console.deniereCommande));
 			console.cursor = 0;
@@ -275,7 +275,7 @@ void FermerConsole(){
 	console.premiereLigne = NULL;
 }
 
-void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date){
+void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Parametres *parametres){
 	char *resultat = NULL;
 	char *fin = NULL;
 	int i = 0, nombre = 0;
@@ -394,6 +394,19 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date){
 		}
 	}
 
+	resultat = strstr(commande, "see all");
+	if(resultat == commande){
+		switch(parametres->seeAll){
+			case true:
+				parametres->seeAll = false;
+				break;
+			case false:
+				parametres->seeAll = true;
+				break;
+		}
+		strcpy(console.reponse, "see all systems");
+		return;
+	}
 
 	syntax_err:
 		strcpy(console.reponse, "syntax error");

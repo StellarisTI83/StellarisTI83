@@ -30,11 +30,12 @@
 #include "sauvegarde.h"
 #include "flottes.h"
 #include "console.h"
+#include "ai.h"
 
 #include "locale/locale.h"
 
 /******************chargement ancienne partie******************/
-int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
+int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche)
 {
 	ti_var_t sauvegarde;
 	int i = 0, j = 0, compteur = 0, compteurFlottes = 0;
@@ -106,14 +107,13 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 		i++;
 	}
 	joueur = EmpireNumero(empireListe, 1);
-	flotteJoueur = joueur->flotte;
 
 	
 
 	PrintCentered(joueur->nom ,90 ,1 , 0, 0);
 	camera->fenetre = MENU_AUCUN;
 	camera->bloque = FALSE;
-	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
 	return 0;
 }
 

@@ -3,6 +3,6 @@
 
 #define RAYON_DE_VUE_SYSTEME 160
 
-void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe);
+void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe, Parametres *parametres);
 
 #endif _MAP_INCLUDE

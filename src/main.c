@@ -24,6 +24,7 @@
 #include "nouvelle_partie.h"
 #include "sauvegarde.h"
 #include "flottes.h"
+#include "ai.h"
 
 #include "locale/locale.h"
 
@@ -36,8 +37,7 @@ int main(void)
 	Parametres parametres;
 	Date date;
 	Camera camera;
-	SystemeStellaire* systemeStellaires= (SystemeStellaire*) malloc(sizeof(SystemeStellaire) * LARGEUR_GALAXIE * LARGEUR_GALAXIE);
-	FlotteListe* flotteJoueur;
+	SystemeStellaire* systemeStellaires = (SystemeStellaire*) malloc(sizeof(SystemeStellaire) * LARGEUR_GALAXIE * LARGEUR_GALAXIE);
 	Fenetre fenetre;
 	Marche marche;
 
@@ -46,7 +46,7 @@ int main(void)
 	
 	empireListe = EmpireListeCreer();
 	joueur = EmpireAjouter(empireListe);
-	flotteJoueur = FlotteListeCreer();
+	joueur->flotte = FlotteListeCreer();
 	
 
 	memset(systemeStellaires, 0, sizeof(SystemeStellaire) * LARGEUR_GALAXIE * LARGEUR_GALAXIE);
@@ -63,7 +63,7 @@ int main(void)
 	
 	while (fin)
 	{
-		fin = MainMenu(empireListe, joueur, &parametres, &date, systemeStellaires, &camera, flotteJoueur, &fenetre, &marche);
+		fin = MainMenu(empireListe, joueur, &parametres, &date, systemeStellaires, &camera, &fenetre, &marche);
 	}
 	
 	gfx_End();
@@ -72,8 +72,7 @@ int main(void)
 }
 
 /*main menu*/
-int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
-{
+int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche){
 	char choix = 0, fin = 0, key = 0, erreur = 0;
 	unsigned char car = 'è';
 	unsigned int carInt = (int)car;
@@ -209,7 +208,7 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 	switch (choix)
 	{
 		case 0:
-			erreur = ChargementAnciennePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+			erreur = ChargementAnciennePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
 			if(erreur == 1)
 			{
 				gfx_FillScreen(255);
@@ -223,7 +222,7 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 			if (fin == 0)
 			{
 				/*lancer la nouvelle partie*/
-				ChargementNouvellePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+				ChargementNouvellePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
 			}
 			break;
 		case 2:
@@ -370,94 +369,6 @@ int tailleInt(int nombre){
 		i++;
 	}
 	return i;
-}
-
-/**
- *Crée une liste d'empires
- */
-EmpireListe* EmpireListeCreer() {
-	EmpireListe* empireListe;
-	empireListe = malloc(sizeof(EmpireListe));
-	empireListe->premier = NULL;
-	return empireListe;
-}
-
-/**
- *Supprime une liste d'empire
- */
-void EmpireListeSupprimer(EmpireListe* empireListe) {
-	Empire *pointeur = 0, *pointeursuivant = 0;
-	int compteur = 0;
-	pointeur = empireListe->premier;
-	while(pointeur->suivant != NULL) {
-		pointeursuivant = pointeur->suivant;
-		FlotteListeSupprimer(pointeur->flotte);
-		free(pointeur);
-		pointeur = pointeursuivant;
-	}
-	free(empireListe);
-}
-
-/**
- *Renvoi un pointeur vers l'empire numero x
- */
-Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
-	Empire *pointeur = 0;
-	int compteur = 1;
-	pointeur = empireListe->premier;
-	while(compteur < numero) {
-		if(pointeur->suivant != NULL) {
-			pointeur = pointeur->suivant;
-		}
-		compteur++;
-	}
-	return pointeur;
-}
-
-/**
- *Rajoute un empire à la liste des empire
- */
-Empire* EmpireAjouter(EmpireListe* empireListe) {
-	Empire *pointeur = 0;
-	int compteur = 0;
-	pointeur = empireListe->premier;
-	if(empireListe->premier != NULL) {
-		while(pointeur->suivant != NULL) {
-			pointeur = pointeur->suivant;
-		}
-		pointeur->suivant = malloc(sizeof(Empire));
-		pointeur = pointeur->suivant;
-		pointeur->suivant = NULL;
-	}
-	else {
-		empireListe->premier = malloc(sizeof(Empire));
-		pointeur = empireListe->premier;
-	}
-	return pointeur;
-}
-
-/**
- *Supprime l'empire numero x à la liste des empires
- */
-void EmpireSupprimer(EmpireListe* empireListe, int numero) {
-	Empire *pointeur = 0, *pointeurPrecedent = 0;
-	int compteur = 0;
-	pointeur = empireListe->premier;
-	while(compteur <= numero) {
-		if(pointeur->suivant != NULL) {
-			pointeurPrecedent = pointeur;
-			pointeur = pointeur->suivant;
-		}
-		compteur++;
-	}
-	if(pointeur == empireListe->premier){
-		empireListe->premier = pointeur->suivant;
-	}
-	else {
-		pointeurPrecedent->suivant = pointeur->suivant;
-	}
-	FlotteListeSupprimer(pointeur->flotte);
-	free(pointeur);
 }
 
 //crèe une file d'ordre

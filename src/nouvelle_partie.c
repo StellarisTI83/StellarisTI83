@@ -30,10 +30,13 @@
 #include "sauvegarde.h"
 #include "flottes.h"
 #include "console.h"
+#include "ai.h"
 
 #include "locale/locale.h"
 
 static void CreatePlanetSystem(Planete *planete, int numeroPlanete, int habitable);
+
+void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera);
 
 /*message d'avertissement*/
 int NouvellePartieAvertissement(Empire *joueur, Parametres *parametres)
@@ -1160,13 +1163,13 @@ int NouvellePartieParametres(Empire *joueur, Parametres *parametres)
 
 /******************nouvelle partie******************/
 /*chargement de la nouvelle partie*/
-void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, FlotteListe *flotteJoueur, Fenetre *fenetre, Marche *marche)
+void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche)
 {
 	ti_var_t sauvegarde;
 	char fin = 0;
 	Flotte* flotte = NULL;
 	Empire* empire = NULL;
-	int compteur = 0, compteurEmpires = 0;
+	int compteur = 0, compteurEmpires = 4;
 
 	/*creer sauvegarde*/
 	ti_CloseAll();
@@ -1176,8 +1179,8 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	joueur->nourriture = 200;
 	joueur->acier = 100;
 	joueur->biensDeConsommation = 100;
-	joueur->flotte = flotteJoueur;
-	
+	parametres->seeAll = false;
+
 	date->jour = 1;
 	date->mois = 1;
 	date->annee = 2200;
@@ -1202,13 +1205,17 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	fenetre->commandPrompt = false;
 	marche->valeurMinerai = 50;
 
-	fin = ChargementNouvellePartieGalaxie(parametres, &sauvegarde, systemeStellaires, flotteJoueur, camera);
+	fin = ChargementNouvellePartieGalaxie(parametres, &sauvegarde, systemeStellaires, camera);
 	
+	gfx_PrintString("666");
+	parametres->nombreEmpires = 4;
+	CreerEmpires(parametres, empireListe, systemeStellaires, camera);
+
 	//StellarisSauvegarde(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
-	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, flotteJoueur, fenetre, marche);
+	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
 }
 
-int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires, FlotteListe *flotteJoueur, Camera *camera)
+int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire *systemeStellaires, Camera *camera)
 {
 	int *galaxie = NULL;
 	int i = 0, j = 0, espaceEntreEtoiles = 50, barreDeChargement = 1, k = 0, etoile = 0, nombrePlanetes = 0, nombrePlanetesHabitables = 0, trouNoir = 0, fin = 0, nomInt = 0;
@@ -1556,72 +1563,6 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 	}
 	
 	fin = 1;
-
-	//choix d'un systeme
-	while(fin == 1)
-	{
-		i = randInt(0, k);
-		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && (systemeStellaires[i].etoileType != ETOILE_TYPE_TROU_NOIR))
-		{
-			fin = 0;
-			
-			systemeStellaires[i].etoileType = ETOILE_TYPE_K;
-			systemeStellaires[i].nombrePlanetesHabitables = 1;
-			systemeStellaires[i].nombrePlanetesHabitees = 1;
-			systemeStellaires[i].empire = 1;
-			systemeStellaires[i].niveauDeConnaissance = TOTAL;
-
-			systemeStellaires[i].station->niveauStation = PORT_STELLAIRE;
-			systemeStellaires[i].station->puissance = 450;
-			systemeStellaires[i].station->coqueTotal = 10000;
-			systemeStellaires[i].station->coqueVie = 10000;
-			systemeStellaires[i].station->blindageTotal = 2000;
-			systemeStellaires[i].station->blindageVie = 2000;
-			systemeStellaires[i].station->bouclierTotal = 4000;
-			systemeStellaires[i].station->bouclierVie = 4000;
-			systemeStellaires[i].station->modules[0] = CHANTIER_SPATIAL;
-			systemeStellaires[i].station->modules[1] = CARREFOUR_COMMERCIAL;
-
-			flotte = NouvelleFlotte(flotteJoueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-			flotte->x = X_CENTRE_SYSTEME + 10;
-			flotte->y = Y_CENTRE_SYSTEME - 10;
-
-			flotte = NouvelleFlotte(flotteJoueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-			flotte->x = X_CENTRE_SYSTEME + 10;
-			flotte->y = Y_CENTRE_SYSTEME + 10;
-
-			flotte = NouvelleFlotte(flotteJoueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
-			flotte->x = X_CENTRE_SYSTEME - 10;
-			flotte->y = Y_CENTRE_SYSTEME + 10;
-
-			camera->x = systemeStellaires[i].x;
-			camera->y = systemeStellaires[i].y;
-			camera->systeme = i;
-			camera->systemeSelectione = i;
-			planete = systemeStellaires[i].planetes[randInt(0, systemeStellaires[i].nombrePlanetes - 1)];
-
-			planete->habitable = 1;
-			planete->planetType = HABITABLE_CONTINENTAL;
-			camera->xSysteme = planete->x - 160;
-			camera->ySysteme = planete->y - 120;
-			strcpy(planete->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
-
-			planete->villes = calloc(1, sizeof(Villes));
-			planete->population = 27;
-			planete->villes->districtsUrbains = 4;
-			planete->villes->districtsGenerateurs = 3;
-			planete->villes->districtsMiniers = 3;
-			planete->villes->districtsAgricoles = 3;
-			planete->villes->emplois = 27;
-			planete->villes->ordreFile = CreerFileOrdres();
-			planete->villes->batiment1 = CAPITALE;
-			planete->villes->niveauBatiment1 = 3;
-			planete->villes->batiment2 = USINE_CIVILE;
-			planete->villes->niveauBatiment2 = 1;
-			planete->villes->batiment3 = FONDERIE;
-			planete->villes->niveauBatiment3 = 1;
-		}
-	}
 	return 1;
 }
 
@@ -1857,5 +1798,145 @@ void CreatePlanetSystem(Planete *planete, int numeroPlanete, int habitable){
 
 	if(habitable == 1) {
 		strcpy(planete->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+	}
+}
+
+/**
+ * Creer Empires
+ * */
+void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera){
+	int i = 0, fin = 1, j = 0;
+	int k = LARGEUR_GALAXIE * LARGEUR_GALAXIE;
+	Flotte *flotte = NULL;
+	Planete *planete = NULL;
+	Empire *joueur = empireListe->premier;
+	//creation joueur
+	while(fin == 1) { // choix du systeme
+		i = randInt(0, k);
+		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && (systemeStellaires[i].etoileType != ETOILE_TYPE_TROU_NOIR))
+			fin = 0;
+	}
+	
+	joueur->couleur = 9;
+	systemeStellaires[i].etoileType = ETOILE_TYPE_K;
+	systemeStellaires[i].nombrePlanetesHabitables = 1;
+	systemeStellaires[i].nombrePlanetesHabitees = 1;
+	systemeStellaires[i].empire = 1;
+	systemeStellaires[i].niveauDeConnaissance = TOTAL;
+
+	systemeStellaires[i].station->niveauStation = PORT_STELLAIRE;
+	systemeStellaires[i].station->puissance = 450;
+	systemeStellaires[i].station->coqueTotal = 10000;
+	systemeStellaires[i].station->coqueVie = 10000;
+	systemeStellaires[i].station->blindageTotal = 2000;
+	systemeStellaires[i].station->blindageVie = 2000;
+	systemeStellaires[i].station->bouclierTotal = 4000;
+	systemeStellaires[i].station->bouclierVie = 4000;
+	systemeStellaires[i].station->modules[0] = CHANTIER_SPATIAL;
+	systemeStellaires[i].station->modules[1] = CARREFOUR_COMMERCIAL;
+
+	flotte = NouvelleFlotte(joueur->flotte, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+	flotte->x = X_CENTRE_SYSTEME + 10;
+	flotte->y = Y_CENTRE_SYSTEME - 10;
+
+	flotte = NouvelleFlotte(joueur->flotte, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+	flotte->x = X_CENTRE_SYSTEME + 10;
+	flotte->y = Y_CENTRE_SYSTEME + 10;
+
+	flotte = NouvelleFlotte(joueur->flotte, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+	flotte->x = X_CENTRE_SYSTEME - 10;
+	flotte->y = Y_CENTRE_SYSTEME + 10;
+
+	camera->x = systemeStellaires[i].x; // centre la vue sur le systeme
+	camera->y = systemeStellaires[i].y;
+	camera->systeme = i;
+	camera->systemeSelectione = i;
+
+	planete = systemeStellaires[i].planetes[randInt(0, systemeStellaires[i].nombrePlanetes - 1)];
+
+	planete->habitable = 1;
+	planete->planetType = HABITABLE_CONTINENTAL;
+	camera->xSysteme = planete->x - 160; // centre la vue sur la planete
+	camera->ySysteme = planete->y - 120;
+	strcpy(planete->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+
+	planete->villes = calloc(1, sizeof(Villes));
+	planete->population = 27;
+	planete->villes->districtsUrbains = 4;
+	planete->villes->districtsGenerateurs = 3;
+	planete->villes->districtsMiniers = 3;
+	planete->villes->districtsAgricoles = 3;
+	planete->villes->emplois = 27;
+	planete->villes->ordreFile = CreerFileOrdres();
+	planete->villes->batiment1 = CAPITALE;
+	planete->villes->niveauBatiment1 = 3;
+	planete->villes->batiment2 = USINE_CIVILE;
+	planete->villes->niveauBatiment2 = 1;
+	planete->villes->batiment3 = FONDERIE;
+	planete->villes->niveauBatiment3 = 1;
+
+	for(j = 2; j <= parametres->nombreEmpires; j++){
+		Empire *empire = NULL;
+		fin = 1;
+		i = 0;
+		while(fin == 1) { // choix du systeme
+		i = randInt(0, k);
+		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && ((systemeStellaires[i].etoileType != ETOILE_TYPE_TROU_NOIR) && (systemeStellaires[i].empire == 0)))
+			fin = 0;
+		}
+		empire = EmpireAjouter(empireListe);
+		empire->flotte = FlotteListeCreer();
+		PrintInt(i);
+
+		empire->couleur = randInt(2, 29);//couleur d el'empire
+		systemeStellaires[i].etoileType = ETOILE_TYPE_K;
+		systemeStellaires[i].nombrePlanetesHabitables = 1;
+		systemeStellaires[i].nombrePlanetesHabitees = 1;
+		systemeStellaires[i].empire = j;
+		systemeStellaires[i].niveauDeConnaissance = INCONNU;
+
+		systemeStellaires[i].station->niveauStation = PORT_STELLAIRE;
+		systemeStellaires[i].station->puissance = 450;
+		systemeStellaires[i].station->coqueTotal = 10000;
+		systemeStellaires[i].station->coqueVie = 10000;
+		systemeStellaires[i].station->blindageTotal = 2000;
+		systemeStellaires[i].station->blindageVie = 2000;
+		systemeStellaires[i].station->bouclierTotal = 4000;
+		systemeStellaires[i].station->bouclierVie = 4000;
+		systemeStellaires[i].station->modules[0] = CHANTIER_SPATIAL;
+		systemeStellaires[i].station->modules[1] = CARREFOUR_COMMERCIAL;
+
+		flotte = NouvelleFlotte(empire->flotte, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+		flotte->x = X_CENTRE_SYSTEME + 10;
+		flotte->y = Y_CENTRE_SYSTEME - 10;
+
+		flotte = NouvelleFlotte(empire->flotte, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+		flotte->x = X_CENTRE_SYSTEME + 10;
+		flotte->y = Y_CENTRE_SYSTEME + 10;
+
+		flotte = NouvelleFlotte(empire->flotte, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+		flotte->x = X_CENTRE_SYSTEME - 10;
+		flotte->y = Y_CENTRE_SYSTEME + 10;
+
+		planete = systemeStellaires[i].planetes[randInt(0, systemeStellaires[i].nombrePlanetes - 1)];
+
+		planete->habitable = 1;
+		planete->planetType = HABITABLE_CONTINENTAL;
+		strcpy(planete->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+
+		planete->villes = calloc(1, sizeof(Villes));
+		planete->population = 27;
+		planete->villes->districtsUrbains = 4;
+		planete->villes->districtsGenerateurs = 3;
+		planete->villes->districtsMiniers = 3;
+		planete->villes->districtsAgricoles = 3;
+		planete->villes->emplois = 27;
+		planete->villes->ordreFile = CreerFileOrdres();
+		planete->villes->batiment1 = CAPITALE;
+		planete->villes->niveauBatiment1 = 3;
+		planete->villes->batiment2 = USINE_CIVILE;
+		planete->villes->niveauBatiment2 = 1;
+		planete->villes->batiment3 = FONDERIE;
+		planete->villes->niveauBatiment3 = 1;
 	}
 }

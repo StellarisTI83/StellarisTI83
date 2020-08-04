@@ -24,6 +24,7 @@
 #include "sauvegarde.h"
 #include "flottes.h"
 #include "pathfinding.h"
+#include "ai.h"
 
 #include "locale/locale.h"
 
@@ -246,31 +247,34 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 		camera->fenetre = MENU_AUCUN;
 		camera->empire = numeroDeEmpire;
 		camera->flotte = numeroDeFlotte;
-	}
-	else if(camera->bougerFlotte == TRUE){
-		camera->bougerFlotte = FALSE;
-		flotte->systemeArrive = systeme;
-		flotte->action = FLOTTE_BOUGER;
-		flotte->avancement = 0;
-		flotte->avancementTrajet = 1;
-		
-		camera->flotte = 0;
-		camera->empire = 0;
-
-		camera->mapType = SYSTEME;
-		camera->x = systemeStellaires[flotte->systeme].x;
-		camera->y = systemeStellaires[flotte->systeme].y;
-		
-		error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
-		if(error != 0){
+	}else if(camera->bougerFlotte == TRUE){
+		if(systeme == flotte->systeme){
+			camera->bougerFlotte = FALSE;
 			flotte->action = FLOTTE_AUCUNE_ACTION;
-		}
+		} else if((flotte->type == FLOTTE_SCIENTIFIQUE) && (systemeStellaires[systeme].niveauDeConnaissance == INCONNU) || (systemeStellaires[systeme].niveauDeConnaissance != INCONNU)){
+			camera->bougerFlotte = FALSE;
+			flotte->systemeArrive = systeme;
+			flotte->action = FLOTTE_BOUGER;
+			flotte->avancement = 0;
+			flotte->avancementTrajet = 1;
+			
+			camera->flotte = 0;
+			camera->empire = 0;
 
+			camera->mapType = SYSTEME;
+			camera->x = systemeStellaires[flotte->systeme].x;
+			camera->y = systemeStellaires[flotte->systeme].y;
+			
+			error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
+			if(error != 0){ // si il n'y a pas de chemin
+				flotte->action = FLOTTE_AUCUNE_ACTION;
+			}
 
-		while((index < 4) && (systemeStellaires[flotte->systeme].hyperlane[index].destination != flotte->chemin[flotte->avancementTrajet])){
-			index++;
+			while((index < 4) && (systemeStellaires[flotte->systeme].hyperlane[index].destination != flotte->chemin[flotte->avancementTrajet])){
+				index++;
+			}
+			flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, systemeStellaires[flotte->systeme].hyperlane[index].x, systemeStellaires[flotte->systeme].hyperlane[index].y);
 		}
-		flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, systemeStellaires[flotte->systeme].hyperlane[index].x, systemeStellaires[flotte->systeme].hyperlane[index].y);
 	}
 }
 
