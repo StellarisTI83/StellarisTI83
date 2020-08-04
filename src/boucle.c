@@ -153,61 +153,42 @@ void EffectuerActionsStations(SystemeStellaire *systemeStellaires, Empire *joueu
 			}
 			else{
 				switch(ordre->ordre){
-					case AMELIORER_STATION:
-						systemeStellaires[numero].station->niveauStation++;
-						break;
-					case CONSTRUIRE_MODULE:
-						switch(ordre->info1){
-							case 1:
-								systemeStellaires[numero].station->module1 = ordre->info2;
-								break;
-							case 2:
-								systemeStellaires[numero].station->module2 = ordre->info2;
-								break;
-							case 3:
-								systemeStellaires[numero].station->module3 = ordre->info2;
-								break;
-							case 4:
-								systemeStellaires[numero].station->module4 = ordre->info2;
-								break;
-							case 5:
-								systemeStellaires[numero].station->module5 = ordre->info2;
-								break;
-							case 6:
-								systemeStellaires[numero].station->module6 = ordre->info2;
-								break;
-						}
-						break;
-					case CONSTRUIRE_VAISSEAU:
-						nombreDeVaisseaux = ordre->info2;
-						switch(ordre->info1){
-							case 1:
-								ordre->info1 = FLOTTE_SCIENTIFIQUE;
-								nombreDeVaisseaux = 1;
-								break;
-							case 2:
-								ordre->info1 = FLOTTE_DE_CONSTRUCTION;
-								nombreDeVaisseaux = 1;
-								break;
-							case 3:
-								ordre->info1 = FLOTTE_MILITAIRE;
-								nombreDeCorvette = nombreDeVaisseaux;
-								break;
-							case 4:
-								ordre->info1 = FLOTTE_MILITAIRE;
-								nombreDeDestroyer = nombreDeVaisseaux;
-								break;
-							case 5:
-								ordre->info1 = FLOTTE_MILITAIRE;
-								nombreDeCroiseur = nombreDeVaisseaux;
-								break;
-							case 6:
-								ordre->info1 = FLOTTE_MILITAIRE;
-								nombreDeCuirasse = nombreDeVaisseaux;
-								break;
-						}
-						NouvelleFlotte(joueur->flotte, numero, ordre->info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
-						break;
+				case AMELIORER_STATION:
+					systemeStellaires[numero].station->niveauStation++;
+					break;
+				case CONSTRUIRE_MODULE:
+					systemeStellaires[numero].station->modules[ordre->info1 - 1] = ordre->info2;
+					break;
+				case CONSTRUIRE_VAISSEAU:
+					nombreDeVaisseaux = ordre->info2;
+					switch(ordre->info1){
+						case 1:
+							ordre->info1 = FLOTTE_SCIENTIFIQUE;
+							nombreDeVaisseaux = 1;
+							break;
+						case 2:
+							ordre->info1 = FLOTTE_DE_CONSTRUCTION;
+							nombreDeVaisseaux = 1;
+							break;
+						case 3:
+							ordre->info1 = FLOTTE_MILITAIRE;
+							nombreDeCorvette = nombreDeVaisseaux;
+							break;
+						case 4:
+							ordre->info1 = FLOTTE_MILITAIRE;
+							nombreDeDestroyer = nombreDeVaisseaux;
+							break;
+						case 5:
+							ordre->info1 = FLOTTE_MILITAIRE;
+							nombreDeCroiseur = nombreDeVaisseaux;
+							break;
+						case 6:
+							ordre->info1 = FLOTTE_MILITAIRE;
+							nombreDeCuirasse = nombreDeVaisseaux;
+							break;
+					}
+					NouvelleFlotte(joueur->flotte, numero, ordre->info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
+					break;
 				}
 				//rajoute des points de vie en cas de canons ou missiles
 				if((ordre->info2 == CANONS) || (ordre->info2 == MISSILES)){

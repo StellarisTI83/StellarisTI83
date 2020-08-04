@@ -143,12 +143,7 @@ typedef struct {
 	int blindageVie;
 	int bouclierTotal;
 	int bouclierVie;
-	Module module1;
-	Module module2;
-	Module module3;
-	Module module4;
-	Module module5;
-	Module module6;
+	Module modules[6];
 } Station;
 
 typedef struct{

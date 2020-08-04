@@ -51,6 +51,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
 static char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDuModule, int niveau);
 
 static void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
+static void EcrireModule(Module *module, int selection, int numero, int *niveau);
 static char* ModuleNom(Module module, char* nomDuModule);
 
 static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre);
@@ -1637,7 +1638,7 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 			*key = 0;
 			break;
 		case sk_Right:
-		fenetre->selection = 1;
+			fenetre->selection = 1;
 			fenetre->ouverte = MENU_SYSTEME_STATION_MODULES;
 			fenetre->precedente = 0;
 			*key = 0;
@@ -1853,14 +1854,14 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 				if(systemeStellaires[camera->systeme].station->niveauStation > AVANT_POSTE){
 					switch(systemeStellaires[camera->systeme].station->niveauStation){
 						case PORT_STELLAIRE:
-							systemeStellaires[camera->systeme].station->module1 = AUCUN;
-							systemeStellaires[camera->systeme].station->module2 = AUCUN;
+							systemeStellaires[camera->systeme].station->modules[0] = AUCUN;
+							systemeStellaires[camera->systeme].station->modules[1] = AUCUN;
 						case REDOUTE_STELLAIRE:
-							systemeStellaires[camera->systeme].station->module3 = AUCUN;
-							systemeStellaires[camera->systeme].station->module4 = AUCUN;
+							systemeStellaires[camera->systeme].station->modules[2] = AUCUN;
+							systemeStellaires[camera->systeme].station->modules[3] = AUCUN;
 						case FORTERESSE_STELLAIRE:
-							systemeStellaires[camera->systeme].station->module5 = AUCUN;
-							systemeStellaires[camera->systeme].station->module6 = AUCUN;
+							systemeStellaires[camera->systeme].station->modules[4] = AUCUN;
+							systemeStellaires[camera->systeme].station->modules[5] = AUCUN;
 					}
 					systemeStellaires[camera->systeme].station->niveauStation--;
 				}
@@ -1991,7 +1992,7 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 	int modules = 0, supprimer = 0;
 	Module *module = NULL;
 	int numero = 0;
-	char nomDuModule[50];
+	int i = 0;
 	switch(*key){
 		case sk_Clear:
 			camera->fenetre = MENU_AUCUN;
@@ -2075,32 +2076,7 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 		fenetre->selection = 7;
 	}
 	if(fenetre->precedente != 0){
-		switch(fenetre->selection){
-			case 1:
-				module = &(systemeStellaires[camera->systeme].station->module1);
-				numero = 1;
-				break;
-			case 2:
-				module = &(systemeStellaires[camera->systeme].station->module2);
-				numero = 2;
-				break;
-			case 3:
-				module = &(systemeStellaires[camera->systeme].station->module3);
-				numero = 3;
-				break;
-			case 4:
-				module = &(systemeStellaires[camera->systeme].station->module4);
-				numero = 4;
-				break;
-			case 5:
-				module = &(systemeStellaires[camera->systeme].station->module5);
-				numero = 5;
-				break;
-			case 6:
-				module = &(systemeStellaires[camera->systeme].station->module6);
-				numero = 6;
-				break;
-		}
+		module = &systemeStellaires[camera->systeme].station->modules[fenetre->selection];
 		if(*module != fenetre->precedente){
 			if(fenetre->precedente == 8){
 				fenetre->precedente = 0;
@@ -2122,74 +2098,10 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 		fenetre->precedente = 0;
 	}
 	niveau = 55;
-	if(modules >= 2){
-		gfx_SetTextFGColor(1);
-		if(fenetre->selection == 1){gfx_SetTextFGColor(13);}
-		gfx_SetTextXY(144 - strlen("Module") * 4, niveau);
-		gfx_PrintString("Module");
-		gfx_PrintString(" 1 :");
-		niveau += 10;
-		ModuleNom(systemeStellaires[camera->systeme].station->module1, nomDuModule);
-		gfx_SetTextXY(160 - strlen(nomDuModule) * 4, niveau);
-		gfx_PrintString(nomDuModule);
-		niveau += 15;
-		//module 2
-		gfx_SetTextFGColor(1);
-		if(fenetre->selection == 2){gfx_SetTextFGColor(13);}
-		gfx_SetTextXY(144 - strlen("Module") * 4, niveau);
-		gfx_PrintString("Module");
-		gfx_PrintString(" 2 :");
-		niveau += 10;
-		ModuleNom(systemeStellaires[camera->systeme].station->module2, nomDuModule);
-		gfx_SetTextXY(160 - strlen(nomDuModule) * 4, niveau);
-		gfx_PrintString(nomDuModule);
-		niveau += 15;
-	}
-	if(modules >= 4){
-		gfx_SetTextFGColor(1);
-		if(fenetre->selection == 3){gfx_SetTextFGColor(13);}
-		gfx_SetTextXY(144 - strlen("Module") * 4, niveau);
-		gfx_PrintString("Module");
-		gfx_PrintString(" 3 :");
-		niveau += 10;
-		ModuleNom(systemeStellaires[camera->systeme].station->module3, nomDuModule);
-		gfx_SetTextXY(160 - strlen(nomDuModule) * 4, niveau);
-		gfx_PrintString(nomDuModule);
-		niveau += 15;
-		//module 4
-		gfx_SetTextFGColor(1);
-		if(fenetre->selection == 4){gfx_SetTextFGColor(13);}
-		gfx_SetTextXY(144 - strlen("Module") * 4, niveau);
-		gfx_PrintString("Module");
-		gfx_PrintString(" 4 :");
-		niveau += 10;
-		ModuleNom(systemeStellaires[camera->systeme].station->module4, nomDuModule);
-		gfx_SetTextXY(160 - strlen(nomDuModule) * 4, niveau);
-		gfx_PrintString(nomDuModule);
-		niveau += 15;
-	}
-	if(modules >= 6){
-		gfx_SetTextFGColor(1);
-		if(fenetre->selection == 5){gfx_SetTextFGColor(13);}
-		gfx_SetTextXY(144 - strlen("Module") * 4, niveau);
-		gfx_PrintString("Module");
-		gfx_PrintString(" 5 :");
-		niveau += 10;
-		ModuleNom(systemeStellaires[camera->systeme].station->module5, nomDuModule);
-		gfx_SetTextXY(160 - strlen(nomDuModule) * 4, niveau);
-		gfx_PrintString(nomDuModule);
-		niveau += 15;
-		//module 6
-		gfx_SetTextFGColor(1);
-		if(fenetre->selection == 6){gfx_SetTextFGColor(13);}
-		gfx_SetTextXY(144 - strlen("Module") * 4, niveau);
-		gfx_PrintString("Module");
-		gfx_PrintString(" 6 :");
-		niveau += 10;
-		ModuleNom(systemeStellaires[camera->systeme].station->module6, nomDuModule);
-		gfx_SetTextXY(160 - strlen(nomDuModule) * 4, niveau);
-		gfx_PrintString(nomDuModule);
-		niveau += 15;
+	i = 1;
+	while(i <= modules){
+		EcrireModule(&systemeStellaires[camera->systeme].station->modules[i - 1], fenetre->selection, i, &niveau);
+		i++;
 	}
 
 	//écrire ordre
@@ -2221,6 +2133,23 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire *syst
 			*key = 0;
 		}
 	}
+}
+
+/**
+ * Ecrire module
+ * */
+void EcrireModule(Module *module, int selection, int numero, int *niveau){
+	char nomDuModule[50];
+	gfx_SetTextFGColor(1);
+	if(selection == numero){gfx_SetTextFGColor(13);}
+	gfx_SetTextXY(144 - strlen("Module ") * 4, *niveau);
+	gfx_PrintString("Module ");
+	PrintInt(numero);
+	*niveau += 10;
+	ModuleNom(*module, nomDuModule);
+	gfx_SetTextXY(160 - strlen(nomDuModule) * 4, *niveau);
+	gfx_PrintString(nomDuModule);
+	*niveau += 15;
 }
 
 /**
@@ -2413,7 +2342,7 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 	}
 
 	if(*key == sk_Enter){
-		if((joueur->acier >= 50) && (fenetre->selection != 1)){
+		if(joueur->acier >= 50){
 			if(fenetre->selection == 0){
 				fenetre->selection = 8;
 			}
@@ -2434,6 +2363,7 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 	int prixAmelioration = 0;
 	char ordreStation[50];
 	int niveau = 55, nombreDeChantiers = 0, travail = 0, prix = 0;
+	int i = 0;
 	Ordre *ordre = RecupererOrdre(systemeStellaires[camera->systeme].station->ordreFile);
 	switch(*key){
 		case sk_Clear:
@@ -2491,23 +2421,12 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire *sys
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Station de ");
 	gfx_PrintString(systemeStellaires[camera->systeme].nom);
-	if(systemeStellaires[camera->systeme].station->module1 == CHANTIER_SPATIAL){
-		nombreDeChantiers++;
-	}
-	if(systemeStellaires[camera->systeme].station->module2 == CHANTIER_SPATIAL){
-		nombreDeChantiers++;
-	}
-	if(systemeStellaires[camera->systeme].station->module3 == CHANTIER_SPATIAL){
-		nombreDeChantiers++;
-	}
-	if(systemeStellaires[camera->systeme].station->module4 == CHANTIER_SPATIAL){
-		nombreDeChantiers++;
-	}
-	if(systemeStellaires[camera->systeme].station->module5 == CHANTIER_SPATIAL){
-		nombreDeChantiers++;
-	}
-	if(systemeStellaires[camera->systeme].station->module6 == CHANTIER_SPATIAL){
-		nombreDeChantiers++;
+	i = 0;
+	while(i < 6){
+		if(systemeStellaires[camera->systeme].station->modules[i] == CHANTIER_SPATIAL){
+			nombreDeChantiers++;
+		}
+		i++;
 	}
 
 	//verifie que la station soit avec un chantier spatial

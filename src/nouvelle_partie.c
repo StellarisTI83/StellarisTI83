@@ -1876,8 +1876,8 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			systemeStellaires[i].station->blindageVie = 2000;
 			systemeStellaires[i].station->bouclierTotal = 4000;
 			systemeStellaires[i].station->bouclierVie = 4000;
-			systemeStellaires[i].station->module1 = CHANTIER_SPATIAL;
-			systemeStellaires[i].station->module2 = CARREFOUR_COMMERCIAL;
+			systemeStellaires[i].station->modules[0] = CHANTIER_SPATIAL;
+			systemeStellaires[i].station->modules[1] = CARREFOUR_COMMERCIAL;
 
 			flotte = NouvelleFlotte(flotteJoueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
 			flotte->x = X_CENTRE_SYSTEME + 10;
