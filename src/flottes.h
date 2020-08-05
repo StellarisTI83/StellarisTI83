@@ -29,6 +29,7 @@ struct FlotteStruct {
 
 	char systeme;
 	char action;
+	char destination; // planete ou etoile plus prècisement
 	char avancementTrajet;
 	char systemeArrive;
 	char avancement;

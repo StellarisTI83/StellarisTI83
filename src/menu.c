@@ -651,7 +651,7 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 	int niveau = 40, maximum = 4;
 	Planete* planete = NULL;
 	Ordre *ordre = NULL;
-	planete = systemeStellaires[camera->systeme].planetes[fenetre->planete  - 1];
+	planete = systemeStellaires[camera->systeme].planetes[fenetre->planete];
 	NumeroPlanete(fenetre->planete, &decalage, planete, &nomPlanete, &systemeStellaires[camera->systeme]);
 
 	ordre = RecupererOrdre(planete->villes->ordreFile);	
@@ -1486,6 +1486,12 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 			gfx_PrintString(" Cuirass/(s)");
 			gfx_SetTextFGColor(1);
 
+			gfx_SetTextXY(45, 167);
+			switch(flotte->action){
+			case FLOTTE_ATTAQUER:
+				gfx_PrintString("Attaque");
+				break;
+			}
 			break;
 
 		case FLOTTE_SCIENTIFIQUE:
@@ -1502,6 +1508,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 			niveau += 14;
 			gfx_PrintString("Rechercher");
 			gfx_SetTextFGColor(1);
+			
 			break;
 
 		case FLOTTE_DE_CONSTRUCTION:
@@ -1524,6 +1531,14 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 			gfx_SetTextXY(165, niveau);
 			gfx_PrintString("Base scientifique");
 			gfx_SetTextFGColor(1);
+			switch(flotte->action){
+			case FLOTTE_CONSTRUIRE_BASE:
+				gfx_PrintString("Construit une base sur");
+				gfx_SetTextXY(45, 177);
+				gfx_SetTextFGColor(13);
+				gfx_PrintString(systemeStellaires[flotte->systemeArrive].nom);
+				break;
+			}
 			break;
 	}
 	gfx_SetTextXY(45, 167);
@@ -1536,22 +1551,29 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 			gfx_SetTextFGColor(13);
 			gfx_PrintString(systemeStellaires[flotte->systemeArrive].nom);
 			break;
-		case FLOTTE_ATTAQUER:
-			gfx_PrintString("Attaque");
-			break;
 	}
 	if(*key == sk_Enter){ //effectuer l'action
 		*key = 0;
 		if(fenetre->selection == FLOTTE_BOUGER){
+			flotte->action = FLOTTE_BOUGER;
 			FlotteBouger(fenetre->flotteSelectionee, 1, 0, camera, empireListe, systemeStellaires);
 		}
 		else{
 			switch(flotte->type){
-				case FLOTTE_MILITAIRE:
-					switch(fenetre->selection){
-						case FLOTTE_ATTAQUER:
-							break; 
-					}
+			case FLOTTE_MILITAIRE:
+				switch(fenetre->selection){
+				case FLOTTE_ATTAQUER:
+					break; 
+				}
+				break;
+			case FLOTTE_DE_CONSTRUCTION:
+				switch(fenetre->selection){
+				case FLOTTE_CONSTRUIRE_BASE:
+					flotte->action = FLOTTE_CONSTRUIRE_BASE;
+					FlotteBouger(fenetre->flotteSelectionee, 1, 0, camera, empireListe, systemeStellaires);
+					break;
+				}
+				break;
 			}
 		}
 	}

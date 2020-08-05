@@ -204,13 +204,10 @@ void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireL
 		
 		xLn = 0;
 		yLn = 0;
-		if(camera->mapType == NORMAL)
-		{
+		if(camera->mapType == NORMAL){
 			x = systemeStellaires[i].x * camera->zoom - camera->x + 160;
 			y = systemeStellaires[i].y * camera->zoom - camera->y + 120;
-		}
-		else if(camera->mapType == CARTE)
-		{
+		} else if(camera->mapType == CARTE) {
 			x = systemeStellaires[i].x / 2.5 + 10;
 			y = systemeStellaires[i].y / 2.5 - 30;
 		}
@@ -407,7 +404,6 @@ void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, SystemeStellai
 	flotte = joueur->flotte->premier;
 	while(flotte != NULL) {
 		systeme = flotte->systeme;
-		systemeStellaires[systeme].niveauDeConnaissance = TOTAL;
 		xFlotte = systemeStellaires[systeme].x*camera->zoom - camera->x + 165;
 		yFlotte = systemeStellaires[systeme].y*camera->zoom - camera->y + 110;
 		if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240))){
@@ -464,23 +460,21 @@ void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, SystemeStellai
 					}
 					gfx_TransparentSprite(neutralFleet, xFlotte, yFlotte);
 					switch(flotte->type){
-						case FLOTTE_MILITAIRE:
-							gfx_TransparentSprite(force_neutral, xFlotte + 6, yFlotte - 1);
-							if (flotte->puissance > 500)
-							{
-								gfx_TransparentSprite(force_neutral, xFlotte + 10, yFlotte - 1);
-							}
-							if (flotte->puissance > 1500)
-							{
-								gfx_TransparentSprite(force_neutral, xFlotte + 8, yFlotte - 4);
-							}
-							break;
-						case FLOTTE_DE_CONSTRUCTION:
-							gfx_TransparentSprite(construction_ship_neutral_icon, xFlotte + 6, yFlotte - 4);
-							break;
-						case FLOTTE_SCIENTIFIQUE:
-							gfx_TransparentSprite(science_ship_neutral_icon, xFlotte + 6, yFlotte - 4);
-							break;
+					case FLOTTE_MILITAIRE:
+						gfx_TransparentSprite(force_neutral, xFlotte + 6, yFlotte - 1);
+						if (flotte->puissance > 500){
+							gfx_TransparentSprite(force_neutral, xFlotte + 10, yFlotte - 1);
+						}
+						if (flotte->puissance > 1500){
+							gfx_TransparentSprite(force_neutral, xFlotte + 8, yFlotte - 4);
+						}
+						break;
+					case FLOTTE_DE_CONSTRUCTION:
+						gfx_TransparentSprite(construction_ship_neutral_icon, xFlotte + 6, yFlotte - 4);
+						break;
+					case FLOTTE_SCIENTIFIQUE:
+						gfx_TransparentSprite(science_ship_neutral_icon, xFlotte + 6, yFlotte - 4);
+						break;
 					}
 				}
 			}
@@ -887,8 +881,7 @@ void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera* camera
 				gfx_TransparentSprite(highHabitablePlanet, x - (strlen(planete->nom) * 4) - 9, y + 9);
 			}
 			gfx_PrintStringXY(planete->nom, x - (strlen(planete->nom) * 4), y + 9);
-		}
-		else{
+		} else {
 			switch(numero){
 				case 0:
 					decalage = 8;

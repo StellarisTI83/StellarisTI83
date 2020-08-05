@@ -254,7 +254,6 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 		} else if((flotte->type == FLOTTE_SCIENTIFIQUE) && (systemeStellaires[systeme].niveauDeConnaissance == INCONNU) || (systemeStellaires[systeme].niveauDeConnaissance != INCONNU)){
 			camera->bougerFlotte = FALSE;
 			flotte->systemeArrive = systeme;
-			flotte->action = FLOTTE_BOUGER;
 			flotte->avancement = 0;
 			flotte->avancementTrajet = 1;
 			
@@ -274,6 +273,12 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 				index++;
 			}
 			flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, systemeStellaires[flotte->systeme].hyperlane[index].x, systemeStellaires[flotte->systeme].hyperlane[index].y);
+			
+			switch(flotte->action){
+			case FLOTTE_CONSTRUIRE_BASE:
+				
+				break;
+			}
 		}
 	}
 }
@@ -284,7 +289,7 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires){
 	Empire* empire = NULL; 
 	Flotte* flotte = NULL;
-	int index = 0;
+	int index = 0, numeroEmpire = 1;
 	int norme = 0;
 	empire = empireListe->premier;
 	while(empire != NULL){
@@ -292,18 +297,33 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 		while(flotte != NULL){
 			
 			//bouger la flotte
-			if(flotte->action == FLOTTE_BOUGER) {
+			if(flotte->action != FLOTTE_AUCUNE_ACTION) {
 				flotte->x += flotte->vecteur.xVecteur;
 				flotte->y += flotte->vecteur.yVecteur;
+
+				if(flotte->systeme == flotte->systemeArrive) {
+					flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, X_CENTRE_SYSTEME, Y_CENTRE_SYSTEME);
+					flotte->avancement = 0;
+					if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) < pow((double)10, 2.0)) {
+						//arrivé au centre du systeme
+						if(flotte->action == FLOTTE_CONSTRUIRE_BASE) {
+							systemeStellaires[flotte->systeme].empire = numeroEmpire;
+							systemeStellaires[flotte->systeme].station->niveauStation = AVANT_POSTE;
+							systemeStellaires[flotte->systeme].station->puissance = 200;
+							systemeStellaires[flotte->systeme].station->coqueTotal = 5000;
+							systemeStellaires[flotte->systeme].station->coqueVie = 5000;
+							systemeStellaires[flotte->systeme].station->blindageTotal = 1000;
+							systemeStellaires[flotte->systeme].station->blindageVie = 1000;
+							systemeStellaires[flotte->systeme].station->bouclierTotal = 500;
+							systemeStellaires[flotte->systeme].station->bouclierVie = 500;
+						}
+						flotte->action = FLOTTE_AUCUNE_ACTION;
+					}
+				}
 
 				//calculer si la flotte sort du systeme
 				if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)) {
 					if(flotte->avancement >= 1){
-						if(flotte->chemin[flotte->avancementTrajet] == flotte->systemeArrive) {
-							flotte->vecteur.xVecteur = 0;
-							flotte->vecteur.yVecteur = 0;
-							flotte->action = FLOTTE_AUCUNE_ACTION;
-						}
 
 						index = 0;
 						while((index < 4) && (systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].destination != flotte->systeme)){
@@ -313,7 +333,6 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 						flotte->x = systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].x;
 						flotte->y = systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].y;
 
-						systemeStellaires[flotte->systeme].niveauDeConnaissance = MOYEN; // si on quitte le systeme le niveau de connaissance descend
 						flotte->avancement = 0;
 						flotte->systeme = flotte->chemin[flotte->avancementTrajet];
 						flotte->avancementTrajet++;
@@ -326,12 +345,11 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 					} else {
 						flotte->avancement = 1;
 					}
-
-					systemeStellaires[flotte->systeme].niveauDeConnaissance = TOTAL;
 				}
 			}
 			flotte = flotte->suivant;
 		}
+		numeroEmpire++;
 		empire = empire->suivant;
 	}
 }

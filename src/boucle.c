@@ -31,6 +31,7 @@
 #include "locale/locale.h"
 
 static void PrintHUD(const unsigned int nombre, const int change, int x, int y);
+static void CalculerNiveauDeConnaissance(SystemeStellaire *systemeStellaires, EmpireListe *empireListe);
 
 
 /**********************************************Jeu principal**********************************************/
@@ -67,8 +68,7 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joue
 }
 
 /******************gerer le temps******************/
-void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires, Fenetre *fenetre)
-{
+void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStellaire* systemeStellaires, Fenetre *fenetre){
 	//différentes actions des touches
 	if(fenetre->commandPrompt == false){
 		switch(*key){
@@ -137,6 +137,30 @@ void StellarisTemps(EmpireListe *empireListe, Date *date, char *key, SystemeStel
 		EffectuerActionsFlottes(empireListe, systemeStellaires);
 		EffectuerActionsStations(systemeStellaires, empireListe->premier);
 		EffectuerActionsPlanetes(systemeStellaires, empireListe->premier);
+	}
+	CalculerNiveauDeConnaissance(systemeStellaires, empireListe);
+}
+
+/**
+ * calcule le niveau de connaissance (intel level) du systeme
+ * */
+static void CalculerNiveauDeConnaissance(SystemeStellaire *systemeStellaires, EmpireListe *empireListe){
+	Empire *joueur = empireListe->premier;
+	Flotte *flotte = joueur->flotte->premier;
+	int numeroSysteme = 0;
+
+	while(numeroSysteme < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
+		if(systemeStellaires[numeroSysteme].niveauDeConnaissance >= MOYEN){
+			systemeStellaires[numeroSysteme].niveauDeConnaissance = MOYEN;
+		}
+		if((systemeStellaires[numeroSysteme].station->niveauStation > AUCUN) && (systemeStellaires[numeroSysteme].empire == 1)){
+			systemeStellaires[numeroSysteme].niveauDeConnaissance = TOTAL;
+		}
+		numeroSysteme++;
+	}
+	while(flotte != NULL){
+		systemeStellaires[flotte->systeme].niveauDeConnaissance = TOTAL;
+		flotte = flotte->suivant;
 	}
 }
 
