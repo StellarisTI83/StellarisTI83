@@ -29,7 +29,7 @@
 #include "locale/locale.h"
 
 /**
- *Crée une liste d'empires
+ * Crée une liste d'empires
  */
 EmpireListe* EmpireListeCreer() {
 	EmpireListe* empireListe;
@@ -39,7 +39,7 @@ EmpireListe* EmpireListeCreer() {
 }
 
 /**
- *Supprime une liste d'empire
+ * Supprime une liste d'empire
  */
 void EmpireListeSupprimer(EmpireListe* empireListe) {
 	Empire *pointeur = 0, *pointeursuivant = 0;
@@ -55,7 +55,7 @@ void EmpireListeSupprimer(EmpireListe* empireListe) {
 }
 
 /**
- *Renvoi un pointeur vers l'empire numero x
+ * Renvoi un pointeur vers l'empire numero x
  */
 Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
 	Empire *pointeur = 0;
@@ -71,7 +71,7 @@ Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
 }
 
 /**
- *Rajoute un empire à la liste des empire
+ * Rajoute un empire à la liste des empire
  */
 Empire* EmpireAjouter(EmpireListe* empireListe) {
 	Empire *pointeur = 0;
@@ -88,6 +88,7 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
 	else {
 		empireListe->premier = malloc(sizeof(Empire));
 		pointeur = empireListe->premier;
+		pointeur->suivant = NULL;
 	}
 	return pointeur;
 }

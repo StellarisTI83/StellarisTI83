@@ -1210,6 +1210,8 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Empire *joueur, Parametr
 	gfx_PrintString("666");
 	parametres->nombreEmpires = 4;
 	CreerEmpires(parametres, empireListe, systemeStellaires, camera);
+	
+	gfx_PrintStringXY("1000102102003", 80, 80);
 
 	//StellarisSauvegarde(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
 	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
@@ -1510,8 +1512,7 @@ int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde
 			planetIndex = 0;	
 			while(planetIndex < nombrePlanetes){
 				gfx_SetTextXY(50, 60);
-				if(planetIndex == 0)
-					PrintInt(planetIndex);
+				PrintInt(planetIndex);
 				CreatePlanetSystem(systemeStellaires[k].planetes[planetIndex], planetIndex, randInt(1, 10));
 				planetIndex++;
 			}
@@ -1812,11 +1813,13 @@ void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStell
 	Empire *joueur = empireListe->premier;
 	//creation joueur
 	while(fin == 1) { // choix du systeme
-		i = randInt(0, k);
+		i = randInt(0, k - 1);
+		gfx_SetTextXY(50, 70);
+		PrintInt(i);
 		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && (systemeStellaires[i].etoileType != ETOILE_TYPE_TROU_NOIR))
 			fin = 0;
 	}
-	
+
 	joueur->couleur = 9;
 	systemeStellaires[i].etoileType = ETOILE_TYPE_K;
 	systemeStellaires[i].nombrePlanetesHabitables = 1;
@@ -1875,20 +1878,24 @@ void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStell
 	planete->villes->batiment3 = FONDERIE;
 	planete->villes->niveauBatiment3 = 1;
 
+
 	for(j = 2; j <= parametres->nombreEmpires; j++){
 		Empire *empire = NULL;
 		fin = 1;
 		i = 0;
 		while(fin == 1) { // choix du systeme
-		i = randInt(0, k);
+		i = randInt(0, k - 1);
+		gfx_SetTextXY(50, 70);
+		PrintInt(i);
+		gfx_PrintString(" ");
+		PrintInt(j);
 		if(((systemeStellaires[i].x >= 160) && (systemeStellaires[i].y >= 120)) && ((systemeStellaires[i].etoileType != ETOILE_TYPE_TROU_NOIR) && (systemeStellaires[i].empire == 0)))
 			fin = 0;
 		}
 		empire = EmpireAjouter(empireListe);
 		empire->flotte = FlotteListeCreer();
-		PrintInt(i);
 
-		empire->couleur = randInt(2, 29);//couleur d el'empire
+		empire->couleur = randInt(20, 29);//couleur d el'empire
 		systemeStellaires[i].etoileType = ETOILE_TYPE_K;
 		systemeStellaires[i].nombrePlanetesHabitables = 1;
 		systemeStellaires[i].nombrePlanetesHabitees = 1;
@@ -1905,6 +1912,8 @@ void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStell
 		systemeStellaires[i].station->bouclierVie = 4000;
 		systemeStellaires[i].station->modules[0] = CHANTIER_SPATIAL;
 		systemeStellaires[i].station->modules[1] = CARREFOUR_COMMERCIAL;
+		gfx_PrintString(" ");
+		PrintInt(1);
 
 		flotte = NouvelleFlotte(empire->flotte, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
 		flotte->x = X_CENTRE_SYSTEME + 10;
@@ -1923,6 +1932,8 @@ void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStell
 		planete->habitable = 1;
 		planete->planetType = HABITABLE_CONTINENTAL;
 		strcpy(planete->nom, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+		gfx_PrintString(" ");
+		PrintInt(2);
 
 		planete->villes = calloc(1, sizeof(Villes));
 		planete->population = 27;

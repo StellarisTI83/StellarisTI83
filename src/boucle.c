@@ -26,6 +26,7 @@
 #include "updating.h"
 #include "console.h"
 #include "menu.h"
+#include "ai.h"
 
 #include "locale/locale.h"
 
@@ -58,6 +59,7 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joue
 		if((boot_CheckOnPressed()) || (finBoucle == 0))
 		{
 			// StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
+			EmpireListeSupprimer(empireListe);
 			return 0;
 		}
 	}
@@ -403,12 +405,15 @@ int StellarisHUD(EmpireListe *empireListe, Empire *joueur, Date *date, char *key
 	strcat(jourChar, moisChar);
 	gfx_PrintStringXY(jourChar, 125, 225);
 	if(camera->bougerFlotte == TRUE){
-		gfx_PrintStringXY("Choisir destination", 10, 225);
+		gfx_SetColor(6);
+		gfx_FillRectangle_NoClip(80, 28, 160, 11);
+		gfx_SetColor(7);
+		gfx_Rectangle_NoClip(80, 28, 160, 11);
+		gfx_PrintStringXY("Choisir destination", 84, 30);
 	}
 	
 	//pause / avance
-	switch (date->vitesse)
-	{
+	switch (date->vitesse){
 		case -2:
 			gfx_SetColor(1);
 			gfx_FillRectangle_NoClip(100, 225, 3, 9);

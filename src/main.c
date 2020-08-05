@@ -208,19 +208,18 @@ int MainMenu(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, D
 	switch (choix)
 	{
 		case 0:
-			erreur = ChargementAnciennePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
-			if(erreur == 1)
-			{
+			/*erreur = ChargementAnciennePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
+			if(erreur == 1){
 				gfx_FillScreen(255);
 				PrintCentered("Aucune sauvegarde", 96, 2, 0, 0);
 				while(!os_GetCSC());
 				fin = 1;
-			}
+			}*/
+			fin = 1;
 			break;
 		case 1:
 			fin = NouvellePartieAvertissement(joueur, parametres);
-			if (fin == 0)
-			{
+			if (fin == 0){
 				/*lancer la nouvelle partie*/
 				ChargementNouvellePartie(empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
 			}

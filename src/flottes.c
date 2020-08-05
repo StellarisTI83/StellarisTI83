@@ -99,10 +99,10 @@ Flotte* FlotteAjouter(FlotteListe* flotteliste) {
 		pointeur->suivant = malloc(sizeof(Flotte));
 		pointeur = pointeur->suivant;
 		pointeur->suivant = NULL;
-	}
-	else {
+	} else {
 		flotteliste->premier = malloc(sizeof(Flotte));
 		pointeur = flotteliste->premier;
+		pointeur->suivant = NULL;
 	}
 	return pointeur;
 }
@@ -309,9 +309,11 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 						while((index < 4) && (systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].destination != flotte->systeme)){
 							index++;
 						}
+						
 						flotte->x = systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].x;
 						flotte->y = systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].y;
 
+						systemeStellaires[flotte->systeme].niveauDeConnaissance = MOYEN; // si on quitte le systeme le niveau de connaissance descend
 						flotte->avancement = 0;
 						flotte->systeme = flotte->chemin[flotte->avancementTrajet];
 						flotte->avancementTrajet++;

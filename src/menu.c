@@ -614,28 +614,27 @@ void MenuSystemePlaneteResume(char *key, SystemeStellaire *systemeStellaires, Ca
 
 void NumeroPlanete(int numero, int *decalage, Planete *planete, char *nomPlanete, SystemeStellaire *systeme){
 	switch(numero){
-	case 1:
+	case 0:
 		*decalage = 186;
 		planete = systeme->planetes[0];
 		strcpy(nomPlanete, " I");
 		break;
-	case 2:
+	case 1:
 		*decalage = 182;
 		planete = systeme->planetes[1];
 		strcpy(nomPlanete, " II");
 		break;
-	case 3:
+	case 2:
 		*decalage = 178;
 		planete = systeme->planetes[2];
 		strcpy(nomPlanete, " III");
 		break;
-	case 4:
+	case 3:
 		*decalage = 182;
 		planete = systeme->planetes[3];
 		strcpy(nomPlanete, " IV");
 		break;
-		
-	case 5:
+	case 4:
 		*decalage = 186;
 		planete = systeme->planetes[4];
 		strcpy(nomPlanete, " V");
@@ -652,7 +651,7 @@ void MenuSystemePlaneteDistrict(char *key, SystemeStellaire *systemeStellaires, 
 	int niveau = 40, maximum = 4;
 	Planete* planete = NULL;
 	Ordre *ordre = NULL;
-	planete = systemeStellaires[camera->systeme].planetes[fenetre->planete];
+	planete = systemeStellaires[camera->systeme].planetes[fenetre->planete  - 1];
 	NumeroPlanete(fenetre->planete, &decalage, planete, &nomPlanete, &systemeStellaires[camera->systeme]);
 
 	ordre = RecupererOrdre(planete->villes->ordreFile);	
