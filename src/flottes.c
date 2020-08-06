@@ -18,13 +18,12 @@
 #include "gfx/gfx.h"
 
 #include "main.h"
-#include "boucle.h"
-#include "map.h"
+// #include "boucle.h"
+// #include "map.h"
 #include "nouvelle_partie.h"
-#include "sauvegarde.h"
+// #include "sauvegarde.h"
 #include "flottes.h"
-#include "pathfinding.h"
-#include "ai.h"
+// #include "pathfinding.h"
 
 #include "locale/locale.h"
 
@@ -33,7 +32,7 @@ static Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2);
 /**
  *Crée une list de flottes
  */
-FlotteListe* FlotteListeCreer() {
+FlotteListe* CreerFlotteListe() {
 	FlotteListe* flotteliste;
 	flotteliste = malloc(sizeof(FlotteListe));
 	flotteliste->premier = NULL;
@@ -43,7 +42,7 @@ FlotteListe* FlotteListeCreer() {
 /**
  *Supprime une liste des flottes
  */
-void FlotteListeSupprimer(FlotteListe* flotteliste) {
+void SupprimerFlotteListe(FlotteListe* flotteliste) {
 	Flotte *pointeur = 0, *pointeursuivant = 0;
 	int compteur = 0;
 	pointeur = flotteliste->premier;
@@ -58,7 +57,7 @@ void FlotteListeSupprimer(FlotteListe* flotteliste) {
 /**
  *Renvoi un pointeur vers l'empire numero x
  */
-Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
+Flotte* NumeroFlotte(FlotteListe* flotteliste, int numero) {
 	Flotte *pointeur = 0;
 	int compteur = 1;
 	pointeur = flotteliste->premier;
@@ -74,7 +73,7 @@ Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
 /**
  *Renvoi le numéro de la flotte suivant son pointeur
  */
-int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte) {
+int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte) {
 	Flotte *pointeur = 0;
 	int compteur = 1;
 	pointeur = flotteliste->premier;
@@ -89,7 +88,7 @@ int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte) {
 /**
  *Rajoute une flotte à la liste des flotte envoyée
  */
-Flotte* FlotteAjouter(FlotteListe* flotteliste) {
+Flotte* AjouterFlotte(FlotteListe* flotteliste) {
 	Flotte *pointeur = 0;
 	pointeur = flotteliste->premier;
 	if(flotteliste->premier != NULL) {
@@ -110,7 +109,7 @@ Flotte* FlotteAjouter(FlotteListe* flotteliste) {
 /**
  *Supprime la flotte numero x à la liste de flottes envoyée
  */
-void FlotteSupprimer(FlotteListe* flotteliste, int numero) {
+void SupprimerFlotte(FlotteListe* flotteliste, int numero) {
 	Flotte *pointeur = 0, *pointeurPrecedent = 0;
 	int compteur = 0;
 	pointeur = flotteliste->premier;
@@ -135,7 +134,7 @@ void FlotteSupprimer(FlotteListe* flotteliste, int numero) {
  */
 Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
 	Flotte* flotte = NULL;
-	flotte = FlotteAjouter(flotteListe);
+	flotte = AjouterFlotte(flotteListe);
 	flotte->puissance = 0;
 	flotte->coqueVie = 0;
 	flotte->coqueTotal = 0;
@@ -229,8 +228,8 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 
 /**
  *Donne l'ordre de faire bouger la flotte numero x
- */
-void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires){
+ *
+void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires){
 	Empire* empire;
 	Flotte* flotte;
 	int path[50];
@@ -239,7 +238,7 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 	double norme = 0;
 
 	empire = EmpireNumero(empireListe, numeroDeEmpire);
-	flotte = FlotteNumero(empire->flotte, numeroDeFlotte);
+	flotte = NumeroFlotte(empire->flotte, numeroDeFlotte);
 	if(camera->bougerFlotte == FALSE){
 		camera->bougerFlotte = TRUE;
 		camera->bloque = FALSE;
@@ -285,7 +284,7 @@ void FlotteBouger(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 
 /**
  * Fait effectuer les action des flottes
- */
+ *
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires){
 	Empire* empire = NULL; 
 	Flotte* flotte = NULL;
@@ -356,7 +355,7 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 
 /**
  * Calculer Vecteur
- * */
+ * *
 Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
 	Vecteur vecteur;
 	double norme = 0;
@@ -370,3 +369,4 @@ Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
 	vecteur.yVecteur = ((y2 - y1) / norme) * 20.0;
 	return vecteur;
 }
+*/

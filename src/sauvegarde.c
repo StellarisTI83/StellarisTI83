@@ -95,12 +95,12 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 	while(i < compteur){
 		empire = EmpireAjouter(empireListe);
 		ti_Read(empire, sizeof(Empire), 1, sauvegarde);
-		empire->flotte = FlotteListeCreer();
+		empire->flotte = CreerFlotteListe();
 		j = 0;
 		compteurFlottes = 0;
 		ti_Read(&compteurFlottes, sizeof(int), 1, sauvegarde);
 		while(j < compteurFlottes){
-			flotte = FlotteAjouter(empire->flotte);
+			flotte = AjouterFlotte(empire->flotte);
 			ti_Read(flotte, sizeof(flotte), 1, sauvegarde);
 			j++;
 		}

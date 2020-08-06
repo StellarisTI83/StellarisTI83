@@ -1,6 +1,10 @@
 #ifndef _FLOTTES_INCLUDE
 #define _FLOTTES_INCLUDE
 
+#include "systemes.h"
+#include "camera.h"
+#include "ai.h"
+
 typedef enum {FLOTTE_MILITAIRE, FLOTTE_SCIENTIFIQUE, FLOTTE_DE_CONSTRUCTION} FlotteType;
 
 typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
@@ -62,18 +66,16 @@ typedef struct {
 	Noeud* noeud;
 } Liste;
 
-FlotteListe* FlotteListeCreer();
-void FlotteListeSupprimer(FlotteListe* flotteliste);
-Flotte* FlotteNumero(FlotteListe* flotteliste, int numero);
-int FlotteNumeroRecuperer(FlotteListe* flotteliste, Flotte* flotte);
-Flotte* FlotteAjouter(FlotteListe* flotteliste);
-void FlotteSupprimer(FlotteListe* flotteliste, int numero);
+FlotteListe* CreerFlotteListe();
+void SupprimerFlotteListe(FlotteListe* flotteliste);
+Flotte* NumeroFlotte(FlotteListe* flotteliste, int numero);
+int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte);
+Flotte* AjouterFlotte(FlotteListe* flotteliste);
+void SupprimerFlotte(FlotteListe* flotteliste, int numero);
 
 Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
 
-// int* FlottePathFinding(int debut, int fin, SystemeStellaire *systemeStellaires, int* path);
-// void SupprimerElementListe(Liste *liste, int numero);
-// void AjouterElementListe(Liste *liste, Noeud *noeud);
-// void CopierNoeud(Noeud *noeud1, Noeud *noeud2);
+void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
+void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);
 
 #endif

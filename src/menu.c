@@ -347,7 +347,7 @@ void MenuSystemeFlotte(char* key, EmpireListe* empireListe, Empire* joueur, Syst
 		}
 		gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Flotte ");
-		PrintInt(FlotteNumeroRecuperer(joueur->flotte, flotteDuSysteme[i]) + 1);
+		PrintInt(RecupererFlotteNumero(joueur->flotte, flotteDuSysteme[i]) + 1);
 		gfx_HorizLine_NoClip(50, niveau + 11, 220);
 		niveau += 17;
 		i++;
@@ -357,7 +357,7 @@ void MenuSystemeFlotte(char* key, EmpireListe* empireListe, Empire* joueur, Syst
 	if (*key == sk_Enter) {
 		*key = 0;
 		fenetre->ouverte = MENU_SYSTEME_FLOTTE_DETAILS;
-		fenetre->flotteSelectionee = FlotteNumeroRecuperer(joueur->flotte, flotteDuSysteme[fenetre->selection - 1]) + 1;
+		fenetre->flotteSelectionee = RecupererFlotteNumero(joueur->flotte, flotteDuSysteme[fenetre->selection - 1]) + 1;
 		fenetre->selection = 1;
 		fenetre->precedente = 1;
 	}
@@ -1366,7 +1366,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 	gfx_SetPixel(275, 51);
 	gfx_PrintStringXY("Retour", 48, 42);
 	gfx_SetTextXY(150, 42);
-	flotte = FlotteNumero(joueur->flotte, fenetre->flotteSelectionee);
+	flotte = NumeroFlotte(joueur->flotte, fenetre->flotteSelectionee);
 	if(flotte->type == FLOTTE_DE_CONSTRUCTION){
 		if((fenetre->selection == 0) || (fenetre->selection >= 10)){
 			fenetre->selection = 2;
@@ -1508,7 +1508,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 			niveau += 14;
 			gfx_PrintString("Rechercher");
 			gfx_SetTextFGColor(1);
-			
+			gfx_SetTextXY(45, 167);
 			break;
 
 		case FLOTTE_DE_CONSTRUCTION:
@@ -1531,6 +1531,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 			gfx_SetTextXY(165, niveau);
 			gfx_PrintString("Base scientifique");
 			gfx_SetTextFGColor(1);
+			gfx_SetTextXY(45, 167);
 			switch(flotte->action){
 			case FLOTTE_CONSTRUIRE_BASE:
 				gfx_PrintString("Construit une base sur");
@@ -1556,7 +1557,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 		*key = 0;
 		if(fenetre->selection == FLOTTE_BOUGER){
 			flotte->action = FLOTTE_BOUGER;
-			FlotteBouger(fenetre->flotteSelectionee, 1, 0, camera, empireListe, systemeStellaires);
+			BougerFlotte(fenetre->flotteSelectionee, 1, 0, camera, empireListe, systemeStellaires);
 		}
 		else{
 			switch(flotte->type){
@@ -1570,7 +1571,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire *systemeStellaires, Em
 				switch(fenetre->selection){
 				case FLOTTE_CONSTRUIRE_BASE:
 					flotte->action = FLOTTE_CONSTRUIRE_BASE;
-					FlotteBouger(fenetre->flotteSelectionee, 1, 0, camera, empireListe, systemeStellaires);
+					BougerFlotte(fenetre->flotteSelectionee, 1, 0, camera, empireListe, systemeStellaires);
 					break;
 				}
 				break;
@@ -1741,8 +1742,8 @@ void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire *syste
 		gfx_PrintString("Am/liorer");
 		gfx_SetTextXY(212 - strlen(evolution) * 4, 92);
 		gfx_PrintString(evolution);
-		gfx_SetTextXY(227 - tailleInt(prixAmelioration) * 4, 104);
-		gfx_TransparentSprite_NoClip(fer, 212 - tailleInt(prixAmelioration) * 4, 103);
+		gfx_SetTextXY(227 - TailleInt(prixAmelioration) * 4, 104);
+		gfx_TransparentSprite_NoClip(fer, 212 - TailleInt(prixAmelioration) * 4, 103);
 		if(joueur->acier < prixAmelioration){
 			gfx_SetTextFGColor(3);
 		}

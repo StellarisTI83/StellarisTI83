@@ -674,7 +674,7 @@ void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStell
 				}
 				camera->systeme = camera->systemeSelectione;
 			} else if(((camera->fenetre == MENU_AUCUN) && (camera->systemeSelectione != -1)) && (camera->bougerFlotte == TRUE)) {
-				FlotteBouger(camera->flotte, camera->empire, camera->systemeSelectione, camera, empireListe, systemeStellaires);
+				BougerFlotte(camera->flotte, camera->empire, camera->systemeSelectione, camera, empireListe, systemeStellaires);
 			}
 			break;
 		case sk_Clear:
@@ -1095,7 +1095,7 @@ void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fenetre *f
 							camera->bloque = TRUE;
 							fenetre->ouverte = MENU_SYSTEME_FLOTTE_DETAILS;
 							fenetre->selection = 1;
-							fenetre->flotteSelectionee = FlotteNumeroRecuperer(empire->flotte, flotte) + 1;
+							fenetre->flotteSelectionee = RecupererFlotteNumero(empire->flotte, flotte) + 1;
 							fenetre->precedente = 1;
 							*key = 0;
 						}
