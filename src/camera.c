@@ -11,10 +11,12 @@
 #include <math.h>
 #include <errno.h>
 
-#include "camera.h"
 #include "main.h"
+
+#include "camera.h"
 #include "planetes.h"
 
+/* structures ========================================================== */
 struct CameraStruct{
 	int x;
 	int y;
@@ -58,6 +60,10 @@ struct FenetreStruct{
 };
 
 /* entry points ======================================================== */
+Camera *AllocCamera(){
+	return calloc(1, sizeof(Camera));
+}
+
 void SetCameraX(Camera *camera, int x){
 	camera->x = x;
 }
@@ -104,6 +110,13 @@ int GetCameraZoom(Camera *camera){
 	return camera->zoom;
 }
 
+void SetCameraLock(Camera *camera, bool lock){
+	camera->lock = lock;
+}
+bool GetCameraLock(Camera *camera){
+	return camera->lock;
+}
+
 void SetCameraMapType(Camera *camera, VueType mapType){
 	camera->mapType = mapType;
 }
@@ -111,11 +124,26 @@ VueType GetCameraMapType(Camera *camera){
 	return camera->mapType;
 }
 
-void SetCameraLock(Camera *camera, bool lock){
-	camera->lock = lock;
+void SetCameraSystem(Camera *camera, int system){
+	camera->systemeSelectione = system;
 }
-bool GetCameraLock(Camera *camera){
-	return camera->lock;
+
+void SetCameraSystemViewStatus(Camera *camera, bool status){
+	switch (status) {
+	case true:
+		camera->mapType = SYSTEME;
+		break;
+	case false:
+		camera->mapType = NORMAL;
+	}
+	camera->systemeSelectione = camera->systeme;
+}
+bool GetCameraViewedSystem(Camera *camera){
+	return camera->systemeSelectione;
+}
+
+Fenetre *AllocFenetre(){
+	return calloc(1, sizeof(Fenetre));
 }
 
 void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSysteme menuSysteme){

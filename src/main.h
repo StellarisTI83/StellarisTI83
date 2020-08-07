@@ -2,7 +2,7 @@
 #define H_MAIN
 
 /* macros ============================================================== */
-#define VERSION_LOGICIEL "v0.1.0-a"
+#define VERSION_LOGICIEL "v0.2.0-a"
 
 #define _(String) gettext(String)
 
@@ -43,15 +43,6 @@ typedef enum {NO_ERROR, ACIER_MANQUE, MINERAI_MANQUE} Error;
 
 typedef struct FlotteListeStruct FlotteListe;
 typedef struct FlotteStruct Flotte;
-
-typedef struct {
-	char vitesse;
-	char vitesseSauvegardee;
-	char jour;
-	char mois;
-	int annee;
-	int horloge;
-} Date;
 
 typedef struct {
 	int valeurMinerai;

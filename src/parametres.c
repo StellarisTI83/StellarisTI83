@@ -11,6 +11,8 @@
 #include <math.h>
 #include <errno.h>
 
+#include "main.h"
+
 #include "parametres.h"
 
 /* structures ========================================================== */
@@ -21,6 +23,10 @@ struct ParametresStruct{
 };
 
 /* entry points ======================================================== */
+Parametres *AllocParametres(){
+    return calloc(1, sizeof(Parametres));
+}
+
 void SetStarNumber(Parametres *parametres, int starNumber){
     parametres->starNumber = starNumber;
 }

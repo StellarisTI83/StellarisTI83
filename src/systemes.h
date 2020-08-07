@@ -14,13 +14,16 @@ typedef struct HyperlaneStruct Hyperlane;
 
 typedef struct SystemeStellaireStruct SystemeStellaire;
 
-
 /* internal public functions =========================================== */
+SystemeStellaire* AllocSystem();
+
 void SetSystemXY(SystemeStellaire *systemeStellaire, int x, int y);
 int GetSystemX(SystemeStellaire *systemeStellaire);
 int GetSystemY(SystemeStellaire *systemeStellaire);
 
 void CreateSystemStation(SystemeStellaire *systemeStellaire);
+void SetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber, Module module);
+Module GetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber);
 
 void SetSystemIntelLevel(SystemeStellaire *systemeStellaire, NiveauDeConnaissance niveau);
 NiveauDeConnaissance GetSystemIntelLevel(SystemeStellaire *systemeStellaire);
@@ -36,6 +39,12 @@ int GetSystemPlanetNumber(SystemeStellaire *systemeStellaire);
 
 void SetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire, int number);
 int GetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire);
+
+void SetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire, int number);
+int GetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire);
+
+void SetSystemEmpire(SystemeStellaire *systemeStellaire, int number);
+int GetSystemEmpire(SystemeStellaire *systemeStellaire);
 
 void SetSystemName(SystemeStellaire *systemeStellaire, char* string);
 char* GetSystemName(SystemeStellaire *systemeStellaire);
@@ -67,4 +76,33 @@ int GetSystemPlanetRadius(SystemeStellaire *systemeStellaire, int number);
 
 void SetSystemPlanetName(SystemeStellaire *systemeStellaire, int number, char* string);
 char* GetSystemPlanetName(SystemeStellaire *systemeStellaire, int number);
+
+void CreateSystemPlanetCity(SystemeStellaire *systemeStellaire, int number);
+
+void SetSystemPlanetCityPopulation(SystemeStellaire *systemeStellaire, int number, int population);
+int GetSystemPlanetCityPopulation(SystemeStellaire *systemeStellaire, int number);
+
+void SetSystemPlanetCityDistrict(SystemeStellaire *systemeStellaire, int number, int urban, int generator, int mining, int agriculture);
+
+void AddSystemPlanetCityUrbanDistrict(SystemeStellaire *systemeStellaire, int number, int urban);
+int GetSystemPlanetCityUrbanDistrict(SystemeStellaire *systemeStellaire, int number);
+
+void AddSystemPlanetCityGeneratorDistrict(SystemeStellaire *systemeStellaire, int number, int generator);
+int GetSystemPlanetCityGeneratorDistrict(SystemeStellaire *systemeStellaire, int number);
+
+void AddSystemPlanetCityMiningDistrict(SystemeStellaire *systemeStellaire, int number, int mining);
+int GetSystemPlanetCityMiningDistrict(SystemeStellaire *systemeStellaire, int number);
+
+void AddSystemPlanetCityAgricultureDistrict(SystemeStellaire *systemeStellaire, int number, int agriculture);
+int GetSystemPlanetCityAgricultureDistrict(SystemeStellaire *systemeStellaire, int number);
+
+void SetSystemPlanetCityBuilding(SystemeStellaire *systemeStellaire, int number, int buildingNumber, Batiment batiment, int level);
+Batiment GetSystemPlanetCityBuildingNumber(SystemeStellaire *systemeStellaire, int number, int buildingNumber);
+int GetSystemPlanetCityBuildingLevel(SystemeStellaire *systemeStellaire, int number, int buildingNumber);
+
+int CalculateSystemPlanetCityJob(SystemeStellaire *systemeStellaire, int number);
+int GetSystemPlanetCityJob(SystemeStellaire *systemeStellaire, int number);
+
+Planete *GetPlanet(SystemeStellaire *systemeStellaire, int number);
+
 #endif

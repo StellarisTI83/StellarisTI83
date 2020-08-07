@@ -75,7 +75,7 @@ void SupprimerFlotte(FlotteListe* flotteliste, int numero);
 
 Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
 
-void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
-void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);
+// void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
+// void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);
 
 #endif

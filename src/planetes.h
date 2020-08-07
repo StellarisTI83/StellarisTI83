@@ -38,4 +38,30 @@ int GetPlanetRadius(Planete *planete);
 
 void SetPlanetName(Planete *planete, char* string);
 char* GetPlanetName(Planete *planete);
+
+void CreatePlanetCity(Planete *planete);
+bool GetPlanetCityStatus(Planete *planete);
+void SetPlanetCityPopulation(Planete *planete, int population);
+int GetPlanetCityPopulation(Planete *planete);
+
+void SetPlanetCityDistrict(Planete *planete, int urban, int generator, int mining, int agriculture);
+
+void AddPlanetCityUrbanDistrict(Planete *planete, int number);
+int GetPlanetCityUrbanDistrictNumber(Planete *planete);
+
+void AddPlanetCityGeneratorDistrict(Planete *planete, int number);
+int GetPlanetCityGeneratorDistrictNumber(Planete *planete);
+
+void AddPlanetCityMiningDistrict(Planete *planete, int number);
+int GetPlanetCityMiningDistrictNumber(Planete *planete);
+
+void AddPlanetCityAgricultureDistrict(Planete *planete, int number);
+int GetPlanetCityAgricultureDistrictNumber(Planete *planete);
+
+void SetPlanetCityBuilding(Planete *planete, int buildingNumber, Batiment batiment, int level);
+Batiment GetPlanetCityBuildingNumber(Planete *planete, int buildingNumber);
+int GetPlanetCityBuildingLevel(Planete *planete, int buildingNumber);
+
+int CalculatePlanetCityJob(Planete *planete);
+int GetPlanetCityJob(Planete *planete);
 #endif

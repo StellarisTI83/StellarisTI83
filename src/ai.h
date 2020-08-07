@@ -1,6 +1,8 @@
 #ifndef H_AI
 #define H_AI
 
+#include "flottes.h"
+
 /* types =============================================================== */
 /**
  * Differents gouvernements possibles
@@ -36,36 +38,37 @@ void EmpireSupprimer(EmpireListe*, int numero);
 
 
 void CreerEmpireFlotte(Empire *empire);
+void EmpireNouvelleFlotte(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
 
-void SetGouvernement(Empire *empire, Gouvernement gouvernement);
-Gouvernement GetGouvernement(Empire *empire);
+void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement);
+Gouvernement GetEmpireGouvernement(Empire *empire);
 
-void SetColor(Empire *empire, Gouvernement couleur);
-int GetColor(Empire *empire);
+void SetEmpireColor(Empire *empire, Gouvernement couleur);
+int GetEmpireColor(Empire *empire);
 
-void SetPrincipes(Empire *empire, Principe principe1, Principe principe2, Principe principe3);
-Principe GetPrincipes(Empire *empire, int numero);
+void SetEmpirePrincipes(Empire *empire, Principe principe1, Principe principe2, Principe principe3);
+Principe GetEmpirePrincipes(Empire *empire, int numero);
 
-void SetSpecies(Empire *empire, int espece);
-int GetSpecies(Empire *empire);
+void SetEmpireSpecies(Empire *empire, int espece);
+int GetEmpireSpecies(Empire *empire);
 
-void SetName(Empire *empire, int curseur, char lettre);
-char GetnameChar(Empire *empire, int cursor);
-char* GetnameString(Empire *empire);
+void SetEmpireName(Empire *empire, int curseur, char lettre);
+char GetEmpireNameChar(Empire *empire, int cursor);
+char* GetEmpireNameString(Empire *empire);
 
-void AddCredit(Empire *empire, int argent);
-int GetCredit(Empire *empire);
+void AddEmpireCredit(Empire *empire, int argent);
+int GetEmpireCredit(Empire *empire);
 
-void AddMinerals(Empire *empire, int minerais);
-int GetMinerals(Empire *empire);
+void AddEmpireMinerals(Empire *empire, int minerais);
+int GetEmpireMinerals(Empire *empire);
 
-void AddFood(Empire *empire, int nourriture);
-int GetFood(Empire *empire);
+void AddEmpireFood(Empire *empire, int nourriture);
+int GetEmpireFood(Empire *empire);
 
-void AddAlloys(Empire *empire, int alloy);
-int GetAlloys(Empire *empire);
+void AddEmpireAlloys(Empire *empire, int alloy);
+int GetEmpireAlloys(Empire *empire);
 
-void AddConsumerGoods(Empire *empire, int consumerGoods);
-int GetConsumerGoods(Empire *empire);
+void AddEmpireConsumerGoods(Empire *empire, int consumerGoods);
+int GetEmpireConsumerGoods(Empire *empire);
 
 #endif

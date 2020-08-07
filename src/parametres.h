@@ -5,6 +5,8 @@
 typedef struct ParametresStruct Parametres;
 
 /* entry points ======================================================== */
+Parametres *AllocParametres();
+
 void SetStarNumber(Parametres *parametres, int starNumber);
 int GetStarNumber(Parametres *parametres);
 

@@ -18,6 +18,8 @@ typedef struct CameraStruct Camera;
 typedef struct FenetreStruct Fenetre;
 
 /* entry points ======================================================== */
+Camera *AllocCamera();
+
 void SetCameraX(Camera *camera, int x);
 int getCameraX(Camera *camera);
 void SetCameraY(Camera *camera, int y);
@@ -42,6 +44,11 @@ VueType GetCameraMapType(Camera *camera);
 void SetCameraLock(Camera *camera, bool lock);
 bool GetCameraLock(Camera *camera);
 
+void SetCameraSystem(Camera *camera, int system);
+void SetCameraSystemViewStatus(Camera *camera, bool status);
+bool GetCameraViewedSystem(Camera *camera);
+
+Fenetre *AllocFenetre();
 void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSysteme menuSysteme);
 void CloseMenu(Fenetre *fenetre, Camera *camera);
 

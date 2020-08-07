@@ -22,8 +22,6 @@
 #include "gfx/gfx.h"
 
 #include "main.h"
-#include "nouvelle_partie.h"
-#include "flottes.h"
 #include "ai.h"
 
 #include "locale/locale.h"
@@ -150,37 +148,40 @@ void CreerEmpireFlotte(Empire *empire){
 		exit(EXIT_FAILURE);
 	}
 }
+void EmpireNouvelleFlotte(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
+	NouvelleFlotte(empire->flotte, systeme, type, nombreDeCorvettes, nombreDeDestroyers, nombreDeCroiseurs, nombreDeCuirasses);
+}
 
 /**
  * Change le gouvernement
  */
-void SetGouvernement(Empire *empire, Gouvernement gouvernement){
+void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement){
 	empire->gouvernement = gouvernement;
 }
 /**
  * Recuperer l'espèce
  */
-Gouvernement GetGouvernement(Empire *empire){
+Gouvernement GetEmpireGouvernement(Empire *empire){
 	return empire->gouvernement;
 }
 
 /**
  * Change la couleur
  */
-void SetColor(Empire *empire, Gouvernement couleur){
+void SetEmpireColor(Empire *empire, Gouvernement couleur){
 	empire->couleur = couleur;
 }
 /**
  * Recuperer la couleur
  */
-int GetColor(Empire *empire){
+int GetEmpireColor(Empire *empire){
 	return empire->couleur;
 }
 
 /**
  * Changer les principes
  */
-void SetPrincipes(Empire *empire, Principe principe1, Principe principe2, Principe principe3){
+void SetEmpirePrincipes(Empire *empire, Principe principe1, Principe principe2, Principe principe3){
 	empire->principe1 = principe1;
 	empire->principe2 = principe2;
 	empire->principe3 = principe3;
@@ -188,7 +189,7 @@ void SetPrincipes(Empire *empire, Principe principe1, Principe principe2, Princi
 /**
  * Recuperer l'espèce
  */
-Principe GetPrincipes(Empire *empire, int numero){
+Principe GetEmpirePrincipes(Empire *empire, int numero){
 	switch(numero){
 	case 1:
 		return empire->principe1;
@@ -206,7 +207,7 @@ Principe GetPrincipes(Empire *empire, int numero){
 /**
  * Changer nom lettre par lettre
  */
-void SetName(Empire *empire, int curseur ,char lettre){
+void SetEmpireName(Empire *empire, int curseur ,char lettre){
 	if(lettre <= 29)
 		empire->nom[lettre] = lettre;
 
@@ -215,90 +216,90 @@ void SetName(Empire *empire, int curseur ,char lettre){
 /**
  * Recuper Char
  */
-char GetnameChar(Empire *empire, int cursor){
+char GetEmpireNameChar(Empire *empire, int cursor){
 	return empire->nom[cursor];
 }
 /**
  * Recuper string
  */
-char* GetnameString(Empire *empire){
+char* GetEmpireNameString(Empire *empire){
 	return empire->nom;
 }
 
 /**
  * Changer l'espèce
  */
-void SetSpecies(Empire *empire, int espece){
+void SetEmpireSpecies(Empire *empire, int espece){
 	empire->espece = espece;
 }
 /**
  * Recuperer l'espèce
  */
-int GetSpecies(Empire *empire){
+int GetEmpireSpecies(Empire *empire){
 	return empire->espece;
 }
 
 /**
  * Rajouter des credits
  */
-void AddCredit(Empire *empire, int argent){
+void AddEmpireCredit(Empire *empire, int argent){
 	empire->credits += argent;
 }
 /**
  * Recuperer nombre de credits
  */
-int GetCredit(Empire *empire){
+int GetEmpireCredit(Empire *empire){
 	return empire->credits;
 }
 
 /**
  * Rajouter des minerais
  */
-void AddMinerals(Empire *empire, int minerais){
+void AddEmpireMinerals(Empire *empire, int minerais){
 	empire->minerais += minerais;
 }
 /**
  * Recuperer nombre de minerais
  */
-int GetMinerals(Empire *empire){
+int GetEmpireMinerals(Empire *empire){
 	return empire->minerais;
 }
 
 /**
  * Rajouter de la nourriture
  */
-void AddFood(Empire *empire, int nourriture){
+void AddEmpireFood(Empire *empire, int nourriture){
 	empire->nourriture += nourriture;
 }
 /**
  * Recuperer nombre de nourriture
  */
-int GetFood(Empire *empire){
+int GetEmpireFood(Empire *empire){
 	return empire->nourriture;
 }
 
 /**
  * Rajouter de l'acier
  */
-void AddAlloys(Empire *empire, int alloy){
+void AddEmpireAlloys(Empire *empire, int alloy){
 	empire->acier += alloy;
 }
 /**
  * Recuperer nombre d'acier
  */
-int GetAlloys(Empire *empire){
+int GetEmpireAlloys(Empire *empire){
 	return empire->acier;
 }
 
 /**
  * Rajouter des biens de consommation
  */
-void AddConsumerGoods(Empire *empire, int consumerGoods){
+void AddEmpireConsumerGoods(Empire *empire, int consumerGoods){
 	empire->biensDeConsommation += consumerGoods;
 }
 /**
  * Recuperer nombre de biens de consommation
  */
-int GetConsumerGoods(Empire *empire){
+int GetEmpireConsumerGoods(Empire *empire){
 	return empire->biensDeConsommation;
 }

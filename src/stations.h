@@ -19,5 +19,6 @@ Station* AllocStation();
 void SetStationLevel(Station *station, Stationlevel level);
 Stationlevel GetStationLevel(Station *station);
 
-
+void SetStationModule(Station *station, int moduleNumber, Module module);
+Module GetStationModule(Station *station, int moduleNumber);
 #endif
