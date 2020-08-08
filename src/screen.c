@@ -19,13 +19,11 @@
 #include "map.h"
 #include "screen.h"
 
-
-
 /* entry points ======================================================== */
-void DrawScreen(){
+void DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres){
     gfx_ZeroScreen();
 
-    DrawMap();
+    DrawMap(empireListe, systemeStellaires, camera, key, date, fenetre, parametres);
 
     DrawHUD();
 

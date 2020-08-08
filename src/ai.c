@@ -306,3 +306,4 @@ void AddEmpireConsumerGoods(Empire *empire, int consumerGoods){
 int GetEmpireConsumerGoods(Empire *empire){
 	return empire->biensDeConsommation;
 }
+

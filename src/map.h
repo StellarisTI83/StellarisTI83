@@ -1,8 +1,16 @@
-#ifndef _MAP_INCLUDE
-#define _MAP_INCLUDE
+#ifndef H_MAP
+#define H_MAP
 
+#include "ai.h"
+#include "camera.h"
+#include "parametres.h"
+#include "systemes.h"
+#include "time.h"
+
+/* constants =========================================================== */
 #define RAYON_DE_VUE_SYSTEME 160
 
-void DessinerVueMap(SystemeStellaire* systemeStellaires, Camera* camera, EmpireListe* empireListe, Parametres *parametres);
+/* entry points ======================================================== */
+void DrawMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Parametres *parametres);
 
-#endif _MAP_INCLUDE
+#endif

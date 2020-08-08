@@ -195,8 +195,146 @@ static void UpdateWorld(EmpireListe *empireListe, SystemeStellaire *systemeStell
     CalculerNiveauDeConnaissance(systemeStellaires, empireListe);
 }
 
-static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre){
+static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre){
+	if(GetCameraMapType(camera) == NORMAL){
+		switch(*key){
+		case sk_Up:
+			if (GetCameraLock(camera) != true)
+				AddCameraYVector(camera, -5);
+			break;
+		case sk_Down:
+			if (GetCameraLock(camera) != true)
+				AddCameraYVector(camera, +5);
+			break;
+		case sk_Left:
+			if (GetCameraLock(camera) != true)
+				AddCameraXVector(camera, -5);
+			break;
+		case sk_Right:
+			if (GetCameraLock(camera) != true)
+				AddCameraXVector(camera, +5);
+			break;
+		case sk_Mode:
+			if (GetCameraLock(camera) != true) {
+				SetCameraZoom(camera, GetCameraZoom(camera) - 1);
+				if(GetCameraZoom(camera) >= 1) {
+					SetCameraX(camera, GetCameraX(camera) * 0.5);
+					SetCameraY(camera, GetCameraY(camera) * 0.5);
+				}
+			}
+			break;
+		case sk_Del:
+			if (GetCameraLock(camera) != true) {
+				SetCameraZoom(camera, GetCameraZoom(camera) +- 1);
+				if (GetCameraZoom(camera) < 3 && GetCameraZoom(camera) >= 1) {
+					SetCameraX(camera, GetCameraX(camera) * 2);
+					SetCameraY(camera, GetCameraY(camera) * 2);
+				}
+			}
+			break;
+		case sk_Enter:
+			if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU))){
+				SetCameraLock(camera, false);
+				SetCameraMapType(camera, SYSTEME);
+				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
+					SetCameraXSystem(camera, 320);
+					SetCameraYSystem(camera, 240);
+				}
+				SetCameraSystem(camera, GetCameraViewedSystem(camera));
+			} else if(((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && (IsCameraMoveFleet(camera) == true)) {
+				BougerFlotte(GetCameraFleet(camera), GetCameraEmpire(camera), GetCameraViewedSystem(camera), camera, empireListe, systemeStellaires);
+			}
+			break;
+		case sk_Clear:
+			if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (IsCameraMoveFleet(camera) == false)) {
+				OpenMenu(fenetre, camera, MENU_QUITTER, 0);
+				PauseGame(date);
+				*key = 0;
+			} else if(IsCameraMoveFleet(camera) == true) {
+				SetCameraMoveFleet(camera, false);
+				*key = 0;
+			}
+			break;
+		}
+	}
 
+	//touches generales
+
+	switch(*key){
+	case sk_Yequ :
+		if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 1)) {
+			OpenMenu(fenetre, camera, MENU_MARCHE, 0);
+			SetWindowSelection(fenetre, 1);
+		} else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 1)) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_Window :
+		if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 2)) {
+			OpenMenu(fenetre, camera, MENU_MARCHE, 0);
+			SetWindowSelection(fenetre, 2);
+		} else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 2)) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_Zoom :
+		if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 3)) {
+			OpenMenu(fenetre, camera, MENU_MARCHE, 0);
+			SetWindowSelection(fenetre, 3);
+		} else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 3)) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_Trace :
+		if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 4)) {
+			OpenMenu(fenetre, camera, MENU_MARCHE, 0);
+			SetWindowSelection(fenetre, 4);
+		} else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 4)) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_Graph :
+		if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 5)) {
+			OpenMenu(fenetre, camera, MENU_MARCHE, 0);
+			SetWindowSelection(fenetre, 5);
+		} else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 5)) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_Recip:
+		if ((GetOpenedMenuClass(fenetre) != MENU_MARCHE) && (GetOpenedMenuClass(fenetre) != MENU_QUITTER)) {
+			OpenMenu(fenetre, camera, MENU_MARCHE, 0);
+			SetWindowSelection(fenetre, 2);
+		} else if (GetOpenedMenuClass(fenetre) == MENU_MARCHE) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_Math:
+		if ((GetOpenedMenuClass(fenetre) != MENU_CONTACTS) && (GetOpenedMenuClass(fenetre) != MENU_QUITTER)) {
+			OpenMenu(fenetre, camera, MENU_CONTACTS, 0);
+		} else if (GetOpenedMenuClass(fenetre) == MENU_CONTACTS) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_Square:
+		if ((GetOpenedMenuClass(fenetre) != MENU_RECHERCHE) && (GetOpenedMenuClass(fenetre) != MENU_QUITTER)) {
+			OpenMenu(fenetre, camera, MENU_RECHERCHE, 0);
+		} else if (GetOpenedMenuClass(fenetre) == MENU_RECHERCHE) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_Log:
+		if ((GetOpenedMenuClass(fenetre) != MENU_FLOTTE) && (GetOpenedMenuClass(fenetre) != MENU_QUITTER)) {
+			OpenMenu(fenetre, camera, MENU_FLOTTE, 0);
+		} else if (GetOpenedMenuClass(fenetre) == MENU_FLOTTE) {
+			CloseMenu(fenetre, camera);
+		}
+		break;
+	case sk_2nd:
+		OpenCommandPrompt(fenetre, camera, date);
+		*key = 0;
+		break;
+	}
 }
 
 /* entry points ======================================================== */

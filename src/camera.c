@@ -14,7 +14,6 @@
 #include "main.h"
 
 #include "camera.h"
-#include "planetes.h"
 
 /* structures ========================================================== */
 struct CameraStruct{
@@ -67,39 +66,57 @@ Camera *AllocCamera(){
 void SetCameraX(Camera *camera, int x){
 	camera->x = x;
 }
-int getCameraX(Camera *camera){
+void AddCameraX(Camera *camera, int x){
+	camera->x += x;
+}
+int GetCameraX(Camera *camera){
 	return camera->x;
 }
 void SetCameraY(Camera *camera, int y){
 	camera->y = y;
 }
-int getCameraY(Camera *camera){
+void AddCameraY(Camera *camera, int y){
+	camera->y += y;
+}
+int GetCameraY(Camera *camera){
 	return camera->y;
 }
 
 void SetCameraXSystem(Camera *camera, int x){
 	camera->xSysteme = x;
 }
-int getCameraXSystem(Camera *camera){
+void AddCameraXSystem(Camera *camera, int x){
+	camera->xSysteme += x;
+}
+int GetCameraXSystem(Camera *camera){
 	return camera->xSysteme;
 }
 void SetCameraYSystem(Camera *camera, int y){
 	camera->ySysteme = y;
 }
-int getCameraYSystem(Camera *camera){
+void AddCameraYSystem(Camera *camera, int y){
+	camera->ySysteme += y;
+}
+int GetCameraYSystem(Camera *camera){
 	return camera->ySysteme;
 }
 
 void SetCameraXVector(Camera *camera, int x){
 	camera->xVector = x;
 }
-int getCameraXVector(Camera *camera){
+void AddCameraXVector(Camera *camera, int x){
+	camera->xVector += x;
+}
+int GetCameraXVector(Camera *camera){
 	return camera->xVector;
 }
 void SetCameraYVector(Camera *camera, int y){
 	camera->yVector = y;
 }
-int getCameraYVector(Camera *camera){
+void AddCameraYVector(Camera *camera, int y){
+	camera->yVector += y;
+}
+int GetCameraYVector(Camera *camera){
 	return camera->yVector;
 }
 
@@ -124,10 +141,12 @@ VueType GetCameraMapType(Camera *camera){
 	return camera->mapType;
 }
 
-void SetCameraSystem(Camera *camera, int system){
+void SetCameraViewedSystem(Camera *camera, int system){
 	camera->systemeSelectione = system;
 }
-
+void SetCameraSystem(Camera *camera, int system){
+	camera->systeme = system;
+}
 void SetCameraSystemViewStatus(Camera *camera, bool status){
 	switch (status) {
 	case true:
@@ -138,10 +157,42 @@ void SetCameraSystemViewStatus(Camera *camera, bool status){
 	}
 	camera->systemeSelectione = camera->systeme;
 }
-bool GetCameraViewedSystem(Camera *camera){
+int GetCameraViewedSystem(Camera *camera){
 	return camera->systemeSelectione;
 }
+int GetCameraSystem(Camera *camera){
+	return camera->systeme;
+}
 
+bool IsCameraMoveFleet(Camera *camera){
+	return camera->bougerFlotte;
+}
+void SetCameraMoveFleet(Camera *camera, bool status){
+	camera->bougerFlotte = status;
+}
+
+void SetCameraSelection(Camera *camera, int selection){
+	camera->selection = selection;
+}
+int GetCameraSelection(Camera *camera){
+	return camera->selection;
+}
+
+void SetCameraFleet(Camera *camera, int fleet){
+	camera->flotte = fleet;
+}
+int GetCameraFleet(Camera *camera){
+	return camera->flotte;
+}
+
+void SetCameraEmpire(Camera *camera, int empire){
+	camera->empire = empire;
+}
+int GetCameraEmpire(Camera *camera){
+	return camera->empire;
+}
+
+//fenetre
 Fenetre *AllocFenetre(){
 	return calloc(1, sizeof(Fenetre));
 }
@@ -149,6 +200,7 @@ Fenetre *AllocFenetre(){
 void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSysteme menuSysteme){
 	fenetre->menu = classMenu;
 	fenetre->menuSysteme = menuSysteme;
+	fenetre->selection = 1;
 	camera->lock = true;
 }
 void CloseMenu(Fenetre *fenetre, Camera *camera){
@@ -156,13 +208,61 @@ void CloseMenu(Fenetre *fenetre, Camera *camera){
 	fenetre->menuSysteme = MENU_AUCUN;
 	camera->lock = false;
 }
-
-void OpenCommandPrompt(Fenetre *fenetre){
-	fenetre->commandPrompt = true;
+ClassMenu GetOpenedMenuClass(Fenetre *fenetre){
+	return fenetre->menu;
 }
-void CloseCommandPrompt(Fenetre *fenetre){
+MenuSysteme GetOpenedMenuSystem(Fenetre *fenetre){
+	return fenetre->menuSysteme;
+}
+
+void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date){
+	fenetre->commandPrompt = true;
+	camera->lock = true;
+	PauseGame(date);
+}
+void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date){
 	fenetre->commandPrompt = false;
+	camera->lock = false;
+	UnpauseGame(date);
 }
 bool GetCommandPromptStatus(Fenetre *fenetre){
 	return fenetre->commandPrompt;
 }
+
+void SetWindowPlanet(Fenetre *fenetre, int planete){
+	fenetre->planete = planete;
+}
+int GetWindowPlanet(Fenetre *fenetre){
+	return fenetre->planete;
+}
+
+void SetWindowSelection(Fenetre *fenetre, int selection){
+	fenetre->selection = selection;
+}
+int GetWindowSelection(Fenetre *fenetre){
+	return fenetre->selection;
+}
+void IncrementWindowSelection(Fenetre *fenetre){
+	fenetre->selection++;
+}
+void UnincrementWindowSelection(Fenetre *fenetre){
+	fenetre->selection--;
+}
+void AddWindowSelection(Fenetre *fenetre, int number){
+	fenetre->selection += number;
+}
+
+void SetWindowSelectedFleet(Fenetre *fenetre, int fleet){
+	fenetre->flotteSelectionee = fleet;
+}
+void GetWindowSelectedFleet(Fenetre *fenetre){
+	return fenetre->flotteSelectionee;
+}
+
+void SetWindowPrevious(Fenetre *fenetre, int previous){
+	fenetre->precedente = previous;
+}
+void GetWindowPrevious(Fenetre *fenetre){
+	return fenetre->precedente;
+}
+

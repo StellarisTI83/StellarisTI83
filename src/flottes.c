@@ -29,6 +29,8 @@
 
 static Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2);
 
+/* entry points ======================================================== */
+
 /**
  *Crée une list de flottes
  */
@@ -377,7 +379,7 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 
 /**
  * Calculer Vecteur
- * *
+ */
 Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
 	Vecteur vecteur;
 	double norme = 0;
@@ -391,4 +393,3 @@ Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
 	vecteur.yVecteur = ((y2 - y1) / norme) * 20.0;
 	return vecteur;
 }
-*/

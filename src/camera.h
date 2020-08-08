@@ -1,6 +1,9 @@
 #ifndef H_CAMERA
 #define H_CAMERA
 
+#include "planetes.h"
+#include "time.h"
+
 /* types =============================================================== */
 typedef enum {CARTE, NORMAL, SYSTEME} VueType;
 
@@ -21,19 +24,25 @@ typedef struct FenetreStruct Fenetre;
 Camera *AllocCamera();
 
 void SetCameraX(Camera *camera, int x);
-int getCameraX(Camera *camera);
+void AddCameraX(Camera *camera, int x);
+int GetCameraX(Camera *camera);
 void SetCameraY(Camera *camera, int y);
-int getCameraY(Camera *camera);
+void AddCameraY(Camera *camera, int y);
+int GetCameraY(Camera *camera);
 
 void SetCameraXSystem(Camera *camera, int x);
-int getCameraXSystem(Camera *camera);
+void AddCameraXSystem(Camera *camera, int x);
+int GetCameraXSystem(Camera *camera);
 void SetCameraYSystem(Camera *camera, int y);
-int getCameraYSystem(Camera *camera);
+void AddCameraYSystem(Camera *camera, int y);
+int GetCameraYSystem(Camera *camera);
 
 void SetCameraXVector(Camera *camera, int x);
-int getCameraXVector(Camera *camera);
+void AddCameraXVector(Camera *camera, int x);
+int GetCameraXVector(Camera *camera);
 void SetCameraYVector(Camera *camera, int y);
-int getCameraYVector(Camera *camera);
+void AddCameraYVector(Camera *camera, int y);
+int GetCameraYVector(Camera *camera);
 
 void SetCameraZoom(Camera *camera, int zoom);
 int GetCameraZoom(Camera *camera);
@@ -44,15 +53,48 @@ VueType GetCameraMapType(Camera *camera);
 void SetCameraLock(Camera *camera, bool lock);
 bool GetCameraLock(Camera *camera);
 
+void SetCameraViewedSystem(Camera *camera, int system);
 void SetCameraSystem(Camera *camera, int system);
 void SetCameraSystemViewStatus(Camera *camera, bool status);
-bool GetCameraViewedSystem(Camera *camera);
+int GetCameraViewedSystem(Camera *camera);
+int GetCameraSystem(Camera *camera);
 
+bool IsCameraMoveFleet(Camera *camera);
+void SetCameraMoveFleet(Camera *camera, bool status);
+
+void SetCameraSelection(Camera *camera, int selection);
+int GetCameraSelection(Camera *camera);
+
+void SetCameraFleet(Camera *camera, int fleet);
+int GetCameraFleet(Camera *camera);
+
+void SetCameraEmpire(Camera *camera, int empire);
+int GetCameraEmpire(Camera *camera);
+
+//fenetre
 Fenetre *AllocFenetre();
+
 void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSysteme menuSysteme);
 void CloseMenu(Fenetre *fenetre, Camera *camera);
+ClassMenu GetOpenedMenuClass(Fenetre *fenetre);
+MenuSysteme GetOpenedMenuSystem(Fenetre *fenetre);
 
-void OpenCommandPrompt(Fenetre *fenetre);
-void CloseCommandPrompt(Fenetre *fenetre);
+void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
+void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
 bool GetCommandPromptStatus(Fenetre *fenetre);
+
+void SetWindowPlanet(Fenetre *fenetre, int planete);
+int GetWindowPlanet(Fenetre *fenetre);
+
+void SetWindowSelection(Fenetre *fenetre, int selection);
+int GetWindowSelection(Fenetre *fenetre);
+void IncrementWindowSelection(Fenetre *fenetre);
+void UnincrementWindowSelection(Fenetre *fenetre);
+void AddWindowSelection(Fenetre *fenetre, int number);
+
+void SetWindowSelectedFleet(Fenetre *fenetre, int fleet);
+void GetWindowSelectedFleet(Fenetre *fenetre);
+
+void SetWindowPrevious(Fenetre *fenetre, int previous);
+void GetWindowPrevious(Fenetre *fenetre);
 #endif
