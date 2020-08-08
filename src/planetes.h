@@ -6,6 +6,9 @@
 /* types =============================================================== */
 typedef enum {AUCUN = 1, CAPITALE, FONDERIE, LABORATOIRE, USINE_CIVILE, THEATRE} Batiment;
 
+typedef enum {AUCUN, CONSTRUIRE_DISTRICT_URBAIN, CONSTRUIRE_DISTRICT_GENERATEUR, CONSTRUIRE_DISTRICT_MINIER,
+    CONSTRUIRE_DISTRICT_AGRICOLE, CONSTRUIRE_BATIMENT} OrdreConstruction;
+
 /* 1 = arid, 2 = Desert, 3 = Savanna, 4 = Alpine, 5 = Arctic, 6 = Tundra, 7 = continental, 8 = ocean, 9 = tropical, 10 = monde aride,
  * 11 = monde aride froid, 12 = brisé, 13 = monde gelé, 14 = géante gazeuse, 15 = monde en fusion, 16 = toxic world
  */
@@ -64,4 +67,15 @@ int GetPlanetCityBuildingLevel(Planete *planete, int buildingNumber);
 
 int CalculatePlanetCityJob(Planete *planete);
 int GetPlanetCityJob(Planete *planete);
+
+Villes *GetPlanetCity(Planete *planete);
+
+OrdreConstruction GetCityOrder(Villes *villes);
+int GetCityOrderProgress(Villes *villes);
+void UnincrementCityOrderProgress(Villes *villes);
+void EndCityOrder(Villes *villes);
+
+int GetCityOrderInfo1(Villes *villes);
+int GetCityOrderInfo2(Villes *villes);
+
 #endif

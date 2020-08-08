@@ -39,6 +39,7 @@ void EmpireSupprimer(EmpireListe*, int numero);
 
 void CreerEmpireFlotte(Empire *empire);
 void EmpireNouvelleFlotte(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
+FlotteListe *GetFleetArray(Empire *empire);
 
 void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement);
 Gouvernement GetEmpireGouvernement(Empire *empire);

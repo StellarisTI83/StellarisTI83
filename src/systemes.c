@@ -57,6 +57,7 @@ int GetSystemY(SystemeStellaire *systemeStellaire){
 	return systemeStellaire->y;
 }
 
+//station
 void CreateSystemStation(SystemeStellaire *systemeStellaire){
 	systemeStellaire->station = AllocStation();
 }
@@ -75,13 +76,6 @@ NiveauDeConnaissance GetSystemIntelLevel(SystemeStellaire *systemeStellaire){
 	return systemeStellaire->niveauDeConnaissance;
 }
 
-void SetSystemStationLevel(SystemeStellaire *systemeStellaire, Stationlevel level){
-	SetStationLevel(systemeStellaire->station, level);
-}
-Stationlevel GetSystemStationLevel(SystemeStellaire *systemeStellaire){
-	return GetStationLevel(systemeStellaire->station);
-}
-
 void SetSystemStarType(SystemeStellaire *systemeStellaire, EtoileType type){
 	systemeStellaire->etoileType = type;
 }
@@ -89,25 +83,33 @@ EtoileType GetSystemStarType(SystemeStellaire *systemeStellaire){
 	return systemeStellaire->etoileType;
 }
 
-void SetSystemPlanetNumber(SystemeStellaire *systemeStellaire, int number){
-	systemeStellaire->nombrePlanetes = number;
+//stations
+void SetSystemStationLevel(SystemeStellaire *systemeStellaire, Stationlevel level){
+	SetStationLevel(systemeStellaire->station, level);
 }
-int GetSystemPlanetNumber(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->nombrePlanetes;
-}
-
-void SetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire, int number){
-	systemeStellaire->nombrePlanetesHabitables = number;
-}
-int GetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->nombrePlanetesHabitables;
+Stationlevel GetSystemStationLevel(SystemeStellaire *systemeStellaire){
+	return GetStationLevel(systemeStellaire->station);
 }
 
-void SetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire, int number){
-	systemeStellaire->nombrePlanetesHabitees = number;
+OrdreStation GetSystemStationOrder(SystemeStellaire *systemeStellaire){
+	return GetStationOrder(systemeStellaire->station);
 }
-int GetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->nombrePlanetesHabitees;
+void EndSystemStationOrder(SystemeStellaire *systemeStellaire){
+	EndStationOrder(systemeStellaire->station);
+}
+
+int GetSystemStationOrderProgress(SystemeStellaire *systemeStellaire){
+	return GetStationOrderProgress(systemeStellaire->station);
+}
+void UnincrementSystemStationOrderProgress(SystemeStellaire *systemeStellaire){
+	UnincrementStationOrderProgress(systemeStellaire->station);
+}
+
+int GetSystemStationInfo1(SystemeStellaire *systemeStellaire){
+	return GetStationOrderInfo1(systemeStellaire->station);
+}
+int GetSystemStationInfo2(SystemeStellaire *systemeStellaire){
+	return GetStationOrderInfo2(systemeStellaire->station);
 }
 
 void SetSystemEmpire(SystemeStellaire *systemeStellaire, int empire){
@@ -124,6 +126,8 @@ void SetSystemName(SystemeStellaire *systemeStellaire, char* string){
 char* GetSystemName(SystemeStellaire *systemeStellaire){
 	return systemeStellaire->nom;
 }
+
+
 
 //hyperlanes
 void SetHyperlaneDestination(SystemeStellaire *systemeStellaire, int numeroHyperlane, int destination){
@@ -257,4 +261,29 @@ int GetSystemPlanetCityJob(SystemeStellaire *systemeStellaire, int number){
 
 Planete *GetPlanet(SystemeStellaire *systemeStellaire, int number){
 	return systemeStellaire->planetes[number];
+}
+
+void SetSystemPlanetNumber(SystemeStellaire *systemeStellaire, int number){
+	systemeStellaire->nombrePlanetes = number;
+}
+int GetSystemPlanetNumber(SystemeStellaire *systemeStellaire){
+	return systemeStellaire->nombrePlanetes;
+}
+
+void SetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire, int number){
+	systemeStellaire->nombrePlanetesHabitables = number;
+}
+int GetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire){
+	return systemeStellaire->nombrePlanetesHabitables;
+}
+
+void SetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire, int number){
+	systemeStellaire->nombrePlanetesHabitees = number;
+}
+int GetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire){
+	return systemeStellaire->nombrePlanetesHabitees;
+}
+
+Villes *GetSystemPlanetCity(SystemeStellaire *systemeStellaire, int number){
+	return GetPlanetCity(systemeStellaire->planetes[number]);
 }

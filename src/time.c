@@ -50,7 +50,21 @@ void SetTime(Date *date, int d, int m, int y){
     date->mois = m;
     date->annee = y;
 }
+int GetTimeSpeed(Date *date){
+    return date->vitesse;
+}
 
+void PauseGame(Date *date){
+    date->vitesseSauvegardee = date->vitesse;
+    date->vitesse = 0;
+}
+void UnpauseGame(Date *date){
+    date->vitesse = date->vitesseSauvegardee;
+}
+
+int GetTimeClock(Date *date){
+    return date->horloge;
+}
 int GetTimeDay(Date *date){
     return date->jour;
 }
@@ -73,10 +87,52 @@ void AddTime(Date *date, int d){
     }
 }
 
-void SetTimeSpeed(Date *date, int speed, int savedSpeed){
-    date->vitesse = speed;
-    date->vitesseSauvegardee = savedSpeed;
+void IncrementTimeSpeed(Date *date) {
+    date->vitesse++;
+    if(date->vitesse > 3)
+        date->vitesse = 3;
 }
+void UnincrementTimeSpeed(Date *date) {
+    date->vitesse--;
+    if(date->vitesse < -2)
+        date->vitesse = -2;
+}
+
+void UpdateClock(Date *date) {
+	switch (date->vitesse) {
+		case -2:
+			date->horloge ++;
+			break;
+		case -1:
+			date->horloge += 2;
+			break;
+		case 1:
+			date->horloge += 3;
+			break;
+		case 2:
+			date->horloge += 4;
+			break;
+		case 3:
+			date->horloge += 6;
+			break;
+	}
+	if (date->horloge >= 24) {
+		date->horloge = 0;
+	}
+	if ((date->horloge == 0) && (date->vitesse !=0)) {
+		date->jour++;
+		if(date->jour > 30) {
+            date->jour = 1;
+            date->mois++;
+		}
+
+		if(date->mois > 12) {
+            date->mois = 1;
+            date->annee++;
+		}
+	}
+}
+
 
 void AddClock(Date *date){
     date->horloge++;

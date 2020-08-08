@@ -151,6 +151,9 @@ void CreerEmpireFlotte(Empire *empire){
 void EmpireNouvelleFlotte(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
 	NouvelleFlotte(empire->flotte, systeme, type, nombreDeCorvettes, nombreDeDestroyers, nombreDeCroiseurs, nombreDeCuirasses);
 }
+FlotteListe *GetFleetArray(Empire *empire){
+	return empire->flotte;
+}
 
 /**
  * Change le gouvernement

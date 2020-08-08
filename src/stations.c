@@ -128,3 +128,31 @@ void SetStationModule(Station *station, int moduleNumber, Module module){
 Module GetStationModule(Station *station, int moduleNumber){
 	return station->modules[moduleNumber];
 }
+
+void NewStationOrdre(Station *station, OrdreStation ordre){
+	int tempsTotal = 0;
+	int info1 = 0;
+	int info2 = 0;
+	int prix = 0;
+	NouvelOrdre(station->ordreFile, ordre, tempsTotal, info1, info2, prix);
+}
+OrdreStation GetStationOrder(Station *station){
+	return GetOrder(station->ordreFile);
+}
+void EndStationOrder(Station *station){
+	FinirOrdre(station->ordreFile);
+}
+
+int GetStationOrderProgress(Station *station){
+	return GetOrderProgress(station->ordreFile);
+}
+void UnincrementStationOrderProgress(Station *station){
+	return UnincrementOrderProgress(station->ordreFile);
+}
+
+int GetStationOrderInfo1(systemeStellaire->station){
+	return GetOrderInfo1(station->ordreFile)
+}
+int GetStationOrderInfo2(systemeStellaire->station){
+	return GetOrderInfo2(station->ordreFile)
+}

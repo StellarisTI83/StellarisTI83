@@ -55,6 +55,20 @@ void SupprimerFlotteListe(FlotteListe* flotteliste) {
 }
 
 /**
+ * Renvoi nombre de flottes
+ */
+int FleetArraySize(FlotteListe* flotteListe){
+	Flotte *flotte;
+	int index = 0;
+	flotte = flotteListe->premier;
+	while(flotte != NULL){
+		flotte = flotte->suivant;
+		index++;
+	}
+	return index;
+}
+
+/**
  *Renvoi un pointeur vers l'empire numero x
  */
 Flotte* NumeroFlotte(FlotteListe* flotteliste, int numero) {
@@ -224,6 +238,14 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 			break;
 	}
 	return flotte;
+}
+
+/**
+ * Get the system of the designated flotte
+ */
+int GetFleetSystem(FlotteListe *flotteListe, int flotteNumber){
+	Flotte *flotte = RecupererFlotteNumero(flotteListe, flotteNumber);
+	return flotte->systeme;
 }
 
 /**

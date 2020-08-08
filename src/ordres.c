@@ -101,3 +101,35 @@ int NombredOrdres(OrdreFile *ordreFile){
 	}
 	return(nombre);
 }
+
+int GetOrder(OrdreFile *ordreFile){
+	if(RecupererOrdre(ordreFile) != NULL)
+		return RecupererOrdre(ordreFile)->ordre;
+	else 
+		return 0;
+}
+
+int GetOrderProgress(OrdreFile *ordreFile){
+	if(RecupererOrdre(ordreFile) != NULL)
+		return RecupererOrdre(ordreFile)->tempsActuel;
+	else 
+		return 0;
+}
+
+void UnincrementOrderProgress(OrdreFile *ordreFile){
+	if(RecupererOrdre(ordreFile) != NULL)
+		RecupererOrdre(ordreFile)->tempsActuel--;
+}
+
+int GetOrderInfo1(OrdreFile *ordreFile){
+	if(RecupererOrdre(ordreFile) != NULL)
+		return RecupererOrdre(ordreFile)->info1;
+	else
+		return 0;
+}
+int GetOrderInfo2(OrdreFile *ordreFile){
+	if(RecupererOrdre(ordreFile) != NULL)
+		return RecupererOrdre(ordreFile)->info2;
+	else
+		return 0;
+}

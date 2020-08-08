@@ -35,8 +35,6 @@
 #define RAYON_DE_VUE_SYSTEME 160
 
 /* types =============================================================== */
-typedef enum {AUCUN, CONSTRUIRE_DISTRICT_URBAIN, CONSTRUIRE_DISTRICT_GENERATEUR, CONSTRUIRE_DISTRICT_MINIER, CONSTRUIRE_DISTRICT_AGRICOLE, CONSTRUIRE_BATIMENT} OrdreConstruction;
-
 typedef enum {NO_ERROR, ACIER_MANQUE, MINERAI_MANQUE} Error;
 
 /* structures ========================================================== */

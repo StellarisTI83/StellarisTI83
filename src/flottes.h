@@ -68,12 +68,15 @@ typedef struct {
 
 FlotteListe* CreerFlotteListe();
 void SupprimerFlotteListe(FlotteListe* flotteliste);
+int FleetArraySize(FlotteListe* flotteListe);
 Flotte* NumeroFlotte(FlotteListe* flotteliste, int numero);
 int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte);
 Flotte* AjouterFlotte(FlotteListe* flotteliste);
 void SupprimerFlotte(FlotteListe* flotteliste, int numero);
 
 Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
+
+int GetFleetSystem(FlotteListe *flotteListe, int flotteNumber);
 
 // void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
 // void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);

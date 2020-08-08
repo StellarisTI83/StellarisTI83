@@ -21,33 +21,35 @@ void SetSystemXY(SystemeStellaire *systemeStellaire, int x, int y);
 int GetSystemX(SystemeStellaire *systemeStellaire);
 int GetSystemY(SystemeStellaire *systemeStellaire);
 
-void CreateSystemStation(SystemeStellaire *systemeStellaire);
-void SetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber, Module module);
-Module GetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber);
-
-void SetSystemIntelLevel(SystemeStellaire *systemeStellaire, NiveauDeConnaissance niveau);
-NiveauDeConnaissance GetSystemIntelLevel(SystemeStellaire *systemeStellaire);
-
-void SetSystemStationLevel(SystemeStellaire *systemeStellaire, Stationlevel level);
-Stationlevel GetSystemStationLevel(SystemeStellaire *systemeStellaire);
-
-void SetSystemStarType(SystemeStellaire *systemeStellaire, EtoileType type);
-EtoileType GetSystemStarType(SystemeStellaire *systemeStellaire);
-
-void SetSystemPlanetNumber(SystemeStellaire *systemeStellaire, int number);
-int GetSystemPlanetNumber(SystemeStellaire *systemeStellaire);
-
-void SetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire, int number);
-int GetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire);
-
-void SetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire, int number);
-int GetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire);
-
 void SetSystemEmpire(SystemeStellaire *systemeStellaire, int number);
 int GetSystemEmpire(SystemeStellaire *systemeStellaire);
 
 void SetSystemName(SystemeStellaire *systemeStellaire, char* string);
 char* GetSystemName(SystemeStellaire *systemeStellaire);
+
+void SetSystemIntelLevel(SystemeStellaire *systemeStellaire, NiveauDeConnaissance niveau);
+NiveauDeConnaissance GetSystemIntelLevel(SystemeStellaire *systemeStellaire);
+
+void SetSystemStarType(SystemeStellaire *systemeStellaire, EtoileType type);
+EtoileType GetSystemStarType(SystemeStellaire *systemeStellaire);
+
+
+void CreateSystemStation(SystemeStellaire *systemeStellaire);
+void SetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber, Module module);
+Module GetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber);
+
+void SetSystemStationLevel(SystemeStellaire *systemeStellaire, Stationlevel level);
+Stationlevel GetSystemStationLevel(SystemeStellaire *systemeStellaire);
+
+OrdreStation GetSystemStationOrder(SystemeStellaire *systemeStellaire);
+void EndSystemStationOrder(SystemeStellaire *systemeStellaire);
+
+int GetSystemStationOrderProgress(SystemeStellaire *systemeStellaire);
+void UnincrementSystemStationOrderProgress(SystemeStellaire *systemeStellaire);
+
+int GetSystemStationInfo1(SystemeStellaire *systemeStellaire);
+int GetSystemStationInfo2(SystemeStellaire *systemeStellaire);
+
 
 void SetHyperlaneDestination(SystemeStellaire *systemeStellaire, int numeroHyperlane, int destination);
 int GetHyperlaneDestination(SystemeStellaire *systemeStellaire, int numeroHyperlane);
@@ -57,6 +59,7 @@ int GetHyperlaneX(SystemeStellaire *systemeStellaire, int numeroHyperlane);
 int GetHyperlaneY(SystemeStellaire *systemeStellaire, int numeroHyperlane);
 
 void CreateSystemPlanet(SystemeStellaire *systemeStellaire, int position);
+
 
 void SetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number, bool habitability);
 bool GetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number);
@@ -104,5 +107,16 @@ int CalculateSystemPlanetCityJob(SystemeStellaire *systemeStellaire, int number)
 int GetSystemPlanetCityJob(SystemeStellaire *systemeStellaire, int number);
 
 Planete *GetPlanet(SystemeStellaire *systemeStellaire, int number);
+
+void SetSystemPlanetNumber(SystemeStellaire *systemeStellaire, int number);
+int GetSystemPlanetNumber(SystemeStellaire *systemeStellaire);
+
+void SetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire, int number);
+int GetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire);
+
+void SetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire, int number);
+int GetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire);
+
+Villes *GetSystemPlanetCity(SystemeStellaire *systemeStellaire, int number);
 
 #endif

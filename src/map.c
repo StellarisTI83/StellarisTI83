@@ -56,7 +56,7 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
  *
  *contient aussi la gestion des évenements
  */
-void StellarisMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Empire *joueur, Parametres *parametres){
+void DrawMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Empire *joueur, Parametres *parametres){
 	char key2 = 0;
 	gfx_SetColor(1);
 	if(camera->mapType == NORMAL) {
@@ -622,7 +622,7 @@ void KeyActionNormal(EmpireListe *empireListe, SystemeStellaire *systemeStellair
 }
 
 /**
- *Gère les actions des touches pour la boucle StellarisMap
+ *Gère les actions des touches pour la boucle DrawMap
  */
 void KeyActionNormalMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Empire *joueur){
 	switch(*key){

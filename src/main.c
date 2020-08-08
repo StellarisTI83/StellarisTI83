@@ -26,6 +26,7 @@
 #include "locale/locale.h"
 
 /* private functions =================================================== */
+
 /**
  * Initialise toutes les variables
  */

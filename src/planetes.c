@@ -267,3 +267,27 @@ int CalculatePlanetCityJob(Planete *planete){
 int GetPlanetCityJob(Planete *planete){
 	return planete->villes->emplois;
 }
+
+Villes *GetPlanetCity(Planete *planete){
+	return planete->villes;
+}
+
+OrdreConstruction GetCityOrder(Villes *villes){
+	return GetOrder(villes->ordreFile);
+}
+int GetCityOrderProgress(Villes *villes){
+	return GetOrderProgress(villes->ordreFile);
+}
+void UnincrementCityOrderProgress(Villes *villes){
+	UnincrementOrderProgress(villes->ordreFile);
+}
+void EndCityOrder(Villes *villes){
+	FinirOrdre(villes->ordreFile);
+}
+
+int GetCityOrderInfo1(Villes *villes){
+	return GetOrderInfo1(villes->ordreFile);
+}
+int GetCityOrderInfo2(Villes *villes){
+	return GetOrderInfo2(villes->ordreFile);
+}

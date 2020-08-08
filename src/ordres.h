@@ -48,4 +48,11 @@ Ordre* RecupererOrdre(OrdreFile *ordreFile);
  */
 int NombredOrdres(OrdreFile *ordreFile);
 
+int GetOrder(OrdreFile *ordreFile);
+int GetOrderProgress(OrdreFile *ordreFile);
+void UnincrementOrderProgress(OrdreFile *ordreFile);
+
+int GetOrderInfo1(OrdreFile *ordreFile);
+int GetOrderInfo2(OrdreFile *ordreFile);
+
 #endif

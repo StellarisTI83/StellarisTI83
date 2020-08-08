@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
 #include "main.h"
+
+#include "systemes.h"
 #include "pathfinding.h"
 
 typedef struct NodeStruct Node;
@@ -131,7 +134,7 @@ static void ReverseArray(int array[], int size){
     }
 }
 
-int PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], int path[50], int debut, int fin){
+int PathFinding(SystemeStellaire *galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], int path[50], int debut, int fin){
     NodeArray *listeOuverte = NULL;
     NodeArray *listeFermee = NULL;
     NodeArray *listeEnfants = NULL;
@@ -145,8 +148,8 @@ int PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], int
     int enfant[4], parent;
 
 
-    depart->x = galaxie[debut].x;
-    depart->y = galaxie[debut].y;
+    depart->x = GetSystemX(galaxie[debut]);
+    depart->y = GetSystemY(galaxie[debut]);
     depart->g = 0;
     depart->h = 0;
     depart->f = 0;
@@ -154,8 +157,8 @@ int PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], int
     depart->suivant = NULL;
     depart->parent = 0;
 
-    arrivee->x = galaxie[fin].x;
-    arrivee->y = galaxie[fin].y;
+    arrivee->x = GetSystemX(galaxie[fin]);
+    arrivee->y = GetSystemY(galaxie[fin]);
     arrivee->g = 0;
     arrivee->h = 0;
     arrivee->f = 0;
@@ -216,12 +219,12 @@ int PathFinding(SystemeStellaire galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], int
         children_index = 0;
         while(children_index < 4){
             enfant[children_index] = current_node->numero;
-            index = galaxie[current_node->numero].hyperlane[children_index].destination;
+            index = GetHyperlaneDestination(galaxie[current_node->numero], children_index);
             if(index != 255){
                 children = CreateNode(listeEnfants);
                 children->numero = index;
-                children->x = galaxie[index].x;
-                children->y = galaxie[index].y;
+                children->x = GetSystemX(galaxie[index]);
+                children->y = GetSystemY(galaxie[index]);
                 children->parent = current_node->numero;
             }
             children_index++;

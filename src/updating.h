@@ -1,6 +1,7 @@
-#ifndef _UPDATING_INCLUDE
-#define _UPDATING_INCLUDE
+#ifndef H_UPDATING
+#define H_UPDATING
 
-
+/* entry points ======================================================== */
+int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre);
 
 #endif
