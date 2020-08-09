@@ -35,12 +35,10 @@
 #define RAYON_DE_VUE_SYSTEME 160
 
 /* types =============================================================== */
+
 typedef enum {NO_ERROR, ACIER_MANQUE, MINERAI_MANQUE} Error;
 
 /* structures ========================================================== */
-
-typedef struct FlotteListeStruct FlotteListe;
-typedef struct FlotteStruct Flotte;
 
 typedef struct {
 	int valeurMinerai;
@@ -49,6 +47,7 @@ typedef struct {
 } Marche;
 
 /* entry points ======================================================== */
+
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
 void PrintInt(int nombre);
 int TailleInt(int nombre);

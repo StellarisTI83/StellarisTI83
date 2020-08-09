@@ -46,14 +46,8 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joue
 		finBoucle = UpdateGame(&key, empireListe, systemeStellaires, date, camera, fenetre);
 
 		//dessiner l'écran
-		DrawScreen();
+		DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres);
 
-		/**dessine la map**/
-		DrawMap(empireListe, systemeStellaires, camera, &key, date, fenetre, joueur, parametres);
-
-		
-		/**dessine le hud**/
-		finBoucle = StellarisHUD(empireListe, joueur, date, &key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
 		
 		gfx_SwapDraw();
 		if((boot_CheckOnPressed()) || (finBoucle == 0))

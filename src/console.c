@@ -171,9 +171,7 @@ void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Came
 					character = ' ';
 					break;
 				case sk_2nd:
-					fenetre->commandPrompt = false;
-					camera->bloque = false;
-					FermerConsole(&console);
+					CloseCommandPrompt(fenetre, camera, date);
 					break;
 				case sk_Alpha:
 					console.nombreActive = true;
@@ -220,9 +218,7 @@ void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Came
 					console.nombreActive = false;
 					break;
 				case sk_2nd:
-					fenetre->commandPrompt = false;
-					camera->bloque = false;
-					FermerConsole(&console);
+					CloseCommandPrompt(fenetre, camera, date);
 					break;
 			}
 		}
@@ -298,7 +294,7 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " cash");
-			empireListe->premier->credits += nombre;
+			AddEmpireCredit(EmpireNumero(empireListe, 1), nombre);
 			return;
 		}
 	}
@@ -320,7 +316,7 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " minerals");
-			empireListe->premier->minerais += nombre;
+			AddEmpireMinerals(EmpireNumero(empireListe, 1), nombre);
 			return;
 		}
 	}
@@ -342,7 +338,7 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " alloys");
-			empireListe->premier->acier += nombre;
+			AddEmpireAlloys(EmpireNumero(empireListe, 1), nombre);
 			return;
 		}
 	}
@@ -364,7 +360,7 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " food");
-			empireListe->premier->nourriture += nombre;
+			AddEmpireFood(EmpireNumero(empireListe, 1), nombre);
 			return;
 		}
 	}
@@ -386,9 +382,7 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			if((&(commande[15]) == fin) || !((annee > 2200) && (annee <= 2500))){
 				goto syntax_err;
 			}
-			date->jour = jour;
-			date->mois = mois;
-			date->annee = annee;
+			SetTime(date, jour, mois, annee);
 			strcpy(console.reponse, "time sat");
 			return;
 		}
@@ -396,12 +390,12 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 
 	resultat = strstr(commande, "see all");
 	if(resultat == commande){
-		switch(parametres->seeAll){
+		switch(GetSeeAll(parametres)){
 			case true:
-				parametres->seeAll = false;
+				SetSeeAll(parametres, false);
 				break;
 			case false:
-				parametres->seeAll = true;
+				SetSeeAll(parametres, true);
 				break;
 		}
 		strcpy(console.reponse, "see all systems");

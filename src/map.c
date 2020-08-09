@@ -751,7 +751,7 @@ static void DessinerVueSysteme(SystemeStellaire **systemeStellaires, Camera* cam
  *
  *contient aussi la gestion des évenements
  */
-void DrawMap(EmpireListe *empireListe, SystemeStellaire *systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Parametres *parametres){
+void DrawMap(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Parametres *parametres){
 	Empire *joueur = EmpireNumero(empireListe, 1);
 	gfx_SetColor(1);
 	if(GetCameraMapType(camera) == NORMAL) {

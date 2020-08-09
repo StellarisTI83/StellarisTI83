@@ -255,14 +255,14 @@ void AddWindowSelection(Fenetre *fenetre, int number){
 void SetWindowSelectedFleet(Fenetre *fenetre, int fleet){
 	fenetre->flotteSelectionee = fleet;
 }
-void GetWindowSelectedFleet(Fenetre *fenetre){
+int GetWindowSelectedFleet(Fenetre *fenetre){
 	return fenetre->flotteSelectionee;
 }
 
 void SetWindowPrevious(Fenetre *fenetre, int previous){
 	fenetre->precedente = previous;
 }
-void GetWindowPrevious(Fenetre *fenetre){
+int GetWindowPrevious(Fenetre *fenetre){
 	return fenetre->precedente;
 }
 

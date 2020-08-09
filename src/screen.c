@@ -15,8 +15,6 @@
 #include <fileioc.h>
 #include <fontlibc.h>
 
-#include "hud.h"
-#include "map.h"
 #include "screen.h"
 
 /* entry points ======================================================== */

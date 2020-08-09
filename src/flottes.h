@@ -5,66 +5,21 @@
 #include "camera.h"
 #include "ai.h"
 
+/* types =============================================================== */
+
 typedef enum {FLOTTE_MILITAIRE, FLOTTE_SCIENTIFIQUE, FLOTTE_DE_CONSTRUCTION} FlotteType;
 
 typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
 
-typedef struct NoeudStruct Noeud;
+/* structures ========================================================== */
 
-typedef struct {
-	double xVecteur;
-	double yVecteur;
-} Vecteur;
+typedef struct FlotteListeStruct FlotteListe;
 
-struct FlotteStruct {
-	int x;
-	int y;
-	Vecteur vecteur;
+typedef struct FlotteStruct Flotte;
 
-	FlotteType type;
+typedef struct VecteurStruct Vecteur;
 
-	int puissance;
-	int coqueTotal;
-	int coqueVie;
-	int blindageTotal;
-	int blindageVie;
-	int bouclierTotal;
-	int bouclierVie;
-
-	char systeme;
-	char action;
-	char destination; // planete ou etoile plus prècisement
-	char avancementTrajet;
-	char systemeArrive;
-	char avancement;
-
-	int chemin[50];
-
-	int nombreVaisseaux;
-	int nombreDeCorvette;
-	int nombreDeDestroyer;
-	int nombreDeCroiseur;
-	int nombreDeCuirasse;
-	Flotte* suivant;
-};
-
-struct FlotteListeStruct {
-	Flotte* premier;
-};
-
-struct NoeudStruct {
-	int numero;
-	Noeud* parent;
-	int x;
-	int y;
-	int g; //distance depuis le début
-	int h; //heuristique
-	int f; //g+h
-} ;
-
-typedef struct {
-	Noeud* noeud;
-} Liste;
+/* entry points ======================================================== */
 
 FlotteListe* CreerFlotteListe();
 void SupprimerFlotteListe(FlotteListe* flotteliste);

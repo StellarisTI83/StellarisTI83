@@ -29,6 +29,64 @@
 
 static Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2);
 
+typedef struct NoeudStruct Noeud;
+typedef struct ListeNoeds Liste;
+
+struct VecteurStruct {
+	double xVecteur;
+	double yVecteur;
+} ;
+
+struct FlotteStruct {
+	int x;
+	int y;
+	Vecteur vecteur;
+
+	FlotteType type;
+
+	int puissance;
+	int coqueTotal;
+	int coqueVie;
+	int blindageTotal;
+	int blindageVie;
+	int bouclierTotal;
+	int bouclierVie;
+
+	char systeme;
+	char action;
+	char destination; // planete ou etoile plus prècisement
+	char avancementTrajet;
+	char systemeArrive;
+	char avancement;
+
+	int chemin[50];
+
+	int nombreVaisseaux;
+	int nombreDeCorvette;
+	int nombreDeDestroyer;
+	int nombreDeCroiseur;
+	int nombreDeCuirasse;
+	Flotte* suivant;
+};
+
+struct FlotteListeStruct {
+	Flotte* premier;
+};
+
+struct NoeudStruct {
+	int numero;
+	Noeud* parent;
+	int x;
+	int y;
+	int g; //distance depuis le début
+	int h; //heuristique
+	int f; //g+h
+} ;
+
+struct ListeNoeds {
+	Noeud* noeud;
+};
+
 /* entry points ======================================================== */
 
 /**
@@ -246,7 +304,7 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
  * Get the system of the designated flotte
  */
 int GetFleetSystem(FlotteListe *flotteListe, int flotteNumber){
-	Flotte *flotte = RecupererFlotteNumero(flotteListe, flotteNumber);
+	Flotte *flotte = NumeroFlotte(flotteListe, flotteNumber);
 	return flotte->systeme;
 }
 

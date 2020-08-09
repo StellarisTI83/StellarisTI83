@@ -93,8 +93,8 @@ void UnincrementWindowSelection(Fenetre *fenetre);
 void AddWindowSelection(Fenetre *fenetre, int number);
 
 void SetWindowSelectedFleet(Fenetre *fenetre, int fleet);
-void GetWindowSelectedFleet(Fenetre *fenetre);
+int GetWindowSelectedFleet(Fenetre *fenetre);
 
 void SetWindowPrevious(Fenetre *fenetre, int previous);
-void GetWindowPrevious(Fenetre *fenetre);
+int GetWindowPrevious(Fenetre *fenetre);
 #endif
