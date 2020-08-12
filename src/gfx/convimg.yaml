@@ -82,7 +82,7 @@ convert: sprites
     - force_allied.png
     - contact.png
     - science.png
-    - market.png
+    - market_icon.png
     - construction_ship_allied_icon.png
     - construction_ship_our_icon.png
     - construction_ship_neutral_icon.png

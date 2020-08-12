@@ -2,7 +2,7 @@
 #define H_MAIN
 
 /* macros ============================================================== */
-#define VERSION_LOGICIEL "v0.2.0-a"
+#define VERSION_LOGICIEL "v0.2.1-a"
 
 #define _(String) gettext(String)
 

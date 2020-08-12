@@ -2764,6 +2764,9 @@ void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
  *Dessine le menu avec les contacts
  */
 void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
+	int nombreEmpire = 2;
+	Empire *empire = NULL;
+	int niveau = 55;
 	if(*key == sk_Clear) {
 			CloseMenu(fenetre, camera);
 	}
@@ -2775,6 +2778,13 @@ void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *
 	gfx_HorizLine_NoClip(50, 50, 220);
 	gfx_SetColor(1);
 	gfx_PrintStringXY("Contacts", 128, 41);
+	while(nombreEmpire < EmpireArraySize(empireListe) + 1){
+		empire = EmpireNumero(empireListe, nombreEmpire);
+		gfx_PrintStringXY(GetEmpireNameString(empire), 45, niveau);
+		niveau += 10;
+		nombreEmpire++;
+	}
+	
 }
 
 /* entry points ======================================================== */

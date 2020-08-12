@@ -1,8 +1,6 @@
 #ifndef H_AI
 #define H_AI
 
-#include "flottes.h"
-
 /* types =============================================================== */
 /**
  * Differents gouvernements possibles
@@ -19,6 +17,7 @@ XENOPHILE, FANATIC_XENOPHILE, XONOPHOBE, FANATIC_XENOPHOBE,
 GESTALT} Principe;
 
 /* structures ========================================================== */
+
 /**
  * Empire
  */
@@ -30,6 +29,9 @@ typedef struct EmpireStruct Empire;
 typedef struct EmpireListeStruct EmpireListe;
 
 /* entry points ======================================================== */
+
+#include "flottes.h"
+
 EmpireListe* EmpireListeCreer();
 void EmpireListeSupprimer(EmpireListe*);
 int EmpireArraySize(EmpireListe* empireListe);
@@ -77,5 +79,7 @@ int GetEmpireAlloys(Empire *empire);
 void SetEmpireConsumerGoods(Empire *empire, int consumerGoods);
 void AddEmpireConsumerGoods(Empire *empire, int consumerGoods);
 int GetEmpireConsumerGoods(Empire *empire);
+
+void EmpireGenerateRandomName(Empire *empire);
 
 #endif

@@ -194,7 +194,7 @@ static void UpdateTime(Date *date, char *key, Fenetre *fenetre){
 }
 
 static void UpdateWorld(EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
-    // EffectuerActionsFlottes(empireListe, systemeStellaires);
+    EffectuerActionsFlottes(empireListe, systemeStellaires);
     EffectuerActionsStations(systemeStellaires, empireListe);
     EffectuerActionsPlanetes(systemeStellaires, empireListe);
     CalculerNiveauDeConnaissance(systemeStellaires, empireListe);

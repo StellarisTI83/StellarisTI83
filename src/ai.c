@@ -22,9 +22,12 @@
 #include "gfx/gfx.h"
 
 #include "main.h"
+
 #include "ai.h"
 
 #include "locale/locale.h"
+
+/* structures ========================================================== */
 
 struct EmpireStruct {
 	char nom[31];
@@ -49,6 +52,36 @@ struct EmpireStruct {
 struct EmpireListeStruct{
 	Empire* premier;
 };
+
+/* private variables =================================================== */
+
+char * empireNamePostFixDemocratic[] = {
+	"Republic",
+	"Alliance",
+	"Commonwealth",
+	"Confederacy"
+};
+
+char * empireNamePostFixOligarchic[] = {
+	"Confederation",
+	"Union",
+	"League",
+	"Directorate"
+};
+
+char * empireNamePostFixDictatorial[] = {
+	"Hegemony",
+	"Empire",
+	"Autocracy"
+};
+
+char * empireNamePrefix[] = {
+	"Star's ",
+	"Galaxy's ",
+	"Federal "
+};
+
+/* entry points ======================================================== */
 
 /**
  * Crée une liste d'empires
@@ -336,3 +369,28 @@ int GetEmpireConsumerGoods(Empire *empire){
 	return empire->biensDeConsommation;
 }
 
+void EmpireGenerateRandomName(Empire *empire){
+	char name[31] = "";
+    int nomInt = 0;
+	nomInt = randInt(0, (sizeof(empireNamePrefix)/sizeof(empireNamePrefix[0])) - 1);
+	strcpy(name, empireNamePrefix[nomInt]);
+	switch(empire->gouvernement){
+		case DEMOCRATIE:
+			nomInt = randInt(0, (sizeof(empireNamePostFixDemocratic)/sizeof(empireNamePostFixDemocratic[0])) - 1);
+			strcat(name, empireNamePostFixDemocratic[nomInt]);
+			break;
+		case OLIGARCHIE:
+			nomInt = randInt(0, (sizeof(empireNamePostFixOligarchic)/sizeof(empireNamePostFixOligarchic[0])) - 1);
+			strcat(name, empireNamePostFixOligarchic[nomInt]);
+			break;
+		case DICTATORIALE:
+			nomInt = randInt(0, (sizeof(empireNamePostFixDictatorial)/sizeof(empireNamePostFixDictatorial[0])) - 1);
+			strcat(name, empireNamePostFixDictatorial[nomInt]);
+			break;
+		default:
+			nomInt = randInt(0, (sizeof(empireNamePostFixDemocratic)/sizeof(empireNamePostFixDemocratic[0])) - 1);
+			strcat(name, empireNamePostFixDemocratic[nomInt]);
+			break;
+	}
+	strcpy(empire->nom, name);
+}

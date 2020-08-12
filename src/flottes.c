@@ -18,12 +18,10 @@
 #include "gfx/gfx.h"
 
 #include "main.h"
-// #include "boucle.h"
-// #include "map.h"
+
 #include "nouvelle_partie.h"
-// #include "sauvegarde.h"
 #include "flottes.h"
-// #include "pathfinding.h"
+#include "pathfinding.h"
 
 #include "locale/locale.h"
 
@@ -396,8 +394,8 @@ int GetFleetArriveSystem(Flotte *flotte){
 
 /**
  *Donne l'ordre de faire bouger la flotte numero x
- *
-void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires){
+ */
+void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *fenetre, Camera *camera, EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
 	Empire* empire;
 	Flotte* flotte;
 	int path[50];
@@ -406,40 +404,40 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 	double norme = 0;
 
 	empire = EmpireNumero(empireListe, numeroDeEmpire);
-	flotte = NumeroFlotte(empire->flotte, numeroDeFlotte);
-	if(camera->bougerFlotte == FALSE){
-		camera->bougerFlotte = TRUE;
-		camera->bloque = FALSE;
-		camera->mapType = NORMAL;
-		camera->fenetre = MENU_AUCUN;
-		camera->empire = numeroDeEmpire;
-		camera->flotte = numeroDeFlotte;
-	}else if(camera->bougerFlotte == TRUE){
+	flotte = NumeroFlotte(GetFleetArray(empire), numeroDeFlotte);
+	if(IsCameraMoveFleet(camera) == false){
+		SetCameraMoveFleet(camera, true);
+		SetCameraLock(camera, false);
+		SetCameraMapType(camera, NORMAL);
+		CloseMenu(fenetre, camera);
+		SetCameraEmpire(camera, numeroDeEmpire);
+		SetCameraFleet(camera, numeroDeFlotte);
+	} else {
 		if(systeme == flotte->systeme){
-			camera->bougerFlotte = FALSE;
+			SetCameraMoveFleet(camera, false);
 			flotte->action = FLOTTE_AUCUNE_ACTION;
-		} else if((flotte->type == FLOTTE_SCIENTIFIQUE) && (systemeStellaires[systeme].niveauDeConnaissance == INCONNU) || (systemeStellaires[systeme].niveauDeConnaissance != INCONNU)){
-			camera->bougerFlotte = FALSE;
+		} else if((flotte->type == FLOTTE_SCIENTIFIQUE) && (GetSystemIntelLevel(systemeStellaires[systeme]) == INCONNU) || (GetSystemIntelLevel(systemeStellaires[systeme]) != INCONNU)){
+			SetCameraMoveFleet(camera, false);
 			flotte->systemeArrive = systeme;
 			flotte->avancement = 0;
 			flotte->avancementTrajet = 1;
-			
-			camera->flotte = 0;
-			camera->empire = 0;
+				
+			SetCameraEmpire(camera, 0);
+			SetCameraFleet(camera, 0);
 
-			camera->mapType = SYSTEME;
-			camera->x = systemeStellaires[flotte->systeme].x;
-			camera->y = systemeStellaires[flotte->systeme].y;
+			SetCameraMapType(camera, SYSTEME);
+			SetCameraX(camera, GetSystemX(systemeStellaires[flotte->systeme]));
+			SetCameraY(camera, GetSystemY(systemeStellaires[flotte->systeme]));
 			
 			error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
-			if(error != 0){ // si il n'y a pas de chemin
+			if(error != 0) { // si il n'y a pas de chemin
 				flotte->action = FLOTTE_AUCUNE_ACTION;
 			}
 
-			while((index < 4) && (systemeStellaires[flotte->systeme].hyperlane[index].destination != flotte->chemin[flotte->avancementTrajet])){
+			while((index < 4) && (GetHyperlaneDestination(systemeStellaires[flotte->systeme], index) != flotte->chemin[flotte->avancementTrajet])){
 				index++;
 			}
-			flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, systemeStellaires[flotte->systeme].hyperlane[index].x, systemeStellaires[flotte->systeme].hyperlane[index].y);
+			flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, GetHyperlaneX(systemeStellaires[flotte->systeme],index), GetHyperlaneY(systemeStellaires[flotte->systeme],index));
 			
 			switch(flotte->action){
 			case FLOTTE_CONSTRUIRE_BASE:
@@ -452,16 +450,22 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *c
 
 /**
  * Fait effectuer les action des flottes
- *
-void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires){
+ */
+void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **systemeStellaires){
 	Empire* empire = NULL; 
 	Flotte* flotte = NULL;
 	int index = 0, numeroEmpire = 1;
 	int norme = 0;
-	empire = empireListe->premier;
-	while(empire != NULL){
-		flotte = empire->flotte->premier;
-		while(flotte != NULL){
+	int fleetSize = 1;
+	int fleetIndex = 1;
+	int empireSize = 1;
+	empire = EmpireNumero(empireListe, 1);
+	empireSize = EmpireArraySize(empireListe);
+	while(numeroEmpire < empireSize){
+		flotte = NumeroFlotte(GetFleetArray(empire), 1);
+		fleetIndex = 1;
+		fleetSize = FleetArraySize(GetFleetArray(empire));
+		while(fleetIndex < fleetSize){
 			
 			//bouger la flotte
 			if(flotte->action != FLOTTE_AUCUNE_ACTION) {
@@ -474,15 +478,8 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 					if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) < pow((double)10, 2.0)) {
 						//arrivé au centre du systeme
 						if(flotte->action == FLOTTE_CONSTRUIRE_BASE) {
-							systemeStellaires[flotte->systeme].empire = numeroEmpire;
-							systemeStellaires[flotte->systeme].station->niveauStation = AVANT_POSTE;
-							systemeStellaires[flotte->systeme].station->puissance = 200;
-							systemeStellaires[flotte->systeme].station->coqueTotal = 5000;
-							systemeStellaires[flotte->systeme].station->coqueVie = 5000;
-							systemeStellaires[flotte->systeme].station->blindageTotal = 1000;
-							systemeStellaires[flotte->systeme].station->blindageVie = 1000;
-							systemeStellaires[flotte->systeme].station->bouclierTotal = 500;
-							systemeStellaires[flotte->systeme].station->bouclierVie = 500;
+							SetStationLevel(GetSystemStation(systemeStellaires[flotte->systeme]), AVANT_POSTE);
+							SetSystemEmpire(systemeStellaires[flotte->systeme], numeroEmpire);
 						}
 						flotte->action = FLOTTE_AUCUNE_ACTION;
 					}
@@ -493,31 +490,32 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systeme
 					if(flotte->avancement >= 1){
 
 						index = 0;
-						while((index < 4) && (systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].destination != flotte->systeme)){
+						while((index < 4) && (GetHyperlaneDestination(systemeStellaires[flotte->chemin[flotte->avancementTrajet]], index) != flotte->systeme)){
 							index++;
 						}
 						
-						flotte->x = systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].x;
-						flotte->y = systemeStellaires[flotte->chemin[flotte->avancementTrajet]].hyperlane[index].y;
+						flotte->x = GetHyperlaneX(systemeStellaires[flotte->chemin[flotte->avancementTrajet]], index);
+						flotte->y = GetHyperlaneY(systemeStellaires[flotte->chemin[flotte->avancementTrajet]], index);
 
 						flotte->avancement = 0;
 						flotte->systeme = flotte->chemin[flotte->avancementTrajet];
 						flotte->avancementTrajet++;
 
 						index = 0;
-						while((index < 4) && (systemeStellaires[flotte->systeme].hyperlane[index].destination != flotte->chemin[flotte->avancementTrajet])){
+						while((index < 4) && (GetHyperlaneDestination(systemeStellaires[flotte->systeme], index) != flotte->chemin[flotte->avancementTrajet])){
 							index++;
 						}
-						flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, systemeStellaires[flotte->systeme].hyperlane[index].x, systemeStellaires[flotte->systeme].hyperlane[index].y);
+						flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, GetHyperlaneX(systemeStellaires[flotte->systeme], index), GetHyperlaneY(systemeStellaires[flotte->systeme], index));
 					} else {
 						flotte->avancement = 1;
 					}
 				}
 			}
-			flotte = flotte->suivant;
+			fleetIndex++;
+			flotte = NumeroFlotte(GetFleetArray(empire), fleetIndex);
 		}
 		numeroEmpire++;
-		empire = empire->suivant;
+		empire = EmpireNumero(empireListe, numeroEmpire);
 	}
 }
 

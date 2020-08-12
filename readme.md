@@ -24,6 +24,8 @@ We recommend to use an emulator like [CeMu](https://github.com/CE-Programming/CE
 
 Use `make gfx` command to make the graphx files and `make` to compil the program.
 
+The gfx are made with convpng.
+
 **Warning!!** The gfx and the font cannot be made with the 32 bit version
 
 ## To do list (French)
@@ -34,7 +36,7 @@ Use `make gfx` command to make the graphx files and `make` to compil the program
 - [x] Plusieurs actions de suite
 - [ ] Gèrer l'update des données du joueur
 - [x] Rajout d'une console
-- [ ] Changement des sprites de local à appvar
+- [x] Changement des sprites de local à appvar
 - [ ] Menu flottes
   - [ ] Rajout des stations scientifiques et minières
   - [ ] Actions flottes

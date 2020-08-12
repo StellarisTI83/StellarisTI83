@@ -32,17 +32,29 @@
  */
 static void InitializeAll(EmpireListe **empireListe, Parametres *parametres){
 	Empire *joueur = NULL;
+
+	if(!var_gfx_init()){
+		os_SetCursorPos(1, 1);
+    	os_PutStrFull("Missing var_gfx.8xv");
+		os_SetCursorPos(2, 1);
+    	os_PutStrFull("Plase download it");
+		while (!os_GetCSC());
+
+		exit(EXIT_FAILURE);
+	}
+
 	ti_CloseAll();
 	
 	srandom(rtc_Time());
 	
 	gfx_Begin();
     gfx_SetDrawBuffer();
-	gfx_SetPalette(global_palette, sizeof_global_palette, 0);
+	gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
 	gfx_SetFontData(font_logo);
 	gfx_SetMonospaceFont(8);
 	gfx_SetTextTransparentColor(2);
 	gfx_SetTextBGColor(2);
+	gfx_SetTransparentColor(2);
 
 	setLanguage(LC_FR);	
 

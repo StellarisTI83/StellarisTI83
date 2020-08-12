@@ -1,9 +1,9 @@
 #ifndef _FLOTTES_INCLUDE
 #define _FLOTTES_INCLUDE
 
-#include "systemes.h"
-#include "camera.h"
 #include "ai.h"
+#include "camera.h"
+#include "systemes.h"
 
 /* constants =========================================================== */
 
@@ -73,7 +73,7 @@ char GetFleetAction(Flotte *flotte);
 void SetFleetAction(Flotte *flotte, char action);
 int GetFleetArriveSystem(Flotte *flotte);
 
-// void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Camera *camera, EmpireListe *empireListe, SystemeStellaire* systemeStellaires);
-// void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire* systemeStellaires);
+void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *fenetre, Camera *camera, EmpireListe *empireListe, SystemeStellaire **systemeStellaires);
+void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **systemeStellaires);
 
 #endif
