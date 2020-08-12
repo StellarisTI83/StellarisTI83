@@ -24,7 +24,7 @@
 #include "console.h"
 #include "flottes.h"
 #include "map.h"
-#include "menu.h"
+#include "menus.h"
 #include "nouvelle_partie.h"
 #include "sauvegarde.h"
 #include "screen.h"
@@ -34,7 +34,7 @@
 #include "locale/locale.h"
 
 /* entry points ======================================================== */
-int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche){
+int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Parametres *parametres, Date *date, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche){
 	int finBoucle = 1;
 	char key = 0;
 	
@@ -46,14 +46,11 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joue
 		finBoucle = UpdateGame(&key, empireListe, systemeStellaires, date, camera, fenetre);
 
 		//dessiner l'écran
-		DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres);
+		DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres, sauvegarde, marche);
 
-		
-		gfx_SwapDraw();
-		if((boot_CheckOnPressed()) || (finBoucle == 0))
-		{
+		if((boot_CheckOnPressed()) || (finBoucle == 0)) {
 			// StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
-			EmpireListeSupprimer(empireListe);
+			// EmpireListeSupprimer(empireListe);
 			return 0;
 		}
 	}

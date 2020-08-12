@@ -67,9 +67,13 @@ int GetPlanetCityBuildingLevel(Planete *planete, int buildingNumber);
 
 int CalculatePlanetCityJob(Planete *planete);
 int GetPlanetCityJob(Planete *planete);
+int GetPlanetCityCrimianity(Planete *planete);
+int GetPlanetCityAmienties(Planete *planete);
 
 Villes *GetPlanetCity(Planete *planete);
 
+Ordre* GetCityOrderElement(Villes *villes);
+OrdreFile* GetCityOrderQueue(Villes *villes);
 OrdreConstruction GetCityOrder(Villes *villes);
 int GetCityOrderProgress(Villes *villes);
 void UnincrementCityOrderProgress(Villes *villes);

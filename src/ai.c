@@ -77,6 +77,20 @@ void EmpireListeSupprimer(EmpireListe* empireListe) {
 }
 
 /**
+ * Renvoi nombre d'empires
+ */
+int EmpireArraySize(EmpireListe* empireListe){
+	Empire *empire;
+	int index = 0;
+	empire = empireListe->premier;
+	while(empire != NULL){
+		empire = empire->suivant;
+		index++;
+	}
+	return index;
+}
+
+/**
  * Renvoi un pointeur vers l'empire numero x
  */
 Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
@@ -242,6 +256,9 @@ int GetEmpireSpecies(Empire *empire){
 	return empire->espece;
 }
 
+void SetEmpireCredit(Empire *empire, int argent){
+	empire->credits = argent;
+}
 /**
  * Rajouter des credits
  */
@@ -255,6 +272,9 @@ int GetEmpireCredit(Empire *empire){
 	return empire->credits;
 }
 
+void SetEmpireMinerals(Empire *empire, int minerais){
+	empire->minerais = minerais;
+}
 /**
  * Rajouter des minerais
  */
@@ -268,6 +288,9 @@ int GetEmpireMinerals(Empire *empire){
 	return empire->minerais;
 }
 
+void SetEmpireFood(Empire *empire, int nourriture){
+	empire->nourriture = nourriture;
+}
 /**
  * Rajouter de la nourriture
  */
@@ -281,6 +304,9 @@ int GetEmpireFood(Empire *empire){
 	return empire->nourriture;
 }
 
+void SetEmpireAlloys(Empire *empire, int alloy){
+	empire->acier = alloy;
+}
 /**
  * Rajouter de l'acier
  */
@@ -294,6 +320,9 @@ int GetEmpireAlloys(Empire *empire){
 	return empire->acier;
 }
 
+void SetEmpireConsumerGoods(Empire *empire, int consumerGoods){
+	empire->biensDeConsommation = consumerGoods;
+}
 /**
  * Rajouter des biens de consommation
  */

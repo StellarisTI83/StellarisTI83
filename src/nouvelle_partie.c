@@ -25,11 +25,11 @@
 #include "main.h"
 
 #include "ai.h"
-// #include "boucle.h"
+#include "boucle.h"
 #include "camera.h"
-// #include "console.h"
-// #include "flottes.h"
-// #include "map.h"
+#include "console.h"
+#include "flottes.h"
+#include "map.h"
 #include "noms.c"
 #include "nouvelle_partie.h"
 #include "parametres.h"
@@ -1077,11 +1077,11 @@ static bool InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **c
 	joueur = EmpireNumero(*empireListe, 1);
 	ti_CloseAll();
 	*sauvegarde = ti_Open("sauv", "w");
-	AddEmpireCredit(joueur, 100);
-	AddEmpireMinerals(joueur, 100);
-	AddEmpireFood(joueur, 200);
-	AddEmpireAlloys(joueur, 100);
-	AddEmpireConsumerGoods(joueur, 100);
+	SetEmpireCredit(joueur, 100);
+	SetEmpireMinerals(joueur, 100);
+	SetEmpireFood(joueur, 200);
+	SetEmpireAlloys(joueur, 100);
+	SetEmpireConsumerGoods(joueur, 100);
 
 	*parametres = AllocParametres();
 
@@ -1105,7 +1105,7 @@ static bool InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **c
 	*fenetre = AllocFenetre();
 	CloseMenu(*fenetre, *camera);
 
-	CloseCommandPrompt(*fenetre);
+	CloseCommandPrompt(*fenetre, *camera, *date);
 	return 0;
 }
 
@@ -1464,6 +1464,7 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
 			if(trouNoir == 1) {
 				nombrePlanetes = 0;
 			}
+			SetSystemStarType(systemeStellaires[k], etoile);
             
             SetSystemPlanetNumber(systemeStellaires[k], 0);
 			
@@ -1546,7 +1547,7 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
 			
 			if((GetSystemX(systemeStellaires[k - 1]) != 0) && (hyperLane2)) {
 				if((k - 1 > 0) && (k - 1 < 255))
-                	SetHyperlaneDestination(systemeStellaires[k], 0, k - 1);
+                	SetHyperlaneDestination(systemeStellaires[k], 1, k - 1);
 			}
 			
 			nomInt = randInt(0, (sizeof(nomGalaxies)/sizeof(nomGalaxies[0])) - 1);
@@ -1619,7 +1620,7 @@ static void RecreateHyperlanes(SystemeStellaire **systemeStellaires, int *barreD
 		//calcul des positions de sortie
 		j = 0;
 		while(j < 4){
-			if(GetHyperlaneDestination(systeme, 1) != 255){
+			if(GetHyperlaneDestination(systeme, j) != 255){
 				double angle = 0;
 
                 angle = atan2(GetSystemY(systemeStellaires[GetHyperlaneDestination(systeme, j)]) - GetSystemY(systeme), GetSystemX(systemeStellaires[GetHyperlaneDestination(systeme, j)]) - GetSystemX(systeme));
@@ -1702,7 +1703,6 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		if(((GetSystemX(systemeStellaires[i]) >= 160) && (GetSystemY(systemeStellaires[i]) >= 120)) && (GetSystemStarType(systemeStellaires[i]) != ETOILE_TYPE_TROU_NOIR))
 			fin = 0;
 	}
-	while(!os_GetCSC());
 	SetEmpireColor(joueur, 9);
 	SetSystemStarType(systemeStellaires[i], ETOILE_TYPE_K);
 	SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
@@ -1755,24 +1755,22 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 
 		gfx_PrintString("1 ");
 		PrintInt(j);
-		while(!os_GetCSC());
-		SetEmpireColor(joueur, randInt(20, 29));
+		SetEmpireColor(empire, randInt(20, 29));
 		SetSystemStarType(systemeStellaires[i], ETOILE_TYPE_K);
 		SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
 		SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);
 		SetSystemEmpire(systemeStellaires[i], j);
-		SetSystemIntelLevel(systemeStellaires[i], TOTAL);
+		SetSystemIntelLevel(systemeStellaires[i], INCONNU);
 
 		SetSystemStationLevel(systemeStellaires[i], PORT_STELLAIRE);
 		SetSystemStationModule(systemeStellaires[i], 0, CHANTIER_SPATIAL);
 		SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
 
-		EmpireNouvelleFlotte(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-		EmpireNouvelleFlotte(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-		EmpireNouvelleFlotte(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+		EmpireNouvelleFlotte(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+		EmpireNouvelleFlotte(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+		EmpireNouvelleFlotte(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 
 		gfx_PrintString("2");
-		while(!os_GetCSC());
 		planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i])- 1);
 
 		SetSystemPlanetHabitability(systemeStellaires[i], planete, true);
@@ -1790,7 +1788,6 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 3, FONDERIE, 1);
 		
 		gfx_PrintString("3");
-		while(!os_GetCSC());
 	}
 }
 
@@ -1881,6 +1878,8 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 	
 	gfx_PrintStringXY("1000102102003", 80, 80);
 
+	gfx_SetDrawBuffer();
+	StellarisBoucle(&sauvegarde, empireListe, parametres, date, systemeStellaires, camera, fenetre, marche);
 	// StellarisBoucle(&sauvegarde, empireListe, parametres, date, systemeStellaires, camera, fenetre, marche);
 }
 

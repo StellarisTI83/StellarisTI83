@@ -32,6 +32,7 @@ typedef struct EmpireListeStruct EmpireListe;
 /* entry points ======================================================== */
 EmpireListe* EmpireListeCreer();
 void EmpireListeSupprimer(EmpireListe*);
+int EmpireArraySize(EmpireListe* empireListe);
 Empire* EmpireNumero(EmpireListe*, int numero);
 Empire* EmpireAjouter(EmpireListe*);
 void EmpireSupprimer(EmpireListe*, int numero);
@@ -57,18 +58,23 @@ void SetEmpireName(Empire *empire, int curseur, char lettre);
 char GetEmpireNameChar(Empire *empire, int cursor);
 char* GetEmpireNameString(Empire *empire);
 
+void SetEmpireCredit(Empire *empire, int argent);
 void AddEmpireCredit(Empire *empire, int argent);
 int GetEmpireCredit(Empire *empire);
 
+void SetEmpireMinerals(Empire *empire, int minerais);
 void AddEmpireMinerals(Empire *empire, int minerais);
 int GetEmpireMinerals(Empire *empire);
 
+void SetEmpireFood(Empire *empire, int nourriture);
 void AddEmpireFood(Empire *empire, int nourriture);
 int GetEmpireFood(Empire *empire);
 
+void SetEmpireAlloys(Empire *empire, int alloy);
 void AddEmpireAlloys(Empire *empire, int alloy);
 int GetEmpireAlloys(Empire *empire);
 
+void SetEmpireConsumerGoods(Empire *empire, int consumerGoods);
 void AddEmpireConsumerGoods(Empire *empire, int consumerGoods);
 int GetEmpireConsumerGoods(Empire *empire);
 

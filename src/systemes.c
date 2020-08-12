@@ -84,6 +84,9 @@ EtoileType GetSystemStarType(SystemeStellaire *systemeStellaire){
 }
 
 //stations
+Station *GetSystemStation(SystemeStellaire *systemeStellaire){
+	return systemeStellaire->station;
+}
 void SetSystemStationLevel(SystemeStellaire *systemeStellaire, Stationlevel level){
 	SetStationLevel(systemeStellaire->station, level);
 }

@@ -242,36 +242,63 @@ int GetPlanetCityBuildingLevel(Planete *planete, int buildingNumber){
 }
 
 int CalculatePlanetCityJob(Planete *planete){
-	int job = 0;
-	job += planete->villes->districtsUrbains;
-	job += planete->villes->districtsGenerateurs * 2;
-	job += planete->villes->districtsMiniers * 2;
-	job += planete->villes->districtsAgricoles * 2;
+	if(planete->villes != NULL){
+		int job = 0;
+		job += planete->villes->districtsUrbains;
+		job += planete->villes->districtsGenerateurs * 2;
+		job += planete->villes->districtsMiniers * 2;
+		job += planete->villes->districtsAgricoles * 2;
 
-	if(planete->villes->batiment1 != AUCUN)
-		job += 2;
-	if(planete->villes->batiment2 != AUCUN)
-		job += 2;
-	if(planete->villes->batiment3 != AUCUN)
-		job += 2;
-	if(planete->villes->batiment4 != AUCUN)
-		job += 2;
-	if(planete->villes->batiment5 != AUCUN)
-		job += 2;
-	if(planete->villes->batiment6 != AUCUN)
-		job += 2;
-		
-	planete->villes->emplois = job;
-	return job;
+		if(planete->villes->batiment1 != AUCUN)
+			job += 2;
+		if(planete->villes->batiment2 != AUCUN)
+			job += 2;
+		if(planete->villes->batiment3 != AUCUN)
+			job += 2;
+		if(planete->villes->batiment4 != AUCUN)
+			job += 2;
+		if(planete->villes->batiment5 != AUCUN)
+			job += 2;
+		if(planete->villes->batiment6 != AUCUN)
+			job += 2;
+			
+		planete->villes->emplois = job;
+		return job;
+	}
+	else 
+		return 0;
 }
 int GetPlanetCityJob(Planete *planete){
-	return planete->villes->emplois;
+	if(planete->villes != NULL)
+		return planete->villes->emplois;
+	else 
+		return 0;
+}
+
+int GetPlanetCityCrimianity(Planete *planete){
+	if(planete->villes != NULL)
+		return planete->villes->criminatlitee;
+	else 
+		return 0;
+}
+
+int GetPlanetCityAmienties(Planete *planete){
+	if(planete->villes != NULL)
+		return planete->villes->amienties;
+	else 
+		return 0;
 }
 
 Villes *GetPlanetCity(Planete *planete){
 	return planete->villes;
 }
 
+Ordre* GetCityOrderElement(Villes *villes){
+	return RecupererOrdre(villes->ordreFile);
+}
+OrdreFile* GetCityOrderQueue(Villes *villes){
+	return villes->ordreFile;
+}
 OrdreConstruction GetCityOrder(Villes *villes){
 	return GetOrder(villes->ordreFile);
 }

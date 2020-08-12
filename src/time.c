@@ -53,6 +53,13 @@ void SetTime(Date *date, int d, int m, int y){
 int GetTimeSpeed(Date *date){
     return date->vitesse;
 }
+void SetTimeSpeed(Date *date, int speed, int savedSpeed){
+    date->vitesse = speed;
+    date->vitesseSauvegardee = savedSpeed;
+}
+void SetTimeSpeedOnly(Date *date, int speed){
+    date->vitesse = speed;
+}
 
 void PauseGame(Date *date){
     date->vitesseSauvegardee = date->vitesse;

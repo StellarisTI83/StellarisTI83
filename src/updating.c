@@ -42,13 +42,16 @@ static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, E
 		if(GetSystemIntelLevel(systemeStellaires[numeroSysteme])  >= MOYEN) {
 			SetSystemIntelLevel(systemeStellaires[numeroSysteme], MOYEN);
 		}
+		else {
+			SetSystemIntelLevel(systemeStellaires[numeroSysteme], AUCUN);
+		}
 		if((GetSystemStationLevel(systemeStellaires[numeroSysteme]) > AUCUN) && (GetSystemEmpire(systemeStellaires[numeroSysteme]) == 1)) {
 			SetSystemIntelLevel(systemeStellaires[numeroSysteme], TOTAL);
 		}
 		numeroSysteme++;
 	}
 	while(index < FleetArraySize(GetFleetArray(EmpireNumero(empireListe, 1)))){
-        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(GetFleetArray(EmpireNumero(empireListe, 1)), index)], TOTAL);
+        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(NumeroFlotte(GetFleetArray(EmpireNumero(empireListe, 1)), index))], TOTAL);
 		index++;
 	}
 }
@@ -121,8 +124,9 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
 /**
  * Effectue les actions des planetes
  */
-void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires, Empire *joueur){
+void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires, EmpireListe *empireListe){
 	int i = 0, j = 0;
+	Empire *jour = EmpireNumero(empireListe, 1);
 	Villes *villes = NULL;
 	Batiment *batiment = NULL;
 	OrdreConstruction ordre;
@@ -186,12 +190,13 @@ static void UpdateTime(Date *date, char *key, Fenetre *fenetre){
 				break;
 		}
 	}
+	UpdateClock(date);
 }
 
-static void UpdateWorld(EmpireListe *empireListe, SystemeStellaire *systemeStellaires){
-    EffectuerActionsFlottes(empireListe, systemeStellaires);
-    EffectuerActionsStations(systemeStellaires, EmpireNumero(empireListe, 1));
-    EffectuerActionsPlanetes(systemeStellaires, EmpireNumero(empireListe, 1));
+static void UpdateWorld(EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+    // EffectuerActionsFlottes(empireListe, systemeStellaires);
+    EffectuerActionsStations(systemeStellaires, empireListe);
+    EffectuerActionsPlanetes(systemeStellaires, empireListe);
     CalculerNiveauDeConnaissance(systemeStellaires, empireListe);
 }
 
@@ -242,8 +247,9 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 				}
 				SetCameraSystem(camera, GetCameraViewedSystem(camera));
 			} else if(((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && (IsCameraMoveFleet(camera) == true)) {
-				BougerFlotte(GetCameraFleet(camera), GetCameraEmpire(camera), GetCameraViewedSystem(camera), camera, empireListe, systemeStellaires);
+				// BougerFlotte(GetCameraFleet(camera), GetCameraEmpire(camera), GetCameraViewedSystem(camera), camera, empireListe, systemeStellaires);
 			}
+			*key = 0;
 			break;
 		case sk_Clear:
 			if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (IsCameraMoveFleet(camera) == false)) {
@@ -331,7 +337,10 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 		}
 		break;
 	case sk_2nd:
-		OpenCommandPrompt(fenetre, camera, date);
+		if(!GetCommandPromptStatus(fenetre))
+			OpenCommandPrompt(fenetre, camera, date);
+		else
+			CloseCommandPrompt(fenetre, camera, date);
 		*key = 0;
 		break;
 	}
@@ -341,7 +350,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre){
     TestKey(key, empireListe, systemeStellaires, date, camera, fenetre);
 
-    UpdateTime(date, &key, fenetre);
+    UpdateTime(date, key, fenetre);
     
 	if((((GetTimeDay(date) == 30) || (GetTimeDay(date) == 10)) || (GetTimeDay(date) == 20)) && (GetTimeClock(date) == 0)){
         // UpdatePlayersData();
@@ -349,4 +358,5 @@ int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeSt
         UpdateWorld(empireListe, systemeStellaires);
 
     }
+	return 1;
 }

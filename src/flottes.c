@@ -303,9 +303,95 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 /**
  * Get the system of the designated flotte
  */
-int GetFleetSystem(FlotteListe *flotteListe, int flotteNumber){
-	Flotte *flotte = NumeroFlotte(flotteListe, flotteNumber);
+int GetFleetSystem(Flotte *flotte){
 	return flotte->systeme;
+}
+
+/**
+ * Get the path of the designated flotte
+ */
+int GetFleetPath(Flotte *flotte, int index){
+	if(index < 50)
+		return flotte->chemin[index];
+	else
+		return 0;
+}
+
+/**
+ * Get the type of the designated flotte
+ */
+FlotteType GetFleetType(Flotte *flotte){
+	return flotte->type;
+}
+
+/**
+ * Get the power of the designated flotte
+ */
+int GetFleetPower(Flotte *flotte){
+	return flotte->puissance;
+}
+
+/**
+ * Get the progress of the designated flotte
+ */
+int GetFleetPathProgress(Flotte *flotte){
+	return flotte->avancementTrajet;
+}
+void IncrementFleetPathProgress(Flotte *flotte){
+	flotte->avancementTrajet++;
+}
+void SetFleetPathProgress(Flotte *flotte, int progress){
+	flotte->avancementTrajet = progress;
+}
+
+int GetFleetProgress(Flotte *flotte){
+	return flotte->avancement;
+}
+void IncrementFleetProgress(Flotte *flotte){
+	flotte->avancement++;
+}
+void SetFleetProgress(Flotte *flotte, int progress){
+	flotte->avancement = progress;
+}
+
+int GetFleetX(Flotte *flotte){
+	return flotte->x;
+}
+int GetFleetY(Flotte *flotte){
+	return flotte->y;
+}
+
+int GetFleetHullPourcent(Flotte *flotte){
+	return (flotte->coqueVie * 100) / flotte->coqueTotal;
+}
+int GetFleetArmorPourcent(Flotte *flotte){
+	return (flotte->blindageVie * 100) / flotte->blindageTotal;
+}
+int GetFleetShieldPourcent(Flotte *flotte){
+	return (flotte->bouclierVie * 100) / flotte->bouclierTotal;
+}
+
+int GetFleetCorvetteNumber(Flotte *flotte){
+	return flotte->nombreDeCorvette;
+}
+int GetFleetDestroyerNumber(Flotte *flotte){
+	return flotte->nombreDeDestroyer;
+}
+int GetFleetCruiserNumber(Flotte *flotte){
+	return flotte->nombreDeCroiseur;
+}
+int GetFleetBattleshipNumber(Flotte *flotte){
+	return flotte->nombreDeCuirasse;
+}
+
+char GetFleetAction(Flotte *flotte){
+	return flotte->action;
+}
+void SetFleetAction(Flotte *flotte, char action){
+	flotte->action = action;
+}
+int GetFleetArriveSystem(Flotte *flotte){
+	return flotte->systemeArrive;
 }
 
 /**

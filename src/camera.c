@@ -41,7 +41,7 @@ struct CameraStruct{
 
 struct FenetreStruct{
 	ClassMenu menu;
-	MenuSysteme menuSysteme;
+	MenuSystem menuSysteme;
 	int selection;
 
 	int planete;
@@ -197,7 +197,7 @@ Fenetre *AllocFenetre(){
 	return calloc(1, sizeof(Fenetre));
 }
 
-void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSysteme menuSysteme){
+void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme){
 	fenetre->menu = classMenu;
 	fenetre->menuSysteme = menuSysteme;
 	fenetre->selection = 1;
@@ -211,7 +211,7 @@ void CloseMenu(Fenetre *fenetre, Camera *camera){
 ClassMenu GetOpenedMenuClass(Fenetre *fenetre){
 	return fenetre->menu;
 }
-MenuSysteme GetOpenedMenuSystem(Fenetre *fenetre){
+MenuSystem GetOpenedMenuSystem(Fenetre *fenetre){
 	return fenetre->menuSysteme;
 }
 
@@ -266,3 +266,49 @@ int GetWindowPrevious(Fenetre *fenetre){
 	return fenetre->precedente;
 }
 
+Error GetWindowError(Fenetre *fenetre){
+	return fenetre->error;
+}
+void SetWindowError(Fenetre *fenetre, Error error){
+	fenetre->error = error;
+}
+int GetWindowErrorCountDown(Fenetre *fenetre){
+	return fenetre->errorCountDown;
+}
+void UnincrementWindowErrorCountdown(Fenetre *fenetre){
+	fenetre->errorCountDown--;
+}
+void SetWindowErrorCountdown(Fenetre *fenetre, int countdown){
+	fenetre->errorCountDown = countdown;
+}
+
+void SetWindowCity(Fenetre *fenetre, Villes *city){
+	fenetre->villes = city;
+}
+Villes *GetWindowCity(Fenetre *fenetre){
+	return fenetre->villes;
+}
+
+void SetWindowScroll(Fenetre *fenetre, int scroll){
+	fenetre->scroll = scroll;
+}
+void AddWindowScroll(Fenetre *fenetre, int scroll){
+	fenetre->scroll += scroll;
+}
+int GetWindowScroll(Fenetre *fenetre){
+	return fenetre->scroll;
+}
+
+void SetWindowFleetSize(Fenetre *fenetre, int size){
+	fenetre->nombreDeVaisseaux = size;
+}
+void AddWindowFleetSize(Fenetre *fenetre, int size){
+	fenetre->nombreDeVaisseaux += size;
+}
+int GetWindowFleetSize(Fenetre *fenetre){
+	return fenetre->nombreDeVaisseaux;
+}
+
+void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu){
+	fenetre->menuSysteme = menu;
+}

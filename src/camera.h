@@ -1,19 +1,26 @@
 #ifndef H_CAMERA
 #define H_CAMERA
 
+#include "main.h"
 #include "planetes.h"
 #include "time.h"
 
 /* types =============================================================== */
-typedef enum {CARTE, NORMAL, SYSTEME} VueType;
+enum VueTypeEnum {CARTE, NORMAL, SYSTEME};
 
-typedef enum {MENU_QUITTER = -1, MENU_AUCUN, MENU_SYSTEME, MENU_MARCHE, MENU_FLOTTE, MENU_RECHERCHE, MENU_CONTACTS} ClassMenu;
+typedef enum VueTypeEnum VueType;
 
-typedef enum {MENU_SYSTEME_FLOTTES = 1, MENU_SYSTEME_ETOILE, 
+enum ClassMenuEnum {MENU_QUITTER = -1, MENU_AUCUN, MENU_SYSTEME, MENU_MARCHE, MENU_FLOTTE, MENU_RECHERCHE, MENU_CONTACTS} ;
+
+typedef enum ClassMenuEnum ClassMenu;
+
+enum MenuSystemeEnum {MENU_SYSTEME_FLOTTES = 1, MENU_SYSTEME_ETOILE, 
 MENU_SYSTEME_PLANETE_RESUME, MENU_SYSTEME_PLANETE_DISTRICT, MENU_SYSTEME_PLANETE_BATIMENT, MENU_SYSTEME_PLANETE_BATIMENT_CHOIX, 
 MENU_SYSTEME_FLOTTE_DETAILS, 
 MENU_SYSTEME_STATION_RESUME, MENU_SYSTEME_STATION_MODULES, MENU_SYSTEME_STATION_MODULES_CHOIX, MENU_SYSTEME_STATION_CHANTIER,
-MENU_SYSTEME_STATION_CHANTIER_CHOIX} MenuSysteme;
+MENU_SYSTEME_STATION_CHANTIER_CHOIX};
+
+typedef enum MenuSystemeEnum MenuSystem;
 
 /* structures ========================================================== */
 typedef struct CameraStruct Camera;
@@ -74,10 +81,11 @@ int GetCameraEmpire(Camera *camera);
 //fenetre
 Fenetre *AllocFenetre();
 
-void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSysteme menuSysteme);
+void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme);
 void CloseMenu(Fenetre *fenetre, Camera *camera);
 ClassMenu GetOpenedMenuClass(Fenetre *fenetre);
-MenuSysteme GetOpenedMenuSystem(Fenetre *fenetre);
+MenuSystem GetOpenedMenuSystem(Fenetre *fenetre);
+void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu);
 
 void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
 void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
@@ -97,4 +105,21 @@ int GetWindowSelectedFleet(Fenetre *fenetre);
 
 void SetWindowPrevious(Fenetre *fenetre, int previous);
 int GetWindowPrevious(Fenetre *fenetre);
+
+Error GetWindowError(Fenetre *fenetre);
+void SetWindowError(Fenetre *fenetre, Error error);
+int GetWindowErrorCountDown(Fenetre *fenetre);
+void UnincrementWindowErrorCountdown(Fenetre *fenetre);
+void SetWindowErrorCountdown(Fenetre *fenetre, int countdown);
+
+void SetWindowCity(Fenetre *fenetre, Villes *city);
+Villes *GetWindowCity(Fenetre *fenetre);
+
+void SetWindowScroll(Fenetre *fenetre, int scroll);
+void AddWindowScroll(Fenetre *fenetre, int scroll);
+int GetWindowScroll(Fenetre *fenetre);
+
+void SetWindowFleetSize(Fenetre *fenetre, int size);
+void AddWindowFleetSize(Fenetre *fenetre, int size);
+int GetWindowFleetSize(Fenetre *fenetre);
 #endif

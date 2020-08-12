@@ -20,8 +20,10 @@
 #include "main.h"
 
 #include "ai.h"
+#include "console.h"
 #include "flottes.h"
 #include "hud.h"
+#include "menus.h"
 #include "parametres.h"
 #include "time.h"
 
@@ -79,8 +81,7 @@ static void DrawBackgroundHUD(Date *date, Camera *camera){
 	gfx_FillTriangle(100, 220, 80, 240, 100, 240);
 	gfx_FillTriangle(220, 220, 240, 240, 220, 240);
 	//nom selection
-	if (((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == CARTE)) || (GetCameraMapType(camera) == SYSTEME))
-	{
+	if (((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == CARTE)) || (GetCameraMapType(camera) == SYSTEME)) {
 		gfx_FillRectangle(110, 210, 100, 10);
 		gfx_FillTriangle(110, 210, 100, 220, 110, 220);
 		gfx_FillTriangle(210, 210, 210, 220, 220, 220);
@@ -245,11 +246,11 @@ static void DrawPointerHUD(Camera *camera){
 static void WriteGalaxieNameHUD(Camera *camera, SystemeStellaire **systemeStellaires){
     int16_t systeme = 0;
 	//nom galaxie
-	if (((GetCameraViewedSystem(camera) != -1) || (GetCameraSystem(camera) != -1)) && (GetCameraMapType(camera) != CARTE)) {
+	if (((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == CARTE)) || (GetCameraMapType(camera) == SYSTEME)) {
 		if (GetCameraMapType(camera) == NORMAL) {
 			systeme = GetCameraViewedSystem(camera);
 		} 
-		else if(GetCameraMapType(camera) == SYSTEME){
+		else {
 			systeme = GetCameraSystem(camera);
 		}
 		if (GetSystemIntelLevel(systemeStellaires[systeme]) == INCONNU) {
@@ -262,7 +263,8 @@ static void WriteGalaxieNameHUD(Camera *camera, SystemeStellaire **systemeStella
 }
 
 /* entry points ======================================================== */
-int StellarisHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche){
+
+int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche){
 
 	char valeurMineraiStr[4];
 	char nomPlanete[20];
@@ -285,7 +287,6 @@ int StellarisHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera
 		gfx_PrintStringXY("Carte", 140, 211);
 	}
 
-	menu = Menus(empireListe, joueur, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
 	if(GetCommandPromptStatus(fenetre) == true){ 
 		AfficherConsole(key, fenetre, empireListe, camera, date, parametres);
 	}

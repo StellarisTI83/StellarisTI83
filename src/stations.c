@@ -41,6 +41,11 @@ Station* AllocStation(){
 	return station;
 }
 
+void memsetStation(Station *station){
+	if(station != NULL)
+		memset(station, 0, sizeof(Station));
+}
+
 void SetStationLevel(Station *station, Stationlevel level){
 	station->niveauStation = level;
 	switch(level){
@@ -128,6 +133,13 @@ void SetStationModule(Station *station, int moduleNumber, Module module){
 Module GetStationModule(Station *station, int moduleNumber){
 	return station->modules[moduleNumber];
 }
+Module *GetStationModulePointer(Station *station, int moduleNumber){
+	return &station->modules[moduleNumber];
+}
+
+OrdreFile *GetStationOrderQueue(Station *station){
+	return station->ordreFile;
+}
 
 void NewStationOrdre(Station *station, OrdreStation ordre){
 	int tempsTotal = 0;
@@ -150,9 +162,22 @@ void UnincrementStationOrderProgress(Station *station){
 	return UnincrementOrderProgress(station->ordreFile);
 }
 
-int GetStationOrderInfo1(systemeStellaire->station){
-	return GetOrderInfo1(station->ordreFile)
+int GetStationOrderInfo1(Station *station){
+	return GetOrderInfo1(station->ordreFile);
 }
-int GetStationOrderInfo2(systemeStellaire->station){
-	return GetOrderInfo2(station->ordreFile)
+int GetStationOrderInfo2(Station *station){
+	return GetOrderInfo2(station->ordreFile);
+}
+
+int GetStationHullPourcent(Station *station){
+	return (station->coqueRestante * 100) / station->coqueTotal;
+}
+int GetStationArmorPourcent(Station *station){
+	return (station->blindageRestante * 100) / station->blindageTotal;
+}
+int GetStationShieldPourcent(Station *station){
+	return (station->bouclierRestante * 100) / station->bouclierTotal;
+}
+int GetStationPower(Station *station){
+	return station->puissance;
 }

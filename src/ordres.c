@@ -116,6 +116,13 @@ int GetOrderProgress(OrdreFile *ordreFile){
 		return 0;
 }
 
+int GetOrderTotalTime(OrdreFile *ordreFile){
+	if(RecupererOrdre(ordreFile) != NULL)
+		return RecupererOrdre(ordreFile)->tempsTotal;
+	else 
+		return 0;
+}
+
 void UnincrementOrderProgress(OrdreFile *ordreFile){
 	if(RecupererOrdre(ordreFile) != NULL)
 		RecupererOrdre(ordreFile)->tempsActuel--;
@@ -130,6 +137,20 @@ int GetOrderInfo1(OrdreFile *ordreFile){
 int GetOrderInfo2(OrdreFile *ordreFile){
 	if(RecupererOrdre(ordreFile) != NULL)
 		return RecupererOrdre(ordreFile)->info2;
+	else
+		return 0;
+}
+
+int GetOrderPrice(OrdreFile *ordreFile){
+	if(RecupererOrdre(ordreFile) != NULL)
+		return RecupererOrdre(ordreFile)->prix;
+	else
+		return 0;
+}
+
+int GetOrderProgressPourcent(Ordre *ordre){
+	if(ordre != NULL)
+		return ((ordre->tempsTotal - ordre->tempsActuel) * 100) / ordre->tempsTotal;
 	else
 		return 0;
 }

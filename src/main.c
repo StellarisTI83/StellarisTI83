@@ -41,7 +41,8 @@ static void InitializeAll(EmpireListe **empireListe, Parametres *parametres){
 	gfx_SetPalette(global_palette, sizeof_global_palette, 0);
 	gfx_SetFontData(font_logo);
 	gfx_SetMonospaceFont(8);
-	gfx_SetTextBGColor(255);
+	gfx_SetTextTransparentColor(2);
+	gfx_SetTextBGColor(2);
 
 	setLanguage(LC_FR);	
 

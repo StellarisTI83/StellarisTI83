@@ -15,17 +15,20 @@
 #include <fileioc.h>
 #include <fontlibc.h>
 
+#include "menus.h"
+#include "hud.h"
+
 #include "screen.h"
 
 /* entry points ======================================================== */
-void DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres){
+void DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche){
     gfx_ZeroScreen();
 
     DrawMap(empireListe, systemeStellaires, camera, key, date, fenetre, parametres);
 
-    DrawHUD();
+    DrawHUD(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
 
-    DrawMenu();
+    DrawMenu(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
     
 	gfx_SwapDraw();
 }

@@ -20,18 +20,6 @@
 #define FALSE 0
 #define TRUE 1
 
-#define FLOTTE_AUCUNE_ACTION 0
-#define FLOTTE_BOUGER 1
-#define FLOTTE_ATTAQUER 2
-#define FLOTTE_BOMBARDER 5
-
-#define FLOTTE_INSPECTER 2
-#define FLOTTE_RECHERCHER 5
-
-#define FLOTTE_CONSTRUIRE_BASE 2
-#define FLOTTE_COSNTRUIRE_MINE 5
-#define FLOTTE_CONSTRUIRE_BASE_SCIENTIFIQUE 6
-
 #define RAYON_DE_VUE_SYSTEME 160
 
 /* types =============================================================== */

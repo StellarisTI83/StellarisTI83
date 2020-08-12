@@ -33,6 +33,7 @@ NiveauDeConnaissance GetSystemIntelLevel(SystemeStellaire *systemeStellaire);
 void SetSystemStarType(SystemeStellaire *systemeStellaire, EtoileType type);
 EtoileType GetSystemStarType(SystemeStellaire *systemeStellaire);
 
+Station *GetSystemStation(SystemeStellaire *systemeStellaire);
 
 void CreateSystemStation(SystemeStellaire *systemeStellaire);
 void SetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber, Module module);

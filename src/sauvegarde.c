@@ -35,7 +35,7 @@
 #include "locale/locale.h"
 
 /******************chargement ancienne partie******************/
-int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche)
+/*int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche)
 {
 	ti_var_t sauvegarde;
 	int i = 0, j = 0, compteur = 0, compteurFlottes = 0;
@@ -43,7 +43,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 	Empire* empire = NULL, *empirePrecedent = NULL;
 	gfx_FillScreen(255);
 	PrintCentered("Chargement de la partie..." ,60 ,1 , 0, 0);
-	/*ouvrir sauvegarde*/
+	/*ouvrir sauvegarde*
 	ti_CloseAll();
 	sauvegarde = ti_Open("sauv", "r+");
 	if (sauvegarde == 0)
@@ -88,7 +88,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 			ti_Read(systemeStellaires[i].planete5, sizeof(Planete), 1, sauvegarde);
 		}
 		i++;
-	}*/
+	}*
 	ti_Read(&compteur, sizeof(int), 1, sauvegarde);
 
 	i = 0;
@@ -119,7 +119,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 
 /**
  *Crée les sauvegardes du jeu
- */
+ *
 int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Marche *marche)
 {
 	int i = 0;
@@ -160,7 +160,7 @@ int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *
 			ti_Write(systemeStellaires[i].planete5, sizeof(Planete), 1, *sauvegarde);
 		}
 		i++;
-	}*/
+	}
 	
 	compteur = 0;
 
@@ -196,3 +196,4 @@ int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *
 	return 1;
 }
 
+*/
