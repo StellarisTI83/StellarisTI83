@@ -147,6 +147,7 @@ static void WriteTextHUD(Empire *joueur, Date *date, Camera *camera){
     char jourChar[11];
 	char moisChar[8];
 	char anneeChar[5];
+	
 	//texte
 	gfx_SetTextFGColor(8);
 	//barre du haut

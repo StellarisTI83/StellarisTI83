@@ -602,7 +602,7 @@ static void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera*
 		SetCameraSelection(camera, numero);
 		if((*key == sk_Enter) && (GetCameraLock(camera) == false)){
 			OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_PLANETE_RESUME);
-			SetWindowSelection(fenetre, 1);
+			SetWindowPlanet(fenetre, numero);
 			*key = 0;
 		}
 	}

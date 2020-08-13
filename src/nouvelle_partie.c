@@ -1809,14 +1809,16 @@ static void RecreateHyperlanes(SystemeStellaire **systemeStellaires, int *barreD
 		j = 0;
 		while(j < 4){
 			if(GetHyperlaneDestination(systeme, j) != 255){
-				double angle = 0;
+				if((GetSystemX(systemeStellaires[GetHyperlaneDestination(systeme, j)]) != 0) && (GetSystemY(systemeStellaires[GetHyperlaneDestination(systeme, j)]) != 0)){
+					double angle = 0;
 
-                angle = atan2(GetSystemY(systemeStellaires[GetHyperlaneDestination(systeme, j)]) - GetSystemY(systeme), GetSystemX(systemeStellaires[GetHyperlaneDestination(systeme, j)]) - GetSystemX(systeme));
-                
-				x = X_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * cos(angle));
+					angle = atan2(GetSystemY(systemeStellaires[GetHyperlaneDestination(systeme, j)]) - GetSystemY(systeme), GetSystemX(systemeStellaires[GetHyperlaneDestination(systeme, j)]) - GetSystemX(systeme));
+					
+					x = X_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * cos(angle));
 
-				y = Y_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * sin(angle));
-                SetHyperlaneXY(systeme, j, x, y);
+					y = Y_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * sin(angle));
+					SetHyperlaneXY(systeme, j, x, y);
+				}
 			}
 			j++;
 		}

@@ -43,9 +43,9 @@ static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, E
 			SetSystemIntelLevel(systemeStellaires[numeroSysteme], MOYEN);
 		}
 		else {
-			SetSystemIntelLevel(systemeStellaires[numeroSysteme], AUCUN);
+			SetSystemIntelLevel(systemeStellaires[numeroSysteme], INCONNU);
 		}
-		if((GetSystemStationLevel(systemeStellaires[numeroSysteme]) > AUCUN) && (GetSystemEmpire(systemeStellaires[numeroSysteme]) == 1)) {
+		if((GetSystemStationLevel(systemeStellaires[numeroSysteme]) > INCONNU) && (GetSystemEmpire(systemeStellaires[numeroSysteme]) == 1)) {
 			SetSystemIntelLevel(systemeStellaires[numeroSysteme], TOTAL);
 		}
 		numeroSysteme++;
@@ -62,7 +62,7 @@ static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, E
 void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe* empireListe){
 	int numero = 0, nombreDeVaisseaux = 0;
 	int nombreDeCorvette = 0, nombreDeDestroyer = 0, nombreDeCroiseur = 0, nombreDeCuirasse = 0;
-	OrdreStation ordre = 0;
+	OrdreStation ordre = AUCUN;
     int info1 = 0;
     int info2 = 0;
 	Empire *joueur = EmpireNumero(empireListe, 1);
@@ -246,10 +246,11 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 					SetCameraYSystem(camera, 240);
 				}
 				SetCameraSystem(camera, GetCameraViewedSystem(camera));
+				*key = 0;
 			} else if(((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && (IsCameraMoveFleet(camera) == true)) {
-				// BougerFlotte(GetCameraFleet(camera), GetCameraEmpire(camera), GetCameraViewedSystem(camera), camera, empireListe, systemeStellaires);
+				BougerFlotte(GetCameraFleet(camera), GetCameraEmpire(camera), GetCameraViewedSystem(camera), fenetre, camera, empireListe, systemeStellaires);
+				*key = 0;
 			}
-			*key = 0;
 			break;
 		case sk_Clear:
 			if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (IsCameraMoveFleet(camera) == false)) {
@@ -318,6 +319,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 	case sk_Math:
 		if ((GetOpenedMenuClass(fenetre) != MENU_CONTACTS) && (GetOpenedMenuClass(fenetre) != MENU_QUITTER)) {
 			OpenMenu(fenetre, camera, MENU_CONTACTS, 0);
+			SetWindowSelection(fenetre, 2);
 		} else if (GetOpenedMenuClass(fenetre) == MENU_CONTACTS) {
 			CloseMenu(fenetre, camera);
 		}

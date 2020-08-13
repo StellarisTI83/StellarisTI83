@@ -10,7 +10,7 @@ enum VueTypeEnum {CARTE, NORMAL, SYSTEME};
 
 typedef enum VueTypeEnum VueType;
 
-enum ClassMenuEnum {MENU_QUITTER = -1, MENU_AUCUN, MENU_SYSTEME, MENU_MARCHE, MENU_FLOTTE, MENU_RECHERCHE, MENU_CONTACTS} ;
+enum ClassMenuEnum {MENU_QUITTER = -1, MENU_AUCUN, MENU_SYSTEME, MENU_MARCHE, MENU_FLOTTE, MENU_RECHERCHE, MENU_CONTACTS, MENU_CONTACTS_DETAILS};
 
 typedef enum ClassMenuEnum ClassMenu;
 
@@ -84,7 +84,7 @@ Fenetre *AllocFenetre();
 void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme);
 void CloseMenu(Fenetre *fenetre, Camera *camera);
 ClassMenu GetOpenedMenuClass(Fenetre *fenetre);
-MenuSystem GetOpenedMenuSystem(Fenetre *fenetre);
+MenuSystem GetOpenedMenuDetails(Fenetre *fenetre);
 void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu);
 
 void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);

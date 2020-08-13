@@ -204,7 +204,7 @@ extern uint8_t *var_gfx[66];
 #define unemployed_pop_icon_width 7
 #define unemployed_pop_icon_height 7
 #define unemployed_pop_icon ((gfx_sprite_t*)var_gfx[64])
-#define sizeof_gfx_pal 154
+#define sizeof_gfx_pal 152
 #define gfx_pal ((uint16_t*)var_gfx[65])
 bool var_gfx_init(void);
 

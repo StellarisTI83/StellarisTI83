@@ -5,10 +5,10 @@
 # Set COMPRESSED to "YES" to create a compressed program
 # ----------------------------
 
-NAME        ?= DEMO
+NAME        ?= TRANSLAT
 COMPRESSED  ?= NO
 ICON        ?= icon.png
-DESCRIPTION ?= "CE C SDK Demo"
+DESCRIPTION ?= ""
 
 # ----------------------------
 # Other Options (Advanced)

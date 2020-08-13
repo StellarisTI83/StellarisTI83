@@ -41,7 +41,7 @@ struct CameraStruct{
 
 struct FenetreStruct{
 	ClassMenu menu;
-	MenuSystem menuSysteme;
+	MenuSystem menuDetails;
 	int selection;
 
 	int planete;
@@ -199,20 +199,20 @@ Fenetre *AllocFenetre(){
 
 void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme){
 	fenetre->menu = classMenu;
-	fenetre->menuSysteme = menuSysteme;
+	fenetre->menuDetails = menuSysteme;
 	fenetre->selection = 1;
 	camera->lock = true;
 }
 void CloseMenu(Fenetre *fenetre, Camera *camera){
 	fenetre->menu = MENU_AUCUN;
-	fenetre->menuSysteme = MENU_AUCUN;
+	fenetre->menuDetails = MENU_AUCUN;
 	camera->lock = false;
 }
 ClassMenu GetOpenedMenuClass(Fenetre *fenetre){
 	return fenetre->menu;
 }
-MenuSystem GetOpenedMenuSystem(Fenetre *fenetre){
-	return fenetre->menuSysteme;
+MenuSystem GetOpenedMenuDetails(Fenetre *fenetre){
+	return fenetre->menuDetails;
 }
 
 void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date){
@@ -310,5 +310,5 @@ int GetWindowFleetSize(Fenetre *fenetre){
 }
 
 void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu){
-	fenetre->menuSysteme = menu;
+	fenetre->menuDetails = menu;
 }

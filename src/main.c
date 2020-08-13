@@ -270,7 +270,6 @@ void PrintCentered(const char *str, int y, int taille, int color, int difference
 	/*fait un "fond vert" au sprite et le rend transparent*/
     gfx_SetTextFGColor(color);
     gfx_SetTextBGColor(TEXT_BG_COLOR);
-	gfx_SetTransparentColor(TEXT_BG_COLOR);
 	
     x = abs((LCD_WIDTH - strlen(str) * 8 * taille)/2 + differenceX);
 	a = 1;

@@ -394,3 +394,4 @@ void EmpireGenerateRandomName(Empire *empire){
 	}
 	strcpy(empire->nom, name);
 }
+

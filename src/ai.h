@@ -82,4 +82,5 @@ int GetEmpireConsumerGoods(Empire *empire);
 
 void EmpireGenerateRandomName(Empire *empire);
 
+
 #endif

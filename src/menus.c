@@ -420,7 +420,7 @@ static void MenuSystemePlaneteResume(char *key, SystemeStellaire **systemeStella
 		}
 	}
 	else{
-		gfx_PrintString(GetPlanetName(planete));
+		gfx_PrintString(GetSystemName(systemeStellaires[GetCameraSystem(camera)]));
 		gfx_PrintString(nomPlanete);
 		gfx_SetTextFGColor(3);
 		gfx_PrintStringXY("Non-habitable", 150, 62);
@@ -596,8 +596,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 		gfx_PrintString(GetPlanetName(planete));
 	}
 	else{
-		gfx_PrintString(GetPlanetName(planete));
-		gfx_PrintString(nomPlanete);
+		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_PLANETE_RESUME);
 	}
 	if(GetPlanetCity(planete) != NULL){
 		niveau = 55;
@@ -974,8 +973,7 @@ static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeSte
 		gfx_PrintString(GetPlanetName(planete));
 	}
 	else{
-		gfx_PrintString(GetPlanetName(planete));
-		gfx_PrintString(nomPlanete);
+		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_PLANETE_RESUME);
 	}
 	niveau = 55;
 	if(GetPlanetCity(planete) != NULL){
@@ -2525,7 +2523,7 @@ static void MenuSysteme(char* key, EmpireListe* empireListe, Parametres* paramet
 	int16_t systeme = 0;
 	Flotte* flotte = NULL;
 	Empire *joueur = EmpireNumero(empireListe, 1);
-	switch(GetOpenedMenuSystem(fenetre))
+	switch(GetOpenedMenuDetails(fenetre))
 	{				
 		case MENU_SYSTEME_FLOTTES: //liste flottes
 			MenuSystemeFlotte(key, empireListe, systemeStellaires, camera, fenetre);
@@ -2748,7 +2746,7 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
  */
 void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
 	if(*key == sk_Clear) {
-			CloseMenu(fenetre, camera);
+		CloseMenu(fenetre, camera);
 	}
 	//dessiner fenetre
 	gfx_SetColor(6);
@@ -2767,8 +2765,19 @@ void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *
 	int nombreEmpire = 2;
 	Empire *empire = NULL;
 	int niveau = 55;
-	if(*key == sk_Clear) {
+	switch(*key) {
+		case sk_Clear:
 			CloseMenu(fenetre, camera);
+			*key = 0;
+			break;
+		case sk_Up:
+			AddWindowSelection(fenetre, -1);
+			*key = 0;
+			break;
+		case sk_Down:
+			AddWindowSelection(fenetre, +1);
+			*key = 0;
+			break;
 	}
 	//dessiner fenetre
 	gfx_SetColor(6);
@@ -2777,13 +2786,57 @@ void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *
 	gfx_Rectangle_NoClip(40, 40, 240, 160);
 	gfx_HorizLine_NoClip(50, 50, 220);
 	gfx_SetColor(1);
-	gfx_PrintStringXY("Contacts", 128, 41);
+	gfx_PrintStringXY("Contacts", 45, 41);
+	nombreEmpire = EmpireArraySize(empireListe);
+	if(GetWindowSelection(fenetre) > nombreEmpire){
+		SetWindowSelection(fenetre, 2);
+	}
+	if(GetWindowSelection(fenetre) < 2){
+		SetWindowSelection(fenetre, nombreEmpire);
+	}
+	nombreEmpire = 2;
 	while(nombreEmpire < EmpireArraySize(empireListe) + 1){
 		empire = EmpireNumero(empireListe, nombreEmpire);
+		gfx_SetTextFGColor(1);
+		if(GetWindowSelection(fenetre) == nombreEmpire)
+			gfx_SetTextFGColor(13);
 		gfx_PrintStringXY(GetEmpireNameString(empire), 45, niveau);
 		niveau += 10;
 		nombreEmpire++;
 	}
+	if(*key == sk_Enter){
+		SetWindowPrevious(fenetre, GetWindowSelection(fenetre));
+		OpenMenu(fenetre, camera, MENU_CONTACTS_DETAILS, 0);
+		*key = 0;
+	}
+}
+
+void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre) {
+	Empire *empire = EmpireNumero(empireListe, GetWindowPrevious(fenetre));
+	switch(*key){
+		case sk_Clear:
+			OpenMenu(fenetre, camera, MENU_CONTACTS, 0);
+			SetWindowSelection(fenetre, GetWindowPrevious(fenetre));
+			*key = 0;
+			break;
+	}
+	//dessiner fenetre
+	gfx_SetColor(6);
+	gfx_FillRectangle_NoClip(40, 40, 240, 160);
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(40, 40, 240, 160);
+	gfx_HorizLine_NoClip(45, 50, 180); //*barre en dessous du nom
+	gfx_Line_NoClip(225, 50, 233, 45); //*
+	gfx_HorizLine_NoClip(235, 45, 40); //*
+	gfx_Rectangle_NoClip(45, 55, 120, 60); //rectangle du perso
+	gfx_SetColor(0);
+	gfx_FillRectangle_NoClip(45, 55, 120, 60); //fond rectangle du perso
+	gfx_SetColor(1);
+	gfx_SetPixel(275, 45);
+	gfx_PrintStringXY(GetEmpireNameString(empire), 45, 41);
+	
+	gfx_ScaledTransparentSprite_NoClip(leader_clothes_1, 60, 88, 3, 3);
+	gfx_ScaledTransparentSprite_NoClip(leader_head_mammalian, 63, 67, 3, 3);
 	
 }
 
@@ -2819,6 +2872,9 @@ int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sy
 			break;
 		case MENU_CONTACTS:
 			MenuContacts(key, empireListe, camera, fenetre);
+			break;
+		case MENU_CONTACTS_DETAILS:
+			MenuContactsDetails(key, empireListe, camera, fenetre);
 			break;
 	}
 	return 1;
