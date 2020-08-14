@@ -33,6 +33,7 @@ struct EmpireStruct {
 	char nom[31];
 	char couleur; //couleur sur la map
 	int espece;
+	int vetements;
 	Gouvernement gouvernement;
 
 	Principe principe1;
@@ -44,6 +45,10 @@ struct EmpireStruct {
 	int nourriture;
 	int acier;
 	int biensDeConsommation;
+
+	int PuissanceMilitaire;
+	int PuissanceScientifique;
+	int PuissanceEconomique;
 
 	FlotteListe* flotte;
 	Empire* suivant;
@@ -289,6 +294,19 @@ int GetEmpireSpecies(Empire *empire){
 	return empire->espece;
 }
 
+/**
+ * Changer les habits
+ */
+void SetEmpireClothes(Empire *empire, int clothes){
+	empire->vetements = clothes;
+}
+/**
+ * Recuperer les habits
+ */
+int GetEmpireClothes(Empire *empire){
+	return empire->vetements;
+}
+
 void SetEmpireCredit(Empire *empire, int argent){
 	empire->credits = argent;
 }
@@ -395,3 +413,10 @@ void EmpireGenerateRandomName(Empire *empire){
 	strcpy(empire->nom, name);
 }
 
+void CalculateEmpireFleetPower(Empire *empire){
+	empire->PuissanceMilitaire = CalculateFleetPower(empire->flotte);
+}
+
+int GetEmpireFleetPower(Empire *empire){
+	return empire->PuissanceMilitaire;
+}

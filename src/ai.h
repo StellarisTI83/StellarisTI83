@@ -56,6 +56,9 @@ Principe GetEmpirePrincipes(Empire *empire, int numero);
 void SetEmpireSpecies(Empire *empire, int espece);
 int GetEmpireSpecies(Empire *empire);
 
+void SetEmpireClothes(Empire *empire, int clothes);
+int GetEmpireClothes(Empire *empire);
+
 void SetEmpireName(Empire *empire, int curseur, char lettre);
 char GetEmpireNameChar(Empire *empire, int cursor);
 char* GetEmpireNameString(Empire *empire);
@@ -82,5 +85,7 @@ int GetEmpireConsumerGoods(Empire *empire);
 
 void EmpireGenerateRandomName(Empire *empire);
 
+void CalculateEmpireFleetPower(Empire *empire);
+int GetEmpireFleetPower(Empire *empire);
 
 #endif

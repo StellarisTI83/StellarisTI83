@@ -319,27 +319,27 @@ int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres){
 			switch (choix) {
 			case 0:
 				PrintCentered("Humaine", 70, 2, 4, 30);
-				PrintCentered("Robotis/e", 110, 2, 0, 30);
-				PrintCentered("Reptilienne", 150, 2, 0, 30);
-				PrintCentered("Aviaire", 190, 2, 0, 30);
+				PrintCentered("Mamalienne", 110, 2, 0, 30);
+				PrintCentered("Molluscoide", 150, 2, 0, 30);
+				PrintCentered("Reptilienne", 190, 2, 0, 30);
 				break;
 			case 1:
 				PrintCentered("Humaine", 70, 2, 0, 30);
-				PrintCentered("Robotis/e", 110, 2, 4, 30);
-				PrintCentered("Reptilienne", 150, 2, 0, 30);
-				PrintCentered("Aviaire", 190, 2, 0, 30);
+				PrintCentered("Mamalienne", 110, 2, 4, 30);
+				PrintCentered("Molluscoide", 150, 2, 0, 30);
+				PrintCentered("Reptilienne", 190, 2, 0, 30);
 				break;
 			case 2:
 				PrintCentered("Humaine", 70, 2, 0, 30);
-				PrintCentered("Robotis/e", 110, 2, 0, 30);
-				PrintCentered("Reptilienne", 150, 2, 4, 30);
-				PrintCentered("Aviaire", 190, 2, 0, 30);
+				PrintCentered("Mamalienne", 110, 2, 0, 30);
+				PrintCentered("Molluscoide", 150, 2, 4, 30);
+				PrintCentered("Reptilienne", 190, 2, 0, 30);
 				break;
 			case 3:
 				PrintCentered("Humaine", 70, 2, 0, 30);
-				PrintCentered("Robotis/e", 110, 2, 0, 30);
-				PrintCentered("Reptilienne", 150, 2, 0, 30);
-				PrintCentered("Aviaire", 190, 2, 4, 30);
+				PrintCentered("Mamalienne", 110, 2, 0, 30);
+				PrintCentered("Molluscoide", 150, 2, 0, 30);
+				PrintCentered("Reptilienne", 190, 2, 4, 30);
 				break;
 			}
 		} while(((key = os_GetCSC()) != sk_Enter) && (key != sk_Clear));
@@ -1943,6 +1943,8 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		empire = EmpireAjouter(empireListe);
 		CreerEmpireFlotte(empire);
 		EmpireGenerateRandomName(empire);
+		SetEmpireSpecies(empire, randInt(0, 3));
+		SetEmpireClothes(empire, randInt(0, 2));
 
 		gfx_PrintString("1 ");
 		PrintInt(j);
@@ -1978,6 +1980,8 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 2, USINE_CIVILE, 1);
 		SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 3, FONDERIE, 1);
 		
+		CalculateEmpireFleetPower(empire);
+
 		gfx_PrintString("3");
 	}
 }
@@ -2068,6 +2072,8 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 	CreerEmpires(parametres, empireListe, systemeStellaires, camera);
 	
 	gfx_PrintStringXY("1000102102003", 80, 80);
+
+	PauseGame(date);
 
 	gfx_SetDrawBuffer();
 	StellarisBoucle(&sauvegarde, empireListe, parametres, date, systemeStellaires, camera, fenetre, marche);

@@ -298,6 +298,17 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 	return flotte;
 }
 
+int CalculateFleetPower(FlotteListe *flotteListe){
+	Flotte *flotte = NULL;
+	int puissance = 0;
+	flotte = flotteListe->premier;
+	while(flotte != NULL){
+		puissance += flotte->puissance;
+		flotte = flotte->suivant;
+	}
+	return puissance;
+}
+
 /**
  * Get the system of the designated flotte
  */

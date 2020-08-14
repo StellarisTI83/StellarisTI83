@@ -201,9 +201,8 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 	}
 	if (*key == sk_Enter) {
 		*key = 0;
-		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
 		SetWindowSelectedFleet(fenetre, RecupererFlotteNumero(GetFleetArray(joueur), flotteDuSysteme[GetWindowSelection(fenetre) - 1]) + 1);
-		SetWindowSelection(fenetre, 1);
+		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
 		SetWindowPrevious(fenetre, 1);
 	}
 }
@@ -1169,7 +1168,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, E
 					SetWindowSelection(fenetre, GetWindowSelectedFleet(fenetre));
 					break;
 				case 2:
-					OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_FLOTTE);
+					OpenMenu(fenetre, camera, MENU_FLOTTE, 0);
 					SetWindowSelection(fenetre, GetWindowSelectedFleet(fenetre));
 					break;
 				default:
@@ -1398,7 +1397,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, E
 		*key = 0;
 		if(GetWindowSelection(fenetre) == FLOTTE_BOUGER){
 			SetFleetAction(flotte, FLOTTE_BOUGER);
-			// BougerFlotte(GetWindowSelectedFleet(fenetre), 1, 0, camera, empireListe, systemeStellaires);
+			BougerFlotte(GetWindowSelectedFleet(fenetre), 1, 0, fenetre, camera, empireListe, systemeStellaires);
 		}
 		else{
 			switch(GetFleetType(flotte)){
@@ -1412,7 +1411,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, E
 				switch(GetWindowSelection(fenetre)){
 				case FLOTTE_CONSTRUIRE_BASE:
 					SetFleetAction(flotte, FLOTTE_CONSTRUIRE_BASE);
-					// BougerFlotte(GetWindowSelectedFleet(fenetre), 1, 0, camera, empireListe, systemeStellaires);
+					BougerFlotte(GetWindowSelectedFleet(fenetre), 1, 0, fenetre, camera, empireListe, systemeStellaires);
 					break;
 				}
 				break;
@@ -2734,9 +2733,8 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 
 	if(*key == sk_Enter){
 		*key = 0;
-		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
 		SetWindowSelectedFleet(fenetre, GetWindowSelection(fenetre));
-		SetWindowSelection(fenetre, 1);
+		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
 		SetWindowPrevious(fenetre, 2);
 	}
 }
@@ -2819,6 +2817,14 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 			SetWindowSelection(fenetre, GetWindowPrevious(fenetre));
 			*key = 0;
 			break;
+		case sk_Up:
+			AddWindowSelection(fenetre, -1);
+			*key = 0;
+			break;
+		case sk_Down:
+			AddWindowSelection(fenetre, +1);
+			*key = 0;
+			break;
 	}
 	//dessiner fenetre
 	gfx_SetColor(6);
@@ -2835,9 +2841,46 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 	gfx_SetPixel(275, 45);
 	gfx_PrintStringXY(GetEmpireNameString(empire), 45, 41);
 	
-	gfx_ScaledTransparentSprite_NoClip(leader_clothes_1, 60, 88, 3, 3);
-	gfx_ScaledTransparentSprite_NoClip(leader_head_mammalian, 63, 67, 3, 3);
-	
+	switch(GetEmpireSpecies(empire)){
+		case 0:
+			gfx_ScaledTransparentSprite_NoClip(leader_head_human, 69, 67, 3, 3);
+			break;
+		case 1:
+			gfx_ScaledTransparentSprite_NoClip(leader_head_mammalian, 63, 67, 3, 3);
+			break;
+		case 2:
+			gfx_ScaledTransparentSprite_NoClip(leader_head_molluscoid, 63, 61, 3, 3);
+			break;
+		case 3:
+			gfx_ScaledTransparentSprite_NoClip(leader_head_reptilian, 66, 64, 3, 3);
+			break;
+		default:
+			gfx_SetTextXY(66, 64);
+			gfx_PrintString("Sprite Error :");
+			PrintInt(GetEmpireSpecies(empire));
+			break;
+	}
+	switch(GetEmpireClothes(empire)){
+		case 0:
+			gfx_ScaledTransparentSprite_NoClip(leader_clothes_1, 60, 88, 3, 3);
+			break;
+		case 1:
+			gfx_ScaledTransparentSprite_NoClip(leader_clothes_2, 60, 82, 3, 3);
+			break;
+		case 2:
+			gfx_ScaledTransparentSprite_NoClip(leader_clothes_3, 57, 88, 3, 3);
+			break;
+		default:
+			gfx_SetTextXY(57, 88);
+			gfx_PrintString("Sprite Error :");
+			PrintInt(GetEmpireClothes(empire));
+			break;
+	}
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(170, 54, 100, 10);
+	gfx_TransparentSprite_NoClip(alliedFleet, 190, 55);
+	gfx_SetTextXY(200, 55);
+	PrintInt(GetEmpireFleetPower(empire));
 }
 
 /* entry points ======================================================== */

@@ -45,6 +45,7 @@ void SupprimerFlotte(FlotteListe* flotteliste, int numero);
 
 Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
 
+int CalculateFleetPower(FlotteListe *flotteListe);
 int GetFleetSystem(Flotte *flotte);
 int GetFleetPath(Flotte *flotte, int index);
 FlotteType GetFleetType(Flotte *flotte);
