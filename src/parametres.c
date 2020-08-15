@@ -20,6 +20,7 @@ struct ParametresStruct{
 	char starNumber;
 	char empireNumber;
 	bool seeAll;
+    int fps;
 };
 
 /* entry points ======================================================== */

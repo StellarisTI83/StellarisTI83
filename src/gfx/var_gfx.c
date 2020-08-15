@@ -3,7 +3,7 @@
 #include "var_gfx.h"
 
 #include <fileioc.h>
-uint8_t *var_gfx[66] = {
+uint8_t *var_gfx[79] = {
  (uint8_t*)0,
  (uint8_t*)44,
  (uint8_t*)66,
@@ -70,6 +70,19 @@ uint8_t *var_gfx[66] = {
  (uint8_t*)18572,
  (uint8_t*)18599,
  (uint8_t*)18650,
+ (uint8_t*)21291,
+ (uint8_t*)24922,
+ (uint8_t*)28407,
+ (uint8_t*)32077,
+ (uint8_t*)34352,
+ (uint8_t*)37597,
+ (uint8_t*)40939,
+ (uint8_t*)44519,
+ (uint8_t*)46909,
+ (uint8_t*)49848,
+ (uint8_t*)52394,
+ (uint8_t*)55466,
+ (uint8_t*)56170,
 };
 
 bool var_gfx_init(void) {

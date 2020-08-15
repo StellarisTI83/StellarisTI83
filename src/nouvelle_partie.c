@@ -241,7 +241,7 @@ static int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parame
 int QuitterNouvellePartieAvertissement(){
 	char key = 0, choix = 1, fin = 1;
 	do {
-		gfx_FillScreen(255);
+		gfx_FillScreen(1);
 		PrintCentered("ATTENTION", 50, 2, 3, 0);
 		PrintCentered("Voulez-vous", 80, 2, 0, 0);
 		PrintCentered("vraiment quitter?", 100, 2, 0, 0);
@@ -269,10 +269,10 @@ int QuitterNouvellePartieAvertissement(){
 		gfx_SwapDraw();
 	} while((key = os_GetCSC()) != sk_Enter);
 	switch (choix) {
-	case 0: // si non
+	case 0: // si oui
 		return 0;
 		break;
-	case 1: // si oui
+	case 1: // si non
 		return 1;
 		break;
 	}
@@ -291,7 +291,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres){
 		choix = GetEmpireSpecies(joueur);
 		do {
 			gfx_SwapDraw();		
-			gfx_FillScreen(255);
+			gfx_FillScreen(1);
 			PrintCentered("Esp~ce", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
@@ -368,7 +368,7 @@ int NouvellePartieGouvernement(EmpireListe *empireListe, Parametres *parametres)
 		do {
 			gfx_SwapDraw();
 			
-			gfx_FillScreen(255);
+			gfx_FillScreen(1);
 			PrintCentered("Gouvernement", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
@@ -446,7 +446,7 @@ int NouvellePartiePrincipes(EmpireListe *empireListe, Parametres *parametres) {
 		
 		do {
 			gfx_SwapDraw();
-			gfx_FillScreen(255);
+			gfx_FillScreen(1);
 			PrintCentered("Morales", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
@@ -898,7 +898,7 @@ int NouvellePartieNom(EmpireListe *empireListe, Parametres *parametres) {
 				erreur--;
 			}
 			gfx_SwapDraw();
-			gfx_FillScreen(255);
+			gfx_FillScreen(1);
 			PrintCentered("Nom", 20, 3, 0, 20);
 			PrintCentered("Choississez le nom", 65, 1, 0, 30); 
 			PrintCentered("de votre empire :", 80, 1, 0, 30); 
@@ -1152,7 +1152,7 @@ int NouvellePartieDrapeau(EmpireListe *empireListe, Parametres *parametres) {
 	while(fin) {
 		do {
 			gfx_SwapDraw();
-			gfx_FillScreen(255);
+			gfx_FillScreen(1);
 			PrintCentered("Drapeau", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
@@ -1201,7 +1201,7 @@ int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
 		do {
 			gfx_SwapDraw();
 			
-			gfx_FillScreen(255);
+			gfx_FillScreen(1);
 			PrintCentered("Parametres", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
@@ -1850,7 +1850,7 @@ static int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sau
 	}
 
 	gfx_SetDrawScreen();
-	gfx_FillScreen(255);
+	gfx_FillScreen(1);
 	PrintCentered(_(LC_CREATE_GALAXIE), 120, 1, 0, 0);
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(49, 159, 222, 7);
@@ -1999,7 +1999,7 @@ int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres
 	char key = 0, choix = 1, fin = 1, nouvellePartie = 1;
 	while(fin){
 		do{
-			gfx_FillScreen(255);
+			gfx_FillScreen(1);
 			PrintCentered("ATTENTION", 50, 2, 3, 0);
 			PrintCentered("Cela supprimera", 80, 2, 0, 0);
 			PrintCentered("toute sauvegarde", 100, 2, 0, 0);
@@ -2033,7 +2033,7 @@ int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres
 			gfx_SwapDraw();
 		} while((key = os_GetCSC()) != sk_Enter);
 		switch (choix){
-		case 0: // si "non"
+		case 0: // si "oui"
 			while (nouvellePartie){
 				fin = NouvellePartieEspece(empireListe, parametres);
 				if (fin){
@@ -2044,7 +2044,7 @@ int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres
 			}
 			return 1;
 			break;
-		case 1: // si "oui"
+		case 1: // si "non"
 			return 1;
 			break;
 		}

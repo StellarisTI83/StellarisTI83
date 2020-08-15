@@ -6,9 +6,9 @@
 
 #include <stdbool.h>
 
-#define var_gfx_num 66
+#define var_gfx_num 79
 
-extern uint8_t *var_gfx[66];
+extern uint8_t *var_gfx[79];
 #define alliedFleet_width 7
 #define alliedFleet_height 6
 #define alliedFleet ((gfx_sprite_t*)var_gfx[0])
@@ -204,8 +204,47 @@ extern uint8_t *var_gfx[66];
 #define unemployed_pop_icon_width 7
 #define unemployed_pop_icon_height 7
 #define unemployed_pop_icon ((gfx_sprite_t*)var_gfx[64])
-#define sizeof_gfx_pal 152
-#define gfx_pal ((uint16_t*)var_gfx[65])
+#define background0_width 80
+#define background0_height 80
+#define background0_compressed ((gfx_sprite_t*)var_gfx[65])
+#define background1_width 80
+#define background1_height 80
+#define background1_compressed ((gfx_sprite_t*)var_gfx[66])
+#define background2_width 80
+#define background2_height 80
+#define background2_compressed ((gfx_sprite_t*)var_gfx[67])
+#define background3_width 80
+#define background3_height 80
+#define background3_compressed ((gfx_sprite_t*)var_gfx[68])
+#define background4_width 80
+#define background4_height 80
+#define background4_compressed ((gfx_sprite_t*)var_gfx[69])
+#define background5_width 80
+#define background5_height 80
+#define background5_compressed ((gfx_sprite_t*)var_gfx[70])
+#define background6_width 80
+#define background6_height 80
+#define background6_compressed ((gfx_sprite_t*)var_gfx[71])
+#define background7_width 80
+#define background7_height 80
+#define background7_compressed ((gfx_sprite_t*)var_gfx[72])
+#define background8_width 80
+#define background8_height 80
+#define background8_compressed ((gfx_sprite_t*)var_gfx[73])
+#define background9_width 80
+#define background9_height 80
+#define background9_compressed ((gfx_sprite_t*)var_gfx[74])
+#define background10_width 80
+#define background10_height 80
+#define background10_compressed ((gfx_sprite_t*)var_gfx[75])
+#define background11_width 80
+#define background11_height 80
+#define background11_compressed ((gfx_sprite_t*)var_gfx[76])
+#define backgroundStation_width 35
+#define backgroundStation_height 25
+#define backgroundStation_compressed ((gfx_sprite_t*)var_gfx[77])
+#define sizeof_background_gfx_pal 512
+#define background_gfx_pal ((uint16_t*)var_gfx[78])
 bool var_gfx_init(void);
 
 #endif
