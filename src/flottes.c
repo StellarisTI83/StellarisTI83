@@ -369,6 +369,12 @@ int GetFleetX(Flotte *flotte){
 int GetFleetY(Flotte *flotte){
 	return flotte->y;
 }
+int GetFleetXVector(Flotte *flotte){
+	return flotte->vecteur.xVecteur;
+}
+int GetFleetYVector(Flotte *flotte){
+	return flotte->vecteur.yVecteur;
+}
 
 int GetFleetHullPourcent(Flotte *flotte){
 	return (flotte->coqueVie * 100) / flotte->coqueTotal;
@@ -472,11 +478,11 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **system
 	int empireSize = 1;
 	empire = EmpireNumero(empireListe, 1);
 	empireSize = EmpireArraySize(empireListe);
-	while(numeroEmpire < empireSize){
+	while(numeroEmpire <= empireSize){
 		flotte = NumeroFlotte(GetFleetArray(empire), 1);
 		fleetIndex = 1;
 		fleetSize = FleetArraySize(GetFleetArray(empire));
-		while(fleetIndex < fleetSize){
+		while(fleetIndex <= fleetSize){
 			
 			//bouger la flotte
 			if(flotte->action != FLOTTE_AUCUNE_ACTION) {

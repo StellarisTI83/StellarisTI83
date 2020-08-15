@@ -35,7 +35,8 @@
  * calcule le niveau de connaissance (intel level) du systeme
  */
 static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, EmpireListe *empireListe){
-	int index = 0;
+	int sizeFleet = 0;
+	int indexFleet = 0;
 	int numeroSysteme = 0;
 
 	while(numeroSysteme < LARGEUR_GALAXIE * LARGEUR_GALAXIE) {
@@ -50,9 +51,10 @@ static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, E
 		}
 		numeroSysteme++;
 	}
-	while(index < FleetArraySize(GetFleetArray(EmpireNumero(empireListe, 1)))){
-        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(NumeroFlotte(GetFleetArray(EmpireNumero(empireListe, 1)), index))], TOTAL);
-		index++;
+	sizeFleet = FleetArraySize(GetFleetArray(EmpireNumero(empireListe, 1)));
+	while(indexFleet <= sizeFleet){
+        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(NumeroFlotte(GetFleetArray(EmpireNumero(empireListe, 1)), indexFleet))], TOTAL);
+		indexFleet++;
 	}
 }
 

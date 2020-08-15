@@ -60,6 +60,8 @@ void SetFleetProgress(Flotte *flotte, int progress);
 
 int GetFleetX(Flotte *flotte);
 int GetFleetY(Flotte *flotte);
+int GetFleetXVector(Flotte *flotte);
+int GetFleetYVector(Flotte *flotte);
 
 int GetFleetHullPourcent(Flotte *flotte);
 int GetFleetArmorPourcent(Flotte *flotte);

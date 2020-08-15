@@ -1930,6 +1930,9 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 1, CAPITALE, 3);
 	SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 2, USINE_CIVILE, 1);
 	SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 3, FONDERIE, 1);
+
+	CalculateEmpireFleetPower(joueur);
+
 	gfx_SetTextXY(90, 90);
 	for(j = 2; j <= GetEmpireNumber(parametres); j++){
 		Empire *empire = NULL;
@@ -2077,7 +2080,6 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 
 	gfx_SetDrawBuffer();
 	StellarisBoucle(&sauvegarde, empireListe, parametres, date, systemeStellaires, camera, fenetre, marche);
-	// StellarisBoucle(&sauvegarde, empireListe, parametres, date, systemeStellaires, camera, fenetre, marche);
 }
 
 /**

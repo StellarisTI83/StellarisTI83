@@ -671,12 +671,14 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 	Empire* empire = NULL;
 	Flotte* flotte = NULL;
 	int empireIndex = 1, fleetIndex = 1;
+	int sizeFleet = 0;
 	int x, y;
 	gfx_SetColor(11);
 	empire = EmpireNumero(empireListe, 1);
 	fleetIndex = 1;
-	flotte = NumeroFlotte(GetFleetArray(empire), fleetIndex);;
-	while(fleetIndex <= FleetArraySize(GetFleetArray(empire))){
+	flotte = NumeroFlotte(GetFleetArray(empire), fleetIndex);
+	sizeFleet = FleetArraySize(GetFleetArray(empire));
+	while(fleetIndex <= sizeFleet){
 		if(GetFleetSystem(flotte) == GetCameraSystem(camera)){
 			x = GetFleetX(flotte) - GetCameraXSystem(camera) - 3;
 			y = GetFleetY(flotte) - GetCameraYSystem(camera) - 3;
