@@ -177,8 +177,7 @@ void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Came
 					console.nombreActive = true;
 					break;
 			}
-		}	
-		else{
+		} else {
 			console.nombreActive = true;
 			switch(*key){
 				case sk_1:
@@ -221,7 +220,6 @@ void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Came
 					CloseCommandPrompt(fenetre, camera, date);
 					break;
 			}
-			*key = 0;
 		}
 		if((((character != '.') && (*key)) &&  ((29 >= console.cursor) && (*key != sk_Del))) && ((*key != sk_Alpha) && (*key != sk_Enter))){
 			console.deniereCommande[console.cursor] = character;

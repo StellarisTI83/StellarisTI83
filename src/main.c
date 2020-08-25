@@ -35,8 +35,8 @@ typedef struct VecteurStationStruct VecteurStation;
 struct VecteurStationStruct{
 	int x;
 	int y;
-	double xVector;
 	double yVector;
+	bool descend;
 }
 
 /* private functions =================================================== */
@@ -132,22 +132,29 @@ static void MoveStation(VecteurStation *vecteurStation){
 
     zx7_Decompress(station, backgroundStation_compressed);
 
-	vecteurStation->xVector = randInt(-1, 1);
-	
-	vecteurStation->yVector = randInt(-1, 1);
+
+	if(vecteurStation->yVector >= M_PI)
+		vecteurStation->descend = true;
+	else if(vecteurStation->yVector <= -M_PI)
+		vecteurStation->descend = false;
+
+	if(!vecteurStation->descend){
+		vecteurStation->yVector += 0.1;
+		vecteurStation->y += sin(abs(vecteurStation->yVector));
+	}
+	else{
+		vecteurStation->yVector -= 0.1;
+		vecteurStation->y -= sin(abs(vecteurStation->yVector));
+	}
 
 
-	vecteurStation->x += vecteurStation->xVector;
-	vecteurStation->y += vecteurStation->yVector;
-
-	if(vecteurStation->x > 220)
-		vecteurStation->x--;
-	else if(vecteurStation->x < 210)
-		vecteurStation->x++;
-	if(vecteurStation->y > 110)
-		vecteurStation->y--;
-	else if(vecteurStation->y < 130)
-		vecteurStation->y++;
+	{
+		gfx_SetColor(0);
+		gfx_FillRectangle_NoClip(10, 50, 50, 10);
+		gfx_SetTextXY(10, 50);
+		PrintInt(vecteurStation->yVector);
+		PrintInt(vecteurStation->descend);
+	}
 
     gfx_TransparentSprite_NoClip(station, vecteurStation->x, vecteurStation->y);
 	free(station);
@@ -232,8 +239,8 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 
 	vecteurStation.x = 206;
 	vecteurStation.y = 120;
-	vecteurStation.xVector = 0;
 	vecteurStation.yVector = 0;
+	vecteurStation.descend = false;
 
 	/*imprimer tout*/
 	

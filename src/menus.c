@@ -694,16 +694,16 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 				AddEmpireMinerals(EmpireNumero(empireListe, 1), -50);
 				switch(GetWindowSelection(fenetre)){
 					case 1:
-						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_URBAIN, 12, 0, 0, 50);
+						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
 						break;
 					case 2:
-						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 12, 0, 0, 50);
+						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 1, 12, 0, 0, 50);
 						break;
 					case 3:
-						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_MINIER, 12, 0, 0, 50);
+						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_MINIER, 1, 12, 0, 0, 50);
 						break;
 					case 4:
-						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 12, 0, 0, 50);
+						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 1, 12, 0, 0, 50);
 						break;
 				}
 			}
@@ -909,6 +909,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 			AddEmpireAlloys(joueur, -prix);
 			NouvelOrdre(GetCityOrderQueue(GetWindowCity(fenetre)),
 				CONSTRUIRE_BATIMENT,
+				1, 
 				10,
 				GetWindowPrevious(fenetre),
 				GetWindowSelection(fenetre),
@@ -1088,16 +1089,16 @@ static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeSte
 				AddEmpireMinerals(EmpireNumero(empireListe, 1), -50);
 				switch(GetWindowSelection(fenetre)){
 					case 1:
-						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_URBAIN, 12, 0, 0, 50);
+						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
 						break;
 					case 2:
-						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 12, 0, 0, 50);
+						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 1, 12, 0, 0, 50);
 						break;
 					case 3:
-						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_MINIER, 12, 0, 0, 50);
+						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_MINIER, 1, 12, 0, 0, 50);
 						break;
 					case 4:
-						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 12, 0, 0, 50);
+						NouvelOrdre(GetCityOrderQueue(GetPlanetCity(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 1, 12, 0, 0, 50);
 						break;
 				}
 			}
@@ -1755,6 +1756,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
 					AddEmpireAlloys(joueur, -prixAmelioration);
 					NouvelOrdre(GetStationOrderQueue(station),
 						AMELIORER_STATION,
+						1, 
 						tempsAmelioration,
 						0,
 						0,
@@ -1945,6 +1947,7 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire **sys
 					AddEmpireAlloys(joueur, -50);
 					NouvelOrdre(ordreQueue,
 						CONSTRUIRE_MODULE, 
+						1, 
 						12,
 						numero,
 						GetWindowPrevious(fenetre),
@@ -2368,6 +2371,7 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire **sy
 					AddEmpireAlloys(joueur, -prix);
 					NouvelOrdre(ordreQueue,
 						CONSTRUIRE_VAISSEAU,
+						1, 
 						travail,
 						GetWindowSelection(fenetre),
 						1,
@@ -2505,6 +2509,7 @@ void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire
 			AddEmpireAlloys(joueur, -(prix * GetWindowFleetSize(fenetre)));
 			NouvelOrdre(GetStationOrderQueue(GetSystemStation(systemeStellaires[GetCameraSystem(camera)])),
 				CONSTRUIRE_VAISSEAU,
+				1, 
 				travail * GetWindowFleetSize(fenetre),
 				GetWindowSelection(fenetre),
 				GetWindowFleetSize(fenetre),

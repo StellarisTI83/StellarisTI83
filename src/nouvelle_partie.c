@@ -1894,6 +1894,8 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 			fin = 0;
 	}
 	SetEmpireColor(joueur, 9);
+	SetEmpireSystemCapital(joueur, i);
+
 	SetSystemStarType(systemeStellaires[i], ETOILE_TYPE_K);
 	SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
 	SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);
@@ -1952,6 +1954,7 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		gfx_PrintString("1 ");
 		PrintInt(j);
 		SetEmpireColor(empire, randInt(20, 29));
+		SetEmpireSystemCapital(empire, i);
 		SetSystemStarType(systemeStellaires[i], ETOILE_TYPE_K);
 		SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
 		SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);

@@ -50,6 +50,8 @@ struct EmpireStruct {
 	int PuissanceScientifique;
 	int PuissanceEconomique;
 
+	int systemeCapitale;
+
 	FlotteListe* flotte;
 	Empire* suivant;
 };
@@ -218,6 +220,13 @@ void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement){
  */
 Gouvernement GetEmpireGouvernement(Empire *empire){
 	return empire->gouvernement;
+}
+
+void SetEmpireSystemCapital(Empire *empire, int system){
+	empire->systemeCapitale = system;
+}
+int GetEmpireSystemCapital(Empire *empire){
+	return empire->systemeCapitale;
 }
 
 /**
@@ -419,4 +428,102 @@ void CalculateEmpireFleetPower(Empire *empire){
 
 int GetEmpireFleetPower(Empire *empire){
 	return empire->PuissanceMilitaire;
+}
+
+/*Empires AI*/
+
+static void PlanetaryAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+	int systemeNumero = 0;
+	int planeteNumero = 0;
+	int taille = 0;
+	Empire *empire;
+	Planete *planete = NULL;
+	while(systemeNumero < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
+		if(GetSystemEmpire != 0){
+			planeteNumero = 0;
+			empire = EmpireNumero(empireListe, GetSystemEmpire(systemeStellaires[systemeNumero]));
+			taille = GetSystemPlanetNumber(systemeStellaires[systemeNumero]);
+			while(planeteNumero < taille){
+				if(GetPlanetCityStatus(GetSystemPlanet(systemeStellaires[systemeNumero], planeteNumero))){
+					planete = GetSystemPlanet(systemeStellaires[systemeNumero], planeteNumero);
+					/*La "planete" est habitée et "empire" contient son empire*/
+					
+				}
+				planeteNumero++;
+			}
+		}
+		systemeNumero++;
+	}
+}
+
+static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date){
+	if(GetTimeYear(date) < 2300){
+		if(GetEmpireAlloys(empire) >= 100){
+			OrdreFile *ordreQueue;
+			Station *station;
+			AddEmpireAlloys(empire, -100);
+			station = GetSystemStation(systemeStellaires[GetEmpireSystemCapital(empire)]);
+			ordreQueue = GetStationOrderQueue(station);
+			NouvelOrdre(ordreQueue,
+						1,
+						CONSTRUIRE_VAISSEAU,
+						3,
+						FLOTTE_SCIENTIFIQUE,
+						1,
+						100
+					);
+		}
+	}
+}
+
+static void EmpireAICivilianFleet(Empire *empire, EmpireListe *empireListe, Flotte *flotte, SystemeStellaire **systemeStellaires){
+	if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
+		int systeme = GetFleetSystem(flotte);
+		if(GetFleetType(flotte) == FLOTTE_SCIENTIFIQUE){
+			
+		}
+	}
+}
+
+static void EmpireAIMilitaryFleet(Empire *empire, EmpireListe *empireListe, Flotte *flotte, SystemeStellaire **systemeStellaires){
+
+}
+
+static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+	FlotteListe *flotteListe = GetFleetArray(empire);
+	int tailleFlotte = FleetArraySize(flotteListe);
+	if(tailleFlotte > 1){
+		int compteurFlotte = 1;
+		Flotte *flotte = NULL;
+
+		while(compteurFlotte <= tailleFlotte){
+			flotte = NumeroFlotte(flotteListe, compteurFlotte);
+			if(GetFleetType == FLOTTE_MILITAIRE)
+				EmpireAIMilitaryFleet(empire, empireListe, flotte, systemeStellaires);
+			
+			else
+				EmpireAICivilianFleet(empire, empireListe, flotte, systemeStellaires);
+
+			compteurFlotte++;
+		}
+	}
+}
+
+void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date){
+	Empire *empire = NULL;
+	int empireCounter = 2;
+	int empireTotalNumber = 0;
+
+	PlanetaryAI(empireListe, systemeStellaires);
+
+	empireTotalNumber = EmpireArraySize(empireListe);
+	while(empireCounter <= empireTotalNumber){
+		empire = EmpireNumero(empireListe, empireCounter);
+
+		EmpireAIEconomy(empireCounter, empire, empireListe, systemeStellaires, date);
+
+		EmpireAIFleetManager(empire, empireListe, systemeStellaires);
+
+		empireCounter++;
+	}
 }

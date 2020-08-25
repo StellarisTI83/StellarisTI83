@@ -27,7 +27,7 @@ Module *GetStationModulePointer(Station *station, int moduleNumber);
 
 OrdreFile *GetStationOrderQueue(Station *station);
 
-void NewStationOrdre(Station *station, OrdreStation ordre);
+void NewStationOrdre(Station *station, OrdreStation ordre, int empire);
 OrdreStation GetStationOrder(Station *station);
 
 int GetStationOrderProgress(Station *station);

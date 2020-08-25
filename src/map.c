@@ -682,6 +682,9 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 		if(GetFleetSystem(flotte) == GetCameraSystem(camera)){
 			x = GetFleetX(flotte) - GetCameraXSystem(camera) - 3;
 			y = GetFleetY(flotte) - GetCameraYSystem(camera) - 3;
+			while(gfx_GetPixel(x + 4, y + 1) != 0){
+				y += 11;
+			}
 			if(((0 < x) && (x < 315)) && ((0 < y) && (y < 235))){
 				if(GetFleetProgress(flotte) == 0){
 					gfx_TransparentSprite(ourFleet, x, y);

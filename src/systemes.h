@@ -60,7 +60,7 @@ int GetHyperlaneX(SystemeStellaire *systemeStellaire, int numeroHyperlane);
 int GetHyperlaneY(SystemeStellaire *systemeStellaire, int numeroHyperlane);
 
 void CreateSystemPlanet(SystemeStellaire *systemeStellaire, int position);
-
+Planete *GetSystemPlanet(SystemeStellaire *systemeStellaire, int position);
 
 void SetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number, bool habitability);
 bool GetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number);

@@ -22,6 +22,7 @@ struct OrdreElement{
 	int prix;
 	int tempsTotal;
 	int tempsActuel;
+	int empire;
 	Ordre* ordreSuivant;
 };
 
@@ -51,7 +52,7 @@ void SupprimerFileOrdres(OrdreFile *ordreFile){
 	free(ordreFile);
 }
 
-void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal, int info1, int info2, int prix){
+void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, int info1, int info2, int prix){
 	Ordre *ordreElement = NULL, *ordrePrecedent = NULL;
 
 	if(ordreFile->premierOrdre == NULL){
@@ -73,6 +74,7 @@ void NouvelOrdre(OrdreFile* ordreFile, int ordre, int tempsTotal, int info1, int
 	ordreElement->info1 = info1;
 	ordreElement->info2 = info2;
 	ordreElement->prix = prix;
+	ordreElement->empire = empire;
 	ordreElement->ordreSuivant = NULL;
 }
 
@@ -105,6 +107,13 @@ int NombredOrdres(OrdreFile *ordreFile){
 int GetOrder(OrdreFile *ordreFile){
 	if(RecupererOrdre(ordreFile) != NULL)
 		return RecupererOrdre(ordreFile)->ordre;
+	else 
+		return 0;
+}
+
+int GetOrderEmpire(OrdreFile *ordreFile){
+	if(RecupererOrdre(ordreFile) != NULL)
+		return RecupererOrdre(ordreFile)->empire;
 	else 
 		return 0;
 }

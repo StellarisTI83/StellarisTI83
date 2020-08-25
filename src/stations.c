@@ -141,12 +141,12 @@ OrdreFile *GetStationOrderQueue(Station *station){
 	return station->ordreFile;
 }
 
-void NewStationOrdre(Station *station, OrdreStation ordre){
+void NewStationOrdre(Station *station, OrdreStation ordre, int empire){
 	int tempsTotal = 0;
 	int info1 = 0;
 	int info2 = 0;
 	int prix = 0;
-	NouvelOrdre(station->ordreFile, ordre, tempsTotal, info1, info2, prix);
+	NouvelOrdre(station->ordreFile, empire, ordre, tempsTotal, info1, info2, prix);
 }
 OrdreStation GetStationOrder(Station *station){
 	return GetOrder(station->ordreFile);

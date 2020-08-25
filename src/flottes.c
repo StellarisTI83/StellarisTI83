@@ -127,7 +127,7 @@ int FleetArraySize(FlotteListe* flotteListe){
 }
 
 /**
- *Renvoi un pointeur vers l'empire numero x
+ *Renvoi un pointeur vers l'empire numero x, commence à 1
  */
 Flotte* NumeroFlotte(FlotteListe* flotteliste, int numero) {
 	Flotte *pointeur = 0;

@@ -67,6 +67,7 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
 	OrdreStation ordre = AUCUN;
     int info1 = 0;
     int info2 = 0;
+	int numeroEmpire = 0;
 	Empire *joueur = EmpireNumero(empireListe, 1);
 	while(numero < (LARGEUR_GALAXIE * LARGEUR_GALAXIE) - 1){
 		ordre = GetSystemStationOrder(systemeStellaires[numero]);
@@ -77,6 +78,7 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
 			else{
 				info1 = GetSystemStationInfo1(systemeStellaires[numero]);
 				info2 = GetSystemStationInfo2(systemeStellaires[numero]);
+				numeroEmpire = GetSystemEmpire(systemeStellaires[numero]);
 				switch(ordre){
 				case AMELIORER_STATION:
 					SetSystemStationLevel(systemeStellaires[numero], GetSystemStationLevel(systemeStellaires[numero]) + 1);
@@ -112,7 +114,7 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
 							nombreDeCuirasse = nombreDeVaisseaux;
 							break;
 					}
-					NouvelleFlotte(GetFleetArray(joueur), numero, info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
+					NouvelleFlotte(GetFleetArray(EmpireNumero(empireListe, numeroEmpire)), numero, info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
 					break;
 				}
 				EndSystemStationOrder(systemeStellaires[numero]);
@@ -352,7 +354,8 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 
 /* entry points ======================================================== */
 int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre){
-    TestKey(key, empireListe, systemeStellaires, date, camera, fenetre);
+    if(!GetCommandPromptStatus(fenetre))
+		TestKey(key, empireListe, systemeStellaires, date, camera, fenetre);
 
     UpdateTime(date, key, fenetre);
     
@@ -360,7 +363,8 @@ int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeSt
         // UpdatePlayersData();
 
         UpdateWorld(empireListe, systemeStellaires);
-
     }
+
+	EmpireAI(empireListe, systemeStellaires, date);
 	return 1;
 }

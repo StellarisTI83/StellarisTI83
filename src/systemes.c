@@ -155,6 +155,9 @@ int GetHyperlaneY(SystemeStellaire *systemeStellaire, int numeroHyperlane){
 void CreateSystemPlanet(SystemeStellaire *systemeStellaire, int position){
 	systemeStellaire->planetes[position] = AllocPlanet();
 }
+Planete *GetSystemPlanet(SystemeStellaire *systemeStellaire, int position){
+	return systemeStellaire->planetes[position];
+}
 
 void SetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number, bool habitability){
 	SetPlanetHabitability(systemeStellaire->planetes[number], habitability);

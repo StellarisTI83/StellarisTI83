@@ -47,6 +47,9 @@ FlotteListe *GetFleetArray(Empire *empire);
 void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement);
 Gouvernement GetEmpireGouvernement(Empire *empire);
 
+void SetEmpireSystemCapital(Empire *empire, int system);
+int GetEmpireSystemCapital(Empire *empire);
+
 void SetEmpireColor(Empire *empire, Gouvernement couleur);
 int GetEmpireColor(Empire *empire);
 
@@ -87,5 +90,7 @@ void EmpireGenerateRandomName(Empire *empire);
 
 void CalculateEmpireFleetPower(Empire *empire);
 int GetEmpireFleetPower(Empire *empire);
+
+void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date);
 
 #endif
