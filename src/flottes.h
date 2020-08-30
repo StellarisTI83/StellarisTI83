@@ -38,7 +38,7 @@ typedef struct VecteurStruct Vecteur;
 FlotteListe* CreerFlotteListe();
 void SupprimerFlotteListe(FlotteListe* flotteliste);
 int FleetArraySize(FlotteListe* flotteListe);
-Flotte* NumeroFlotte(FlotteListe* flotteliste, int numero);
+Flotte* FlotteNumero(FlotteListe* flotteliste, int numero);
 int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte);
 Flotte* AjouterFlotte(FlotteListe* flotteliste);
 void SupprimerFlotte(FlotteListe* flotteliste, int numero);
@@ -77,6 +77,7 @@ void SetFleetAction(Flotte *flotte, char action);
 int GetFleetArriveSystem(Flotte *flotte);
 
 void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *fenetre, Camera *camera, EmpireListe *empireListe, SystemeStellaire **systemeStellaires);
+int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires);
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **systemeStellaires);
 
 #endif

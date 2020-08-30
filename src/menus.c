@@ -152,7 +152,7 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 	gfx_HorizLine_NoClip(45, 51, 230);
 	gfx_PrintStringXY("Vue flottes", 116, 42);
 	niveau = 57;
-	flotte = NumeroFlotte(GetFleetArray(joueur), 1);
+	flotte = FlotteNumero(GetFleetArray(joueur), 1);
 	compteur = 0;
 	compteurFlotte = 1;
 	fleetIndex = 2;
@@ -163,7 +163,7 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 			compteur++;
 		}
 		fleetIndex++;
-		flotte = NumeroFlotte(GetFleetArray(joueur), fleetIndex);
+		flotte = FlotteNumero(GetFleetArray(joueur), fleetIndex);
 	}
 
 	if (GetWindowSelection(fenetre) > compteur) {
@@ -1209,7 +1209,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, E
 	gfx_SetPixel(275, 51);
 	gfx_PrintStringXY("Retour", 48, 42);
 	gfx_SetTextXY(150, 42);
-	flotte = NumeroFlotte(GetFleetArray(EmpireNumero(empireListe, 1)), GetWindowSelectedFleet(fenetre));
+	flotte = FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), GetWindowSelectedFleet(fenetre));
 	if(GetFleetType(flotte) == FLOTTE_DE_CONSTRUCTION){
 		if((GetWindowSelection(fenetre) == 0) || (GetWindowSelection(fenetre) >= 10)){
 			SetWindowSelection(fenetre, 2);
@@ -2710,7 +2710,7 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 	}
 	
 	compteurFlotte = 1;
-	flotte = NumeroFlotte(GetFleetArray(joueur), 1);
+	flotte = FlotteNumero(GetFleetArray(joueur), 1);
 	while(compteurFlotte <= sizeFleet) {
 		if(GetWindowSelection(fenetre) == compteurFlotte) {
 			gfx_SetTextFGColor(13);
@@ -2735,7 +2735,7 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 		gfx_HorizLine_NoClip(50, niveau + 11, 220);
 		niveau += 17;
 		compteurFlotte++;
-		flotte = NumeroFlotte(GetFleetArray(joueur), compteurFlotte);
+		flotte = FlotteNumero(GetFleetArray(joueur), compteurFlotte);
 	}
 
 	if(*key == sk_Enter){

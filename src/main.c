@@ -43,7 +43,7 @@ struct VecteurStationStruct{
 
 /**
  * Initialise toutes les variables
- */
+ */;
 static void InitializeAll(EmpireListe **empireListe, Parametres *parametres){
 	Empire *joueur = NULL;
 	
@@ -138,23 +138,13 @@ static void MoveStation(VecteurStation *vecteurStation){
 	else if(vecteurStation->yVector <= -M_PI)
 		vecteurStation->descend = false;
 
-	if(!vecteurStation->descend){
-		vecteurStation->yVector += 0.1;
-		vecteurStation->y += sin(abs(vecteurStation->yVector));
+	if(vecteurStation->descend){
+		vecteurStation->yVector -= 0.05;
 	}
 	else{
-		vecteurStation->yVector -= 0.1;
-		vecteurStation->y -= sin(abs(vecteurStation->yVector));
+		vecteurStation->yVector += 0.05;
 	}
-
-
-	{
-		gfx_SetColor(0);
-		gfx_FillRectangle_NoClip(10, 50, 50, 10);
-		gfx_SetTextXY(10, 50);
-		PrintInt(vecteurStation->yVector);
-		PrintInt(vecteurStation->descend);
-	}
+	vecteurStation->y = 120 + cos(vecteurStation->yVector) * 5;
 
     gfx_TransparentSprite_NoClip(station, vecteurStation->x, vecteurStation->y);
 	free(station);
@@ -295,7 +285,7 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 			gfx_SetColor(13);
 		}
 		gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 2, strlen(_(LC_CHARGER)) * 8);
+		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_CHARGER)) * 8);
 		gfx_SetTextFGColor(1);
 		gfx_SetColor(1);
 
@@ -305,7 +295,7 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 		}
 		niveau += espacement;
 		gfx_PrintStringXY(_(LC_NOUVELLE_PARTIE), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 2, strlen(_(LC_NOUVELLE_PARTIE)) * 8);
+		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_NOUVELLE_PARTIE)) * 8);
 		gfx_SetTextFGColor(1);
 		gfx_SetColor(1);
 
@@ -315,7 +305,7 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 		}
 		niveau += espacement;
 		gfx_PrintStringXY(_(LC_OPTIONS), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 2, strlen(_(LC_OPTIONS)) * 8);
+		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_OPTIONS)) * 8);
 		gfx_SetTextFGColor(1);
 		gfx_SetColor(1);
 
@@ -325,12 +315,14 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 		}
 		niveau += espacement;
 		gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 2, strlen(_(LC_QUITTER)) * 8);
+		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_QUITTER)) * 8);
 		gfx_SetTextFGColor(1);
 		gfx_SetColor(1);
 
 		gfx_SwapDraw();
 	}
+	gfx_ZeroScreen();
+
 	gfx_SetDrawBuffer();
 
 	gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
@@ -455,6 +447,9 @@ int main(void){
 	
 	EmpireListe *empireListe = NULL;
 	Parametres *parametres = NULL;
+	#ifdef DEBUG_VERSION
+    	dbg_sprintf(dbgout, "Started Stellaris\n");
+	#endif
 
 	InitializeAll(&empireListe, parametres);
 	while (fin){

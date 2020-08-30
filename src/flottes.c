@@ -129,7 +129,7 @@ int FleetArraySize(FlotteListe* flotteListe){
 /**
  *Renvoi un pointeur vers l'empire numero x, commence à 1
  */
-Flotte* NumeroFlotte(FlotteListe* flotteliste, int numero) {
+Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
 	Flotte *pointeur = 0;
 	int compteur = 1;
 	pointeur = flotteliste->premier;
@@ -417,11 +417,10 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 	Flotte* flotte;
 	int path[50];
 	int error;
-	int index = 0;
 	double norme = 0;
 
 	empire = EmpireNumero(empireListe, numeroDeEmpire);
-	flotte = NumeroFlotte(GetFleetArray(empire), numeroDeFlotte);
+	flotte = FlotteNumero(GetFleetArray(empire), numeroDeFlotte);
 	if(IsCameraMoveFleet(camera) == false){
 		SetCameraMoveFleet(camera, true);
 		SetCameraLock(camera, false);
@@ -435,10 +434,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 			flotte->action = FLOTTE_AUCUNE_ACTION;
 		} else if((flotte->type == FLOTTE_SCIENTIFIQUE) && (GetSystemIntelLevel(systemeStellaires[systeme]) == INCONNU) || (GetSystemIntelLevel(systemeStellaires[systeme]) != INCONNU)){
 			SetCameraMoveFleet(camera, false);
-			flotte->systemeArrive = systeme;
-			flotte->avancement = 0;
-			flotte->avancementTrajet = 1;
-				
+			
 			SetCameraEmpire(camera, 0);
 			SetCameraFleet(camera, 0);
 
@@ -446,15 +442,12 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 			SetCameraX(camera, GetSystemX(systemeStellaires[flotte->systeme]));
 			SetCameraY(camera, GetSystemY(systemeStellaires[flotte->systeme]));
 			
-			error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
+			error = MoveFleet(flotte, systeme, systemeStellaires);
+			
 			if(error != 0) { // si il n'y a pas de chemin
 				flotte->action = FLOTTE_AUCUNE_ACTION;
 			}
 
-			while((index < 4) && (GetHyperlaneDestination(systemeStellaires[flotte->systeme], index) != flotte->chemin[flotte->avancementTrajet])){
-				index++;
-			}
-			flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, GetHyperlaneX(systemeStellaires[flotte->systeme],index), GetHyperlaneY(systemeStellaires[flotte->systeme],index));
 			
 			switch(flotte->action){
 			case FLOTTE_CONSTRUIRE_BASE:
@@ -463,6 +456,21 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 			}
 		}
 	}
+}
+
+int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires){
+	int error = 0;
+	int index = 0;
+	flotte->systemeArrive = systeme;
+	flotte->avancement = 0;
+	flotte->avancementTrajet = 1;
+	flotte->action = FLOTTE_BOUGER;
+	error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
+	flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, GetHyperlaneX(systemeStellaires[flotte->systeme], index), GetHyperlaneY(systemeStellaires[flotte->systeme], index));
+	while((index < 4) && (GetHyperlaneDestination(systemeStellaires[flotte->systeme], index) != flotte->chemin[flotte->avancementTrajet])){
+		index++;
+	}
+	return error;
 }
 
 /**
@@ -479,7 +487,7 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **system
 	empire = EmpireNumero(empireListe, 1);
 	empireSize = EmpireArraySize(empireListe);
 	while(numeroEmpire <= empireSize){
-		flotte = NumeroFlotte(GetFleetArray(empire), 1);
+		flotte = FlotteNumero(GetFleetArray(empire), 1);
 		fleetIndex = 1;
 		fleetSize = FleetArraySize(GetFleetArray(empire));
 		while(fleetIndex <= fleetSize){
@@ -529,7 +537,7 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **system
 				}
 			}
 			fleetIndex++;
-			flotte = NumeroFlotte(GetFleetArray(empire), fleetIndex);
+			flotte = FlotteNumero(GetFleetArray(empire), fleetIndex);
 		}
 		numeroEmpire++;
 		empire = EmpireNumero(empireListe, numeroEmpire);

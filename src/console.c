@@ -294,6 +294,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " cash");
 			AddEmpireCredit(EmpireNumero(empireListe, 1), nombre);
+			#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "Added %d cash to empire %d (%p)\n", nombre, 1, EmpireNumero(empireListe, 1));
+			#endif
 			return;
 		}
 	}
@@ -316,6 +319,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " minerals");
 			AddEmpireMinerals(EmpireNumero(empireListe, 1), nombre);
+			#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "Added %d minerals to empire %d (%p)\n", nombre, 1, EmpireNumero(empireListe, 1));
+			#endif
 			return;
 		}
 	}
@@ -338,6 +344,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " alloys");
 			AddEmpireAlloys(EmpireNumero(empireListe, 1), nombre);
+			#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "Added %d alloys to empire %d (%p)\n", nombre, 1, EmpireNumero(empireListe, 1));
+			#endif
 			return;
 		}
 	}
@@ -360,6 +369,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " food");
 			AddEmpireFood(EmpireNumero(empireListe, 1), nombre);
+			#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "Added %d food to empire %d (%p)\n", nombre, 1, EmpireNumero(empireListe, 1));
+			#endif
 			return;
 		}
 	}
@@ -392,9 +404,15 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 		switch(GetSeeAll(parametres)){
 			case true:
 				SetSeeAll(parametres, false);
+				#ifdef DEBUG_VERSION
+					dbg_sprintf(dbgout, "See all desactivated\n");
+				#endif
 				break;
 			case false:
 				SetSeeAll(parametres, true);
+				#ifdef DEBUG_VERSION
+					dbg_sprintf(dbgout, "See all activated\n");
+				#endif
 				break;
 		}
 		strcpy(console.reponse, "see all systems");
@@ -403,4 +421,7 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 
 	syntax_err:
 		strcpy(console.reponse, "syntax error");
+		#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgerr, "Console syntax error\n");
+		#endif
 }

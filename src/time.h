@@ -19,6 +19,7 @@ void UnpauseGame(Date *date);
 void IncrementTimeSpeed(Date *date);
 void UnincrementTimeSpeed(Date *date);
 
+void AddTimeClock(Date *date);
 int GetTimeClock(Date *date);
 int GetTimeDay(Date *date);
 int GetTimeMonth(Date *date);
@@ -32,7 +33,5 @@ void UnincrementTimeSpeed(Date *date);
 void UpdateClock(Date *date);
 
 
-void AddClock(Date *date);
-int GetClock(Date *date);
 
 #endif

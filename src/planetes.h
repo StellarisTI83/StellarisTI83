@@ -4,6 +4,7 @@
 #include "ordres.h"
 
 /* types =============================================================== */
+
 typedef enum {AUCUN = 1, CAPITALE, FONDERIE, LABORATOIRE, USINE_CIVILE, THEATRE} Batiment;
 
 typedef enum {AUCUN, CONSTRUIRE_DISTRICT_URBAIN, CONSTRUIRE_DISTRICT_GENERATEUR, CONSTRUIRE_DISTRICT_MINIER,
@@ -16,11 +17,13 @@ typedef enum {HABITABLE_ARID = 1, HABITABLE_DESERT, HABITABLE_SAVANNA, HABITABLE
     HABITABLE_CONTINENTAL, HABITABLE_OCEAN, HABITABLE_TROPICAL, ARID, COLD_ARID, BROKE, FROZEN, GAS_GIANT, MOLTEN, TOXIC} PlanetType;
 
 /* structures ========================================================== */
+
 typedef struct VillesStruct Villes;
 
 typedef struct PlaneteStruct Planete;
 
 /* entry points ======================================================== */
+
 Planete *AllocPlanet();
 
 void SetPlanetHabitability(Planete *planete, bool habitability);

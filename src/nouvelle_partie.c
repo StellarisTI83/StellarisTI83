@@ -1265,11 +1265,6 @@ static bool InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **c
 	joueur = EmpireNumero(*empireListe, 1);
 	ti_CloseAll();
 	*sauvegarde = ti_Open("sauv", "w");
-	SetEmpireCredit(joueur, 100);
-	SetEmpireMinerals(joueur, 100);
-	SetEmpireFood(joueur, 200);
-	SetEmpireAlloys(joueur, 100);
-	SetEmpireConsumerGoods(joueur, 100);
 
 	*parametres = AllocParametres();
 
@@ -1278,6 +1273,7 @@ static bool InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **c
 	*date = AllocDate();
 	SetTime(*date, 1, 1, 2200);
 	SetTimeSpeed(*date, 0, 1);
+	AddTimeClock(*date);
 
 	*camera = AllocCamera();
 	SetCameraX(*camera, 380);
@@ -1304,6 +1300,9 @@ static void CreateGalacticMatrix(int *galaxie, int espaceEntreEtoiles, int *barr
 	int hauteur = 0, largeur = 0;
 	int x = LIMITE_GAUCHE;
 	int y = LIMITE_HAUT;
+	#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Create galaxy matrix\n");
+	#endif
 	while(hauteur < LARGEUR_GALAXIE) {
 		while(largeur < LARGEUR_GALAXIE*2) {
 			galaxie[hauteur * LARGEUR_GALAXIE*2 + largeur] = x;
@@ -1326,6 +1325,9 @@ static void RandomGalacticMatrix(int *galaxie, int coefficientDeplacementStellai
 	int hauteur = 0, largeur = 0;
 	int coefficientX = 0, coefficientY = 0;
 	int x = 0, y = 0;
+	#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Randomize galaxy matrix\n");
+	#endif
 	while(hauteur < LARGEUR_GALAXIE) {
 		while(largeur < LARGEUR_GALAXIE*2) {
 			x = galaxie[hauteur * LARGEUR_GALAXIE*2 + largeur];
@@ -1347,6 +1349,9 @@ static void RandomGalacticMatrix(int *galaxie, int coefficientDeplacementStellai
 static void RoundGalacticMatrix(int *galaxie, int espaceEntreEtoiles, int rayonExterieur, int rayonInterieur, int *barreDeChargement){
 	int hauteur = 0, largeur = 0;
 	int x = 0, y = 0;
+	#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Round galaxy matrix\n");
+	#endif
 	while(hauteur < LARGEUR_GALAXIE)
 	{
 		while(largeur < LARGEUR_GALAXIE * 2)
@@ -1600,6 +1605,11 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
 
     EtoileType etoile = 0;
     int trouNoir = 0;
+
+	#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Generate system structure\n");
+	#endif
+
 	while(hauteur < LARGEUR_GALAXIE) {
 		while(largeur < LARGEUR_GALAXIE * 2) {
 			systemeStellaires[k] = AllocSystem();
@@ -1786,6 +1796,9 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
 static void RecreateHyperlanes(SystemeStellaire **systemeStellaires, int *barreDeChargement, int k){
 	int i = 0;
 	int j = 0;
+	#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Recreate hyperlanes\n");
+	#endif
 	//recreation des hyperlanes
 	while(i < k) {
 		SystemeStellaire *systeme;
@@ -1856,20 +1869,15 @@ static int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sau
 	gfx_Rectangle_NoClip(49, 159, 222, 7);
 	gfx_SetColor(4);
 	gfx_SetTextXY(50, 50);
-	gfx_PrintString("1");
 	CreateGalacticMatrix(galaxie, espaceEntreEtoiles, &barreDeChargement);
 
-	gfx_PrintString("2");
 	RandomGalacticMatrix(galaxie, coefficientDeplacementStellaire, &barreDeChargement);
 	
-	gfx_PrintString("3");
 	RoundGalacticMatrix(galaxie, espaceEntreEtoiles, rayon, rayonInterieur, &barreDeChargement);
-
-	gfx_PrintString("4");
+;
 	k = GenerateSystemeStruct(galaxie, systemeStellaires, &barreDeChargement);
 	free(galaxie);
 	
-	gfx_PrintString("5");
 	RecreateHyperlanes(systemeStellaires, &barreDeChargement, k);
 
 	
@@ -1901,6 +1909,12 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);
 	SetSystemEmpire(systemeStellaires[i], 1);
 	SetSystemIntelLevel(systemeStellaires[i], TOTAL);
+
+	SetEmpireCredit(joueur, 100);
+	SetEmpireMinerals(joueur, 100);
+	SetEmpireFood(joueur, 200);
+	SetEmpireAlloys(joueur, 100);
+	SetEmpireConsumerGoods(joueur, 100);
 
 	SetSystemStationLevel(systemeStellaires[i], PORT_STELLAIRE);
 	SetSystemStationModule(systemeStellaires[i], 0, CHANTIER_SPATIAL);
@@ -1935,6 +1949,9 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 
 	CalculateEmpireFleetPower(joueur);
 
+	#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Player system: %d\n", i);
+	#endif
 	gfx_SetTextXY(90, 90);
 	for(j = 2; j <= GetEmpireNumber(parametres); j++){
 		Empire *empire = NULL;
@@ -1951,8 +1968,6 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		SetEmpireSpecies(empire, randInt(0, 3));
 		SetEmpireClothes(empire, randInt(0, 2));
 
-		gfx_PrintString("1 ");
-		PrintInt(j);
 		SetEmpireColor(empire, randInt(20, 29));
 		SetEmpireSystemCapital(empire, i);
 		SetSystemStarType(systemeStellaires[i], ETOILE_TYPE_K);
@@ -1961,6 +1976,12 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		SetSystemEmpire(systemeStellaires[i], j);
 		SetSystemIntelLevel(systemeStellaires[i], INCONNU);
 
+		SetEmpireCredit(empire, 100);
+		SetEmpireMinerals(empire, 100);
+		SetEmpireFood(empire, 200);
+		SetEmpireAlloys(empire, 100);
+		SetEmpireConsumerGoods(empire, 100);
+		
 		SetSystemStationLevel(systemeStellaires[i], PORT_STELLAIRE);
 		SetSystemStationModule(systemeStellaires[i], 0, CHANTIER_SPATIAL);
 		SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
@@ -1969,7 +1990,6 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		EmpireNouvelleFlotte(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
 		EmpireNouvelleFlotte(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 
-		gfx_PrintString("2");
 		planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i])- 1);
 
 		SetSystemPlanetHabitability(systemeStellaires[i], planete, true);
@@ -1988,7 +2008,9 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		
 		CalculateEmpireFleetPower(empire);
 
-		gfx_PrintString("3");
+		#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d\n -Color: %d\n -Planet: %d\n", j, empire,i, GetEmpireColor(empire), planete);
+		#endif
 	}
 }
 

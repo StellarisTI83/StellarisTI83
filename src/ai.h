@@ -69,22 +69,37 @@ char* GetEmpireNameString(Empire *empire);
 void SetEmpireCredit(Empire *empire, int argent);
 void AddEmpireCredit(Empire *empire, int argent);
 int GetEmpireCredit(Empire *empire);
+void SetEmpireCreditChange(Empire *empire, int change);
+void AddEmpireCreditChange(Empire *empire, int change);
+int GetEmpireCreditChange(Empire *empire);
 
 void SetEmpireMinerals(Empire *empire, int minerais);
 void AddEmpireMinerals(Empire *empire, int minerais);
 int GetEmpireMinerals(Empire *empire);
+void SetEmpireMineralsChange(Empire *empire, int change);
+void AddEmpireMineralsChange(Empire *empire, int change);
+int GetEmpireMineralsChange(Empire *empire);
 
 void SetEmpireFood(Empire *empire, int nourriture);
 void AddEmpireFood(Empire *empire, int nourriture);
 int GetEmpireFood(Empire *empire);
+void SetEmpireFoodChange(Empire *empire, int change);
+void AddEmpireFoodChange(Empire *empire, int change);
+int GetEmpireFoodChange(Empire *empire);
 
 void SetEmpireAlloys(Empire *empire, int alloy);
 void AddEmpireAlloys(Empire *empire, int alloy);
 int GetEmpireAlloys(Empire *empire);
+void SetEmpireAlloysChange(Empire *empire, int change);
+void AddEmpireAlloysChange(Empire *empire, int change);
+int GetEmpireAlloysChange(Empire *empire);
 
 void SetEmpireConsumerGoods(Empire *empire, int consumerGoods);
 void AddEmpireConsumerGoods(Empire *empire, int consumerGoods);
 int GetEmpireConsumerGoods(Empire *empire);
+void SetEmpireConsumerGoodsChange(Empire *empire, int change);
+void AddEmpireConsumerGoodsChange(Empire *empire, int change);
+int GetEmpireConsumerGoodsChange(Empire *empire);
 
 void EmpireGenerateRandomName(Empire *empire);
 

@@ -69,6 +69,9 @@ void UnpauseGame(Date *date){
     date->vitesse = date->vitesseSauvegardee;
 }
 
+void AddTimeClock(Date *date){
+    date->horloge++;
+}
 int GetTimeClock(Date *date){
     return date->horloge;
 }
@@ -123,6 +126,8 @@ void UpdateClock(Date *date) {
 			date->horloge += 6;
 			break;
 	}
+    
+    //protection contre le fait de faire plusieurs fois les actions calculées au 0 de l'horloge
 	if (date->horloge >= 24) {
 		date->horloge = 0;
 	}
@@ -140,10 +145,3 @@ void UpdateClock(Date *date) {
 	}
 }
 
-
-void AddClock(Date *date){
-    date->horloge++;
-}
-int GetClock(Date *date){
-    return date->horloge;
-}

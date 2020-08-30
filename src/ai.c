@@ -41,10 +41,15 @@ struct EmpireStruct {
 	Principe principe3;
 
 	int credits;
+	int creditsChange;
 	int minerais;
+	int mineraisChange;
 	int nourriture;
+	int nourritureChange;
 	int acier;
+	int acierChange;
 	int biensDeConsommation;
+	int biensDeConsommationChange;
 
 	int PuissanceMilitaire;
 	int PuissanceScientifique;
@@ -157,12 +162,12 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
 		while(pointeur->suivant != NULL) {
 			pointeur = pointeur->suivant;
 		}
-		pointeur->suivant = malloc(sizeof(Empire));
+		pointeur->suivant = calloc(1, sizeof(Empire));
 		pointeur = pointeur->suivant;
 		pointeur->suivant = NULL;
 	}
 	else {
-		empireListe->premier = malloc(sizeof(Empire));
+		empireListe->premier = calloc(1, sizeof(Empire));
 		pointeur = empireListe->premier;
 		pointeur->suivant = NULL;
 	}
@@ -332,6 +337,16 @@ int GetEmpireCredit(Empire *empire){
 	return empire->credits;
 }
 
+void SetEmpireCreditChange(Empire *empire, int change){
+	empire->creditsChange = change;
+}
+void AddEmpireCreditChange(Empire *empire, int change){
+	empire->creditsChange += change;
+}
+int GetEmpireCreditChange(Empire *empire){
+	return empire->creditsChange;
+}
+
 void SetEmpireMinerals(Empire *empire, int minerais){
 	empire->minerais = minerais;
 }
@@ -346,6 +361,16 @@ void AddEmpireMinerals(Empire *empire, int minerais){
  */
 int GetEmpireMinerals(Empire *empire){
 	return empire->minerais;
+}
+
+void SetEmpireMineralsChange(Empire *empire, int change){
+	empire->mineraisChange = change;
+}
+void AddEmpireMineralsChange(Empire *empire, int change){
+	empire->mineraisChange += change;
+}
+int GetEmpireMineralsChange(Empire *empire){
+	return empire->mineraisChange;
 }
 
 void SetEmpireFood(Empire *empire, int nourriture){
@@ -364,6 +389,16 @@ int GetEmpireFood(Empire *empire){
 	return empire->nourriture;
 }
 
+void SetEmpireFoodChange(Empire *empire, int change){
+	empire->nourritureChange = change;
+}
+void AddEmpireFoodChange(Empire *empire, int change){
+	empire->nourritureChange += change;
+}
+int GetEmpireFoodChange(Empire *empire){
+	return empire->nourritureChange;
+}
+
 void SetEmpireAlloys(Empire *empire, int alloy){
 	empire->acier = alloy;
 }
@@ -380,6 +415,16 @@ int GetEmpireAlloys(Empire *empire){
 	return empire->acier;
 }
 
+void SetEmpireAlloysChange(Empire *empire, int change){
+	empire->acierChange = change;
+}
+void AddEmpireAlloysChange(Empire *empire, int change){
+	empire->acierChange += change;
+}
+int GetEmpireAlloysChange(Empire *empire){
+	return empire->acierChange;
+}
+
 void SetEmpireConsumerGoods(Empire *empire, int consumerGoods){
 	empire->biensDeConsommation = consumerGoods;
 }
@@ -393,6 +438,16 @@ void AddEmpireConsumerGoods(Empire *empire, int consumerGoods){
  * Recuperer nombre de biens de consommation
  */
 int GetEmpireConsumerGoods(Empire *empire){
+	return empire->biensDeConsommation;
+}
+
+void SetEmpireConsumerGoodsChange(Empire *empire, int change){
+	empire->biensDeConsommation = change;
+}
+void AddEmpireConsumerGoodsChange(Empire *empire, int change){
+	empire->biensDeConsommation += change;
+}
+int GetEmpireConsumerGoodsChange(Empire *empire){
 	return empire->biensDeConsommation;
 }
 
@@ -458,20 +513,23 @@ static void PlanetaryAI(EmpireListe *empireListe, SystemeStellaire **systemeStel
 
 static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date){
 	if(GetTimeYear(date) < 2300){
+		//constuire flotte scientifique
 		if(GetEmpireAlloys(empire) >= 100){
 			OrdreFile *ordreQueue;
 			Station *station;
 			AddEmpireAlloys(empire, -100);
 			station = GetSystemStation(systemeStellaires[GetEmpireSystemCapital(empire)]);
 			ordreQueue = GetStationOrderQueue(station);
+			#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "Empire %d create a science fleet in system %d\n", numeroEmpire, GetEmpireSystemCapital(empire));
+			#endif
 			NouvelOrdre(ordreQueue,
-						1,
 						CONSTRUIRE_VAISSEAU,
+						numeroEmpire,
 						3,
 						FLOTTE_SCIENTIFIQUE,
 						1,
-						100
-					);
+						100);
 		}
 	}
 }
@@ -480,7 +538,20 @@ static void EmpireAICivilianFleet(Empire *empire, EmpireListe *empireListe, Flot
 	if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
 		int systeme = GetFleetSystem(flotte);
 		if(GetFleetType(flotte) == FLOTTE_SCIENTIFIQUE){
-			
+			if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
+				int systemIndex = 0;
+				int systemeDestination = 0;
+				for(systemIndex = 0; systemIndex < 4; systemIndex++){
+					systemeDestination = GetHyperlaneDestination(systemeStellaires[GetFleetSystem(flotte)], systemIndex);
+					if(!GetSystemEmpire(systemeStellaires[systemeDestination]) && systemeDestination != 255){
+						MoveFleet(flotte, GetHyperlaneDestination(systemeStellaires[GetFleetSystem(flotte)], systemIndex), systemeStellaires);
+						#ifdef DEBUG_VERSION
+							dbg_sprintf(dbgout, "Empire %p move science fleet from %d to %d\n", empire, GetFleetSystem(flotte), GetHyperlaneDestination(systemeStellaires[GetFleetSystem(flotte)], systemIndex));
+						#endif
+						systemIndex = 4;
+					}
+				}
+			}
 		}
 	}
 }
@@ -497,7 +568,7 @@ static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, Syste
 		Flotte *flotte = NULL;
 
 		while(compteurFlotte <= tailleFlotte){
-			flotte = NumeroFlotte(flotteListe, compteurFlotte);
+			flotte = FlotteNumero(flotteListe, compteurFlotte);
 			if(GetFleetType == FLOTTE_MILITAIRE)
 				EmpireAIMilitaryFleet(empire, empireListe, flotte, systemeStellaires);
 			

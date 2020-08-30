@@ -25,6 +25,9 @@ OPT_MODE            ?= -optspeed
 #GFXDIR              ?= src/gfx
 #V                   ?= 1
 
+# This is just so the main makefile in $CEDEV/examples makes this one be like "make debug"
+.DEFAULT_GOAL := debug
+
 FONTDIR ?= $(SRCDIR)/fonts
 #VERSIONDIR ?= $(SRCDIR)/version
 

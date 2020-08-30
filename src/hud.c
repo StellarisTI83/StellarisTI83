@@ -36,31 +36,26 @@ static void PrintHUD(const unsigned int nombre, const int change, int x, int y) 
 	unsigned char longueur, color;
 	char nombreStr[10];
 	char changeStr[5];
-	gfx_SetTextTransparentColor(2);
-	gfx_SetTextBGColor(2);
-	if(change >= 0){
-		gfx_SetTextFGColor(1);
-	}else{
-		gfx_SetTextFGColor(3);
-	}
+
+	//ecrire nombre
 	if(nombre < 1000){
 		sprintf(nombreStr, "%d", nombre);
-		if (change >= 0){
-		sprintf(changeStr, "+%d", change);
-		}else{
-		sprintf(changeStr, "%d", change);
-		}
-		strcat(nombreStr, changeStr);
-	}else{
+	} else {
 		sprintf(nombreStr, "%d", nombre/1000);
-		if (change >=0){
-		sprintf(changeStr, "+%d", change);
-		}else{
-		sprintf(changeStr, "%d", change);
-		}
 		strcat(nombreStr, "K");
-		strcat(nombreStr, changeStr);
 	}
+
+	//ecrire change
+	if (change >=0){
+		gfx_SetTextFGColor(1);
+		sprintf(changeStr, "+%d", change);
+	} else {
+		gfx_SetTextFGColor(3);
+		sprintf(changeStr, "%d", change);
+	}
+
+	strcat(nombreStr, changeStr);
+
 	gfx_PrintStringXY(nombreStr, x, y);
 }
 
@@ -147,18 +142,20 @@ static void WriteTextHUD(Empire *joueur, Date *date, Camera *camera){
     char jourChar[11];
 	char moisChar[8];
 	char anneeChar[5];
+	gfx_SetTextTransparentColor(2);
+	gfx_SetTextBGColor(2);
 	
 	//texte
 	gfx_SetTextFGColor(8);
 	//barre du haut
 	gfx_TransparentSprite_NoClip(credit, 55 ,1);
-	PrintHUD(GetEmpireCredit(joueur), 0, 40, 13);
+	PrintHUD(GetEmpireCredit(joueur), GetEmpireCreditChange(joueur), 40, 13);
 	gfx_TransparentSprite_NoClip(minerai, 100 ,1);
-	PrintHUD(GetEmpireMinerals(joueur), 0, 85, 13);
+	PrintHUD(GetEmpireMinerals(joueur), GetEmpireMineralsChange(joueur), 85, 13);
 	gfx_TransparentSprite_NoClip(food, 145 ,1);
-	PrintHUD(GetEmpireFood(joueur), 0, 130, 13);
+	PrintHUD(GetEmpireFood(joueur), GetEmpireFoodChange(joueur), 130, 13);
 	gfx_TransparentSprite_NoClip(fer, 190 ,1);
-	PrintHUD(GetEmpireAlloys(joueur), 0, 175, 13);
+	PrintHUD(GetEmpireAlloys(joueur), GetEmpireAlloysChange(joueur), 175, 13);
 	
 	//barre de gauche
 	gfx_TransparentSprite_NoClip(contact, 5, 50);

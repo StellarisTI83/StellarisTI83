@@ -2,11 +2,20 @@
 #define H_MAIN
 
 /* macros ============================================================== */
-#define VERSION_LOGICIEL "v0.2.2-a"
+
+/**
+ * Version du jeu
+ */
+#define VERSION_LOGICIEL "v0.3.0-a"
+
+/* Debug Version*/
+
+#define DEBUG_VERSION
 
 #define _(String) gettext(String)
 
 /* constants =========================================================== */
+
 #define LARGEUR_GALAXIE 11
 
 #define TEXT_BG_COLOR 2

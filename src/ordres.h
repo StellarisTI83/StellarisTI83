@@ -26,6 +26,7 @@ void SupprimerFileOrdres(OrdreFile *ordreFile);
  * 
  * \param ordreFile File où ajouter l'ordre
  * \param ordre id de l'ordre
+ * \param empire empire qui effectue l'ordre
  * \param tempsTotal Temps total que dure l'ordre
  * \param info1 info supplementaire 1
  * \param info2 info supplementaire 2
