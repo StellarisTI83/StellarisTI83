@@ -11,19 +11,11 @@
 #include <math.h>
 #include <errno.h>
 
-#include <graphx.h>
-#include <fileioc.h>
-#include <fontlibc.h>
-
-#include "gfx/gfx.h"
-
 #include "main.h"
 
 #include "nouvelle_partie.h"
 #include "flottes.h"
 #include "pathfinding.h"
-
-#include "locale/locale.h"
 
 static Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2);
 
@@ -64,11 +56,6 @@ struct FlotteStruct {
 	int nombreDeDestroyer;
 	int nombreDeCroiseur;
 	int nombreDeCuirasse;
-	Flotte* suivant;
-};
-
-struct FlotteListeStruct {
-	Flotte* premier;
 };
 
 struct NoeudStruct {
@@ -91,90 +78,44 @@ struct ListeNoeds {
  *Crée une list de flottes
  */
 FlotteListe* CreerFlotteListe() {
-	FlotteListe* flotteliste;
-	flotteliste = malloc(sizeof(FlotteListe));
-	flotteliste->premier = NULL;
-	return flotteliste;
+	return (FlotteListe*)CreateGenericList();
 }
 
 /**
  *Supprime une liste des flottes
  */
 void SupprimerFlotteListe(FlotteListe* flotteliste) {
-	Flotte *pointeur = 0, *pointeursuivant = 0;
-	int compteur = 0;
-	pointeur = flotteliste->premier;
-	while(pointeur->suivant != NULL) {
-		pointeursuivant = pointeur->suivant;
-		free(pointeur);
-		pointeur = pointeursuivant;
-	}
-	free(flotteliste);
+	FreeGenericList((GenericList*)flotteliste);
 }
 
 /**
  * Renvoi nombre de flottes
  */
 int FleetArraySize(FlotteListe* flotteListe){
-	Flotte *flotte;
-	int index = 0;
-	flotte = flotteListe->premier;
-	while(flotte != NULL){
-		flotte = flotte->suivant;
-		index++;
-	}
-	return index;
+	return GenericListArraySize((GenericList*)flotteListe);
 }
 
 /**
- *Renvoi un pointeur vers l'empire numero x, commence à 1
+ *Renvoi un pointeur vers la flotte numero x, commence à 1
  */
 Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
-	Flotte *pointeur = 0;
-	int compteur = 1;
-	pointeur = flotteliste->premier;
-	while(compteur < numero) {
-		if(pointeur->suivant != NULL) {
-			pointeur = pointeur->suivant;
-		}
-		compteur++;
-	}
-	return pointeur;
+	return GenericCellGet((GenericList*)flotteliste, numero);
 }
 
 /**
  *Renvoi le numéro de la flotte suivant son pointeur
  */
 int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte) {
-	Flotte *pointeur = 0;
-	int compteur = 1;
-	pointeur = flotteliste->premier;
-	while((pointeur != flotte) && (pointeur != NULL)) {
-		pointeur = pointeur->suivant;
-		compteur++;
-	}
-	compteur--;
-	return compteur;
+	return GenericCellGetNumber((GenericList*)flotteliste, flotte);
 }
 
 /**
  *Rajoute une flotte à la liste des flotte envoyée
  */
 Flotte* AjouterFlotte(FlotteListe* flotteliste) {
-	Flotte *pointeur = 0;
-	pointeur = flotteliste->premier;
-	if(flotteliste->premier != NULL) {
-		while(pointeur->suivant != NULL) {
-			pointeur = pointeur->suivant;
-		}
-		pointeur->suivant = malloc(sizeof(Flotte));
-		pointeur = pointeur->suivant;
-		pointeur->suivant = NULL;
-	} else {
-		flotteliste->premier = malloc(sizeof(Flotte));
-		pointeur = flotteliste->premier;
-		pointeur->suivant = NULL;
-	}
+	Flotte *pointeur = NULL;
+	pointeur = calloc(1, sizeof(Flotte));
+	GenericCellAdd((GenericList*)flotteliste, pointeur);
 	return pointeur;
 }
 
@@ -182,23 +123,7 @@ Flotte* AjouterFlotte(FlotteListe* flotteliste) {
  *Supprime la flotte numero x à la liste de flottes envoyée
  */
 void SupprimerFlotte(FlotteListe* flotteliste, int numero) {
-	Flotte *pointeur = 0, *pointeurPrecedent = 0;
-	int compteur = 0;
-	pointeur = flotteliste->premier;
-	while(compteur <= numero) {
-		if(pointeur->suivant != NULL) {
-			pointeurPrecedent = pointeur;
-			pointeur = pointeur->suivant;
-		}
-		compteur++;
-	}
-	if(pointeur == flotteliste->premier){
-		flotteliste->premier = pointeur->suivant;
-	}
-	else {
-		pointeurPrecedent->suivant = pointeur->suivant;
-	}
-	free(pointeur);
+	FreeGenericCell((GenericList*)flotteliste, numero);
 }
 
 /**
@@ -207,18 +132,7 @@ void SupprimerFlotte(FlotteListe* flotteliste, int numero) {
 Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
 	Flotte* flotte = NULL;
 	flotte = AjouterFlotte(flotteListe);
-	flotte->puissance = 0;
-	flotte->coqueVie = 0;
-	flotte->coqueTotal = 0;
-	flotte->blindageVie = 0;
-	flotte->blindageTotal = 0;
-	flotte->bouclierVie = 0;
-	flotte->bouclierTotal = 0;
-	flotte->nombreDeCorvette = 0;
-	flotte->nombreDeDestroyer = 0;
-	flotte->nombreDeCroiseur = 0;
-	flotte->nombreDeCuirasse = 0;
-	flotte->nombreVaisseaux = 0;
+	memset(flotte, 0, sizeof(Flotte));
 
 	flotte->systeme = systeme;
 	flotte->x = X_CENTRE_SYSTEME - 10;
@@ -300,11 +214,13 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 
 int CalculateFleetPower(FlotteListe *flotteListe){
 	Flotte *flotte = NULL;
+	int compteur = 1;
+	int arraySize = FleetArraySize(flotteListe);
 	int puissance = 0;
-	flotte = flotteListe->premier;
-	while(flotte != NULL){
+	while(compteur < arraySize){
+		flotte = GenericCellGet((GenericList*)flotteListe, compteur);
+		compteur++;
 		puissance += flotte->puissance;
-		flotte = flotte->suivant;
 	}
 	return puissance;
 }
@@ -421,6 +337,13 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 
 	empire = EmpireNumero(empireListe, numeroDeEmpire);
 	flotte = FlotteNumero(GetFleetArray(empire), numeroDeFlotte);
+	if(flotte == NULL) {
+		#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgerr, "Error fleet pointer NULL in function 'BougerFlotte'");
+		#endif
+		return;
+	}
+	
 	if(IsCameraMoveFleet(camera) == false){
 		SetCameraMoveFleet(camera, true);
 		SetCameraLock(camera, false);
@@ -461,6 +384,14 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires){
 	int error = 0;
 	int index = 0;
+
+	if(flotte == NULL){
+		#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgerr, "Error fleet pointer NULL in function 'MoveFleet'");
+		#endif
+		return -1;
+	}
+
 	flotte->systemeArrive = systeme;
 	flotte->avancement = 0;
 	flotte->avancementTrajet = 1;

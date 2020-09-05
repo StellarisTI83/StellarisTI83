@@ -1167,8 +1167,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, E
 		case sk_Clear:
 			switch(GetWindowPrevious(fenetre)){
 				case 1:
-					OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTES);
-					SetWindowSelection(fenetre, GetWindowSelectedFleet(fenetre));
+					CloseMenu(fenetre, camera);
 					break;
 				case 2:
 					OpenMenu(fenetre, camera, MENU_FLOTTE, 0);

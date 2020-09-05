@@ -683,7 +683,7 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 			x = GetFleetX(flotte) - GetCameraXSystem(camera) - 3;
 			y = GetFleetY(flotte) - GetCameraYSystem(camera) - 3;
 			while(gfx_GetPixel(x + 4, y + 1) != 0){
-				y += 11;
+				y += 15;
 			}
 			if(((0 < x) && (x < 315)) && ((0 < y) && (y < 235))){
 				if(GetFleetProgress(flotte) == 0){
@@ -718,7 +718,7 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 					if((*key == sk_Enter) && (GetCameraLock(camera) == false)){
 						OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
 						SetWindowSelection(fenetre, 1);
-						SetWindowSelectedFleet(fenetre, RecupererFlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), flotte) + 1);
+						SetWindowSelectedFleet(fenetre, fleetIndex);
 						SetWindowPrevious(fenetre, 1);
 						*key = 0;
 					}

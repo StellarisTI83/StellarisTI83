@@ -5,6 +5,8 @@
 #include "camera.h"
 #include "systemes.h"
 
+#include "generic_lists.h"
+
 /* constants =========================================================== */
 
 #define FLOTTE_AUCUNE_ACTION 0
@@ -27,7 +29,7 @@ typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
 
 /* structures ========================================================== */
 
-typedef struct FlotteListeStruct FlotteListe;
+typedef GenericList FlotteListe;
 
 typedef struct FlotteStruct Flotte;
 

@@ -19,13 +19,8 @@
 
 #include "main.h"
 
-#include "ai.h"
 #include "console.h"
-#include "flottes.h"
 #include "hud.h"
-#include "menus.h"
-#include "parametres.h"
-#include "time.h"
 
 /* private functions =================================================== */
 
@@ -262,8 +257,7 @@ static void WriteGalaxieNameHUD(Camera *camera, SystemeStellaire **systemeStella
 
 /* entry points ======================================================== */
 
-int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche){
-
+int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche, NotificationList *notificationList) {
 	char valeurMineraiStr[4];
 	char nomPlanete[20];
 	int menu = 0;
@@ -281,6 +275,8 @@ int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sys
 
     WriteGalaxieNameHUD(camera, systemeStellaires);
 	
+	DrawNotifications(notificationList, date);
+
 	if (GetCameraMapType(camera) == CARTE) {
 		gfx_PrintStringXY("Carte", 140, 211);
 	}

@@ -19,36 +19,26 @@
 
 #include "main.h"
 
-#include "ai.h"
 #include "boucle.h"
-#include "console.h"
-#include "flottes.h"
-#include "map.h"
-#include "menus.h"
-#include "nouvelle_partie.h"
-#include "sauvegarde.h"
-#include "screen.h"
-#include "time.h"
-#include "updating.h"
 
 #include "locale/locale.h"
 
 /* entry points ======================================================== */
-int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Parametres *parametres, Date *date, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche){
-	int finBoucle = 1;
+int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Parametres *parametres, Date *date, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche, NotificationList *notificationList) {
+	int boucle = true;
 	char key = 0;
 	
-	while (finBoucle == 1) {
+	while (boucle == true) {
 		
 		key = os_GetCSC();
 		
 		// mettre a jour les informations
-		finBoucle = UpdateGame(&key, empireListe, systemeStellaires, date, camera, fenetre);
+		boucle = UpdateGame(&key, empireListe, systemeStellaires, date, camera, fenetre);
 
 		//dessiner l'écran
-		DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres, sauvegarde, marche);
+		DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres, sauvegarde, marche, notificationList);
 
-		if((boot_CheckOnPressed()) || (finBoucle == 0)) {
+		if((boot_CheckOnPressed()) || (boucle == 0)) {
 			// StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
 			// EmpireListeSupprimer(empireListe);
 			return 0;

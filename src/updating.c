@@ -15,8 +15,6 @@
 #include <fileioc.h>
 #include <fontlibc.h>
 
-#include "gfx/gfx.h"
-
 #include "main.h"
 
 #include "boucle.h"
@@ -53,7 +51,7 @@ static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, E
 	}
 	sizeFleet = FleetArraySize(GetFleetArray(EmpireNumero(empireListe, 1)));
 	while(indexFleet <= sizeFleet){
-        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), indexFleet))], TOTAL);
+        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), indexFleet))], ELEVEE);
 		indexFleet++;
 	}
 }
@@ -473,7 +471,6 @@ int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeSt
 		
 		EmpireAI(empireListe, systemeStellaires, date);
 		
-		AddTimeClock(date);
 	}
 	return 1;
 }

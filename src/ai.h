@@ -1,7 +1,10 @@
 #ifndef H_AI
 #define H_AI
 
+#include "generic_lists.h"
+
 /* types =============================================================== */
+
 /**
  * Differents gouvernements possibles
  */
@@ -16,17 +19,14 @@ MILITARIST, FANATIC_MILITARIST, PACIFIST, FANATIC_PACIFIST,
 XENOPHILE, FANATIC_XENOPHILE, XONOPHOBE, FANATIC_XENOPHOBE,
 GESTALT} Principe;
 
+typedef GenericList EmpireListe;
+
 /* structures ========================================================== */
 
 /**
  * Empire
  */
 typedef struct EmpireStruct Empire;
-
-/**
- * Liste des empires
- */
-typedef struct EmpireListeStruct EmpireListe;
 
 /* entry points ======================================================== */
 

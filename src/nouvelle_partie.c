@@ -3,9 +3,9 @@
 *  Fichier pour la cration de nouvelles parties  *
 *											     *
 *************************************************/
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+// #include <stdbool.h>
+// #include <stddef.h>
+// #include <stdint.h>
 #include <tice.h>
 
 #include <stdio.h>
@@ -14,11 +14,11 @@
 
 #include <debug.h>
 #include <math.h>
-#include <errno.h>
+// #include <errno.h>
 
 #include <graphx.h>
 #include <fileioc.h>
-#include <fontlibc.h>
+// #include <fontlibc.h>
 
 #include "gfx/gfx.h"
 
@@ -31,6 +31,7 @@
 #include "flottes.h"
 #include "map.h"
 #include "nouvelle_partie.h"
+#include "notifications.h"
 #include "parametres.h"
 #include "systemes.h"
 #include "time.h"
@@ -1773,8 +1774,6 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
 
 			planetIndex = 0;	
 			while(planetIndex < nombrePlanetes){
-				gfx_SetTextXY(50, 60);
-				PrintInt(planetIndex);
 				CreatePlanetSystem(systemeStellaires[k], planetIndex, randInt(1, 10));
 				planetIndex++;
 			}
@@ -1874,7 +1873,7 @@ static int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sau
 	RandomGalacticMatrix(galaxie, coefficientDeplacementStellaire, &barreDeChargement);
 	
 	RoundGalacticMatrix(galaxie, espaceEntreEtoiles, rayon, rayonInterieur, &barreDeChargement);
-;
+
 	k = GenerateSystemeStruct(galaxie, systemeStellaires, &barreDeChargement);
 	free(galaxie);
 	
@@ -1897,10 +1896,12 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	while(fin == 1) { // choix du systeme
 		i = randInt(0, k - 1);
 		gfx_SetTextXY(50, 70);
-		PrintInt(i);
 		if(((GetSystemX(systemeStellaires[i]) >= 160) && (GetSystemY(systemeStellaires[i]) >= 120)) && (GetSystemStarType(systemeStellaires[i]) != ETOILE_TYPE_TROU_NOIR))
 			fin = 0;
 	}
+	#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "\nCreate empires\n");
+	#endif
 	SetEmpireColor(joueur, 9);
 	SetEmpireSystemCapital(joueur, i);
 
@@ -1920,8 +1921,11 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	SetSystemStationModule(systemeStellaires[i], 0, CHANTIER_SPATIAL);
 	SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
 	
+
 	EmpireNouvelleFlotte(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+
 	EmpireNouvelleFlotte(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+
 	EmpireNouvelleFlotte(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 	
 	SetCameraX(camera, GetSystemX(systemeStellaires[i])); // centre la vue sur le systeme
@@ -1949,9 +1953,9 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 
 	CalculateEmpireFleetPower(joueur);
 
-	#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgout, "Player system: %d\n", i);
-	#endif
+		#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d\n -Color: %d\n -Planet: %d\n -Fleet: %p\n", 1, joueur, i, GetEmpireColor(joueur), planete, GetFleetArray(joueur));
+		#endif
 	gfx_SetTextXY(90, 90);
 	for(j = 2; j <= GetEmpireNumber(parametres); j++){
 		Empire *empire = NULL;
@@ -2090,6 +2094,9 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 	Fenetre *fenetre = NULL;
 	Marche *marche = NULL;
 	SystemeStellaire *systemeStellaires[LARGEUR_GALAXIE * LARGEUR_GALAXIE];
+	NotificationList *notificationList = CreateNotificationList();
+	NewNotification(notificationList, MED_PRIORITY, NONE_ID, 10);
+	NewNotification(notificationList, LOW_PRIORITY, NONE_ID, 10);
 	
 	InitializeNewGame(&empireListe, &date, &camera, &fenetre, &marche, &parametres, &sauvegarde);
 
@@ -2104,7 +2111,7 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 	PauseGame(date);
 
 	gfx_SetDrawBuffer();
-	StellarisBoucle(&sauvegarde, empireListe, parametres, date, systemeStellaires, camera, fenetre, marche);
+	StellarisBoucle(&sauvegarde, empireListe, parametres, date, systemeStellaires, camera, fenetre, marche, notificationList);
 }
 
 /**

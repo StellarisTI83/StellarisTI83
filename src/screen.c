@@ -21,12 +21,12 @@
 #include "screen.h"
 
 /* entry points ======================================================== */
-void DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche){
+void DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche, NotificationList *notificationList) {
     gfx_ZeroScreen();
 
     DrawMap(empireListe, systemeStellaires, camera, key, date, fenetre, parametres);
 
-    DrawHUD(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
+    DrawHUD(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche, notificationList);
 
     DrawMenu(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
     

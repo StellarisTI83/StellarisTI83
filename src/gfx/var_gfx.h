@@ -6,9 +6,9 @@
 
 #include <stdbool.h>
 
-#define var_gfx_num 79
+#define var_gfx_num 80
 
-extern uint8_t *var_gfx[79];
+extern uint8_t *var_gfx[80];
 #define alliedFleet_width 7
 #define alliedFleet_height 6
 #define alliedFleet ((gfx_sprite_t*)var_gfx[0])
@@ -243,8 +243,11 @@ extern uint8_t *var_gfx[79];
 #define backgroundStation_width 35
 #define backgroundStation_height 25
 #define backgroundStation_compressed ((gfx_sprite_t*)var_gfx[77])
+#define notification_icon_width 7
+#define notification_icon_height 10
+#define notification_icon ((gfx_sprite_t*)var_gfx[78])
 #define sizeof_background_gfx_pal 512
-#define background_gfx_pal ((uint16_t*)var_gfx[78])
+#define background_gfx_pal ((uint16_t*)var_gfx[79])
 bool var_gfx_init(void);
 
 #endif

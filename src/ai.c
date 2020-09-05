@@ -15,17 +15,9 @@
 #include <math.h>
 #include <errno.h>
 
-#include <graphx.h>
-#include <fileioc.h>
-#include <fontlibc.h>
-
-#include "gfx/gfx.h"
-
 #include "main.h"
 
 #include "ai.h"
-
-#include "locale/locale.h"
 
 /* structures ========================================================== */
 
@@ -58,11 +50,6 @@ struct EmpireStruct {
 	int systemeCapitale;
 
 	FlotteListe* flotte;
-	Empire* suivant;
-};
-
-struct EmpireListeStruct{
-	Empire* premier;
 };
 
 /* private variables =================================================== */
@@ -99,78 +86,37 @@ char * empireNamePrefix[] = {
  * Crée une liste d'empires
  */
 EmpireListe* EmpireListeCreer() {
-	EmpireListe* empireListe;
-	empireListe = malloc(sizeof(EmpireListe));
-	empireListe->premier = NULL;
-	return empireListe;
+	return (EmpireListe*)CreateGenericList();
 }
 
 /**
  * Supprime une liste d'empire
  */
 void EmpireListeSupprimer(EmpireListe* empireListe) {
-	Empire *pointeur = 0, *pointeursuivant = 0;
-	int compteur = 0;
-	pointeur = empireListe->premier;
-	while(pointeur->suivant != NULL) {
-		pointeursuivant = pointeur->suivant;
-		SupprimerFlotteListe(pointeur->flotte);
-		free(pointeur);
-		pointeur = pointeursuivant;
-	}
-	free(empireListe);
+	FreeGenericList((GenericList*)empireListe);
 }
 
 /**
  * Renvoi nombre d'empires
  */
 int EmpireArraySize(EmpireListe* empireListe){
-	Empire *empire;
-	int index = 0;
-	empire = empireListe->premier;
-	while(empire != NULL){
-		empire = empire->suivant;
-		index++;
-	}
-	return index;
+	return GenericListArraySize((GenericList*)empireListe);
 }
 
 /**
  * Renvoi un pointeur vers l'empire numero x
  */
 Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
-	Empire *pointeur = 0;
-	int compteur = 1;
-	pointeur = empireListe->premier;
-	while(compteur < numero) {
-		if(pointeur->suivant != NULL) {
-			pointeur = pointeur->suivant;
-		}
-		compteur++;
-	}
-	return pointeur;
+	return (Empire*)GenericCellGet((GenericList*)empireListe, numero);
 }
 
 /**
  * Rajoute un empire à la liste des empire
  */
 Empire* EmpireAjouter(EmpireListe* empireListe) {
-	Empire *pointeur = 0;
-	int compteur = 0;
-	pointeur = empireListe->premier;
-	if(empireListe->premier != NULL) {
-		while(pointeur->suivant != NULL) {
-			pointeur = pointeur->suivant;
-		}
-		pointeur->suivant = calloc(1, sizeof(Empire));
-		pointeur = pointeur->suivant;
-		pointeur->suivant = NULL;
-	}
-	else {
-		empireListe->premier = calloc(1, sizeof(Empire));
-		pointeur = empireListe->premier;
-		pointeur->suivant = NULL;
-	}
+	Empire *pointeur = NULL;
+	pointeur = calloc(1, sizeof(Empire));
+	GenericCellAdd((GenericList*)empireListe, pointeur);
 	return pointeur;
 }
 
@@ -178,24 +124,7 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
  *Supprime l'empire numero x à la liste des empires
  */
 void EmpireSupprimer(EmpireListe* empireListe, int numero) {
-	Empire *pointeur = 0, *pointeurPrecedent = 0;
-	int compteur = 0;
-	pointeur = empireListe->premier;
-	while(compteur <= numero) {
-		if(pointeur->suivant != NULL) {
-			pointeurPrecedent = pointeur;
-			pointeur = pointeur->suivant;
-		}
-		compteur++;
-	}
-	if(pointeur == empireListe->premier){
-		empireListe->premier = pointeur->suivant;
-	}
-	else {
-		pointeurPrecedent->suivant = pointeur->suivant;
-	}
-	SupprimerFlotteListe(pointeur->flotte);
-	free(pointeur);
+	FreeGenericCell((GenericList*)empireListe, numero);
 }
 
 /**
