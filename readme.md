@@ -34,7 +34,6 @@ The gfx are made with convpng.
 - [x] Menu planètes
   - [ ] Niveaux des batiments
 - [x] Plusieurs actions de suite
-- [ ] Gèrer l'update des données du joueur
 - [x] Rajout d'une console
 - [x] Changement des sprites de local à appvar
 - [ ] Menu flottes
@@ -46,9 +45,9 @@ The gfx are made with convpng.
 - [ ] Recherches
 - [ ] Rajout de plusieurs civilisations
   - [ ] Rajout de l'ia
-- [ ] Rajout des notifications
+- [x] Rajout des notifications
 - [ ] Menu marché
-- [ ] Revenus
-- [ ] Refaire le menu d'entrée
+- [x] Revenus
+- [x] Refaire le menu d'entrée
 - [ ] Création de sauvegardes
 - [ ] Traduction totale

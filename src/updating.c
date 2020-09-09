@@ -246,7 +246,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 				}
 				SetCameraSystem(camera, GetCameraViewedSystem(camera));
 				#ifdef DEBUG_VERSION
-					dbg_sprintf(dbgout, "open system %d\n", GetCameraViewedSystem(camera));
+					dbg_sprintf((char*)dbgout, "open system %d\n", GetCameraViewedSystem(camera));
 				#endif
 				*key = 0;
 			} else if(((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && (IsCameraMoveFleet(camera) == true)) {
@@ -350,7 +350,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 	}
 }
 
-static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, NotificationList *notificationList){
 	Empire *empire = NULL;
 	Flotte *flotte = NULL;
 	FlotteListe *flotteListe = NULL;
@@ -433,30 +433,50 @@ static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **syste
 	for(empireIndex = 1; empireIndex <= empireArraySize; empireIndex++){
 		empire = EmpireNumero(empireListe, empireIndex);
 
-		if(GetEmpireAlloys(empire) + GetEmpireAlloysChange(empire) <= 0)
+		if(GetEmpireAlloys(empire) + GetEmpireAlloysChange(empire) <= 0){
 			SetEmpireAlloys(empire, 0);
+		}
 		else
 			AddEmpireAlloys(empire, GetEmpireAlloysChange(empire));
 			
-		if(GetEmpireCredit(empire) + GetEmpireCreditChange(empire) <= 0)
+		if(GetEmpireCredit(empire) + GetEmpireCreditChange(empire) <= 0){
 			SetEmpireCredit(empire, 0);
+		}
 		else
 			AddEmpireCredit(empire, GetEmpireCreditChange(empire));
 		
-		if(GetEmpireFood(empire) + GetEmpireFoodChange(empire) <= 0)
+		if(GetEmpireFood(empire) + GetEmpireFoodChange(empire) <= 0){
 			SetEmpireFood(empire, 0);
+		}
 		else
 			AddEmpireFood(empire, GetEmpireFoodChange(empire));
 		
-		if(GetEmpireMinerals(empire) + GetEmpireMineralsChange(empire) <= 0)
+		if(GetEmpireMinerals(empire) + GetEmpireMineralsChange(empire) <= 0){
 			SetEmpireMinerals(empire, 0);
+		}
 		else
 			AddEmpireMinerals(empire, GetEmpireMineralsChange(empire));
+	}
+
+	//teste si il n'y a plus beaucoup de ressources
+	empire = EmpireNumero(empireListe, 1);
+
+	if((GetEmpireAlloys(empire) - (GetEmpireAlloysChange(empire) / 12)) <= 0) {
+		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 30);
+	}
+	if((GetEmpireCredit(empire) - (GetEmpireCreditChange(empire) / 12)) <= 0) {
+		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 30);
+	}
+	if((GetEmpireFood(empire) - (GetEmpireFoodChange(empire) / 12)) <= 0) {
+		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 30);
+	}
+	if((GetEmpireMinerals(empire) - (GetEmpireMineralsChange(empire) * 12)) <= 0) {
+		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 30);
 	}
 }
 
 /* entry points ======================================================== */
-int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre){
+int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, NotificationList *notificationList){
     if(!GetCommandPromptStatus(fenetre))
 		TestKey(key, empireListe, systemeStellaires, date, camera, fenetre);
 
@@ -466,7 +486,7 @@ int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeSt
 			UpdateWorld(empireListe, systemeStellaires);
 		}
 		if(GetTimeDay(date) == 1){
-			UpdatePlayersData(empireListe, systemeStellaires);
+			UpdatePlayersData(empireListe, systemeStellaires, notificationList);
 		}
 		
 		EmpireAI(empireListe, systemeStellaires, date);

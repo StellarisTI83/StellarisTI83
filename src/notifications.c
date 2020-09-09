@@ -51,6 +51,10 @@ static void DrawNotificationMed(int x, int y) {
     gfx_SetPixel(x + 7, y + 6);
 }
 
+static void DrawNotificationLogo(int x, int y, NOTIFICATION_ID ID) {
+    gfx_ScaledSprite_NoClip(low_ressources_icon, x + 1, y + 7, 2, 2);
+}
+
 void DrawNotifications(NotificationList *notificationList, Date *date) {
     Notification *notification = NULL;
     int numberOfNotifications = GenericListArraySize((GenericList*)notificationList);
@@ -64,27 +68,11 @@ void DrawNotifications(NotificationList *notificationList, Date *date) {
                 DrawNotificationMed(x, y);
             else
                 DrawNotificationLow(x, y);
+
+            DrawNotificationLogo(x, y, notification->ID);
             x += 17;
             if(GetTimeClock(date) == 0){
-                switch(GetTimeSpeed(date)) {
-                    case -2:
-                        notification->length--;
-                        break;
-                    case -1:
-                        notification->length -= 2;
-                        break;
-                    case 1:
-                        notification->length -= 3;
-                        break;
-                    case 2:
-                        notification->length -= 4;
-                        break;
-                    case 3:
-                        notification->length -= 6;
-                        break;
-                    default:
-                        break;
-                }
+                notification->length--;
             }
             if(notification->length <= 0) {
                 FreeGenericCell((GenericList*)notificationList, notificationIndex);

@@ -33,7 +33,7 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Parametres *
 		key = os_GetCSC();
 		
 		// mettre a jour les informations
-		boucle = UpdateGame(&key, empireListe, systemeStellaires, date, camera, fenetre);
+		boucle = UpdateGame(&key, empireListe, systemeStellaires, date, camera, fenetre, notificationList);
 
 		//dessiner l'écran
 		DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres, sauvegarde, marche, notificationList);

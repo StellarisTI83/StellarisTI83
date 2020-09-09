@@ -1963,7 +1963,7 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		i = 0;
 		while(fin == 1) { // choix du systeme
 			i = randInt(0, k - 1);
-			if(((GetSystemX(systemeStellaires[i]) >= 160) && (GetSystemY(systemeStellaires[i]) >= 120)) && (GetSystemStarType(systemeStellaires[i]) != ETOILE_TYPE_TROU_NOIR))
+			if(((GetSystemX(systemeStellaires[i]) >= 160) && (GetSystemY(systemeStellaires[i]) >= 120)) && ((GetSystemStarType(systemeStellaires[i]) != ETOILE_TYPE_TROU_NOIR) && (GetSystemEmpire(systemeStellaires[i]) == 0)))
 				fin = 0;
 		}
 		empire = EmpireAjouter(empireListe);
@@ -2026,6 +2026,9 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
  */
 int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres){
 	char key = 0, choix = 1, fin = 1, nouvellePartie = 1;
+	gfx_FillScreen(1);
+	gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
+	gfx_SwapDraw();
 	while(fin){
 		do{
 			gfx_FillScreen(1);
@@ -2095,8 +2098,6 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 	Marche *marche = NULL;
 	SystemeStellaire *systemeStellaires[LARGEUR_GALAXIE * LARGEUR_GALAXIE];
 	NotificationList *notificationList = CreateNotificationList();
-	NewNotification(notificationList, MED_PRIORITY, NONE_ID, 10);
-	NewNotification(notificationList, LOW_PRIORITY, NONE_ID, 10);
 	
 	InitializeNewGame(&empireListe, &date, &camera, &fenetre, &marche, &parametres, &sauvegarde);
 

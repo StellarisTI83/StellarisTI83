@@ -243,9 +243,9 @@ extern uint8_t *var_gfx[80];
 #define backgroundStation_width 35
 #define backgroundStation_height 25
 #define backgroundStation_compressed ((gfx_sprite_t*)var_gfx[77])
-#define notification_icon_width 7
-#define notification_icon_height 10
-#define notification_icon ((gfx_sprite_t*)var_gfx[78])
+#define low_ressources_icon_width 16
+#define low_ressources_icon_height 16
+#define low_ressources_icon ((gfx_sprite_t*)var_gfx[78])
 #define sizeof_background_gfx_pal 512
 #define background_gfx_pal ((uint16_t*)var_gfx[79])
 bool var_gfx_init(void);

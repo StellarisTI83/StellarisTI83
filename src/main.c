@@ -325,7 +325,6 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 
 	gfx_SetDrawBuffer();
 
-	gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
 	gfx_SetFontData(font_logo);
 	gfx_SetMonospaceFont(8);
 	gfx_SetTextTransparentColor(2);
@@ -351,6 +350,7 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 			}
 			break;
 		case 2:
+			gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
 			Options();
 			fin = 1;
 			break;
