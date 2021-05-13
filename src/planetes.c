@@ -50,7 +50,7 @@ struct PlaneteStruct{
 	int y;
 	char rayonOrbite;
 	char taille;
-	char habitable;
+	unsigned char flags;
 	PlanetType planetType; 
 	int population;
 	Villes *villes;
@@ -66,10 +66,13 @@ Planete *AllocPlanet(){
 }
 
 void SetPlanetHabitability(Planete *planete, bool habitability){
-	planete->habitable = habitability;
+	planete->flags = (planete->flags | F_HABITABLE);
 }
 bool GetPlanetHabitability(Planete *planete){
-	return planete->habitable;
+	if((planete->flags & F_HABITABLE) != 0)
+		return true;
+	else
+		return false;
 }
 
 void SetPlanetOrbitRadius(Planete *planete, int orbitRadius){

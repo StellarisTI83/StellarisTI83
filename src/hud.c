@@ -71,7 +71,7 @@ static void DrawBackgroundHUD(Date *date, Camera *camera){
 	gfx_FillTriangle(100, 220, 80, 240, 100, 240);
 	gfx_FillTriangle(220, 220, 240, 240, 220, 240);
 	//nom selection
-	if (((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == CARTE)) || (GetCameraMapType(camera) == SYSTEME)) {
+	if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
 		gfx_FillRectangle(110, 210, 100, 10);
 		gfx_FillTriangle(110, 210, 100, 220, 110, 220);
 		gfx_FillTriangle(210, 210, 210, 220, 220, 220);
@@ -95,7 +95,7 @@ static void DrawOutlinesHUD(Date *date, Camera *camera){
 	gfx_Line_NoClip(100, 220, 81, 239);
 	gfx_Line_NoClip(220, 220, 239, 239);
 	//nom selection
-	if (((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == CARTE)) || (GetCameraMapType(camera) == SYSTEME))
+	if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME))
 	{
 		gfx_HorizLine_NoClip(110, 210, 100);
 		gfx_Line_NoClip(110, 210, 100, 220);
@@ -239,7 +239,7 @@ static void DrawPointerHUD(Camera *camera){
 static void WriteGalaxieNameHUD(Camera *camera, SystemeStellaire **systemeStellaires){
     int16_t systeme = 0;
 	//nom galaxie
-	if (((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == CARTE)) || (GetCameraMapType(camera) == SYSTEME)) {
+	if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
 		if (GetCameraMapType(camera) == NORMAL) {
 			systeme = GetCameraViewedSystem(camera);
 		} 
@@ -276,10 +276,6 @@ int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sys
     WriteGalaxieNameHUD(camera, systemeStellaires);
 	
 	DrawNotifications(notificationList, date);
-
-	if (GetCameraMapType(camera) == CARTE) {
-		gfx_PrintStringXY("Carte", 140, 211);
-	}
 
 	if(GetCommandPromptStatus(fenetre) == true){ 
 		AfficherConsole(key, fenetre, empireListe, camera, date, parametres);

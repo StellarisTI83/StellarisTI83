@@ -1284,7 +1284,7 @@ static bool InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **c
 	SetCameraXVector(*camera, 0);
 	SetCameraYVector(*camera, 0);
 
-	SetCameraZoom(*camera, 1);
+	SetCameraZoom(*camera, 2);
 	SetCameraMapType(*camera, SYSTEME);
 	
 	*fenetre = AllocFenetre();

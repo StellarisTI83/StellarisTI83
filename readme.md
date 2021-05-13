@@ -17,7 +17,7 @@ The game need the toolchain [CeDev](https://github.com/CE-Programming/toolchain)
 - 64 bit can use the last version ([v8.8](https://github.com/CE-Programming/toolchain/releases/tag/v8.8))
 - 32 bit need to use the v8.6 and use the last _graphX_ include files from v8.8 ([v8.6](https://github.com/CE-Programming/toolchain/releases/tag/v8.8))
 
-We recommend to use an emulator like [CeMu](https://github.com/CE-Programming/CEmu))
+We recommend to use an emulator like [CeMu](https://github.com/CE-Programming/CEmu)
 
 - 64 bit can use the last version ([v1.3](https://github.com/CE-Programming/CEmu/releases/tag/v1.3))
 - 32 bit use the v1.0 version ([v1.0](https://github.com/CE-Programming/CEmu/releases/tag/v1.0))

@@ -52,7 +52,7 @@ static void DrawNotificationMed(int x, int y) {
 }
 
 static void DrawNotificationLogo(int x, int y, NOTIFICATION_ID ID) {
-    gfx_ScaledSprite_NoClip(low_ressources_icon, x + 1, y + 7, 2, 2);
+    gfx_Sprite_NoClip(low_ressources_icon, x + 1, y + 7);
 }
 
 void DrawNotifications(NotificationList *notificationList, Date *date) {

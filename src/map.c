@@ -818,7 +818,7 @@ void DrawMap(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Cam
 	else if(GetCameraMapType(camera) == SYSTEME){
 		if(GetCameraLock(camera) == false){
 			switch(*key){
-				case sk_Clear:
+				case sk_Mode:
 					SetCameraMapType(camera, NORMAL); //dezoomer
 					SetCameraXVector(camera, 0);
 					SetCameraYVector(camera, 0);

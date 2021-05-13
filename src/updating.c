@@ -228,9 +228,25 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 			}
 			break;
 		case sk_Del:
+			#ifdef DEBUG_VERSION
+				dbg_sprintf((char*)dbgout, "camera zoom : %d\n", GetCameraZoom(camera));
+			#endif
+			if ((GetCameraZoom(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU)))) {
+				SetCameraLock(camera, false);
+				SetCameraMapType(camera, SYSTEME);
+				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
+					SetCameraXSystem(camera, 320);
+					SetCameraYSystem(camera, 240);
+				}
+				SetCameraSystem(camera, GetCameraViewedSystem(camera));
+				#ifdef DEBUG_VERSION
+					dbg_sprintf((char*)dbgout, "open system %d\n", GetCameraViewedSystem(camera));
+				#endif
+				*key = 0;
+			}
 			if (GetCameraLock(camera) != true) {
-				SetCameraZoom(camera, GetCameraZoom(camera) +- 1);
-				if (GetCameraZoom(camera) < 3 && GetCameraZoom(camera) >= 1) {
+				SetCameraZoom(camera, GetCameraZoom(camera) + 1);
+				if (GetCameraZoom(camera) < 3 && GetCameraZoom(camera) >= 0) {
 					SetCameraX(camera, GetCameraX(camera) * 2);
 					SetCameraY(camera, GetCameraY(camera) * 2);
 				}
@@ -254,22 +270,22 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 				*key = 0;
 			}
 			break;
-		case sk_Clear:
-			if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (IsCameraMoveFleet(camera) == false)) {
-				OpenMenu(fenetre, camera, MENU_QUITTER, MENU_SYSTEME_AUCUN);
-				PauseGame(date);
-				*key = 0;
-			} else if(IsCameraMoveFleet(camera) == true) {
-				SetCameraMoveFleet(camera, false);
-				*key = 0;
-			}
-			break;
 		}
 	}
 
 	//touches generales
 
 	switch(*key){
+	case sk_Clear:
+		if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (IsCameraMoveFleet(camera) == false)) {
+			OpenMenu(fenetre, camera, MENU_QUITTER, MENU_SYSTEME_AUCUN);
+			PauseGame(date);
+			*key = 0;
+		} else if(IsCameraMoveFleet(camera) == true) {
+			SetCameraMoveFleet(camera, false);
+			*key = 0;
+		}
+		break;
 	case sk_Yequ :
 		if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 1)) {
 			OpenMenu(fenetre, camera, MENU_MARCHE, MENU_SYSTEME_AUCUN);
@@ -461,17 +477,17 @@ static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **syste
 	//teste si il n'y a plus beaucoup de ressources
 	empire = EmpireNumero(empireListe, 1);
 
-	if((GetEmpireAlloys(empire) - (GetEmpireAlloysChange(empire) / 12)) <= 0) {
-		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 30);
+	if((GetEmpireAlloys(empire) + (GetEmpireAlloysChange(empire) / 12)) <= 0) {
+		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
 	}
-	if((GetEmpireCredit(empire) - (GetEmpireCreditChange(empire) / 12)) <= 0) {
-		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 30);
+	if((GetEmpireCredit(empire) + (GetEmpireCreditChange(empire) / 12)) <= 0) {
+		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
 	}
-	if((GetEmpireFood(empire) - (GetEmpireFoodChange(empire) / 12)) <= 0) {
-		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 30);
+	if((GetEmpireFood(empire) + (GetEmpireFoodChange(empire) / 12)) <= 0) {
+		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
 	}
-	if((GetEmpireMinerals(empire) - (GetEmpireMineralsChange(empire) * 12)) <= 0) {
-		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 30);
+	if((GetEmpireMinerals(empire) + (GetEmpireMineralsChange(empire) * 12)) <= 0) {
+		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
 	}
 }
 
