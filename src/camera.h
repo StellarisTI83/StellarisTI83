@@ -57,17 +57,17 @@ int GetCameraZoom(Camera *camera);
 void SetCameraMapType(Camera *camera, VueType MapType);
 VueType GetCameraMapType(Camera *camera);
 
-void SetCameraLock(Camera *camera, bool lock);
-bool GetCameraLock(Camera *camera);
+void SetCameraLock(Camera *camera, int lock);
+int GetCameraLock(Camera *camera);
 
 void SetCameraViewedSystem(Camera *camera, int system);
 void SetCameraSystem(Camera *camera, int system);
-void SetCameraSystemViewStatus(Camera *camera, bool status);
+void SetCameraSystemViewStatus(Camera *camera, int status);
 int GetCameraViewedSystem(Camera *camera);
 int GetCameraSystem(Camera *camera);
 
-bool IsCameraMoveFleet(Camera *camera);
-void SetCameraMoveFleet(Camera *camera, bool status);
+int IsCameraMoveFleet(Camera *camera);
+void SetCameraMoveFleet(Camera *camera, int status);
 
 void SetCameraSelection(Camera *camera, int selection);
 int GetCameraSelection(Camera *camera);
@@ -89,7 +89,7 @@ void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu);
 
 void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
 void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
-bool GetCommandPromptStatus(Fenetre *fenetre);
+int GetCommandPromptStatus(Fenetre *fenetre);
 
 void SetWindowPlanet(Fenetre *fenetre, int planete);
 int GetWindowPlanet(Fenetre *fenetre);

@@ -62,14 +62,14 @@ static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, E
 void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe* empireListe){
 	int numero = 0, nombreDeVaisseaux = 0;
 	int nombreDeCorvette = 0, nombreDeDestroyer = 0, nombreDeCroiseur = 0, nombreDeCuirasse = 0;
-	OrdreStation ordre = AUCUN;
+	OrdreStation ordre = AUCUN_ORDRE_STATION;
     int info1 = 0;
     int info2 = 0;
 	int numeroEmpire = 0;
-	Empire *joueur = EmpireNumero(empireListe, 1);
+	// Empire *joueur = EmpireNumero(empireListe, 1);
 	while(numero < (LARGEUR_GALAXIE * LARGEUR_GALAXIE) - 1){
 		ordre = GetSystemStationOrder(systemeStellaires[numero]);
-		if(ordre != AUCUN){
+		if(ordre != AUCUN_ORDRE_STATION){
 			if(GetSystemStationOrderProgress(systemeStellaires[numero]) > 1){
 				UnincrementSystemStationOrderProgress(systemeStellaires[numero]);
 			}
@@ -114,6 +114,8 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
 					}
 					NouvelleFlotte(GetFleetArray(EmpireNumero(empireListe, numeroEmpire)), numero, (FlotteType)info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
 					break;
+				default:
+					break;
 				}
 				EndSystemStationOrder(systemeStellaires[numero]);
 			}
@@ -130,7 +132,7 @@ void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires, EmpireListe 
 	int i = 0, j = 0;
 	Empire *jour = EmpireNumero(empireListe, 1);
 	Villes *villes = NULL;
-	Batiment *batiment = NULL;
+	// Batiment *batiment = NULL;
 	OrdreConstruction ordre;
 	for(i = 0; i < LARGEUR_GALAXIE * LARGEUR_GALAXIE; i++){
 		for(j = 0; j < GetSystemPlanetNumber(systemeStellaires[i]); j++){
@@ -157,6 +159,8 @@ void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires, EmpireListe 
 								break;
 							case CONSTRUIRE_BATIMENT:
 								SetSystemPlanetCityBuilding(systemeStellaires[i], j, GetCityOrderInfo1(villes), (Batiment)GetCityOrderInfo2(villes), 1 );
+								break;
+							default:
 								break;
 						}
 						EndCityOrder(villes);

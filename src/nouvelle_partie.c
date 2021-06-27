@@ -1261,7 +1261,7 @@ int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
 /**
  * Initialize all for a new game
  */
-static bool InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **camera, Fenetre **fenetre, Marche **marche, Parametres **parametres, ti_var_t *sauvegarde){
+static int InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **camera, Fenetre **fenetre, Marche **marche, Parametres **parametres, ti_var_t *sauvegarde){
 	Empire *joueur = NULL;
 	joueur = EmpireNumero(*empireListe, 1);
 	ti_CloseAll();
@@ -1591,7 +1591,7 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
 
     int nombrePlanetes = 0;
     int nombrePlanetesHabitables = 0;
-    int planeteHabitable[5] = 0;
+    int planeteHabitable[5] = {0};
     int nombrePlanetesHabitee = 0;
     int nombreHyperlanes = 0;
     int nomInt = 0;
@@ -1646,7 +1646,7 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
 			} else {
 				etoile = ETOILE_TYPE_ETOILE_A_NEUTRONS;
 			}
-            SetSystemStationLevel(systemeStellaires[k], AUCUNE);
+            SetSystemStationLevel(systemeStellaires[k], AUCUNE_STATION);
 			nombrePlanetes = 0;
 			nombrePlanetes = randInt(1, 100);
 			if(nombrePlanetes <= 8) {
@@ -1928,8 +1928,8 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 
 	EmpireNouvelleFlotte(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 	
-	SetCameraX(camera, GetSystemX(systemeStellaires[i])); // centre la vue sur le systeme
-	SetCameraY(camera, GetSystemY(systemeStellaires[i]));
+	SetCameraX(camera, GetSystemX(systemeStellaires[i])*2); // centre la vue sur le systeme
+	SetCameraY(camera, GetSystemY(systemeStellaires[i])*2);
 	SetCameraSystem(camera, i);
 
 	planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i]) - 1);
@@ -1954,7 +1954,7 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	CalculateEmpireFleetPower(joueur);
 
 		#ifdef DEBUG_VERSION
-			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d\n -Color: %d\n -Planet: %d\n -Fleet: %p\n", 1, joueur, i, GetEmpireColor(joueur), planete, GetFleetArray(joueur));
+			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, GetSystemX(systemeStellaires[i]), GetSystemY(systemeStellaires[i]), GetEmpireColor(joueur), planete, GetFleetArray(joueur), GetCameraX(camera), GetCameraY(camera));
 		#endif
 	gfx_SetTextXY(90, 90);
 	for(j = 2; j <= GetEmpireNumber(parametres); j++){

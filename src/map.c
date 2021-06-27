@@ -613,7 +613,7 @@ static void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera*
  */
 void DessinerBase(SystemeStellaire *systeme, Camera* camera, Fenetre* fenetre, char* key){
 	int x, y;
-	if(GetSystemStationLevel(systeme) != AUCUNE){
+	if(GetSystemStationLevel(systeme) != AUCUNE_STATION){
 		gfx_SetColor(1);
 		x = 465 - GetCameraXSystem(camera);
 		y = 345 - GetCameraYSystem(camera);

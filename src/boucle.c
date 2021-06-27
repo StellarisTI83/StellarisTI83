@@ -36,9 +36,9 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Parametres *
 		boucle = UpdateGame(&key, empireListe, systemeStellaires, date, camera, fenetre, notificationList);
 
 		//dessiner l'écran
-		DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres, sauvegarde, marche, notificationList);
+		boucle = DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres, sauvegarde, marche, notificationList);
 
-		if((boot_CheckOnPressed()) || (boucle == 0)) {
+		if(/*(!boot_CheckOnPressed()) || */(boucle == 0)) {
 			// StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
 			// EmpireListeSupprimer(empireListe);
 			return 0;

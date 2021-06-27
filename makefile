@@ -1,29 +1,23 @@
 # ----------------------------
-# Set NAME to the program name
-# Set ICON to the png icon file name
-# Set DESCRIPTION to display within a compatible shell
-# Set COMPRESSED to "YES" to create a compressed program
+# Makefile Options
 # ----------------------------
 
-NAME        ?= STELLARI
-COMPRESSED  ?= YES
-ICON        ?= icon.png
-DESCRIPTION ?= "Stellaris for TI83PCE"
+NAME = STELLARI
+ICON = icon.png
+DESCRIPTION = "Stellaris for TI83PCE"
+COMPRESSED = YES
+ARCHIVED = YES
+
+CFLAGS = -Wall -Wextra -Oz
+CXXFLAGS = -Wall -Wextra -Oz
 
 # ----------------------------
-# Other Options (Advanced)
-# ----------------------------
 
-#EXTRA_CFLAGS        ?=
-#USE_FLASH_FUNCTIONS ?= YES|NO
-#OUTPUT_MAP          ?= YES|NO
-ARCHIVED            ?= YES
-OPT_MODE            ?= -optspeed
-#SRCDIR              ?= src
-#OBJDIR              ?= obj
-#BINDIR              ?= bin
-#GFXDIR              ?= src/gfx
-#V                   ?= 1
+ifndef CEDEV
+$(error CEDEV environment path variable is not set)
+endif
+
+include $(CEDEV)/meta/makefile.mk
 
 # This is just so the main makefile in $CEDEV/examples makes this one be like "make debug"
 .DEFAULT_GOAL := debug
@@ -31,7 +25,6 @@ OPT_MODE            ?= -optspeed
 FONTDIR ?= $(SRCDIR)/fonts
 #VERSIONDIR ?= $(SRCDIR)/version
 
-include $(CEDEV)/include/.makefile
 
 # This is a roundabout way to tell make that fonts.c depends on testfont.inc.
 # It does it by saying the compiled object code depends on the .inc file.

@@ -1,51 +1,47 @@
-output: c
-  include-file: gfx.h
-  palettes:
-    - global_palette
-  converts:
-    - sprites
 
-palette: global_palette
-  fixed-color: {index:0, r:0, g:0, b:0} #noir
-  fixed-color: {index:1, r:255, g:255, b:255} #blanc
-  fixed-color: {index:2, r:255, g:0, b:128} #violet qui fait mal aux yeux
-  fixed-color: {index:3, r:255, g:0, b:0} #rouge ennemis
-  fixed-color: {index:4, r:82, g:137, b:209} #un certain bleu
-  fixed-color: {index:5, r:175, g:255, b:233} #vert clair
-  fixed-color: {index:6, r:0, g:29, b:0 } #vert foncé centre
-  fixed-color: {index:7, r:35, g:49, b:44 } #vert clair bords
-  fixed-color: {index:8, r:51, g:91, b:75 } #vert foncé
-  fixed-color: {index:9, r:191, g:86, b:10 } #orange
-  
-  fixed-color: {index:10, r:33, g:24, b:19 } #marron
-  fixed-color: {index:11, r:164, g:173, b:186} #gris-bleu
-  fixed-color: {index:12, r:143, g:219, b:203} #couleur des hyperlanes
-  fixed-color: {index:13, r:243, g:188, b:24} #jaune soleil
-  fixed-color: {index:14, r:212, g:252, b:255} #bleu clair soleil
-  fixed-color: {index:15, r:217, g:200, b:227} #violet soleil
-  fixed-color: {index:16, r:7, g:87, b:44} #vert vaisseaux interieur
-  fixed-color: {index:17, r:0, g:188, b:255} #bleu alliés
-  fixed-color: {index:18, r:230, g:255, b:13} #jaune neutres
-  fixed-color: {index:19, r:13, g:181, b:112} #vert vaisseaux bords
-  
-  fixed-color: {index:20, r:172, g:124, b:100} #couleur planete aride
-  fixed-color: {index:21, r:198, g:152, b:102} #couleur planete desert
-  fixed-color: {index:22, r:204, g:182, b:151} #couleur planete savane
-  fixed-color: {index:23, r:208, g:205, b:206} #couleur planete artique
-  fixed-color: {index:24, r:119, g:133, b:119} #couleur planete thundra
-  fixed-color: {index:25, r:180, g:203, b:190} #couleur planete continental
-  fixed-color: {index:26, r:51, g:113, b:120} #couleur planete ocean
-  fixed-color: {index:27, r:190, g:92, b:33} #couleur planete en fusion
-  fixed-color: {index:28, r:126, g:138, b:79} #couleur planete toxique
-  fixed-color: {index:29, r:132, g:157, b:173} #couleur planete geante gazeuse
+palettes:
+  - name: global_palette
+    fixed-entries:
+      - color:  {index: 0, r: 0, g: 0, b: 0} #noir
+      - color:  {index: 1, r: 255, g: 255, b: 255} #blanc
+      - color:  {index: 2, r: 255, g: 0, b: 128} #violet qui fait mal aux yeux
+      - color:  {index: 3, r: 255, g: 0, b: 0} #rouge ennemis
+      - color:  {index: 4, r: 82, g: 137, b: 209} #un certain bleu
+      - color:  {index: 5, r: 175, g: 255, b: 233} #vert clair
+      - color:  {index: 6, r: 0, g: 29, b: 0 } #vert foncé centre
+      - color:  {index: 7, r: 35, g: 49, b: 44 } #vert clair bords
+      - color:  {index: 8, r: 51, g: 91, b: 75 } #vert foncé
+      - color:  {index: 9, r: 191, g: 86, b: 10 } #orange
 
-  fixed-color: {index:34, r:0, g:254, b:49} #vert
-  images: automatic
+      - color:  {index: 10, r: 33, g: 24, b: 19 } #marron
+      - color:  {index: 11, r: 164, g: 173, b: 186} #gris-bleu
+      - color:  {index: 12, r: 143, g: 219, b: 203} #couleur des hyperlanes
+      - color:  {index: 13, r: 243, g: 188, b: 24} #jaune soleil
+      - color:  {index: 14, r: 212, g: 252, b: 255} #bleu clair soleil
+      - color:  {index: 15, r: 217, g: 200, b: 227} #violet soleil
+      - color:  {index: 16, r: 7, g: 87, b: 44} #vert vaisseaux interieur
+      - color:  {index: 17, r: 0, g: 188, b: 255} #bleu alliés
+      - color:  {index: 18, r: 230, g: 255, b: 13} #jaune neutres
+      - color:  {index: 19, r: 13, g: 181, b: 112} #vert vaisseaux bords
 
-convert: sprites
-  palette: global_palette
-  transparent-color-index: 0
-  images:
+      - color:  {index: 20, r: 172, g: 124, b: 100} #couleur planete aride
+      - color:  {index: 21, r: 198, g: 152, b: 102} #couleur planete desert
+      - color:  {index: 22, r: 204, g: 182, b: 151} #couleur planete savane
+      - color:  {index: 23, r: 208, g: 205, b: 206} #couleur planete artique
+      - color:  {index: 24, r: 119, g: 133, b: 119} #couleur planete thundra
+      - color:  {index: 25, r: 180, g: 203, b: 190} #couleur planete continental
+      - color:  {index: 26, r: 51, g: 113, b: 120} #couleur planete ocean
+      - color:  {index: 27, r: 190, g: 92, b: 33} #couleur planete en fusion
+      - color:  {index: 28, r: 126, g: 138, b: 79} #couleur planete toxique
+      - color:  {index: 29, r: 132, g: 157, b: 173} #couleur planete geante gazeuse
+
+      - color:  {index: 34, r: 0, g: 254, b: 49} #vert
+    images: automatic
+
+converts:
+  - name: sprites
+    palette: global_palette
+    images:
     - ourFleet.png
     - alliedFleet.png
     - neutralFleet.png
@@ -97,3 +93,16 @@ convert: sprites
     - free_houses_icon.png
     - amienties_icon.png
     - unemployed_pop_icon.png
+
+outputs:
+  - type: appvar
+    name: vargfx
+    include-file: gfx.h
+    source-format: c
+    palettes:
+      - global_palette
+    converts:
+      - sprites
+
+
+

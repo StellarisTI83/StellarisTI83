@@ -49,7 +49,7 @@ void memsetStation(Station *station){
 void SetStationLevel(Station *station, Stationlevel level){
 	station->niveauStation = level;
 	switch(level){
-		case AUCUN:
+		case AUCUNE_STATION:
 			station->coqueRestante = 0;
 			station->coqueTotal = 0;
 			station->blindageRestante = 0;
@@ -57,8 +57,8 @@ void SetStationLevel(Station *station, Stationlevel level){
 			station->bouclierRestante = 0;
 			station->bouclierTotal = 0;
 
-			station->modules[0] = AUCUN;
-			station->modules[1] = AUCUN;
+			station->modules[0] = AUCUN_MODULE;
+			station->modules[1] = AUCUN_MODULE;
 
 			station->puissance = 0;
 			break;
@@ -70,8 +70,8 @@ void SetStationLevel(Station *station, Stationlevel level){
 			station->bouclierRestante = 600;
 			station->bouclierTotal = 600;
 
-			station->modules[0] = AUCUN;
-			station->modules[1] = AUCUN;
+			station->modules[0] = AUCUN_MODULE;
+			station->modules[1] = AUCUN_MODULE;
 
 			station->puissance = 200;
 			break;
@@ -83,8 +83,8 @@ void SetStationLevel(Station *station, Stationlevel level){
 			station->bouclierRestante = 1300;
 			station->bouclierTotal = 1300;
 
-			station->modules[2] = AUCUN;
-			station->modules[3] = AUCUN;
+			station->modules[2] = AUCUN_MODULE;
+			station->modules[3] = AUCUN_MODULE;
 
 			station->puissance = 500;
 			break;
@@ -96,8 +96,8 @@ void SetStationLevel(Station *station, Stationlevel level){
 			station->bouclierRestante = 3000;
 			station->bouclierTotal = 3000;
 
-			station->modules[4] = AUCUN;
-			station->modules[5] = AUCUN;
+			station->modules[4] = AUCUN_MODULE;
+			station->modules[5] = AUCUN_MODULE;
 
 			station->puissance = 1000;
 			break;

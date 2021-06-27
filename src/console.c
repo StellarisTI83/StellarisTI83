@@ -37,7 +37,7 @@ struct LigneDeCommande{
 typedef struct{
     char deniereCommande[50];
     int8_t cursor;
-    bool nombreActive;
+    int nombreActive;
     char reponse[50];
     Ligne *premiereLigne;
 } Console;

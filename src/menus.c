@@ -107,6 +107,8 @@ static int8_t MenuQuitter(char* key, ti_var_t* sauvegarde, EmpireListe* empireLi
 			case 5:
 				return 0;
 				break;
+			default:
+				break;
 		}
 	}
 	return 1;
@@ -498,7 +500,7 @@ void OrdreDistrictNom(Villes *villes){
 	gfx_SetTextFGColor(1);
 	if(RecupererOrdre(ordreQueue) != NULL){
 		switch(GetOrder(ordreQueue)){
-			case AUCUN:
+			case AUCUN_ORDRE_VILLE:
 				gfx_PrintString("Aucun ordre");
 				break;
 			case CONSTRUIRE_DISTRICT_URBAIN:
@@ -519,7 +521,7 @@ void OrdreDistrictNom(Villes *villes){
 				PrintInt(GetOrderInfo1(ordreQueue));
 				break;
 		}
-		if(GetOrder(ordreQueue) != AUCUN){
+		if(GetOrder(ordreQueue) != AUCUN_ORDRE_VILLE){
 			gfx_SetTextXY(45, niveau += 9);
 			gfx_PrintString("(");
 			gfx_SetTextFGColor(13);
@@ -750,7 +752,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
  * */
 char *PlaneteBatimentNom(Batiment batiment, int niveau, char* nom){
 	char levelStr[10];
-	if(batiment != AUCUN){
+	if(batiment != AUCUN_DISTRICT_VILLE){
 		switch(batiment){
 			case CAPITALE:
 				strcpy(nom, "Capitale");
@@ -1434,7 +1436,7 @@ static char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOr
 	}
 	else{
 		switch(GetOrder(GetStationOrderQueue(station))){
-			case AUCUN:
+			case AUCUN_ORDRE_STATION:
 				gfx_PrintStringXY("Aucun ordre", 55, niveau);
 				break;
 			case AMELIORER_STATION:
@@ -1767,20 +1769,20 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
 				if(GetStationLevel(station) > AVANT_POSTE){
 					switch(GetStationLevel(station)){
 						case PORT_STELLAIRE:
-							SetStationModule(station, 0, AUCUN);
-							SetStationModule(station, 1, AUCUN);
+							SetStationModule(station, 0, AUCUN_MODULE);
+							SetStationModule(station, 1, AUCUN_MODULE);
 						case REDOUTE_STELLAIRE:
-							SetStationModule(station, 2, AUCUN);
-							SetStationModule(station, 3, AUCUN);
+							SetStationModule(station, 2, AUCUN_MODULE);
+							SetStationModule(station, 3, AUCUN_MODULE);
 						case FORTERESSE_STELLAIRE:
-							SetStationModule(station, 4, AUCUN);
-							SetStationModule(station, 5, AUCUN);
+							SetStationModule(station, 4, AUCUN_MODULE);
+							SetStationModule(station, 5, AUCUN_MODULE);
 					}
 					SetStationLevel(station, GetStationLevel(station) - 1);
 				}
 				else {
 					CloseMenu(fenetre, camera);
-					SetStationLevel(station, AUCUNE);
+					SetStationLevel(station, AUCUNE_STATION);
 					memsetStation(station);
 				}
 				break;
@@ -1797,7 +1799,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
  */
 char* ModuleNom(Module module, char* nomDuModule){
 	switch(module){
-		case AUCUN:
+		case AUCUN_MODULE:
 			strcpy(nomDuModule, "Aucun");
 			break;
 		case CHANTIER_SPATIAL:
@@ -1939,7 +1941,7 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire **sys
 		if(*module != GetWindowPrevious(fenetre)){
 			if(GetWindowPrevious(fenetre) == 8){
 				SetWindowPrevious(fenetre, 0);
-				*module = AUCUN;
+				*module = AUCUN_MODULE;
 			}
 			if(GetWindowPrevious(fenetre) != 0){
 				if(GetEmpireAlloys(joueur) >= 50){
@@ -2916,6 +2918,7 @@ int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sy
 	switch(GetOpenedMenuClass(fenetre)){
 		case MENU_QUITTER:
 			fin = MenuQuitter(key, sauvegarde, empireListe, parametres, date, systemeStellaires, camera, marche, fenetre);
+
 			if (fin == 0){
 				return 0;
 			}

@@ -62,8 +62,8 @@ int GetHyperlaneY(SystemeStellaire *systemeStellaire, int numeroHyperlane);
 void CreateSystemPlanet(SystemeStellaire *systemeStellaire, int position);
 Planete *GetSystemPlanet(SystemeStellaire *systemeStellaire, int position);
 
-void SetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number, bool habitability);
-bool GetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number);
+void SetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number, int habitability);
+int GetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number);
 
 void SetSystemPlanetOrbitRadius(SystemeStellaire *systemeStellaire, int number, int);
 int GetSystemPlanetOrbitRadius(SystemeStellaire *systemeStellaire, int number);

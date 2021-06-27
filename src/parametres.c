@@ -19,7 +19,7 @@
 struct ParametresStruct{
 	char starNumber;
 	char empireNumber;
-	bool seeAll;
+	int seeAll;
     int fps;
 };
 
@@ -44,11 +44,11 @@ int GetEmpireNumber(Parametres *parametres){
     return parametres->starNumber;
 }
 
-void SetSeeAll(Parametres *parametres, bool seeAll){
+void SetSeeAll(Parametres *parametres, int seeAll){
     parametres->seeAll = seeAll;
 }
 
-bool GetSeeAll(Parametres *parametres){
+int GetSeeAll(Parametres *parametres){
     return parametres->seeAll;
 }
 

@@ -159,10 +159,10 @@ Planete *GetSystemPlanet(SystemeStellaire *systemeStellaire, int position){
 	return systemeStellaire->planetes[position];
 }
 
-void SetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number, bool habitability){
+void SetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number, int habitability){
 	SetPlanetHabitability(systemeStellaire->planetes[number], habitability);
 }
-bool GetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number){
+int GetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number){
 	return GetPlanetHabitability(systemeStellaire->planetes[number]);
 }
 

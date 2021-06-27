@@ -270,9 +270,9 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 				return fin;
 				break;
 		}
-		if(boot_CheckOnPressed()) {
-			return fin;
-		}
+		// if(!boot_CheckOnPressed()) {
+		// 	return fin;
+		// }
 		if (choix > 3) {choix = 0;}
 		if (choix < 0) {choix = 3;}
 		gfx_SetTextXY(5, 140);
@@ -454,9 +454,15 @@ int main(void){
 	InitializeAll(&empireListe, parametres);
 	while (fin){
 		fin = MainMenu(empireListe, parametres);
+	#ifdef DEBUG_VERSION
+    	dbg_sprintf(dbgout, "%d\n", fin);
+	#endif
 	}
 	
 	gfx_End();
+	#ifdef DEBUG_VERSION
+    	dbg_sprintf(dbgout, "Close Stellaris\n");
+	#endif
 	
     return 0;
 }
