@@ -203,7 +203,7 @@ static void UpdateWorld(EmpireListe *empireListe, SystemeStellaire **systemeStel
     CalculerNiveauDeConnaissance(systemeStellaires, empireListe);
 }
 
-static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre){
+static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres){
 	if(GetCameraMapType(camera) == NORMAL){
 		switch(*key){
 		case sk_Up:
@@ -232,10 +232,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 			}
 			break;
 		case sk_Del:
-			#ifdef DEBUG_VERSION
-				dbg_sprintf((char*)dbgout, "camera zoom : %d\n", GetCameraZoom(camera));
-			#endif
-			if ((GetCameraZoom(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU)))) {
+			if ((GetCameraZoom(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && ((GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU) || GetSeeAll(parametres))))) {
 				SetCameraLock(camera, false);
 				SetCameraMapType(camera, SYSTEME);
 				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
@@ -257,7 +254,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 			}
 			break;
 		case sk_Enter:
-			if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU))){
+			if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU || GetSeeAll(parametres)))){
 				SetCameraLock(camera, false);
 				SetCameraMapType(camera, SYSTEME);
 				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
@@ -496,9 +493,9 @@ static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **syste
 }
 
 /* entry points ======================================================== */
-int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, NotificationList *notificationList){
+int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, NotificationList *notificationList, Parametres *parametres){
     if(!GetCommandPromptStatus(fenetre))
-		TestKey(key, empireListe, systemeStellaires, date, camera, fenetre);
+		TestKey(key, empireListe, systemeStellaires, date, camera, fenetre, parametres);
 
     UpdateTime(date, key, fenetre);
     if(GetTimeClock(date) == 0){

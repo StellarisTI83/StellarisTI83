@@ -6,7 +6,7 @@
 /**
  * Version du jeu
  */
-#define VERSION_LOGICIEL "v0.3.0-a"
+#define VERSION_LOGICIEL "v0.3.1-a"
 
 /* Debug Version*/
 

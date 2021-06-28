@@ -66,30 +66,30 @@ Camera *AllocCamera(){
 void SetCameraX(Camera *camera, int x){
 	camera->x = x;
 	
-	#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgout, "Set camera x position: %d\n", x);
-	#endif
+	// #ifdef DEBUG_VERSION
+	// 	dbg_sprintf(dbgout, "Set camera x position: %d\n", x);
+	// #endif
 }
 void AddCameraX(Camera *camera, int x){
 	camera->x += x;
-	#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgout, "Add camera x position: %d\n", x);
-	#endif
+	// #ifdef DEBUG_VERSION
+	// 	dbg_sprintf(dbgout, "Add camera x position: %d\n", x);
+	// #endif
 }
 int GetCameraX(Camera *camera){
 	return camera->x;
 }
 void SetCameraY(Camera *camera, int y){
 	camera->y = y;
-	#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgout, "Set camera y position: %d\n", y);
-	#endif
+	// #ifdef DEBUG_VERSION
+	// 	dbg_sprintf(dbgout, "Set camera y position: %d\n", y);
+	// #endif
 }
 void AddCameraY(Camera *camera, int y){
 	camera->y += y;
-	#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgout, "Add camera y position: %d\n", y);
-	#endif
+	// #ifdef DEBUG_VERSION
+	// 	dbg_sprintf(dbgout, "Add camera y position: %d\n", y);
+	// #endif
 }
 int GetCameraY(Camera *camera){
 	return camera->y;
