@@ -33,6 +33,61 @@
 /* private functions =================================================== */
 
 /**
+ * Base pour dessiner les menus
+ */
+static void DrawMenuBase(char planetePopulation, char niveauMenu, Fenetre *fenetre) {
+	int niveau = 40;
+	gfx_SetColor(6);
+	gfx_FillRectangle_NoClip(40, 40, 240, 160);
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(40, 40, 240, 160);
+	gfx_HorizLine_NoClip(45, 51, 180); //***
+	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
+	gfx_HorizLine_NoClip(231, 45, 38); //***
+	gfx_SetColor(1);
+	gfx_SetPixel(270, 45);//point au bout de la ligne du titre
+	
+	if(GetOpenedMenuClass(fenetre) == MENU_SYSTEME) {
+		gfx_SetColor(7);
+		gfx_Rectangle_NoClip(40, 40, 240, 160);
+		gfx_Rectangle_NoClip(40, 199, niveau - 40, 12); //cadre des differents pages
+
+		if(niveauMenu == 0)
+			gfx_SetColor(7);
+		else
+			gfx_SetColor(6);
+		gfx_FillRectangle_NoClip(40, 200, strlen("R/sum/") * 8 + 10, 10);
+		gfx_PrintStringXY("R/sum/", 45, 201);
+		niveau += strlen("R/sum/") * 8 + 10;
+		gfx_SetColor(6);
+
+		if(planetePopulation == 0){
+			gfx_SetColor(11);
+		}
+		else if(niveauMenu == 1)
+			gfx_SetColor(7);
+		else
+			gfx_SetColor(6);
+		gfx_FillRectangle_NoClip(niveau, 200, strlen("Districts") * 8 + 10, 10);
+		gfx_PrintStringXY("Districts", niveau + 5, 201);
+		niveau += strlen("Districts") * 8 + 10;
+		gfx_VertLine_NoClip(niveau - 1, 201, 8);//barre de séparation
+		gfx_SetColor(6);
+
+		if(planetePopulation == 0){
+			gfx_SetColor(11);
+		}
+		else if(niveauMenu == 2)
+			gfx_SetColor(7);
+		else
+			gfx_SetColor(6);
+		gfx_FillRectangle_NoClip(niveau, 200, strlen("Batiments") * 8 + 10, 10);
+		gfx_PrintStringXY("Batiments", niveau + 5, 201);
+		niveau += strlen("Batiments") * 8 + 10;
+	}
+}
+
+/**
  * Dessine le menu lorsqu'on appui sur echap
  */
 static int8_t MenuQuitter(char* key, ti_var_t* sauvegarde, EmpireListe* empireListe, Parametres* parametres, Date* date, SystemeStellaire **systemeStellaires, Camera* camera, Marche* marche, Fenetre* fenetre){
@@ -107,6 +162,8 @@ static int8_t MenuQuitter(char* key, ti_var_t* sauvegarde, EmpireListe* empireLi
 			case 5:
 				return 0;
 				break;
+			default:
+				break;
 		}
 	}
 	return 1;
@@ -145,11 +202,6 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 	}
 
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(45, 51, 230);
 	gfx_PrintStringXY("Vue flottes", 116, 42);
 	niveau = 57;
 	flotte = FlotteNumero(GetFleetArray(joueur), 1);
@@ -220,17 +272,13 @@ static void MenuSystemeEtoile(char *key, SystemeStellaire **systemeStellaires, C
 			break;
 	}
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
+	DrawMenuBase(0, 0, fenetre);
 	gfx_SetColor(0);
-	gfx_FillRectangle_NoClip(45, 56, 110, 110);
+	gfx_FillRectangle_NoClip(45, 56, 100, 100);
 	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(45, 51, 230);
-	gfx_VertLine_NoClip(100, 42, 8);
-	gfx_Rectangle_NoClip(45, 56, 110, 110);
-	gfx_PrintStringXY("Retour", 48, 42);
-	gfx_SetTextXY(158 - strlen(GetSystemName(systemeStellaires[GetCameraSystem(camera)]))*4, 42);
+	gfx_Rectangle_NoClip(45, 56, 100, 100);
+
+	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Proxima ");
 	gfx_PrintString(GetSystemName(systemeStellaires[GetCameraSystem(camera)]));
 	gfx_SetTextXY(160, 62);
@@ -239,85 +287,85 @@ static void MenuSystemeEtoile(char *key, SystemeStellaire **systemeStellaires, C
 		case ETOILE_TYPE_B:
 			gfx_PrintString("B");
 			gfx_SetColor(1);
-			gfx_FillCircle_NoClip(100, 111, 45);				
+			gfx_FillCircle_NoClip(95, 106, 45);				
 			gfx_SetColor(15);
-			gfx_Circle_NoClip(100, 111, 45);
+			gfx_Circle_NoClip(95, 106, 45);
 			break;
 		case ETOILE_TYPE_A:
 			gfx_PrintString("A");
 			gfx_SetColor(1);
-			gfx_FillCircle_NoClip(100, 111, 40);				
+			gfx_FillCircle_NoClip(95, 106, 40);				
 			gfx_SetColor(14);
-			gfx_Circle_NoClip(100, 111, 40);
+			gfx_Circle_NoClip(95, 106, 40);
 			break;
 		case ETOILE_TYPE_F:
 			gfx_PrintString("F");
 			gfx_SetColor(1);
-			gfx_FillCircle_NoClip(100, 111, 35);				
+			gfx_FillCircle_NoClip(95, 106, 35);				
 			break;
 		case ETOILE_TYPE_G:
 			gfx_PrintString("G");
 			gfx_SetColor(1);
-			gfx_FillCircle_NoClip(100, 111, 32);				
+			gfx_FillCircle_NoClip(95, 106, 32);				
 			gfx_SetColor(13);
-			gfx_Circle_NoClip(100, 111, 32);
+			gfx_Circle_NoClip(95, 106, 32);
 			break;
 		case ETOILE_TYPE_K:
 			gfx_PrintString("K");
 			gfx_SetColor(13);
-			gfx_FillCircle_NoClip(100, 111, 30);				
+			gfx_FillCircle_NoClip(95, 106, 30);				
 			gfx_SetColor(9);
-			gfx_Circle_NoClip(100, 111, 30);
+			gfx_Circle_NoClip(95, 106, 30);
 			break;
 		case ETOILE_TYPE_M:
 			gfx_PrintString("M");
 			gfx_SetColor(9);
-			gfx_FillCircle_NoClip(100, 111, 10);				
+			gfx_FillCircle_NoClip(95, 106, 10);				
 			gfx_SetColor(13);
-			gfx_Circle_NoClip(100, 111, 10);
+			gfx_Circle_NoClip(95, 106, 10);
 			break;
 		case ETOILE_TYPE_TROU_NOIR:
 			gfx_PrintString("trou noir");
 			gfx_SetColor(1);
-			gfx_Circle_NoClip(100, 111, 40);	
+			gfx_Circle_NoClip(95, 106, 40);	
 			gfx_SetColor(1);
-			gfx_Circle_NoClip(100, 111, 41);	
+			gfx_Circle_NoClip(95, 106, 41);	
 			gfx_SetColor(14);
-			gfx_Circle_NoClip(100, 111, 42);				
+			gfx_Circle_NoClip(95, 106, 42);				
 			gfx_SetColor(13);
-			gfx_Circle_NoClip(100, 111, 43);			
+			gfx_Circle_NoClip(95, 106, 43);			
 			gfx_SetColor(0);
-			gfx_Circle_NoClip(100, 111, 44);			
+			gfx_Circle_NoClip(95, 106, 44);			
 			gfx_SetColor(11);
-			gfx_Circle_NoClip(100, 111, 45);				
+			gfx_Circle_NoClip(95, 106, 45);				
 			gfx_SetColor(14);
-			gfx_Circle_NoClip(100, 111, 46);
+			gfx_Circle_NoClip(95, 106, 46);
 			gfx_SetColor(13);
-			gfx_Circle_NoClip(100, 111, 47);
+			gfx_Circle_NoClip(95, 106, 47);
 			gfx_SetColor(0);
-			gfx_FillCircle_NoClip(105, 115, 40);
+			gfx_FillCircle_NoClip(105, 110, 38);
 			gfx_SetColor(13);
-			gfx_HorizLine_NoClip(45, 111, 110);
-			gfx_HorizLine_NoClip(48, 110, 104);
-			gfx_HorizLine_NoClip(48, 112, 104);
+			gfx_HorizLine_NoClip(45, 106, 100);
+			gfx_HorizLine_NoClip(48, 105, 94);
+			gfx_HorizLine_NoClip(48, 106, 94);
 			break;
 		case ETOILE_TYPE_PULSAR:
 			gfx_PrintString("pulsar");
 			gfx_SetColor(14);
-			gfx_FillCircle_NoClip(100, 111, 4);
-			gfx_Line_NoClip(90, 101, 110, 121);
+			gfx_FillCircle_NoClip(95, 106, 4);
+			gfx_Line_NoClip(85, 96, 105, 116);
 			gfx_SetColor(1);
-			gfx_Circle_NoClip(100, 111, 4);
+			gfx_Circle_NoClip(95, 106, 4);
 			break;
 		case ETOILE_TYPE_ETOILE_A_NEUTRONS:
 			gfx_PrintString("/toile a neutrons");
 			gfx_SetColor(14);
-			gfx_FillCircle_NoClip(100, 111, 4);	
-			gfx_Circle_NoClip(100, 111, 11);
-			gfx_Circle_NoClip(100, 111, 9);
+			gfx_FillCircle_NoClip(95, 106, 4);	
+			gfx_Circle_NoClip(95, 106, 11);
+			gfx_Circle_NoClip(95, 106, 9);
 			gfx_SetColor(1);
-			gfx_Circle_NoClip(100, 111, 4);
-			gfx_Circle_NoClip(100, 111, 10);
+			gfx_Circle_NoClip(95, 106, 4);
+			gfx_Circle_NoClip(95, 106, 10);
 			break;
 	}
 }
@@ -363,51 +411,15 @@ static void NumeroPlanete(int numero, int *decalage, Planete *planete, char *nom
 static void MenuSystemePlaneteResume(char *key, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
 	int8_t populationChar[5], nomPlanete[20];
 	int decalage = 0;
-	int niveau = 40;
+	int niveau = 0;
 	Planete* planete = NULL;
 	planete = GetPlanet(systemeStellaires[GetCameraSystem(camera)], GetWindowPlanet(fenetre));
 	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, &nomPlanete, systemeStellaires[GetCameraSystem(camera)]);
 
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-
-	gfx_SetColor(7);
-	gfx_FillRectangle_NoClip(40, 200, strlen("R/sum/") * 8 + 10, 10);
-	gfx_PrintStringXY("R/sum/", 45, 201);
-	niveau += strlen("R/sum/") * 8 + 10;
-	gfx_SetColor(6);
-
-	if(GetPlanetCityPopulation(planete) == 0){
-		gfx_SetColor(11);
-	}
-	gfx_FillRectangle_NoClip(niveau, 200, strlen("Districts") * 8 + 10, 10);
-	gfx_PrintStringXY("Districts", niveau + 5, 201);
-	niveau += strlen("Districts") * 8 + 10;
-	gfx_SetColor(7);
-	gfx_VertLine_NoClip(niveau - 1, 201, 8);//barre de séparation
-	gfx_SetColor(6);
-
-	if(GetPlanetCityPopulation(planete) == 0){
-		gfx_SetColor(11);
-	}
-	gfx_FillRectangle_NoClip(niveau, 200, strlen("Batiments") * 8 + 10, 10);
-	gfx_PrintStringXY("Batiments", niveau + 5, 201);
-	niveau += strlen("Batiments") * 8 + 10;
-
-
-	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_Rectangle_NoClip(40, 199, niveau - 40, 12); //cadre des differents pages
-
-	gfx_HorizLine_NoClip(45, 51, 180); //***
-	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
-	gfx_HorizLine_NoClip(230, 45, 40); //***
+	DrawMenuBase(GetPlanetCityPopulation(planete), 0, fenetre);
 
 	gfx_Rectangle_NoClip(45, 56, 100, 100); //cadre image
-
-	gfx_SetColor(1);
-	gfx_SetPixel(270, 45);//point au bout de la ligne du titre
 
 	gfx_SetTextXY(45, 42);
 	if(GetPlanetHabitability(planete) == 1){
@@ -498,7 +510,7 @@ void OrdreDistrictNom(Villes *villes){
 	gfx_SetTextFGColor(1);
 	if(RecupererOrdre(ordreQueue) != NULL){
 		switch(GetOrder(ordreQueue)){
-			case AUCUN:
+			case AUCUN_ORDRE_VILLE:
 				gfx_PrintString("Aucun ordre");
 				break;
 			case CONSTRUIRE_DISTRICT_URBAIN:
@@ -519,7 +531,7 @@ void OrdreDistrictNom(Villes *villes){
 				PrintInt(GetOrderInfo1(ordreQueue));
 				break;
 		}
-		if(GetOrder(ordreQueue) != AUCUN){
+		if(GetOrder(ordreQueue) != AUCUN_ORDRE_VILLE){
 			gfx_SetTextXY(45, niveau += 9);
 			gfx_PrintString("(");
 			gfx_SetTextFGColor(13);
@@ -546,7 +558,8 @@ void OrdreDistrictNom(Villes *villes){
 static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
 	int8_t nomPlanete[20];
 	int decalage = 0;
-	int niveau = 40, maximum = 4;
+	int maximum = 4;
+	int niveau = 0;
 	Planete* planete = NULL;
 	Ordre *ordre = NULL;
 	planete = GetPlanet(systemeStellaires[GetCameraSystem(camera)], GetWindowPlanet(fenetre));
@@ -555,42 +568,9 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 	ordre = GetCityOrderElement(GetPlanetCity(planete));	
 
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-
-	gfx_FillRectangle_NoClip(40, 200, strlen("R/sum/") * 8 + 10, 10);
-	gfx_PrintStringXY("R/sum/", 45, 201);
-	niveau += strlen("R/sum/") * 8 + 10;
-
-	if(GetPlanetCityPopulation(planete) == 0){
-		gfx_SetColor(11);
-	}
-	gfx_SetColor(7);
-	gfx_FillRectangle_NoClip(niveau, 200, strlen("Districts") * 8 + 10, 10);
-	gfx_PrintStringXY("Districts", niveau + 5, 201);
-	niveau += strlen("Districts") * 8 + 10;
-	gfx_SetColor(6);
-
-	if(GetPlanetCityPopulation(planete) == 0){
-		gfx_SetColor(11);
-	}
-	gfx_FillRectangle_NoClip(niveau, 200, strlen("Batiments") * 8 + 10, 10);
-	gfx_PrintStringXY("Batiments", niveau + 5, 201);
-	niveau += strlen("Batiments") * 8 + 10;
-
-
-	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_Rectangle_NoClip(40, 199, niveau - 40, 11);
-
-	gfx_HorizLine_NoClip(45, 51, 180); //***
-	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
-	gfx_HorizLine_NoClip(230, 45, 40); //***
+	DrawMenuBase(GetPlanetCityPopulation(planete), 1, fenetre);
 
 	gfx_HorizLine_NoClip(45, 179, 230);//barre du bas au dessus des ordres
-	
-	gfx_SetColor(1);
-	gfx_SetPixel(270, 45);//point au bout de la ligne du titre
 
 	gfx_SetTextXY(45, 42);
 	if(GetPlanetHabitability(planete) == 1){
@@ -684,7 +664,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 		}
 	}
 
-	if(*key == sk_Enter){
+	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)])){
 		if(GetWindowSelection(fenetre) == 5){
 			AddEmpireMinerals(EmpireNumero(empireListe, 1), GetOrderPrice(GetCityOrderQueue(GetPlanetCity(planete))));
 			FinirOrdre(GetCityOrderQueue(GetPlanetCity(planete)));
@@ -750,7 +730,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
  * */
 char *PlaneteBatimentNom(Batiment batiment, int niveau, char* nom){
 	char levelStr[10];
-	if(batiment != AUCUN){
+	if(batiment != AUCUN_DISTRICT_VILLE){
 		switch(batiment){
 			case CAPITALE:
 				strcpy(nom, "Capitale");
@@ -900,7 +880,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 	PrintInt(400);
 	niveau += 15;
 
-	if(*key == sk_Enter){
+	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)])){
 		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_PLANETE_BATIMENT);
 		if(GetWindowSelection(fenetre) != 0){
 			IncrementWindowSelection(fenetre);
@@ -928,8 +908,9 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
 	int8_t nomPlanete[20], nom[50];
 	int decalage = 0;
-	int niveau = 40, nombreDeBatiment = 0;
+	int nombreDeBatiment = 0;
 	int supprimer = 0;
+	int niveau = 0;
 	Planete* planete = NULL;
 	Ordre *ordre = NULL;
 	planete = GetPlanet(systemeStellaires[GetCameraSystem(camera)], GetWindowPlanet(fenetre));
@@ -938,32 +919,7 @@ static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeSte
 	ordre = GetCityOrderElement(GetPlanetCity(planete));	
 
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-
-	gfx_FillRectangle_NoClip(40, 200, strlen("R/sum/") * 8 + 10, 10);
-	gfx_PrintStringXY("R/sum/", 45, 201);
-	niveau += strlen("R/sum/") * 8 + 10;
-	gfx_SetColor(7);
-	gfx_VertLine_NoClip(niveau - 1, 201, 7);//barre de séparation
-	gfx_SetColor(6);
-
-	gfx_FillRectangle_NoClip(niveau, 200, strlen("Districts") * 8 + 10, 10);
-	gfx_PrintStringXY("Districts", niveau + 5, 201);
-	niveau += strlen("Districts") * 8 + 10;
-
-	gfx_SetColor(7);
-	gfx_FillRectangle_NoClip(niveau, 200, strlen("Batiments") * 8 + 10, 10);
-	gfx_PrintStringXY("Batiments", niveau + 5, 201);
-	niveau += strlen("Batiments") * 8 + 10;
-
-
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_Rectangle_NoClip(40, 199, niveau - 40, 11);
-
-	gfx_HorizLine_NoClip(45, 51, 180); //***
-	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
-	gfx_HorizLine_NoClip(230, 45, 40); //***
+	DrawMenuBase(GetPlanetCityPopulation(planete), 2, fenetre);
 
 	gfx_HorizLine_NoClip(45, 179, 230);//barre du bas au dessus des ordres
 
@@ -1079,7 +1035,7 @@ static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeSte
 		gfx_Line_NoClip(265, niveau + 12, 275, niveau + 2);
 	}
 	
-	if(*key == sk_Enter){
+	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)])){
 		if(GetWindowSelection(fenetre) == 5){
 			AddEmpireMinerals(EmpireNumero(empireListe, 1), GetOrderPrice(GetCityOrderQueue(GetPlanetCity(planete))));
 			FinirOrdre(GetCityOrderQueue(GetPlanetCity(planete)));
@@ -1109,7 +1065,7 @@ static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeSte
 		}
 		*key = 0;
 	}
-	if(*key == sk_Enter){
+	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)])){
 		if((supprimer == 1) && (GetWindowSelection(fenetre) == 7)){
 			AddEmpireMinerals(EmpireNumero(empireListe, 1), GetOrderPrice(GetCityOrderQueue(GetPlanetCity(planete))));
 			FinirOrdre(GetCityOrderQueue(GetPlanetCity(planete)));
@@ -1197,15 +1153,15 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, E
 	gfx_FillRectangle_NoClip(40, 40, 240, 160);
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(45, 51, 230);
-	gfx_HorizLine_NoClip(45, 67, 180); //*barre en dessous du nom
-	gfx_Line_NoClip(225, 67, 233, 55); //*
-	gfx_HorizLine_NoClip(235, 55, 40); //*
+	gfx_HorizLine_NoClip(45, 51, 225); // barre sous le titre et retour
+	gfx_HorizLine_NoClip(45, 67, 180); //***
+	gfx_Line_NoClip(225, 67, 230, 62); //*Barre sous le sous-titre
+	gfx_HorizLine_NoClip(231, 62, 38); //***
 	gfx_HorizLine_NoClip(45, 162, 230);//barre du bas au dessus des ordres
 	gfx_VertLine_NoClip(100, 42, 8); //barre a coté de retour
 	gfx_SetColor(1);
-	gfx_SetPixel(275, 55);
-	gfx_SetPixel(275, 51);
+	gfx_SetPixel(270, 62);
+	gfx_SetPixel(270, 51);
 	gfx_PrintStringXY("Retour", 48, 42);
 	gfx_SetTextXY(150, 42);
 	flotte = FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), GetWindowSelectedFleet(fenetre));
@@ -1434,7 +1390,7 @@ static char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOr
 	}
 	else{
 		switch(GetOrder(GetStationOrderQueue(station))){
-			case AUCUN:
+			case AUCUN_ORDRE_STATION:
 				gfx_PrintStringXY("Aucun ordre", 55, niveau);
 				break;
 			case AMELIORER_STATION:
@@ -1767,20 +1723,20 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
 				if(GetStationLevel(station) > AVANT_POSTE){
 					switch(GetStationLevel(station)){
 						case PORT_STELLAIRE:
-							SetStationModule(station, 0, AUCUN);
-							SetStationModule(station, 1, AUCUN);
+							SetStationModule(station, 0, AUCUN_MODULE);
+							SetStationModule(station, 1, AUCUN_MODULE);
 						case REDOUTE_STELLAIRE:
-							SetStationModule(station, 2, AUCUN);
-							SetStationModule(station, 3, AUCUN);
+							SetStationModule(station, 2, AUCUN_MODULE);
+							SetStationModule(station, 3, AUCUN_MODULE);
 						case FORTERESSE_STELLAIRE:
-							SetStationModule(station, 4, AUCUN);
-							SetStationModule(station, 5, AUCUN);
+							SetStationModule(station, 4, AUCUN_MODULE);
+							SetStationModule(station, 5, AUCUN_MODULE);
 					}
 					SetStationLevel(station, GetStationLevel(station) - 1);
 				}
 				else {
 					CloseMenu(fenetre, camera);
-					SetStationLevel(station, AUCUNE);
+					SetStationLevel(station, AUCUNE_STATION);
 					memsetStation(station);
 				}
 				break;
@@ -1797,7 +1753,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
  */
 char* ModuleNom(Module module, char* nomDuModule){
 	switch(module){
-		case AUCUN:
+		case AUCUN_MODULE:
 			strcpy(nomDuModule, "Aucun");
 			break;
 		case CHANTIER_SPATIAL:
@@ -1939,7 +1895,7 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire **sys
 		if(*module != GetWindowPrevious(fenetre)){
 			if(GetWindowPrevious(fenetre) == 8){
 				SetWindowPrevious(fenetre, 0);
-				*module = AUCUN;
+				*module = AUCUN_MODULE;
 			}
 			if(GetWindowPrevious(fenetre) != 0){
 				if(GetEmpireAlloys(joueur) >= 50){
@@ -2590,21 +2546,17 @@ void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenetre){
 		*key = 0;
 	}
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(50, 50, 220);
+	DrawMenuBase(0, 0, fenetre);
 	gfx_SetColor(1);
 	switch(GetWindowSelection(fenetre))
 	{
 		case 1:
-			gfx_PrintStringXY("Argent", 136, 41);
+			gfx_PrintStringXY("Argent", 45, 42);
 			gfx_PrintStringXY("Non /changeable", 100, 100);
 			break;
 			
 		case 2:
-			gfx_PrintStringXY("Minerai", 132, 41);
+			gfx_PrintStringXY("Minerai", 45, 42);
 			gfx_TransparentSprite_NoClip(credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
 			gfx_SetTextXY(90, 60);
@@ -2623,7 +2575,7 @@ void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenetre){
 			break;
 
 		case 3:
-			gfx_PrintStringXY("Nourriture", 132, 41);
+			gfx_PrintStringXY("Nourriture", 45, 42);
 			gfx_TransparentSprite_NoClip(credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
 			gfx_SetTextXY(90, 60);
@@ -2642,7 +2594,7 @@ void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenetre){
 			break;
 
 		case 4:
-			gfx_PrintStringXY("Fer", 132, 41);
+			gfx_PrintStringXY("Fer", 45, 42);
 			gfx_TransparentSprite_NoClip(credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
 			gfx_SetTextXY(90, 60);
@@ -2661,7 +2613,7 @@ void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenetre){
 			break;
 			break;
 		case 5:
-			gfx_PrintStringXY("Autre", 148, 41);
+			gfx_PrintStringXY("Autre", 45, 42);
 			break;
 	}
 }
@@ -2692,12 +2644,8 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 			break;
 	}
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(50, 50, 220);
-	gfx_PrintStringXY("Flotte", 136, 41);
+	DrawMenuBase(0, 0, fenetre);
+	gfx_PrintStringXY("Flotte", 45, 42);
 	niveau = 57;
 	sizeFleet = FleetArraySize(GetFleetArray(joueur));
 	
@@ -2731,8 +2679,9 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 		gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Flotte ");
 		PrintInt(compteurFlotte);
-		gfx_HorizLine_NoClip(50, niveau + 11, 220);
-		niveau += 17;
+		gfx_SetColor(7);
+		gfx_HorizLine_NoClip(50, niveau + 12, 220);
+		niveau += 18;
 		compteurFlotte++;
 		flotte = FlotteNumero(GetFleetArray(joueur), compteurFlotte);
 	}
@@ -2753,13 +2702,8 @@ void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
 		CloseMenu(fenetre, camera);
 	}
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(50, 50, 220);
-	gfx_SetColor(1);
-	gfx_PrintStringXY("Recherche", 124, 41);
+	DrawMenuBase(0, 0, fenetre);
+	gfx_PrintStringXY("Recherche", 45, 42);
 }
 
 /**
@@ -2784,13 +2728,8 @@ void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *
 			break;
 	}
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(50, 50, 220);
-	gfx_SetColor(1);
-	gfx_PrintStringXY("Contacts", 45, 41);
+	DrawMenuBase(0, 0, fenetre);
+	gfx_PrintStringXY("Contacts", 45, 42);
 	nombreEmpire = EmpireArraySize(empireListe);
 	if(GetWindowSelection(fenetre) > nombreEmpire){
 		SetWindowSelection(fenetre, 2);
@@ -2834,19 +2773,11 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 			break;
 	}
 	//dessiner fenetre
-	gfx_SetColor(6);
-	gfx_FillRectangle_NoClip(40, 40, 240, 160);
-	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(40, 40, 240, 160);
-	gfx_HorizLine_NoClip(45, 50, 180); //*barre en dessous du nom
-	gfx_Line_NoClip(225, 50, 233, 45); //*
-	gfx_HorizLine_NoClip(235, 45, 40); //*
+	DrawMenuBase(0, 0, fenetre);
 	gfx_Rectangle_NoClip(45, 55, 120, 60); //rectangle du perso
 	gfx_SetColor(0);
 	gfx_FillRectangle_NoClip(45, 55, 120, 60); //fond rectangle du perso
-	gfx_SetColor(1);
-	gfx_SetPixel(275, 45);
-	gfx_PrintStringXY(GetEmpireNameString(empire), 45, 41);
+	gfx_PrintStringXY(GetEmpireNameString(empire), 45, 42);
 	
 	switch(GetEmpireSpecies(empire)){
 		case 0:
@@ -2902,6 +2833,8 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 	}
 }
 
+
+
 /* entry points ======================================================== */
 
 /**
@@ -2916,6 +2849,7 @@ int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sy
 	switch(GetOpenedMenuClass(fenetre)){
 		case MENU_QUITTER:
 			fin = MenuQuitter(key, sauvegarde, empireListe, parametres, date, systemeStellaires, camera, marche, fenetre);
+
 			if (fin == 0){
 				return 0;
 			}

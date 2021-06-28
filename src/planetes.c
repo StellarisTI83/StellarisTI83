@@ -65,10 +65,10 @@ Planete *AllocPlanet(){
 	return planete;
 }
 
-void SetPlanetHabitability(Planete *planete, bool habitability){
+void SetPlanetHabitability(Planete *planete, int habitability){
 	planete->flags = (planete->flags | F_HABITABLE);
 }
-bool GetPlanetHabitability(Planete *planete){
+int GetPlanetHabitability(Planete *planete){
 	if((planete->flags & F_HABITABLE) != 0)
 		return true;
 	else
@@ -119,7 +119,7 @@ void CreatePlanetCity(Planete *planete){
 	planete->villes = calloc(1, sizeof(Villes));
 	planete->villes->ordreFile = CreerFileOrdres();
 }
-bool GetPlanetCityStatus(Planete *planete){
+int GetPlanetCityStatus(Planete *planete){
 	if(planete->villes != NULL){
 		return true;
 	} else {
@@ -252,17 +252,17 @@ int CalculatePlanetCityJob(Planete *planete){
 		job += planete->villes->districtsMiniers * 2;
 		job += planete->villes->districtsAgricoles * 2;
 
-		if(planete->villes->batiment1 != AUCUN)
+		if(planete->villes->batiment1 != AUCUN_DISTRICT_VILLE)
 			job += 2;
-		if(planete->villes->batiment2 != AUCUN)
+		if(planete->villes->batiment2 != AUCUN_DISTRICT_VILLE)
 			job += 2;
-		if(planete->villes->batiment3 != AUCUN)
+		if(planete->villes->batiment3 != AUCUN_DISTRICT_VILLE)
 			job += 2;
-		if(planete->villes->batiment4 != AUCUN)
+		if(planete->villes->batiment4 != AUCUN_DISTRICT_VILLE)
 			job += 2;
-		if(planete->villes->batiment5 != AUCUN)
+		if(planete->villes->batiment5 != AUCUN_DISTRICT_VILLE)
 			job += 2;
-		if(planete->villes->batiment6 != AUCUN)
+		if(planete->villes->batiment6 != AUCUN_DISTRICT_VILLE)
 			job += 2;
 			
 		planete->villes->emplois = job;

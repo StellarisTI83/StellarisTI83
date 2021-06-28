@@ -26,7 +26,7 @@ struct CameraStruct{
 
 	char zoom;
 	VueType mapType;
-	bool lock;
+	int lock;
 
 	int systemeSelectione; // systeme dans lequel on est
 	int systeme; // systeme que la camera pointe
@@ -34,7 +34,7 @@ struct CameraStruct{
 	int selection;
 	int ouverte;
 
-	bool bougerFlotte;
+	int bougerFlotte;
 	int flotte;
 	int empire;
 };
@@ -52,7 +52,7 @@ struct FenetreStruct{
 
 	Error error;
 	int errorCountDown;
-	bool commandPrompt;
+	int commandPrompt;
 	
 	int nombreDeVaisseaux; // utilisé dans la création de flottes
 	Villes *villes; // utilisé dans le chanement de batiment
@@ -65,18 +65,31 @@ Camera *AllocCamera(){
 
 void SetCameraX(Camera *camera, int x){
 	camera->x = x;
+	
+	// #ifdef DEBUG_VERSION
+	// 	dbg_sprintf(dbgout, "Set camera x position: %d\n", x);
+	// #endif
 }
 void AddCameraX(Camera *camera, int x){
 	camera->x += x;
+	// #ifdef DEBUG_VERSION
+	// 	dbg_sprintf(dbgout, "Add camera x position: %d\n", x);
+	// #endif
 }
 int GetCameraX(Camera *camera){
 	return camera->x;
 }
 void SetCameraY(Camera *camera, int y){
 	camera->y = y;
+	// #ifdef DEBUG_VERSION
+	// 	dbg_sprintf(dbgout, "Set camera y position: %d\n", y);
+	// #endif
 }
 void AddCameraY(Camera *camera, int y){
 	camera->y += y;
+	// #ifdef DEBUG_VERSION
+	// 	dbg_sprintf(dbgout, "Add camera y position: %d\n", y);
+	// #endif
 }
 int GetCameraY(Camera *camera){
 	return camera->y;
@@ -127,10 +140,10 @@ int GetCameraZoom(Camera *camera){
 	return camera->zoom;
 }
 
-void SetCameraLock(Camera *camera, bool lock){
+void SetCameraLock(Camera *camera, int lock){
 	camera->lock = lock;
 }
-bool GetCameraLock(Camera *camera){
+int GetCameraLock(Camera *camera){
 	return camera->lock;
 }
 
@@ -147,7 +160,7 @@ void SetCameraViewedSystem(Camera *camera, int system){
 void SetCameraSystem(Camera *camera, int system){
 	camera->systeme = system;
 }
-void SetCameraSystemViewStatus(Camera *camera, bool status){
+void SetCameraSystemViewStatus(Camera *camera, int status){
 	switch (status) {
 	case true:
 		camera->mapType = SYSTEME;
@@ -164,10 +177,10 @@ int GetCameraSystem(Camera *camera){
 	return camera->systeme;
 }
 
-bool IsCameraMoveFleet(Camera *camera){
+int IsCameraMoveFleet(Camera *camera){
 	return camera->bougerFlotte;
 }
-void SetCameraMoveFleet(Camera *camera, bool status){
+void SetCameraMoveFleet(Camera *camera, int status){
 	camera->bougerFlotte = status;
 }
 
@@ -225,7 +238,7 @@ void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date){
 	camera->lock = false;
 	UnpauseGame(date);
 }
-bool GetCommandPromptStatus(Fenetre *fenetre){
+int GetCommandPromptStatus(Fenetre *fenetre){
 	return fenetre->commandPrompt;
 }
 

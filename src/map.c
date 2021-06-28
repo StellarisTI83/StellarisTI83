@@ -130,7 +130,7 @@ static void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, Systeme
 		size = FleetArraySize(GetFleetArray(empire));
 		while(fleetIndex <= size) {
 			system = GetFleetSystem(flotte);
-			if((GetSystemIntelLevel(systemeStellaires[system]) >= MOYEN) || (GetSeeAll(parametres) == true)){
+			if((GetSystemIntelLevel(systemeStellaires[system]) >= MOYEN) || GetSeeAll(parametres)){
 				xFlotte = GetSystemX(systemeStellaires[system]) * GetCameraZoom(camera) - GetCameraX(camera) + 165;
 				yFlotte = GetSystemY(systemeStellaires[system]) * GetCameraZoom(camera) - GetCameraY(camera) + 110;
 				if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240))){
@@ -216,7 +216,7 @@ static void DessinerVueMap(SystemeStellaire **systemeStellaires, Camera *camera,
 			y = GetSystemY(systemeStellaires[i]) / 2.5 - 30;
 		}
 		if ( (((0 <= x) && (x <= 320)) && ((0 <= y)&& (y <= 240))) && ((GetSystemX(systemeStellaires[i]) != 0) && (GetSystemY(systemeStellaires[i]) != 0)) ) {
-			if((GetSystemIntelLevel(systemeStellaires[i]) != INCONNU) || (GetSeeAll(parametres) == true)) {
+			if((GetSystemIntelLevel(systemeStellaires[i]) != INCONNU) || GetSeeAll(parametres)) {
 				if(GetSystemEmpire(systemeStellaires[i]) != 0){
 					gfx_SetColor(GetEmpireColor(EmpireNumero(empireListe, GetSystemEmpire(systemeStellaires[i]))));
 					if(GetCameraMapType(camera) == NORMAL){
@@ -470,6 +470,9 @@ static void DessinerEtoile(SystemeStellaire *systeme, Camera* camera, Fenetre *f
 				gfx_FillCircle(xEtoile, yEtoile, 1);
 				gfx_Circle(xEtoile, yEtoile, 8);
 				break;
+			default:
+				gfx_SetColor(13);
+				gfx_Rectangle(xEtoile, yEtoile, 4, 4);
 		}
 	}
 	if(((150 <= xEtoile) && (170 >= xEtoile)) && ((110 <= yEtoile) && (130 >= yEtoile)))
@@ -613,7 +616,7 @@ static void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera*
  */
 void DessinerBase(SystemeStellaire *systeme, Camera* camera, Fenetre* fenetre, char* key){
 	int x, y;
-	if(GetSystemStationLevel(systeme) != AUCUNE){
+	if(GetSystemStationLevel(systeme) != AUCUNE_STATION){
 		gfx_SetColor(1);
 		x = 465 - GetCameraXSystem(camera);
 		y = 345 - GetCameraYSystem(camera);
@@ -649,6 +652,8 @@ void DessinerBase(SystemeStellaire *systeme, Camera* camera, Fenetre* fenetre, c
 					gfx_SetPixel(x + 2, y - 2);
 					gfx_SetPixel(x + 2, y + 2);
 					break;
+				default:
+					break;
 			}
 
 			if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (GetCameraLock(camera) == false)))) {
@@ -671,12 +676,13 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 	Empire* empire = NULL;
 	Flotte* flotte = NULL;
 	int empireIndex = 1, fleetIndex = 1;
+	int empireSize = 0;
 	int sizeFleet = 0;
 	int x, y;
 	gfx_SetColor(11);
 	empire = EmpireNumero(empireListe, 1);
-	fleetIndex = 1;
-	flotte = FlotteNumero(GetFleetArray(empire), fleetIndex);
+	fleetIndex = 0;
+	flotte = FlotteNumero(GetFleetArray(empire), 0);
 	sizeFleet = FleetArraySize(GetFleetArray(empire));
 	while(fleetIndex <= sizeFleet){
 		if(GetFleetSystem(flotte) == GetCameraSystem(camera)){
@@ -727,6 +733,66 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 		}
 		fleetIndex++;
 		flotte = FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), fleetIndex);
+	}
+	empire = EmpireNumero(empireListe, 2);
+	empireIndex = 2;
+	empireSize = EmpireArraySize(empireListe);
+	while(empireIndex <= empireSize){
+		fleetIndex = 0;
+		flotte = FlotteNumero(GetFleetArray(empire), 0);
+		sizeFleet = FleetArraySize(GetFleetArray(empire));
+		while(fleetIndex <= sizeFleet){
+			if(GetFleetSystem(flotte) == GetCameraSystem(camera)){
+				x = GetFleetX(flotte) - GetCameraXSystem(camera) - 3;
+				y = GetFleetY(flotte) - GetCameraYSystem(camera) - 3;
+				while(gfx_GetPixel(x + 4, y + 1) != 0){
+					y += 15;
+				}
+				if(((0 < x) && (x < 315)) && ((0 < y) && (y < 235))){
+					if(GetFleetProgress(flotte) == 0){
+						gfx_TransparentSprite(neutralFleet, x, y);
+						switch(GetFleetType(flotte)){
+						case FLOTTE_MILITAIRE:
+							gfx_TransparentSprite(force_neutral, x + 6, y - 1);
+							if (GetFleetPower(flotte) > 500) {
+								gfx_TransparentSprite(force_neutral, x + 10, y - 1);
+							}
+							if (GetFleetPower(flotte) > 1500) {
+								gfx_TransparentSprite(force_neutral, x + 8, y - 4);
+							}
+							break;
+						case FLOTTE_DE_CONSTRUCTION:
+							gfx_TransparentSprite(construction_ship_neutral_icon, x + 6, y - 4);
+							break;
+						case FLOTTE_SCIENTIFIQUE:
+							gfx_TransparentSprite(science_ship_neutral_icon, x + 6, y - 4);
+							break;
+						}
+					} else if(GetFleetProgress(flotte) == 1) {//dessinne l'hypervitesse
+						gfx_SetColor(1);
+						gfx_FillCircle_NoClip(x + 3, y, 5);
+						SetFleetProgress(flotte, 2);
+					}
+					x += 3;
+					y += 3;
+					if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (GetCameraLock(camera) == false)))){
+						gfx_SetColor(9);
+						gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);			
+						if((*key == sk_Enter) && (GetCameraLock(camera) == false)){
+							OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
+							SetWindowSelection(fenetre, 1);
+							SetWindowSelectedFleet(fenetre, fleetIndex);
+							SetWindowPrevious(fenetre, 1);
+							*key = 0;
+						}
+					}
+				}
+			}
+			fleetIndex++;
+			flotte = FlotteNumero(GetFleetArray(empire), fleetIndex);
+		}
+		empireIndex++;
+		empire = EmpireNumero(empireListe, empireIndex);
 	}
 }
 

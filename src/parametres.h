@@ -13,7 +13,7 @@ int GetStarNumber(Parametres *parametres);
 void SetEmpireNumber(Parametres *parametres, int starNumber);
 int GetEmpireNumber(Parametres *parametres);
 
-void SetSeeAll(Parametres *parametres, bool seeAll);
-bool GetSeeAll(Parametres *parametres);
+void SetSeeAll(Parametres *parametres, int seeAll);
+int GetSeeAll(Parametres *parametres);
 
 #endif

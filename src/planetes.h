@@ -6,7 +6,7 @@
 /* types =============================================================== */
 
 
-enum Batiment_Struct {AUCUN = 1,
+enum Batiment_Struct {AUCUN_DISTRICT_VILLE = 1,
                 CAPITALE,
                 FONDERIE, 
                 LABORATOIRE, 
@@ -16,7 +16,7 @@ enum Batiment_Struct {AUCUN = 1,
 typedef enum Batiment_Struct Batiment;
 
 
-enum OrdreConstruction_Struct {AUCUN,
+enum OrdreConstruction_Struct {AUCUN_ORDRE_VILLE,
                         CONSTRUIRE_DISTRICT_URBAIN,
                         CONSTRUIRE_DISTRICT_GENERATEUR, 
                         CONSTRUIRE_DISTRICT_MINIER,
@@ -64,8 +64,8 @@ typedef struct PlaneteStruct Planete;
 
 Planete *AllocPlanet();
 
-void SetPlanetHabitability(Planete *planete, bool habitability);
-bool GetPlanetHabitability(Planete *planete);
+void SetPlanetHabitability(Planete *planete, int habitability);
+int GetPlanetHabitability(Planete *planete);
 
 void SetPlanetOrbitRadius(Planete *planete, int orbitRadius);
 int GetPlanetOrbitRadius(Planete *planete);
@@ -84,7 +84,7 @@ void SetPlanetName(Planete *planete, char* string);
 char* GetPlanetName(Planete *planete);
 
 void CreatePlanetCity(Planete *planete);
-bool GetPlanetCityStatus(Planete *planete);
+int GetPlanetCityStatus(Planete *planete);
 void SetPlanetCityPopulation(Planete *planete, int population);
 int GetPlanetCityPopulation(Planete *planete);
 

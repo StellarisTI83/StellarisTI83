@@ -37,7 +37,7 @@ struct LigneDeCommande{
 typedef struct{
     char deniereCommande[50];
     int8_t cursor;
-    bool nombreActive;
+    int nombreActive;
     char reponse[50];
     Ligne *premiereLigne;
 } Console;
@@ -422,6 +422,6 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 	syntax_err:
 		strcpy(console.reponse, "syntax error");
 		#ifdef DEBUG_VERSION
-			dbg_sprintf(dbgerr, "Console syntax error\n");
+			dbg_sprintf(dbgerr, "Console syntax error: '%s'\n", resultat);
 		#endif
 }

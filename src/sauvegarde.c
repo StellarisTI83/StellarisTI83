@@ -34,15 +34,15 @@
 
 #include "locale/locale.h"
 
-/******************chargement ancienne partie******************/
-/*int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche)
+/******************chargement ancienne partie******************
+int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametres *parametres, Date *date, SystemeStellaire *systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche)
 {
 	ti_var_t sauvegarde;
 	int i = 0, j = 0, compteur = 0, compteurFlottes = 0;
 	Flotte* flotte = NULL, *flottePrecedente = NULL;
 	Empire* empire = NULL, *empirePrecedent = NULL;
 	gfx_FillScreen(255);
-	PrintCentered("Chargement de la partie..." ,60 ,1 , 0, 0);
+	PrintCentered("Chargement de la partie..." ,60 ,1 , 0, 0);*/
 	/*ouvrir sauvegarde*
 	ti_CloseAll();
 	sauvegarde = ti_Open("sauv", "r+");
@@ -58,7 +58,7 @@
 	i = 0;
 	
 	//ourvir
-	/*while(i <= LARGEUR_GALAXIE * LARGEUR_GALAXIE)
+	while(i <= LARGEUR_GALAXIE * LARGEUR_GALAXIE)
 	{
 		ti_Read(&systemeStellaires[i], sizeof(SystemeStellaire), 1, sauvegarde);
 		
@@ -116,7 +116,7 @@
 	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
 	return 0;
 }
-
+*/
 /**
  *Crée les sauvegardes du jeu
  *
@@ -135,7 +135,7 @@ int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *
 	i = 0;
 	
 	//enregistrer
-	/*while(i <= LARGEUR_GALAXIE * LARGEUR_GALAXIE)
+	while(i <= LARGEUR_GALAXIE * LARGEUR_GALAXIE)
 	{
 		ti_Write(&systemeStellaires[i], sizeof(SystemeStellaire), 1, *sauvegarde);
 		
@@ -194,6 +194,4 @@ int StellarisSauvegarde(ti_var_t *sauvegarde, EmpireListe *empireListe, Empire *
 	}
 	
 	return 1;
-}
-
-*/
+}*/
