@@ -21,12 +21,22 @@ GESTALT} Principe;
 
 typedef GenericList EmpireListe;
 
+/**
+ * Opinions
+ */
+typedef GenericList RelationsListe;
+
 /* structures ========================================================== */
 
 /**
  * Empire
  */
 typedef struct EmpireStruct Empire;
+/**
+ * Relations
+ */
+typedef struct RelationsStruct Relations;
+
 
 /* entry points ======================================================== */
 
@@ -40,9 +50,13 @@ Empire* EmpireAjouter(EmpireListe*);
 void EmpireSupprimer(EmpireListe*, int numero);
 
 
-void CreerEmpireFlotte(Empire *empire);
-void EmpireNouvelleFlotte(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
-FlotteListe *GetFleetArray(Empire *empire);
+void EmpireFlotteCreer(Empire *empire);
+void EmpireFlotteNouvelle(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
+FlotteListe *EmpireFleetGetArray(Empire *empire);
+
+void EmpireCreerRelations(Empire *empire);
+void EmpireRelationNouvelle(Empire *empire);
+RelationsListe *EmpireRelationGetArray(Empire *empire);
 
 void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement);
 Gouvernement GetEmpireGouvernement(Empire *empire);
@@ -105,6 +119,17 @@ void EmpireGenerateRandomName(Empire *empire);
 
 void CalculateEmpireFleetPower(Empire *empire);
 int GetEmpireFleetPower(Empire *empire);
+
+RelationsListe* RelationListeCreer();
+void RelationAllListeUpdate(EmpireListe* empireListe);
+void RelationListeUpdate(RelationsListe* relationsListe, EmpireListe* empireListe);
+void RelationListeSupprimer(RelationsListe* relationsListe);
+int RelationArraySize(RelationsListe* relationsListe);
+Relations* RelationNumero(RelationsListe* relationsListe, int numero);
+Relations* RelationAjouter(RelationsListe* relationsListe);
+void RelationSupprimer(RelationsListe* relationsListe, int numero);
+
+int RelationGetOpinion(Relations* relations);
 
 void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date);
 

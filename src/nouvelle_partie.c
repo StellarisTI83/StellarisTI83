@@ -1922,11 +1922,11 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
 	
 
-	EmpireNouvelleFlotte(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+	EmpireFlotteNouvelle(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
 
-	EmpireNouvelleFlotte(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+	EmpireFlotteNouvelle(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
 
-	EmpireNouvelleFlotte(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+	EmpireFlotteNouvelle(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 	
 	SetCameraX(camera, GetSystemX(systemeStellaires[i])*2); // centre la vue sur le systeme
 	SetCameraY(camera, GetSystemY(systemeStellaires[i])*2);
@@ -1954,7 +1954,7 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	CalculateEmpireFleetPower(joueur);
 
 		#ifdef DEBUG_VERSION
-			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, GetSystemX(systemeStellaires[i]), GetSystemY(systemeStellaires[i]), GetEmpireColor(joueur), planete, GetFleetArray(joueur), GetCameraX(camera), GetCameraY(camera));
+			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, GetSystemX(systemeStellaires[i]), GetSystemY(systemeStellaires[i]), GetEmpireColor(joueur), planete, EmpireFleetGetArray(joueur), GetCameraX(camera), GetCameraY(camera));
 		#endif
 	gfx_SetTextXY(90, 90);
 	for(j = 2; j <= GetEmpireNumber(parametres); j++){
@@ -1967,7 +1967,7 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 				fin = 0;
 		}
 		empire = EmpireAjouter(empireListe);
-		CreerEmpireFlotte(empire);
+		EmpireFlotteCreer(empire);
 		EmpireGenerateRandomName(empire);
 		SetEmpireSpecies(empire, randInt(0, 3));
 		SetEmpireClothes(empire, randInt(0, 2));
@@ -1990,9 +1990,9 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		SetSystemStationModule(systemeStellaires[i], 0, CHANTIER_SPATIAL);
 		SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
 
-		EmpireNouvelleFlotte(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-		EmpireNouvelleFlotte(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-		EmpireNouvelleFlotte(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+		EmpireFlotteNouvelle(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+		EmpireFlotteNouvelle(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+		EmpireFlotteNouvelle(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 
 		planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i])- 1);
 
@@ -2016,6 +2016,7 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d\n -Color: %d\n -Planet: %d\n", j, empire,i, GetEmpireColor(empire), planete);
 		#endif
 	}
+	RelationAllListeUpdate(empireListe);
 }
 
 /* entry points ======================================================== */

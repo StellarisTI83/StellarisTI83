@@ -49,9 +49,9 @@ static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, E
 		}
 		numeroSysteme++;
 	}
-	sizeFleet = FleetArraySize(GetFleetArray(EmpireNumero(empireListe, 1)));
+	sizeFleet = FleetArraySize(EmpireFleetGetArray(EmpireNumero(empireListe, 1)));
 	while(indexFleet <= sizeFleet){
-        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), indexFleet))], ELEVEE);
+        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 1)), indexFleet))], ELEVEE);
 		indexFleet++;
 	}
 }
@@ -112,7 +112,7 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
 							nombreDeCuirasse = nombreDeVaisseaux;
 							break;
 					}
-					NouvelleFlotte(GetFleetArray(EmpireNumero(empireListe, numeroEmpire)), numero, (FlotteType)info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
+					NouvelleFlotte(EmpireFleetGetArray(EmpireNumero(empireListe, numeroEmpire)), numero, (FlotteType)info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
 					break;
 				default:
 					break;
@@ -130,7 +130,6 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
  */
 void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires, EmpireListe *empireListe){
 	int i = 0, j = 0;
-	Empire *jour = EmpireNumero(empireListe, 1);
 	Villes *villes = NULL;
 	// Batiment *batiment = NULL;
 	OrdreConstruction ordre;
@@ -393,7 +392,7 @@ static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **syste
 		SetEmpireMineralsChange(empire, 0);
 		SetEmpireConsumerGoodsChange(empire, 0);
 
-		flotteListe = GetFleetArray(empire);
+		flotteListe = EmpireFleetGetArray(empire);
 		flotteArraySize = FleetArraySize(flotteListe);
 		for(flotteIndex = 1; flotteIndex < flotteArraySize; flotteIndex++){
 			flotte = FlotteNumero(flotteListe, flotteIndex);

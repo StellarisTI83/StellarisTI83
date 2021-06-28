@@ -25,7 +25,7 @@ int GetTimeDay(Date *date);
 int GetTimeMonth(Date *date);
 int GetTimeYear(Date *date);
 
-void AddTime(Date *date, int d);
+void IncrementTime(Date *date, int d);
 
 void IncrementTimeSpeed(Date *date);
 void UnincrementTimeSpeed(Date *date);

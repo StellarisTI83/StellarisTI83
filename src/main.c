@@ -68,7 +68,7 @@ static void InitializeAll(EmpireListe **empireListe, Parametres *parametres){
 
 	*empireListe = EmpireListeCreer();
 	joueur = EmpireAjouter(*empireListe);
-	CreerEmpireFlotte(EmpireNumero(*empireListe, 1));
+	EmpireFlotteCreer(EmpireNumero(*empireListe, 1));
 	
 }
 

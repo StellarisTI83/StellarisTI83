@@ -336,7 +336,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 	double norme = 0;
 
 	empire = EmpireNumero(empireListe, numeroDeEmpire);
-	flotte = FlotteNumero(GetFleetArray(empire), numeroDeFlotte);
+	flotte = FlotteNumero(EmpireFleetGetArray(empire), numeroDeFlotte);
 	if(flotte == NULL) {
 		#ifdef DEBUG_VERSION
 			dbg_sprintf(dbgerr, "Error fleet pointer NULL in function 'BougerFlotte'");
@@ -418,9 +418,9 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **system
 	empire = EmpireNumero(empireListe, 1);
 	empireSize = EmpireArraySize(empireListe);
 	while(numeroEmpire <= empireSize){
-		flotte = FlotteNumero(GetFleetArray(empire), 1);
+		flotte = FlotteNumero(EmpireFleetGetArray(empire), 1);
 		fleetIndex = 1;
-		fleetSize = FleetArraySize(GetFleetArray(empire));
+		fleetSize = FleetArraySize(EmpireFleetGetArray(empire));
 		while(fleetIndex <= fleetSize){
 			
 			//bouger la flotte
@@ -468,7 +468,7 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **system
 				}
 			}
 			fleetIndex++;
-			flotte = FlotteNumero(GetFleetArray(empire), fleetIndex);
+			flotte = FlotteNumero(EmpireFleetGetArray(empire), fleetIndex);
 		}
 		numeroEmpire++;
 		empire = EmpireNumero(empireListe, numeroEmpire);

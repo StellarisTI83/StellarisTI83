@@ -50,6 +50,12 @@ struct EmpireStruct {
 	int systemeCapitale;
 
 	FlotteListe* flotte;
+	RelationsListe* relationsListe;
+};
+
+struct RelationsStruct {
+	Empire* empire;
+	int opinion;
 };
 
 /* private variables =================================================== */
@@ -130,17 +136,33 @@ void EmpireSupprimer(EmpireListe* empireListe, int numero) {
 /**
  * Crèe une liste de flotte d'empire
  */
-void CreerEmpireFlotte(Empire *empire){
+void EmpireFlotteCreer(Empire *empire){
 	empire->flotte = CreerFlotteListe();
 	if(empire->flotte == NULL){
 		exit(EXIT_FAILURE);
 	}
 }
-void EmpireNouvelleFlotte(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
+void EmpireFlotteNouvelle(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
 	NouvelleFlotte(empire->flotte, systeme, type, nombreDeCorvettes, nombreDeDestroyers, nombreDeCroiseurs, nombreDeCuirasses);
 }
-FlotteListe *GetFleetArray(Empire *empire){
+FlotteListe *EmpireFleetGetArray(Empire *empire){
 	return empire->flotte;
+}
+
+/**
+ * Crèe une liste de relations d'empire
+ */
+void EmpireCreerRelations(Empire *empire){
+	empire->relationsListe = RelationListeCreer();
+	if(empire->relationsListe == NULL){
+		exit(EXIT_FAILURE);
+	}
+}
+void EmpireRelationNouvelle(Empire *empire){
+	RelationAjouter(empire->relationsListe);
+}
+RelationsListe *EmpireRelationGetArray(Empire *empire){
+	return empire->relationsListe;
 }
 
 /**
@@ -207,7 +229,7 @@ Principe GetEmpirePrincipes(Empire *empire, int numero){
  */
 void SetEmpireName(Empire *empire, int curseur ,char lettre){
 	if(lettre <= 29)
-		empire->nom[lettre] = lettre;
+		empire->nom[curseur] = lettre;
 
 	empire->nom[30] = '\0';
 }
@@ -414,6 +436,95 @@ int GetEmpireFleetPower(Empire *empire){
 	return empire->PuissanceMilitaire;
 }
 
+
+/**
+ * Crée une liste de relations
+ */
+RelationsListe* RelationListeCreer() {
+	return (RelationsListe*)CreateGenericList();
+}
+
+/**
+ * Met à jour toutes les listes de relations
+ */
+void RelationAllListeUpdate(EmpireListe* empireListe) {
+	Empire* empire;
+	Relations* relations;
+	int index = 1;
+	empire = EmpireNumero(empireListe, index);
+	while(empire != NULL) {
+		empire->relationsListe = RelationListeCreer();
+		RelationListeUpdate(empire->relationsListe, empireListe);
+		#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgout, "Empire liste %d updated : %p \n", index, empire->relationsListe);
+		#endif
+		index++;
+		empire = EmpireNumero(empireListe, index);
+	}
+}
+
+/**
+ * Met à jour une liste de relations
+ */
+void RelationListeUpdate(RelationsListe* relationsListe, EmpireListe* empireListe) {
+	Empire* empire;
+	Relations* relations;
+	int index = 1;
+	empire = EmpireNumero(empireListe, 1);
+	while(empire != NULL) {
+		relations = RelationAjouter(relationsListe);
+		relations->empire = empire;
+		relations->opinion = -10;
+		index++;
+		empire = EmpireNumero(empireListe, index);
+	}
+}
+
+/**
+ * Supprime une liste de relations
+ */
+void RelationListeSupprimer(RelationsListe* relationsListe) {
+	FreeGenericList((RelationsListe*)relationsListe);
+}
+
+/**
+ * Renvoi nombre de relations
+ */
+int RelationArraySize(RelationsListe* relationsListe){
+	return GenericListArraySize((GenericList*)relationsListe);
+}
+
+/**
+ * Renvoi un pointeur vers les relations de l'empire numero x
+ */
+Relations* RelationNumero(RelationsListe* relationsListe, int numero) {
+	return (Relations*)GenericCellGet((GenericList*)relationsListe, numero);
+}
+/**
+ * Rajoute la relation d'un empire à la liste des relations
+ */
+Relations* RelationAjouter(RelationsListe* relationsListe) {
+	Relations *pointeur = NULL;
+	pointeur = calloc(1, sizeof(Relations));
+	GenericCellAdd((GenericList*)relationsListe, pointeur);
+	return pointeur;
+}
+/**
+ *Supprime la relation numero x à la liste des relations
+ */
+void RelationSupprimer(RelationsListe* relationsListe, int numero) {
+	FreeGenericCell((GenericList*)relationsListe, numero);
+}
+
+int RelationGetOpinion(Relations* relations) {
+	return relations->opinion;
+}
+
+
+
+
+
+
 /*Empires AI*/
 
 static void PlanetaryAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
@@ -423,7 +534,7 @@ static void PlanetaryAI(EmpireListe *empireListe, SystemeStellaire **systemeStel
 	Empire *empire;
 	Planete *planete = NULL;
 	while(systemeNumero < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
-		if(GetSystemEmpire != 0){
+		if(GetSystemEmpire(systemeStellaires) != 0){
 			planeteNumero = 0;
 			empire = EmpireNumero(empireListe, GetSystemEmpire(systemeStellaires[systemeNumero]));
 			taille = GetSystemPlanetNumber(systemeStellaires[systemeNumero]);
@@ -465,7 +576,7 @@ static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireListe *empir
 
 static void EmpireAICivilianFleet(Empire *empire, EmpireListe *empireListe, Flotte *flotte, SystemeStellaire **systemeStellaires){
 	if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
-		int systeme = GetFleetSystem(flotte);
+		// int systeme = GetFleetSystem(flotte);
 		if(GetFleetType(flotte) == FLOTTE_SCIENTIFIQUE){
 			if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
 				int systemIndex = 0;
@@ -490,7 +601,7 @@ static void EmpireAIMilitaryFleet(Empire *empire, EmpireListe *empireListe, Flot
 }
 
 static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
-	FlotteListe *flotteListe = GetFleetArray(empire);
+	FlotteListe *flotteListe = EmpireFleetGetArray(empire);
 	int tailleFlotte = FleetArraySize(flotteListe);
 	if(tailleFlotte > 1){
 		int compteurFlotte = 1;
@@ -498,7 +609,7 @@ static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, Syste
 
 		while(compteurFlotte <= tailleFlotte){
 			flotte = FlotteNumero(flotteListe, compteurFlotte);
-			if(GetFleetType == FLOTTE_MILITAIRE)
+			if(GetFleetType(flotte) == FLOTTE_MILITAIRE)
 				EmpireAIMilitaryFleet(empire, empireListe, flotte, systemeStellaires);
 			
 			else

@@ -204,18 +204,18 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 	//dessiner fenetre
 	gfx_PrintStringXY("Vue flottes", 116, 42);
 	niveau = 57;
-	flotte = FlotteNumero(GetFleetArray(joueur), 1);
+	flotte = FlotteNumero(EmpireFleetGetArray(joueur), 1);
 	compteur = 0;
 	compteurFlotte = 1;
 	fleetIndex = 2;
-	sizeFleet = FleetArraySize(GetFleetArray(joueur));
+	sizeFleet = FleetArraySize(EmpireFleetGetArray(joueur));
 	while(fleetIndex <= sizeFleet){
 		if(GetFleetSystem(flotte) == GetCameraSystem(camera)) {
 			flotteDuSysteme[compteur] = flotte;
 			compteur++;
 		}
 		fleetIndex++;
-		flotte = FlotteNumero(GetFleetArray(joueur), fleetIndex);
+		flotte = FlotteNumero(EmpireFleetGetArray(joueur), fleetIndex);
 	}
 
 	if (GetWindowSelection(fenetre) > compteur) {
@@ -246,7 +246,7 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 		}
 		gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Flotte ");
-		PrintInt(RecupererFlotteNumero(GetFleetArray(joueur), flotteDuSysteme[i]) + 1);
+		PrintInt(RecupererFlotteNumero(EmpireFleetGetArray(joueur), flotteDuSysteme[i]) + 1);
 		gfx_HorizLine_NoClip(50, niveau + 11, 220);
 		niveau += 17;
 		i++;
@@ -255,7 +255,7 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 	}
 	if (*key == sk_Enter) {
 		*key = 0;
-		SetWindowSelectedFleet(fenetre, RecupererFlotteNumero(GetFleetArray(joueur), flotteDuSysteme[GetWindowSelection(fenetre) - 1]) + 1);
+		SetWindowSelectedFleet(fenetre, RecupererFlotteNumero(EmpireFleetGetArray(joueur), flotteDuSysteme[GetWindowSelection(fenetre) - 1]) + 1);
 		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
 		SetWindowPrevious(fenetre, 1);
 	}
@@ -1164,7 +1164,7 @@ void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, E
 	gfx_SetPixel(270, 51);
 	gfx_PrintStringXY("Retour", 48, 42);
 	gfx_SetTextXY(150, 42);
-	flotte = FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), GetWindowSelectedFleet(fenetre));
+	flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 1)), GetWindowSelectedFleet(fenetre));
 	if(GetFleetType(flotte) == FLOTTE_DE_CONSTRUCTION){
 		if((GetWindowSelection(fenetre) == 0) || (GetWindowSelection(fenetre) >= 10)){
 			SetWindowSelection(fenetre, 2);
@@ -2479,7 +2479,7 @@ void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire
 /**
  * Dessine le menu systeme
  */
-static void MenuSysteme(char* key, EmpireListe* empireListe, Parametres* parametres, Date* date, SystemeStellaire **systemeStellaires, Camera* camera, Marche* marche, Fenetre* fenetre){
+static void MenuSysteme(char* key, EmpireListe* empireListe, Parametres* parametres, Date* date, SystemeStellaire **systemeStellaires, Camera* camera, Fenetre* fenetre){
 	char niveau = 0;
 	int16_t systeme = 0;
 	Flotte* flotte = NULL;
@@ -2647,7 +2647,7 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 	DrawMenuBase(0, 0, fenetre);
 	gfx_PrintStringXY("Flotte", 45, 42);
 	niveau = 57;
-	sizeFleet = FleetArraySize(GetFleetArray(joueur));
+	sizeFleet = FleetArraySize(EmpireFleetGetArray(joueur));
 	
 	if (GetWindowSelection(fenetre) > sizeFleet) {
 		SetWindowSelection(fenetre, 1);
@@ -2657,7 +2657,7 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 	}
 	
 	compteurFlotte = 1;
-	flotte = FlotteNumero(GetFleetArray(joueur), 1);
+	flotte = FlotteNumero(EmpireFleetGetArray(joueur), 1);
 	while(compteurFlotte <= sizeFleet) {
 		if(GetWindowSelection(fenetre) == compteurFlotte) {
 			gfx_SetTextFGColor(13);
@@ -2683,7 +2683,7 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 		gfx_HorizLine_NoClip(50, niveau + 12, 220);
 		niveau += 18;
 		compteurFlotte++;
-		flotte = FlotteNumero(GetFleetArray(joueur), compteurFlotte);
+		flotte = FlotteNumero(EmpireFleetGetArray(joueur), compteurFlotte);
 	}
 
 	if(*key == sk_Enter){
@@ -2712,7 +2712,7 @@ void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
 void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
 	int nombreEmpire = 2;
 	Empire *empire = NULL;
-	int niveau = 55;
+	int niveau = 57;
 	switch(*key) {
 		case sk_Clear:
 			CloseMenu(fenetre, camera);
@@ -2744,7 +2744,9 @@ void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *
 		if(GetWindowSelection(fenetre) == nombreEmpire)
 			gfx_SetTextFGColor(13);
 		gfx_PrintStringXY(GetEmpireNameString(empire), 45, niveau);
-		niveau += 10;
+		gfx_SetColor(7);
+		gfx_HorizLine_NoClip(50, niveau + 12, 220);
+		niveau += 18;
 		nombreEmpire++;
 	}
 	if(*key == sk_Enter){
@@ -2757,6 +2759,7 @@ void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *
 void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre) {
 	Empire *empire = EmpireNumero(empireListe, GetWindowPrevious(fenetre));
 	Empire *joueur = EmpireNumero(empireListe, 1);
+	Relations *relations = RelationNumero(EmpireRelationGetArray(empire), GetWindowPrevious(fenetre));
 	switch(*key){
 		case sk_Clear:
 			OpenMenu(fenetre, camera, MENU_CONTACTS, 0);
@@ -2774,9 +2777,10 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 	}
 	//dessiner fenetre
 	DrawMenuBase(0, 0, fenetre);
-	gfx_Rectangle_NoClip(45, 55, 120, 60); //rectangle du perso
 	gfx_SetColor(0);
 	gfx_FillRectangle_NoClip(45, 55, 120, 60); //fond rectangle du perso
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(45, 55, 120, 60); //rectangle du perso
 	gfx_PrintStringXY(GetEmpireNameString(empire), 45, 42);
 	
 	switch(GetEmpireSpecies(empire)){
@@ -2814,13 +2818,30 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 			PrintInt(GetEmpireClothes(empire));
 			break;
 	}
+	
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(45, 118, 57, 13);
+	gfx_Rectangle_NoClip(107, 118, 58, 13);
+	gfx_TransparentSprite_NoClip(alliedFleet, 49, 121);
+	gfx_SetTextXY(58, 121);
+	if(RelationGetOpinion(relations) < 0){
+		gfx_SetTextFGColor(3);
+	}
+	else if(RelationGetOpinion(relations) > 0){
+		gfx_SetTextFGColor(19);
+	}
+	else{
+		gfx_SetTextFGColor(13);
+	}
+	PrintInt(RelationGetOpinion(relations));
+
 	//puissance flotte
 	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(170, 54, 100, 10);
-	gfx_TransparentSprite_NoClip(alliedFleet, 175, 55);
-	gfx_SetTextXY(185, 55);
+	gfx_Rectangle_NoClip(45, 134, 120, 13);
+	gfx_TransparentSprite_NoClip(alliedFleet, 49, 137);
+	gfx_SetTextXY(58, 137);
 	if(GetEmpireFleetPower(empire) > GetEmpireFleetPower(joueur) + (GetEmpireFleetPower(joueur) / 10)){
-		gfx_SetTextFGColor(gfx_red);
+		gfx_SetTextFGColor(3);
 		gfx_PrintString("Superieur");
 	}
 	else if(GetEmpireFleetPower(empire) < GetEmpireFleetPower(joueur) - (GetEmpireFleetPower(joueur) / 10)){
@@ -2841,10 +2862,7 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
  * Fonction gérant les differents menus in-game
  */
 int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t* sauvegarde, Marche *marche){
-	char niveau = 0, i = 0;
-	int8_t compteur = 0, compteurFlotte = 0, maximum = 0, fin = 1;
-	int8_t populationChar[5];
-	int16_t systeme = 0;
+	int8_t fin = 1;
 
 	switch(GetOpenedMenuClass(fenetre)){
 		case MENU_QUITTER:
@@ -2855,7 +2873,7 @@ int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sy
 			}
 			break;
 		case MENU_SYSTEME:
-			MenuSysteme(key, empireListe, parametres, date, systemeStellaires, camera, marche, fenetre);
+			MenuSysteme(key, empireListe, parametres, date, systemeStellaires, camera, fenetre);
 			break;
 		case MENU_FLOTTE:
 			MenuListeFLottes(key, empireListe, camera, fenetre);
@@ -2871,6 +2889,8 @@ int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sy
 			break;
 		case MENU_CONTACTS_DETAILS:
 			MenuContactsDetails(key, empireListe, camera, fenetre);
+			break;
+		default:
 			break;
 	}
 	return 1;
