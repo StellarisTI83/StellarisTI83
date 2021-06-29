@@ -266,85 +266,105 @@ extern "C" {
 #define low_ressources_icon_height 14
 #define var_gfx_gfx_sprites_low_ressources_icon_index 65
 #define low_ressources_icon ((gfx_sprite_t*)var_gfx_appvar[65])
+#define attitude_icon_width 10
+#define attitude_icon_height 10
+#define var_gfx_gfx_sprites_attitude_icon_index 66
+#define attitude_icon ((gfx_sprite_t*)var_gfx_appvar[66])
+#define up_icon_width 5
+#define up_icon_height 8
+#define var_gfx_gfx_sprites_up_icon_index 67
+#define up_icon ((gfx_sprite_t*)var_gfx_appvar[67])
+#define down_icon_width 5
+#define down_icon_height 8
+#define var_gfx_gfx_sprites_down_icon_index 68
+#define down_icon ((gfx_sprite_t*)var_gfx_appvar[68])
+#define pact_icon_width 10
+#define pact_icon_height 9
+#define var_gfx_gfx_sprites_pact_icon_index 69
+#define pact_icon ((gfx_sprite_t*)var_gfx_appvar[69])
+#define insult_icon_width 7
+#define insult_icon_height 5
+#define var_gfx_gfx_sprites_insult_icon_index 70
+#define insult_icon ((gfx_sprite_t*)var_gfx_appvar[70])
 #define background_gfx_sprites_palette_offset 0
 #define backgroundStation_width 35
 #define backgroundStation_height 25
-#define var_gfx_background_gfx_sprites_backgroundStation_compressed_index 66
-#define backgroundStation_compressed var_gfx_appvar[66]
+#define var_gfx_background_gfx_sprites_backgroundStation_compressed_index 71
+#define backgroundStation_compressed var_gfx_appvar[71]
 #define background0_tile_width 80
 #define background0_tile_height 80
-#define background0_compressed var_gfx_appvar[67]
+#define background0_compressed var_gfx_appvar[72]
 #define background0_tiles_num 1
 extern unsigned char *background0_tiles_compressed[1];
 #define background0_tile_0_compressed background0_tiles_compressed[0]
 #define background1_tile_width 80
 #define background1_tile_height 80
-#define background1_compressed var_gfx_appvar[68]
+#define background1_compressed var_gfx_appvar[73]
 #define background1_tiles_num 1
 extern unsigned char *background1_tiles_compressed[1];
 #define background1_tile_0_compressed background1_tiles_compressed[0]
 #define background2_tile_width 80
 #define background2_tile_height 80
-#define background2_compressed var_gfx_appvar[69]
+#define background2_compressed var_gfx_appvar[74]
 #define background2_tiles_num 1
 extern unsigned char *background2_tiles_compressed[1];
 #define background2_tile_0_compressed background2_tiles_compressed[0]
 #define background3_tile_width 80
 #define background3_tile_height 80
-#define background3_compressed var_gfx_appvar[70]
+#define background3_compressed var_gfx_appvar[75]
 #define background3_tiles_num 1
 extern unsigned char *background3_tiles_compressed[1];
 #define background3_tile_0_compressed background3_tiles_compressed[0]
 #define background4_tile_width 80
 #define background4_tile_height 80
-#define background4_compressed var_gfx_appvar[71]
+#define background4_compressed var_gfx_appvar[76]
 #define background4_tiles_num 1
 extern unsigned char *background4_tiles_compressed[1];
 #define background4_tile_0_compressed background4_tiles_compressed[0]
 #define background5_tile_width 80
 #define background5_tile_height 80
-#define background5_compressed var_gfx_appvar[72]
+#define background5_compressed var_gfx_appvar[77]
 #define background5_tiles_num 1
 extern unsigned char *background5_tiles_compressed[1];
 #define background5_tile_0_compressed background5_tiles_compressed[0]
 #define background6_tile_width 80
 #define background6_tile_height 80
-#define background6_compressed var_gfx_appvar[73]
+#define background6_compressed var_gfx_appvar[78]
 #define background6_tiles_num 1
 extern unsigned char *background6_tiles_compressed[1];
 #define background6_tile_0_compressed background6_tiles_compressed[0]
 #define background7_tile_width 80
 #define background7_tile_height 80
-#define background7_compressed var_gfx_appvar[74]
+#define background7_compressed var_gfx_appvar[79]
 #define background7_tiles_num 1
 extern unsigned char *background7_tiles_compressed[1];
 #define background7_tile_0_compressed background7_tiles_compressed[0]
 #define background8_tile_width 80
 #define background8_tile_height 80
-#define background8_compressed var_gfx_appvar[75]
+#define background8_compressed var_gfx_appvar[80]
 #define background8_tiles_num 1
 extern unsigned char *background8_tiles_compressed[1];
 #define background8_tile_0_compressed background8_tiles_compressed[0]
 #define background9_tile_width 80
 #define background9_tile_height 80
-#define background9_compressed var_gfx_appvar[76]
+#define background9_compressed var_gfx_appvar[81]
 #define background9_tiles_num 1
 extern unsigned char *background9_tiles_compressed[1];
 #define background9_tile_0_compressed background9_tiles_compressed[0]
 #define background10_tile_width 80
 #define background10_tile_height 80
-#define background10_compressed var_gfx_appvar[77]
+#define background10_compressed var_gfx_appvar[82]
 #define background10_tiles_num 1
 extern unsigned char *background10_tiles_compressed[1];
 #define background10_tile_0_compressed background10_tiles_compressed[0]
 #define background11_tile_width 80
 #define background11_tile_height 80
-#define background11_compressed var_gfx_appvar[78]
+#define background11_compressed var_gfx_appvar[83]
 #define background11_tiles_num 1
 extern unsigned char *background11_tiles_compressed[1];
 #define background11_tile_0_compressed background11_tiles_compressed[0]
-#define var_gfx_entries_num 79
-extern unsigned char *var_gfx_appvar[79];
+#define var_gfx_entries_num 84
+extern unsigned char *var_gfx_appvar[84];
 unsigned char var_gfx_init(void);
 
 #ifdef __cplusplus

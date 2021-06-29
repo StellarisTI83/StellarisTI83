@@ -110,6 +110,12 @@ converts:
     - life_icon.png
     - fleet_power_icon.png
     - low_ressources_icon.png
+    - attitude_icon.png
+    - up_icon.png
+    - down_icon.png
+    - pact_icon.png
+    - insult_icon.png
+
 
 palettes:
   - name: background_gfx_pal

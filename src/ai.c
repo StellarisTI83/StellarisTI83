@@ -56,7 +56,9 @@ struct EmpireStruct {
 struct RelationsStruct {
 	Empire* empire;
 	int opinion;
+	char opinionChange;
 	Attitude attitude;
+	char pactes;
 };
 
 /* private variables =================================================== */
@@ -429,12 +431,20 @@ void EmpireGenerateRandomName(Empire *empire){
 	strcpy(empire->nom, name);
 }
 
-void CalculateEmpireFleetPower(Empire *empire){
+void CalculateEmpirePower(Empire *empire){
 	empire->PuissanceMilitaire = CalculateFleetPower(empire->flotte);
+	empire->PuissanceScientifique = 0;
+	empire->PuissanceEconomique = empire->credits + empire->creditsChange * 3 + empire->minerais  + empire->mineraisChange * 3 + empire->acier + empire->acierChange * 3;
 }
 
-int GetEmpireFleetPower(Empire *empire){
+int GetEmpirePowerMilitary(Empire *empire){
 	return empire->PuissanceMilitaire;
+}
+int GetEmpirePowerScientific(Empire *empire){
+	return empire->PuissanceScientifique;
+}
+int GetEmpirePowerEconomic(Empire *empire){
+	return empire->PuissanceEconomique;
 }
 
 
@@ -475,7 +485,7 @@ void RelationListeUpdate(RelationsListe* relationsListe, EmpireListe* empireList
 	while(empire != NULL) {
 		relations = RelationAjouter(relationsListe);
 		relations->empire = empire;
-		relations->opinion = -10;
+		relations->opinion = 0;
 		index++;
 		empire = EmpireNumero(empireListe, index);
 	}
@@ -524,7 +534,29 @@ Attitude RelationGetAttitude(Relations* relations) {
 	return relations->attitude;
 }
 
-
+void RelationAmeliorer(Relations* relations) {
+	relations->opinionChange += 10;
+}
+void RelationDegrader(Relations* relations) {
+	relations->opinionChange -= 10;
+}
+void RelationGuerreDeclarer(Relations* relations) {
+	relations->opinion -= 50;
+}
+void RelationInsulter(Relations* relations) {
+	relations->opinion -= 200;
+}
+void RelationSetPacte(Relations* relations, Pacte pacte) {
+	relations->pactes = (relations->pactes | pacte);
+}
+Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte) {
+	if(relations->pactes & pacte) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 
 

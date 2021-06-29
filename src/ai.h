@@ -24,6 +24,11 @@ GESTALT} Principe;
  */
 typedef enum {ATTITUDE_HOSTILE = -2, ATTITUDE_SUSPICIOUS, ATTITUDE_NEUTRAL, ATTITUDE_CORDIAL, ATTITUDE_FRIENDLY, ATTITUDE_PROTECTIVE} Attitude;
 
+/**
+ * Differents pactes
+ */
+typedef enum {PACTE_NON_AGRESSION = 1, PACTE_RECHERCHE = 2, PACTE_COMMERCIAL = 4} Pacte;
+
 typedef GenericList EmpireListe;
 
 /**
@@ -122,8 +127,10 @@ int GetEmpireConsumerGoodsChange(Empire *empire);
 
 void EmpireGenerateRandomName(Empire *empire);
 
-void CalculateEmpireFleetPower(Empire *empire);
-int GetEmpireFleetPower(Empire *empire);
+void CalculateEmpirePower(Empire *empire);
+int GetEmpirePowerMilitary(Empire *empire);
+int GetEmpirePowerScientific(Empire *empire);
+int GetEmpirePowerEconomic(Empire *empire);
 
 RelationsListe* RelationListeCreer();
 void RelationAllListeUpdate(EmpireListe* empireListe);
@@ -136,6 +143,13 @@ void RelationSupprimer(RelationsListe* relationsListe, int numero);
 
 int RelationGetOpinion(Relations* relations);
 Attitude RelationGetAttitude(Relations* relations);
+
+void RelationAmeliorer(Relations* relations);
+void RelationDegrader(Relations* relations);
+void RelationGuerreDeclarer(Relations* relations);
+void RelationInsulter(Relations* relations);
+void RelationSetPacte(Relations* relations, Pacte pacte);
+Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte);
 
 void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date);
 

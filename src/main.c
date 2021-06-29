@@ -223,8 +223,9 @@ static void Options(){
  */
 static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 	char choix = 0, fin = 0, key = 0;
-	int espacement = 0, niveau = 0;
+	int espacement = 0, niveau = 0, index = 0;
 	VecteurStation vecteurStation;
+	char string[20];
 
 	vecteurStation.x = 206;
 	vecteurStation.y = 120;
@@ -279,45 +280,32 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 		espacement = 15;
 		
 		/*Dessine le menu suivant le choix*/
-		if(choix == 0) {
-			gfx_SetTextFGColor(13);
-			gfx_SetColor(13);
+		for(index = 0; index < 4; index++) {
+			if(index == choix) {
+				gfx_SetTextFGColor(13);
+				gfx_SetColor(13);
+			}
+			switch(index) {
+				case 0:
+					strcpy(string, _(LC_CHARGER));
+					break;
+				case 1:
+					strcpy(string, _(LC_NOUVELLE_PARTIE));
+					break;
+				case 2:
+					strcpy(string, _(LC_OPTIONS));
+					break;
+				case 3:
+					strcpy(string, _(LC_QUITTER));
+					break;
+			}
+			
+			gfx_PrintStringXY(string, 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau - 3, strlen(string) * 8);
+			gfx_SetTextFGColor(1);
+			gfx_SetColor(1);
+			niveau += espacement;
 		}
-		gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_CHARGER)) * 8);
-		gfx_SetTextFGColor(1);
-		gfx_SetColor(1);
-
-		if(choix == 1) {
-			gfx_SetTextFGColor(13);
-			gfx_SetColor(13);
-		}
-		niveau += espacement;
-		gfx_PrintStringXY(_(LC_NOUVELLE_PARTIE), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_NOUVELLE_PARTIE)) * 8);
-		gfx_SetTextFGColor(1);
-		gfx_SetColor(1);
-
-		if(choix == 2) {
-			gfx_SetTextFGColor(13);
-			gfx_SetColor(13);
-		}
-		niveau += espacement;
-		gfx_PrintStringXY(_(LC_OPTIONS), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_OPTIONS)) * 8);
-		gfx_SetTextFGColor(1);
-		gfx_SetColor(1);
-
-		if(choix == 3){
-			gfx_SetTextFGColor(13);
-			gfx_SetColor(13);
-		}
-		niveau += espacement;
-		gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_QUITTER)) * 8);
-		gfx_SetTextFGColor(1);
-		gfx_SetColor(1);
-
 		gfx_SwapDraw();
 	}
 	gfx_ZeroScreen();
@@ -435,6 +423,30 @@ int TailleInt(int nombre){
 		i++;
 	}
 	return i;
+}
+
+void PrintMultipleLines(char str[]) {
+	int init_size = strlen(str);
+	char *string1;
+	char delim[] = " ";
+	int tailleLigne = 0;
+	int x = gfx_GetTextX();
+
+	char *ptr = NULL;
+
+	string1 = malloc(init_size + 1);
+	strcpy(string1, str);
+	ptr = strtok(string1, delim);
+	while(ptr != NULL) {
+		tailleLigne += strlen(string1) + 1;
+		if (tailleLigne > 20) {
+			gfx_SetTextXY(x, gfx_GetTextY() + 13);
+			tailleLigne = 0;
+		}
+		gfx_PrintString(ptr);
+		ptr = strtok(NULL, delim);
+	}
+	free(string1);
 }
 
 /**

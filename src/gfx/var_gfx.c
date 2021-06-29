@@ -3,7 +3,7 @@
 
 #define var_gfx_HEADER_SIZE 0
 
-unsigned char *var_gfx_appvar[79] =
+unsigned char *var_gfx_appvar[84] =
 {
     (unsigned char*)0,
     (unsigned char*)140,
@@ -72,18 +72,23 @@ unsigned char *var_gfx_appvar[79] =
     (unsigned char*)19042,
     (unsigned char*)19064,
     (unsigned char*)19262,
-    (unsigned char*)19932,
-    (unsigned char*)21846,
-    (unsigned char*)24789,
-    (unsigned char*)28387,
-    (unsigned char*)31155,
-    (unsigned char*)33463,
-    (unsigned char*)36318,
-    (unsigned char*)38584,
-    (unsigned char*)41440,
-    (unsigned char*)43260,
-    (unsigned char*)45068,
-    (unsigned char*)46417,
+    (unsigned char*)19364,
+    (unsigned char*)19406,
+    (unsigned char*)19448,
+    (unsigned char*)19540,
+    (unsigned char*)19577,
+    (unsigned char*)20247,
+    (unsigned char*)22161,
+    (unsigned char*)25104,
+    (unsigned char*)28702,
+    (unsigned char*)31470,
+    (unsigned char*)33778,
+    (unsigned char*)36633,
+    (unsigned char*)38899,
+    (unsigned char*)41755,
+    (unsigned char*)43575,
+    (unsigned char*)45383,
+    (unsigned char*)46732,
 };
 
 unsigned char *background0_tiles_compressed[1] =
@@ -160,80 +165,80 @@ unsigned char var_gfx_init(void)
     }
 
     data = (unsigned int)ti_GetDataPtr(appvar) - (unsigned int)var_gfx_appvar[0] + var_gfx_HEADER_SIZE;
-    for (i = 0; i < 79; i++)
+    for (i = 0; i < 84; i++)
     {
         var_gfx_appvar[i] += data;
     }
 
     ti_CloseAll();
 
-    data = (unsigned int)var_gfx_appvar[67] - (unsigned int)background0_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[72] - (unsigned int)background0_tiles_compressed[0];
     for (i = 0; i < background0_tiles_num; i++)
     {
         background0_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[68] - (unsigned int)background1_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[73] - (unsigned int)background1_tiles_compressed[0];
     for (i = 0; i < background1_tiles_num; i++)
     {
         background1_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[69] - (unsigned int)background2_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[74] - (unsigned int)background2_tiles_compressed[0];
     for (i = 0; i < background2_tiles_num; i++)
     {
         background2_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[70] - (unsigned int)background3_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[75] - (unsigned int)background3_tiles_compressed[0];
     for (i = 0; i < background3_tiles_num; i++)
     {
         background3_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[71] - (unsigned int)background4_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[76] - (unsigned int)background4_tiles_compressed[0];
     for (i = 0; i < background4_tiles_num; i++)
     {
         background4_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[72] - (unsigned int)background5_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[77] - (unsigned int)background5_tiles_compressed[0];
     for (i = 0; i < background5_tiles_num; i++)
     {
         background5_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[73] - (unsigned int)background6_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[78] - (unsigned int)background6_tiles_compressed[0];
     for (i = 0; i < background6_tiles_num; i++)
     {
         background6_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[74] - (unsigned int)background7_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[79] - (unsigned int)background7_tiles_compressed[0];
     for (i = 0; i < background7_tiles_num; i++)
     {
         background7_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[75] - (unsigned int)background8_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[80] - (unsigned int)background8_tiles_compressed[0];
     for (i = 0; i < background8_tiles_num; i++)
     {
         background8_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[76] - (unsigned int)background9_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[81] - (unsigned int)background9_tiles_compressed[0];
     for (i = 0; i < background9_tiles_num; i++)
     {
         background9_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[77] - (unsigned int)background10_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[82] - (unsigned int)background10_tiles_compressed[0];
     for (i = 0; i < background10_tiles_num; i++)
     {
         background10_tiles_compressed[i] += data;
     }
 
-    data = (unsigned int)var_gfx_appvar[78] - (unsigned int)background11_tiles_compressed[0];
+    data = (unsigned int)var_gfx_appvar[83] - (unsigned int)background11_tiles_compressed[0];
     for (i = 0; i < background11_tiles_num; i++)
     {
         background11_tiles_compressed[i] += data;

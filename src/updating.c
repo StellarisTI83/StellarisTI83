@@ -128,7 +128,7 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
 /**
  * Effectue les actions des planetes
  */
-void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires, EmpireListe *empireListe){
+void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires){
 	int i = 0, j = 0;
 	Villes *villes = NULL;
 	// Batiment *batiment = NULL;
@@ -198,7 +198,7 @@ static void UpdateTime(Date *date, char *key, Fenetre *fenetre){
 static void UpdateWorld(EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
     EffectuerActionsFlottes(empireListe, systemeStellaires);
     EffectuerActionsStations(systemeStellaires, empireListe);
-    EffectuerActionsPlanetes(systemeStellaires, empireListe);
+    EffectuerActionsPlanetes(systemeStellaires);
     CalculerNiveauDeConnaissance(systemeStellaires, empireListe);
 }
 
@@ -206,23 +206,23 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 	if(GetCameraMapType(camera) == NORMAL){
 		switch(*key){
 		case sk_Up:
-			if (GetCameraLock(camera) != true)
+			if (GetCameraLockStatus(camera) != true)
 				AddCameraYVector(camera, -5);
 			break;
 		case sk_Down:
-			if (GetCameraLock(camera) != true)
+			if (GetCameraLockStatus(camera) != true)
 				AddCameraYVector(camera, +5);
 			break;
 		case sk_Left:
-			if (GetCameraLock(camera) != true)
+			if (GetCameraLockStatus(camera) != true)
 				AddCameraXVector(camera, -5);
 			break;
 		case sk_Right:
-			if (GetCameraLock(camera) != true)
+			if (GetCameraLockStatus(camera) != true)
 				AddCameraXVector(camera, +5);
 			break;
 		case sk_Mode:
-			if (GetCameraLock(camera) != true) {
+			if (GetCameraLockStatus(camera) != true) {
 				SetCameraZoom(camera, GetCameraZoom(camera) - 1);
 				if(GetCameraZoom(camera) >= 1) {
 					SetCameraX(camera, GetCameraX(camera) * 0.5);
@@ -244,7 +244,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 				#endif
 				*key = 0;
 			}
-			if (GetCameraLock(camera) != true) {
+			if (GetCameraLockStatus(camera) != true) {
 				SetCameraZoom(camera, GetCameraZoom(camera) + 1);
 				if (GetCameraZoom(camera) < 3 && GetCameraZoom(camera) >= 0) {
 					SetCameraX(camera, GetCameraX(camera) * 2);
@@ -366,7 +366,21 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 	}
 }
 
-static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, NotificationList *notificationList){
+
+
+static void UpdateEmpirePower(EmpireListe *empireListe) {
+	Empire *empire;
+	int empireNumero = 1;
+		empire = EmpireNumero(empireListe, empireNumero);
+	while (empire != NULL) {
+		CalculateEmpirePower(empire);
+		empireNumero++;
+		empire = EmpireNumero(empireListe, empireNumero);
+	}
+}
+
+/* entry points ======================================================== */
+void UpdatePlayersData(char appliquer, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, NotificationList *notificationList){
 	Empire *empire = NULL;
 	Flotte *flotte = NULL;
 	FlotteListe *flotteListe = NULL;
@@ -411,9 +425,15 @@ static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **syste
 				
 				//si la planete est habitée
 				if(GetPlanetCityStatus(planete)){
+
 					AddEmpireCreditChange(empire, -GetPlanetCityAgricultureDistrictNumber(planete));
+					AddEmpireFoodChange(empire, GetPlanetCityAgricultureDistrictNumber(planete) * 3);
+
 					AddEmpireCreditChange(empire, -GetPlanetCityMiningDistrictNumber(planete));
+					AddEmpireMineralsChange(empire, 6 * GetPlanetCityMiningDistrictNumber(planete));
+					
 					AddEmpireCreditChange(empire, -2 * GetPlanetCityUrbanDistrictNumber(planete));
+					
 					AddEmpireCreditChange(empire, 8 * GetPlanetCityGeneratorDistrictNumber(planete));
 					
 					for(planetaryBuildingIndex = 1; planetaryBuildingIndex <= 6; planetaryBuildingIndex++){
@@ -445,53 +465,53 @@ static void UpdatePlayersData(EmpireListe *empireListe, SystemeStellaire **syste
 			}
 		}
 	}
+	if(appliquer){
+		for(empireIndex = 1; empireIndex <= empireArraySize; empireIndex++){
+			empire = EmpireNumero(empireListe, empireIndex);
 
-	for(empireIndex = 1; empireIndex <= empireArraySize; empireIndex++){
-		empire = EmpireNumero(empireListe, empireIndex);
-
-		if(GetEmpireAlloys(empire) + GetEmpireAlloysChange(empire) <= 0){
-			SetEmpireAlloys(empire, 0);
-		}
-		else
-			AddEmpireAlloys(empire, GetEmpireAlloysChange(empire));
+			if(GetEmpireAlloys(empire) + GetEmpireAlloysChange(empire) <= 0){
+				SetEmpireAlloys(empire, 0);
+			}
+			else
+				AddEmpireAlloys(empire, GetEmpireAlloysChange(empire));
+				
+			if(GetEmpireCredit(empire) + GetEmpireCreditChange(empire) <= 0){
+				SetEmpireCredit(empire, 0);
+			}
+			else
+				AddEmpireCredit(empire, GetEmpireCreditChange(empire));
 			
-		if(GetEmpireCredit(empire) + GetEmpireCreditChange(empire) <= 0){
-			SetEmpireCredit(empire, 0);
+			if(GetEmpireFood(empire) + GetEmpireFoodChange(empire) <= 0){
+				SetEmpireFood(empire, 0);
+			}
+			else
+				AddEmpireFood(empire, GetEmpireFoodChange(empire));
+			
+			if(GetEmpireMinerals(empire) + GetEmpireMineralsChange(empire) <= 0){
+				SetEmpireMinerals(empire, 0);
+			}
+			else
+				AddEmpireMinerals(empire, GetEmpireMineralsChange(empire));
 		}
-		else
-			AddEmpireCredit(empire, GetEmpireCreditChange(empire));
-		
-		if(GetEmpireFood(empire) + GetEmpireFoodChange(empire) <= 0){
-			SetEmpireFood(empire, 0);
-		}
-		else
-			AddEmpireFood(empire, GetEmpireFoodChange(empire));
-		
-		if(GetEmpireMinerals(empire) + GetEmpireMineralsChange(empire) <= 0){
-			SetEmpireMinerals(empire, 0);
-		}
-		else
-			AddEmpireMinerals(empire, GetEmpireMineralsChange(empire));
-	}
 
-	//teste si il n'y a plus beaucoup de ressources
-	empire = EmpireNumero(empireListe, 1);
+		//teste si il n'y a plus beaucoup de ressources
+		empire = EmpireNumero(empireListe, 1);
 
-	if((GetEmpireAlloys(empire) + (GetEmpireAlloysChange(empire) / 12)) <= 0) {
-		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
-	}
-	if((GetEmpireCredit(empire) + (GetEmpireCreditChange(empire) / 12)) <= 0) {
-		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
-	}
-	if((GetEmpireFood(empire) + (GetEmpireFoodChange(empire) / 12)) <= 0) {
-		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
-	}
-	if((GetEmpireMinerals(empire) + (GetEmpireMineralsChange(empire) * 12)) <= 0) {
-		NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
+		if((GetEmpireAlloys(empire) + (GetEmpireAlloysChange(empire) / 12)) <= 0) {
+			NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
+		}
+		if((GetEmpireCredit(empire) + (GetEmpireCreditChange(empire) / 12)) <= 0) {
+			NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
+		}
+		if((GetEmpireFood(empire) + (GetEmpireFoodChange(empire) / 12)) <= 0) {
+			NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
+		}
+		if((GetEmpireMinerals(empire) + (GetEmpireMineralsChange(empire) * 12)) <= 0) {
+			NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
+		}
 	}
 }
 
-/* entry points ======================================================== */
 int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, NotificationList *notificationList, Parametres *parametres){
     if(!GetCommandPromptStatus(fenetre))
 		TestKey(key, empireListe, systemeStellaires, date, camera, fenetre, parametres);
@@ -500,9 +520,10 @@ int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeSt
     if(GetTimeClock(date) == 0){
 		if(((GetTimeDay(date) == 10) || (GetTimeDay(date) == 20)) || (GetTimeDay(date) == 30)){
 			UpdateWorld(empireListe, systemeStellaires);
+			UpdateEmpirePower(empireListe);
 		}
 		if(GetTimeDay(date) == 1){
-			UpdatePlayersData(empireListe, systemeStellaires, notificationList);
+			UpdatePlayersData(true, empireListe, systemeStellaires, notificationList);
 		}
 		
 		EmpireAI(empireListe, systemeStellaires, date);
