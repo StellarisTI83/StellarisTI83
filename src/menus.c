@@ -43,7 +43,7 @@ static void DrawMenuBase(char planetePopulation, char niveauMenu, Fenetre *fenet
 	gfx_Rectangle_NoClip(40, 40, 240, 160);
 	gfx_HorizLine_NoClip(45, 51, 180); //***
 	gfx_Line_NoClip(225, 51, 230, 46); //*Barre sous le titre
-	gfx_HorizLine_NoClip(231, 45, 38); //***
+	gfx_HorizLine_NoClip(231, 45, 39); //***
 	gfx_SetColor(1);
 	gfx_SetPixel(270, 45);//point au bout de la ligne du titre
 	
@@ -114,36 +114,35 @@ static int8_t MenuQuitter(char* key, ti_var_t* sauvegarde, EmpireListe* empireLi
 	gfx_Rectangle_NoClip(100, 40, 120, 160);
 	
 	if(GetWindowSelection(fenetre) == 1) {
-		gfx_SetColor(gfx_Lighten(7, 200));
+		gfx_SetColor(13);
 	}
 	gfx_Rectangle_NoClip(110, 50, 100, 18);
 	gfx_SetColor(7);
 
 	if(GetWindowSelection(fenetre) == 2) {
-		gfx_SetColor(gfx_Lighten(7, 200));
+		gfx_SetColor(13);
 	}
 	gfx_Rectangle_NoClip(110, 80, 100, 18);
 	gfx_SetColor(7);
 
 	if(GetWindowSelection(fenetre) == 3) {
-		gfx_SetColor(gfx_Lighten(7, 200));
+		gfx_SetColor(13);
 	}
 	gfx_Rectangle_NoClip(110, 110, 100, 18);
 	gfx_SetColor(7);
 
 	if(GetWindowSelection(fenetre) == 4) {
-		gfx_SetColor(gfx_Lighten(7, 200));
+		gfx_SetColor(13);
 	}
 	gfx_Rectangle_NoClip(110, 140, 100, 18);
 	gfx_SetColor(7);
 	
 	if(GetWindowSelection(fenetre) == 5) {
-		gfx_SetColor(gfx_Lighten(7, 200));
+		gfx_SetColor(13);
 	}
 	gfx_Rectangle_NoClip(110, 170, 100, 18);
 	gfx_SetColor(7);
-
-	gfx_SetColor(1);
+	
 	gfx_PrintStringXY(_(LC_RETOUR), 160 - strlen(_(LC_RETOUR)) * 4, 55);
 	gfx_PrintStringXY(_(LC_SAUVEGARDER), 160 - strlen(_(LC_SAUVEGARDER)) * 4, 85);
 	gfx_PrintStringXY(_(LC_CHARGER), 160 - strlen(_(LC_CHARGER)) * 4, 115);
@@ -2780,7 +2779,6 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 	gfx_SetColor(0);
 	gfx_FillRectangle_NoClip(45, 55, 120, 60); //fond rectangle du perso
 	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(45, 55, 120, 60); //rectangle du perso
 	gfx_PrintStringXY(GetEmpireNameString(empire), 45, 42);
 	
 	switch(GetEmpireSpecies(empire)){
@@ -2819,10 +2817,14 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 			break;
 	}
 	
+	gfx_Rectangle_NoClip(45, 55, 120, 60); //rectangle du perso
+
+
+	//opinion et population
 	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(45, 118, 57, 13);
-	gfx_Rectangle_NoClip(107, 118, 58, 13);
-	gfx_TransparentSprite_NoClip(alliedFleet, 49, 121);
+	gfx_Rectangle_NoClip(45, 118, 59, 13); //rectangle gauche
+	gfx_Rectangle_NoClip(106, 118, 59, 13); //rectangle droit
+	gfx_TransparentSprite_NoClip(opinion_icon, 49, 122);
 	gfx_SetTextXY(58, 121);
 	if(RelationGetOpinion(relations) < 0){
 		gfx_SetTextFGColor(3);
@@ -2835,22 +2837,92 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 	}
 	PrintInt(RelationGetOpinion(relations));
 
-	//puissance flotte
+	//puissance
 	gfx_SetColor(7);
-	gfx_Rectangle_NoClip(45, 134, 120, 13);
-	gfx_TransparentSprite_NoClip(alliedFleet, 49, 137);
-	gfx_SetTextXY(58, 137);
+	gfx_Rectangle_NoClip(45, 134, 38, 13);
+	gfx_TransparentSprite_NoClip(alliedFleet, 49, 138);
+	gfx_SetTextXY(73, 137);
 	if(GetEmpireFleetPower(empire) > GetEmpireFleetPower(joueur) + (GetEmpireFleetPower(joueur) / 10)){
 		gfx_SetTextFGColor(3);
-		gfx_PrintString("Superieur");
+		gfx_PrintString(">");
 	}
 	else if(GetEmpireFleetPower(empire) < GetEmpireFleetPower(joueur) - (GetEmpireFleetPower(joueur) / 10)){
 		gfx_SetTextFGColor(19);
-		gfx_PrintString("Inferieure");
+		gfx_PrintString("<");
 	}
 	else{
 		gfx_SetTextFGColor(13);
-		gfx_PrintString("Equivalente");
+		gfx_PrintString("=");
+	}
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(86, 134, 38, 13);
+	gfx_TransparentSprite_NoClip(alliedFleet, 90, 138);
+	gfx_SetTextXY(114, 137);
+	if(GetEmpireFleetPower(empire) > GetEmpireFleetPower(joueur) + (GetEmpireFleetPower(joueur) / 10)){
+		gfx_SetTextFGColor(3);
+		gfx_PrintString(">");
+	}
+	else if(GetEmpireFleetPower(empire) < GetEmpireFleetPower(joueur) - (GetEmpireFleetPower(joueur) / 10)){
+		gfx_SetTextFGColor(19);
+		gfx_PrintString("<");
+	}
+	else{
+		gfx_SetTextFGColor(13);
+		gfx_PrintString("=");
+	}
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(127, 134, 38, 13);
+	gfx_TransparentSprite_NoClip(alliedFleet, 131, 138);
+	gfx_SetTextXY(155, 137);
+	if(GetEmpireFleetPower(empire) > GetEmpireFleetPower(joueur) + (GetEmpireFleetPower(joueur) / 10)){
+		gfx_SetTextFGColor(3);
+		gfx_PrintString(">");
+	}
+	else if(GetEmpireFleetPower(empire) < GetEmpireFleetPower(joueur) - (GetEmpireFleetPower(joueur) / 10)){
+		gfx_SetTextFGColor(19);
+		gfx_PrintString("<");
+	}
+	else{
+		gfx_SetTextFGColor(13);
+		gfx_PrintString("=");
+	}
+
+	//attitude
+	gfx_SetColor(7);
+	gfx_Rectangle_NoClip(45, 150, 120, 13);
+	gfx_TransparentSprite_NoClip(alliedFleet, 49, 154);
+	gfx_SetTextXY(58, 153);
+	if(RelationGetAttitude(relations) < ATTITUDE_NEUTRAL){
+		gfx_SetTextFGColor(3);
+	}
+	else if(RelationGetAttitude(relations) > ATTITUDE_NEUTRAL){
+		gfx_SetTextFGColor(19);
+	}
+	else{
+		gfx_SetTextFGColor(13);
+	}
+	switch(RelationGetAttitude(relations)) {
+		default:
+			gfx_PrintString("Erreur_inconnu");
+			break;
+		case ATTITUDE_HOSTILE:
+			gfx_PrintString("Hostile");
+			break;
+		case ATTITUDE_SUSPICIOUS:
+			gfx_PrintString("Suspicious");
+			break;
+		case ATTITUDE_NEUTRAL:
+			gfx_PrintString("Neutral");
+			break;
+		case ATTITUDE_CORDIAL:
+			gfx_PrintString("Cordial");
+			break;
+		case ATTITUDE_FRIENDLY:
+			gfx_PrintString("Friendly");
+			break;
+		case ATTITUDE_PROTECTIVE:
+			gfx_PrintString("Protective");
+			break;
 	}
 }
 

@@ -19,6 +19,11 @@ MILITARIST, FANATIC_MILITARIST, PACIFIST, FANATIC_PACIFIST,
 XENOPHILE, FANATIC_XENOPHILE, XONOPHOBE, FANATIC_XENOPHOBE,
 GESTALT} Principe;
 
+/**
+ * Differentes attitudes
+ */
+typedef enum {ATTITUDE_HOSTILE = -2, ATTITUDE_SUSPICIOUS, ATTITUDE_NEUTRAL, ATTITUDE_CORDIAL, ATTITUDE_FRIENDLY, ATTITUDE_PROTECTIVE} Attitude;
+
 typedef GenericList EmpireListe;
 
 /**
@@ -130,6 +135,7 @@ Relations* RelationAjouter(RelationsListe* relationsListe);
 void RelationSupprimer(RelationsListe* relationsListe, int numero);
 
 int RelationGetOpinion(Relations* relations);
+Attitude RelationGetAttitude(Relations* relations);
 
 void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date);
 

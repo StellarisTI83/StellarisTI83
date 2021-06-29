@@ -56,6 +56,7 @@ struct EmpireStruct {
 struct RelationsStruct {
 	Empire* empire;
 	int opinion;
+	Attitude attitude;
 };
 
 /* private variables =================================================== */
@@ -518,6 +519,9 @@ void RelationSupprimer(RelationsListe* relationsListe, int numero) {
 
 int RelationGetOpinion(Relations* relations) {
 	return relations->opinion;
+}
+Attitude RelationGetAttitude(Relations* relations) {
+	return relations->attitude;
 }
 
 
