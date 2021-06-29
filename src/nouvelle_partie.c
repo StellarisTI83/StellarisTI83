@@ -1842,12 +1842,9 @@ static void RecreateHyperlanes(SystemeStellaire **systemeStellaires, int *barreD
  * Function to create the galaxy
  */
 static int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sauvegarde, SystemeStellaire **systemeStellaires){
-	int i = 0, j = 0, espaceEntreEtoiles = 50, barreDeChargement = 1, etoile = 0, nombrePlanetes = 0, nombrePlanetesHabitables = 0, trouNoir = 0, fin = 0, nomInt = 0;
-	int coefficientDeplacementStellaire = 100, coefficientX = 0, coefficientY = 0, rayon = ((espaceEntreEtoiles * LARGEUR_GALAXIE) - espaceEntreEtoiles) / 2 - 25, lane = 255, rayonInterieur = 50;
-	int x = LIMITE_GAUCHE;
-	int y = LIMITE_HAUT;
-	int nombreHyperlanes = 0, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, hyperlaneSup1, hyperlaneSup2;
-	int planeteHabitable[5] = {0}, nombreAleatoire = 0;
+	int espaceEntreEtoiles = 50, barreDeChargement = 1, etoile = 0, nombrePlanetes = 0, nombrePlanetesHabitables = 0, trouNoir = 0, fin = 0, nomInt = 0;
+	int coefficientDeplacementStellaire = 100, rayon = ((espaceEntreEtoiles * LARGEUR_GALAXIE) - espaceEntreEtoiles) / 2 - 25, rayonInterieur = 50;
+	int nombreAleatoire = 0;
 	int planetIndex = 0;
     int k = LARGEUR_GALAXIE * LARGEUR_GALAXIE;
 	Flotte* flotte = NULL;
@@ -1922,11 +1919,11 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
 	
 
-	EmpireNouvelleFlotte(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+	EmpireFlotteNouvelle(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
 
-	EmpireNouvelleFlotte(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+	EmpireFlotteNouvelle(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
 
-	EmpireNouvelleFlotte(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+	EmpireFlotteNouvelle(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 	
 	SetCameraX(camera, GetSystemX(systemeStellaires[i])*2); // centre la vue sur le systeme
 	SetCameraY(camera, GetSystemY(systemeStellaires[i])*2);
@@ -1951,12 +1948,12 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 	SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 2, USINE_CIVILE, 1);
 	SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 3, FONDERIE, 1);
 
-	CalculateEmpireFleetPower(joueur);
+	CalculateEmpirePower(joueur);
 
-		#ifdef DEBUG_VERSION
-			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, GetSystemX(systemeStellaires[i]), GetSystemY(systemeStellaires[i]), GetEmpireColor(joueur), planete, GetFleetArray(joueur), GetCameraX(camera), GetCameraY(camera));
-		#endif
-	gfx_SetTextXY(90, 90);
+	#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, GetSystemX(systemeStellaires[i]), GetSystemY(systemeStellaires[i]), GetEmpireColor(joueur), planete, EmpireFleetGetArray(joueur), GetCameraX(camera), GetCameraY(camera));
+	#endif
+	
 	for(j = 2; j <= GetEmpireNumber(parametres); j++){
 		Empire *empire = NULL;
 		fin = 1;
@@ -1967,7 +1964,7 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 				fin = 0;
 		}
 		empire = EmpireAjouter(empireListe);
-		CreerEmpireFlotte(empire);
+		EmpireFlotteCreer(empire);
 		EmpireGenerateRandomName(empire);
 		SetEmpireSpecies(empire, randInt(0, 3));
 		SetEmpireClothes(empire, randInt(0, 2));
@@ -1990,9 +1987,9 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		SetSystemStationModule(systemeStellaires[i], 0, CHANTIER_SPATIAL);
 		SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
 
-		EmpireNouvelleFlotte(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-		EmpireNouvelleFlotte(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-		EmpireNouvelleFlotte(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+		EmpireFlotteNouvelle(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+		EmpireFlotteNouvelle(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+		EmpireFlotteNouvelle(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 
 		planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i])- 1);
 
@@ -2010,12 +2007,13 @@ static void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, Syste
 		SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 2, USINE_CIVILE, 1);
 		SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 3, FONDERIE, 1);
 		
-		CalculateEmpireFleetPower(empire);
+		CalculateEmpirePower(empire);
 
 		#ifdef DEBUG_VERSION
 			dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d\n -Color: %d\n -Planet: %d\n", j, empire,i, GetEmpireColor(empire), planete);
 		#endif
 	}
+	RelationAllListeUpdate(empireListe);
 }
 
 /* entry points ======================================================== */
@@ -2090,8 +2088,6 @@ int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres
 void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 	ti_var_t sauvegarde;
 	char fin = 0;
-	Flotte* flotte = NULL;
-	Empire* empire = NULL;
 	Date *date = NULL;
 	Camera *camera = NULL;
 	Fenetre *fenetre = NULL;
@@ -2103,11 +2099,9 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 
 	fin = ChargementNouvellePartieGalaxie(parametres, &sauvegarde, systemeStellaires);
 	
-	gfx_PrintString("666");
 	SetEmpireNumber(parametres, 4);
 	CreerEmpires(parametres, empireListe, systemeStellaires, camera);
-	
-	gfx_PrintStringXY("1000102102003", 80, 80);
+	UpdatePlayersData(false, empireListe, systemeStellaires, notificationList);
 
 	PauseGame(date);
 
@@ -2119,7 +2113,7 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
  *utilisé dans les menus de création de nouvelle partie pour afficher le texte
  */
 void PrintText(const char *str, int x, int y, int taille, int color) {
-	int a, longueur, i;
+	int a, i;
     gfx_TempSprite(ch, 8, 8);
 
 	/*fait un "fond vert" au sprite et le rend transparent*/

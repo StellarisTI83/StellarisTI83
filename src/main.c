@@ -19,7 +19,6 @@
 
 #include "fonts/Standard.h"
 #include "gfx/gfx.h"
-#include "gfx/var_gfx.h"
 
 #include "main.h"
 #include "nouvelle_partie.h"
@@ -44,7 +43,7 @@ struct VecteurStationStruct{
 /**
  * Initialise toutes les variables
  */;
-static void InitializeAll(EmpireListe **empireListe, Parametres *parametres){
+static void InitializeAll(EmpireListe **empireListe){
 	Empire *joueur = NULL;
 	
 	if(!var_gfx_init()){
@@ -52,7 +51,7 @@ static void InitializeAll(EmpireListe **empireListe, Parametres *parametres){
     	os_PutStrFull("Missing var_gfx.8xv");
 		os_SetCursorPos(2, 1);
     	os_PutStrFull("Plase download it");
-		while (!os_GetCSC());
+		while(!os_GetCSC());
 
 		exit(EXIT_FAILURE);
 	}
@@ -68,7 +67,7 @@ static void InitializeAll(EmpireListe **empireListe, Parametres *parametres){
 
 	*empireListe = EmpireListeCreer();
 	joueur = EmpireAjouter(*empireListe);
-	CreerEmpireFlotte(EmpireNumero(*empireListe, 1));
+	EmpireFlotteCreer(EmpireNumero(*empireListe, 1));
 	
 }
 
@@ -85,7 +84,7 @@ static void MenuBackground(){
 	gfx_SetColor(1);
 
     for (; i < 12; i++) {
-        zx7_Decompress(tile, var_gfx[65 + i]);
+        zx7_Decompress(tile, var_gfx_appvar[var_gfx_background_gfx_sprites_backgroundStation_compressed_index + 1 + i]);
         gfx_Sprite_NoClip(tile, x, y);
         x += 80;
         if (x >= LCD_WIDTH) {
@@ -113,7 +112,7 @@ static void RedrawMenuBackground(){
 	y = 80;
 
     for (; i < 2; i++) {
-        zx7_Decompress(tile, var_gfx[71 + i]);
+        zx7_Decompress(tile, var_gfx_appvar[var_gfx_background_gfx_sprites_backgroundStation_compressed_index + 7 + i]);
         gfx_Sprite_NoClip(tile, x, y);
         x += 80;
         if (x >= LCD_WIDTH) {
@@ -161,7 +160,7 @@ static void Options(){
 		do {
 			gfx_SwapDraw();
 			
-			gfx_FillScreen(255);
+			gfx_FillScreen(0);
 			PrintCentered("Parametres", 20, 3, 0, 0);
 			switch(key){
 				case sk_Down:
@@ -223,9 +222,10 @@ static void Options(){
  * Menu principal
  */
 static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
-	char choix = 0, fin = 0, key = 0, erreur = 0;
-	int espacement = 0, niveau = 0;
+	char choix = 0, fin = 0, key = 0;
+	int espacement = 0, niveau = 0, index = 0;
 	VecteurStation vecteurStation;
+	char string[20];
 
 	vecteurStation.x = 206;
 	vecteurStation.y = 120;
@@ -280,45 +280,32 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 		espacement = 15;
 		
 		/*Dessine le menu suivant le choix*/
-		if(choix == 0) {
-			gfx_SetTextFGColor(13);
-			gfx_SetColor(13);
+		for(index = 0; index < 4; index++) {
+			if(index == choix) {
+				gfx_SetTextFGColor(13);
+				gfx_SetColor(13);
+			}
+			switch(index) {
+				case 0:
+					strcpy(string, _(LC_CHARGER));
+					break;
+				case 1:
+					strcpy(string, _(LC_NOUVELLE_PARTIE));
+					break;
+				case 2:
+					strcpy(string, _(LC_OPTIONS));
+					break;
+				case 3:
+					strcpy(string, _(LC_QUITTER));
+					break;
+			}
+			
+			gfx_PrintStringXY(string, 5, niveau);
+			gfx_HorizLine_NoClip(5, niveau - 3, strlen(string) * 8);
+			gfx_SetTextFGColor(1);
+			gfx_SetColor(1);
+			niveau += espacement;
 		}
-		gfx_PrintStringXY(_(LC_CHARGER), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_CHARGER)) * 8);
-		gfx_SetTextFGColor(1);
-		gfx_SetColor(1);
-
-		if(choix == 1) {
-			gfx_SetTextFGColor(13);
-			gfx_SetColor(13);
-		}
-		niveau += espacement;
-		gfx_PrintStringXY(_(LC_NOUVELLE_PARTIE), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_NOUVELLE_PARTIE)) * 8);
-		gfx_SetTextFGColor(1);
-		gfx_SetColor(1);
-
-		if(choix == 2) {
-			gfx_SetTextFGColor(13);
-			gfx_SetColor(13);
-		}
-		niveau += espacement;
-		gfx_PrintStringXY(_(LC_OPTIONS), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_OPTIONS)) * 8);
-		gfx_SetTextFGColor(1);
-		gfx_SetColor(1);
-
-		if(choix == 3){
-			gfx_SetTextFGColor(13);
-			gfx_SetColor(13);
-		}
-		niveau += espacement;
-		gfx_PrintStringXY(_(LC_QUITTER), 5, niveau);
-		gfx_HorizLine_NoClip(5, niveau - 3, strlen(_(LC_QUITTER)) * 8);
-		gfx_SetTextFGColor(1);
-		gfx_SetColor(1);
-
 		gfx_SwapDraw();
 	}
 	gfx_ZeroScreen();
@@ -333,8 +320,8 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 	/*On arrive ici si le joueur clique sur entrée et on vérifie son choix*/
 	switch (choix){
 		case 0:
-			/*erreur = ChargementAnciennePartie(empireListe);
-			if(erreur == 1){
+			/*
+			if(ChargementAnciennePartie(empireListe)){
 				gfx_FillScreen(255);
 				PrintCentered("Aucune sauvegarde", 96, 2, 0, 0);
 				while(!os_GetCSC());
@@ -350,7 +337,7 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 			}
 			break;
 		case 2:
-			gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
+			gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
 			Options();
 			fin = 1;
 			break;
@@ -373,7 +360,7 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
  * \param differenceX Décalage en X du texte
  */ 
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX){
-    int x, a, longueur, i;
+    int x, a, i;
     gfx_TempSprite(ch, 8, 8);
 	gfx_SetFontData(font_logo);
 
@@ -381,7 +368,7 @@ void PrintCentered(const char *str, int y, int taille, int color, int difference
     gfx_SetTextFGColor(color);
     gfx_SetTextBGColor(TEXT_BG_COLOR);
 	
-    x = abs((LCD_WIDTH - strlen(str) * 8 * taille)/2 + differenceX);
+    x = (LCD_WIDTH - strlen(str) * 8 * taille)/2 + differenceX;
 	a = 1;
 	i = 0;
 	
@@ -438,12 +425,36 @@ int TailleInt(int nombre){
 	return i;
 }
 
+void PrintMultipleLines(char str[]) {
+	int init_size = strlen(str);
+	char *string1;
+	char delim[] = " ";
+	int tailleLigne = 0;
+	int x = gfx_GetTextX();
+
+	char *ptr = NULL;
+
+	string1 = malloc(init_size + 1);
+	strcpy(string1, str);
+	ptr = strtok(string1, delim);
+	while(ptr != NULL) {
+		tailleLigne += strlen(string1) + 1;
+		if (tailleLigne > 20) {
+			gfx_SetTextXY(x, gfx_GetTextY() + 13);
+			tailleLigne = 0;
+		}
+		gfx_PrintString(ptr);
+		ptr = strtok(NULL, delim);
+	}
+	free(string1);
+}
+
 /**
  * MAIN
  */
 
 int main(void){
-	char fin = 1, partie = 0;
+	char fin = 1;
 	
 	EmpireListe *empireListe = NULL;
 	Parametres *parametres = NULL;
@@ -451,12 +462,9 @@ int main(void){
     	dbg_sprintf(dbgout, "Started Stellaris\n");
 	#endif
 
-	InitializeAll(&empireListe, parametres);
+	InitializeAll(&empireListe);
 	while (fin){
 		fin = MainMenu(empireListe, parametres);
-	#ifdef DEBUG_VERSION
-    	dbg_sprintf(dbgout, "%d\n", fin);
-	#endif
 	}
 	
 	gfx_End();

@@ -1,6 +1,6 @@
 
 palettes:
-  - name: global_palette
+  - name: gfx_pal
     fixed-entries:
       - color:  {index: 0, r: 0, g: 0, b: 0} #noir
       - color:  {index: 1, r: 255, g: 255, b: 255} #blanc
@@ -34,13 +34,17 @@ palettes:
       - color:  {index: 27, r: 190, g: 92, b: 33} #couleur planete en fusion
       - color:  {index: 28, r: 126, g: 138, b: 79} #couleur planete toxique
       - color:  {index: 29, r: 132, g: 157, b: 173} #couleur planete geante gazeuse
+      
+      
+      - color:  {index: 30, r: 253, g: 137, b: 64} #orange clair notifs
+      - color:  {index: 31, r: 33, g: 22, b: 16} #marron notifs
 
       - color:  {index: 34, r: 0, g: 254, b: 49} #vert
     images: automatic
 
 converts:
-  - name: sprites
-    palette: global_palette
+  - name: gfx_sprites
+    palette: gfx_pal
     images:
     - ourFleet.png
     - alliedFleet.png
@@ -93,16 +97,70 @@ converts:
     - free_houses_icon.png
     - amienties_icon.png
     - unemployed_pop_icon.png
+    - opinion_icon.png
+    - leader_clothes_1.png
+    - leader_clothes_2.png
+    - leader_clothes_3.png
+    - leader_head_human.png
+    - leader_head_mammalian.png
+    - leader_head_molluscoid.png
+    - leader_head_reptilian.png
+    - blindage_icon.png
+    - bouclier_icon.png
+    - life_icon.png
+    - fleet_power_icon.png
+    - low_ressources_icon.png
+    - attitude_icon.png
+    - up_icon.png
+    - down_icon.png
+    - pact_icon.png
+    - insult_icon.png
+
+
+palettes:
+  - name: background_gfx_pal
+    fixed-entries:
+      - color:  {index: 0, r: 0, g: 0, b: 0} #noir
+      - color:  {index: 1, r: 255, g: 255, b: 255} #blanc
+      - color:  {index: 2, r: 255, g: 0, b: 128} #violet qui fait mal aux yeux
+      - color:  {index: 13, r: 243, g: 188, b: 24} #jaune soleil
+    images: automatic
+
+converts:
+  - name: background_gfx_sprites
+    palette: background_gfx_pal
+    compress: zx7
+    images:
+      - backgroundStation
+    tilesets:
+      tile-width: 80
+      tile-height: 80
+      images:
+        - background0
+        - background1
+        - background2
+        - background3
+        - background4
+        - background5
+        - background6
+        - background7
+        - background8
+        - background9
+        - background10
+        - background11
+
 
 outputs:
   - type: appvar
-    name: vargfx
+    name: var_gfx
     include-file: gfx.h
     source-format: c
     palettes:
-      - global_palette
+      - gfx_pal
+      - background_gfx_pal
     converts:
-      - sprites
+      - gfx_sprites
+      - background_gfx_sprites
 
 
 

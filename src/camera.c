@@ -13,6 +13,7 @@
 
 #include "main.h"
 
+#include "ai.h"
 #include "camera.h"
 
 /* structures ========================================================== */
@@ -55,7 +56,8 @@ struct FenetreStruct{
 	int commandPrompt;
 	
 	int nombreDeVaisseaux; // utilisé dans la création de flottes
-	Villes *villes; // utilisé dans le chanement de batiment
+	Villes *villes; // utilisé dans le changement de batiment
+	int* empire; // utilisé dans les relations
 };
 
 /* entry points ======================================================== */
@@ -143,7 +145,7 @@ int GetCameraZoom(Camera *camera){
 void SetCameraLock(Camera *camera, int lock){
 	camera->lock = lock;
 }
-int GetCameraLock(Camera *camera){
+int GetCameraLockStatus(Camera *camera){
 	return camera->lock;
 }
 
@@ -167,6 +169,7 @@ void SetCameraSystemViewStatus(Camera *camera, int status){
 		break;
 	case false:
 		camera->mapType = NORMAL;
+		break;
 	}
 	camera->systemeSelectione = camera->systeme;
 }
@@ -218,7 +221,7 @@ void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem 
 }
 void CloseMenu(Fenetre *fenetre, Camera *camera){
 	fenetre->menu = MENU_AUCUN;
-	fenetre->menuDetails = MENU_AUCUN;
+	fenetre->menuDetails = MENU_SYSTEME_AUCUN;
 	camera->lock = false;
 }
 ClassMenu GetOpenedMenuClass(Fenetre *fenetre){
@@ -300,6 +303,13 @@ void SetWindowCity(Fenetre *fenetre, Villes *city){
 }
 Villes *GetWindowCity(Fenetre *fenetre){
 	return fenetre->villes;
+}
+
+void SetWindowEmpire(Fenetre *fenetre, int empire){
+	fenetre->empire = empire;
+}
+int GetWindowEmpire(Fenetre *fenetre){
+	return fenetre->empire;
 }
 
 void SetWindowScroll(Fenetre *fenetre, int scroll){

@@ -47,6 +47,7 @@ typedef struct {
 
 void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
 void PrintInt(int nombre);
+void PrintMultipleLines(char str[]);
 int TailleInt(int nombre);
 
 #endif

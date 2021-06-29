@@ -10,7 +10,7 @@ enum VueTypeEnum {CARTE, NORMAL, SYSTEME};
 
 typedef enum VueTypeEnum VueType;
 
-enum ClassMenuEnum {MENU_QUITTER = -1, MENU_AUCUN, MENU_SYSTEME, MENU_MARCHE, MENU_FLOTTE, MENU_RECHERCHE, MENU_CONTACTS, MENU_CONTACTS_DETAILS};
+enum ClassMenuEnum {MENU_QUITTER = -1, MENU_AUCUN, MENU_SYSTEME, MENU_MARCHE, MENU_FLOTTE, MENU_RECHERCHE, MENU_CONTACTS, MENU_CONTACTS_DETAILS, MENU_CONTACTS_EFFECTUER_ACTION};
 
 typedef enum ClassMenuEnum ClassMenu;
 
@@ -58,7 +58,7 @@ void SetCameraMapType(Camera *camera, VueType MapType);
 VueType GetCameraMapType(Camera *camera);
 
 void SetCameraLock(Camera *camera, int lock);
-int GetCameraLock(Camera *camera);
+int GetCameraLockStatus(Camera *camera);
 
 void SetCameraViewedSystem(Camera *camera, int system);
 void SetCameraSystem(Camera *camera, int system);
@@ -114,6 +114,8 @@ void SetWindowErrorCountdown(Fenetre *fenetre, int countdown);
 
 void SetWindowCity(Fenetre *fenetre, Villes *city);
 Villes *GetWindowCity(Fenetre *fenetre);
+void SetWindowEmpire(Fenetre *fenetre, int empire);
+int GetWindowEmpire(Fenetre *fenetre);
 
 void SetWindowScroll(Fenetre *fenetre, int scroll);
 void AddWindowScroll(Fenetre *fenetre, int scroll);

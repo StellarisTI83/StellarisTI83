@@ -74,8 +74,8 @@ static void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, Systeme
 	int size = 0;
 	int empireSize = 0;
 	//dessiner flottes joueur
-	flotte = FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), 1);
-	size = FleetArraySize(GetFleetArray(joueur));
+	flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 1)), 1);
+	size = FleetArraySize(EmpireFleetGetArray(joueur));
 	while(fleetIndex <= size) {
 		system = GetFleetSystem(flotte);
 		xFlotte = GetSystemX(systemeStellaires[system]) * GetCameraZoom(camera) - GetCameraX(camera) + 165;
@@ -119,15 +119,15 @@ static void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, Systeme
 			index++;
 		}
 		fleetIndex++;
-		flotte = FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), fleetIndex);
+		flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 1)), fleetIndex);
 	}
 	empire = EmpireNumero(empireListe, 2);
 	empireIndex = 2;
 	empireSize = EmpireArraySize(empireListe);
 	while(empireIndex <= empireSize){
 		fleetIndex = 1;
-		flotte = FlotteNumero(GetFleetArray(empire), 1);
-		size = FleetArraySize(GetFleetArray(empire));
+		flotte = FlotteNumero(EmpireFleetGetArray(empire), 1);
+		size = FleetArraySize(EmpireFleetGetArray(empire));
 		while(fleetIndex <= size) {
 			system = GetFleetSystem(flotte);
 			if((GetSystemIntelLevel(systemeStellaires[system]) >= MOYEN) || GetSeeAll(parametres)){
@@ -158,7 +158,7 @@ static void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, Systeme
 				}
 			}
 			fleetIndex++;
-			flotte = FlotteNumero(GetFleetArray(empire), fleetIndex);
+			flotte = FlotteNumero(EmpireFleetGetArray(empire), fleetIndex);
 		}
 		empireIndex++;
 		empire = EmpireNumero(empireListe, empireIndex);
@@ -479,7 +479,7 @@ static void DessinerEtoile(SystemeStellaire *systeme, Camera* camera, Fenetre *f
 	{
 		gfx_SetColor(9);
 		gfx_Rectangle_NoClip(xEtoile - 8, yEtoile - 8, 16, 16);
-		if((*key == sk_Enter) && (GetCameraLock(camera) == false)){
+		if((*key == sk_Enter) && (GetCameraLockStatus(camera) == false)){
 			OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_ETOILE);
 			*key = 0;
 		}
@@ -603,7 +603,7 @@ static void DessinerPlanete(SystemeStellaire* systeme, Planete* planete, Camera*
 		gfx_SetColor(9);
 		gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
 		SetCameraSelection(camera, numero);
-		if((*key == sk_Enter) && (GetCameraLock(camera) == false)){
+		if((*key == sk_Enter) && (GetCameraLockStatus(camera) == false)){
 			OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_PLANETE_RESUME);
 			SetWindowPlanet(fenetre, numero);
 			*key = 0;
@@ -656,10 +656,10 @@ void DessinerBase(SystemeStellaire *systeme, Camera* camera, Fenetre* fenetre, c
 					break;
 			}
 
-			if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (GetCameraLock(camera) == false)))) {
+			if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (GetCameraLockStatus(camera) == false)))) {
 				gfx_SetColor(9);
 				gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
-				if((*key == sk_Enter) && (GetCameraLock(camera) == false)){
+				if((*key == sk_Enter) && (GetCameraLockStatus(camera) == false)){
 					OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_STATION_RESUME);
 					SetWindowSelection(fenetre, 1);
 					*key = 0;
@@ -682,8 +682,8 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 	gfx_SetColor(11);
 	empire = EmpireNumero(empireListe, 1);
 	fleetIndex = 0;
-	flotte = FlotteNumero(GetFleetArray(empire), 0);
-	sizeFleet = FleetArraySize(GetFleetArray(empire));
+	flotte = FlotteNumero(EmpireFleetGetArray(empire), 0);
+	sizeFleet = FleetArraySize(EmpireFleetGetArray(empire));
 	while(fleetIndex <= sizeFleet){
 		if(GetFleetSystem(flotte) == GetCameraSystem(camera)){
 			x = GetFleetX(flotte) - GetCameraXSystem(camera) - 3;
@@ -718,10 +718,10 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 				}
 				x += 3;
 				y += 3;
-				if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (GetCameraLock(camera) == false)))){
+				if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (GetCameraLockStatus(camera) == false)))){
 					gfx_SetColor(9);
 					gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);			
-					if((*key == sk_Enter) && (GetCameraLock(camera) == false)){
+					if((*key == sk_Enter) && (GetCameraLockStatus(camera) == false)){
 						OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
 						SetWindowSelection(fenetre, 1);
 						SetWindowSelectedFleet(fenetre, fleetIndex);
@@ -732,15 +732,15 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 			}
 		}
 		fleetIndex++;
-		flotte = FlotteNumero(GetFleetArray(EmpireNumero(empireListe, 1)), fleetIndex);
+		flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 1)), fleetIndex);
 	}
 	empire = EmpireNumero(empireListe, 2);
 	empireIndex = 2;
 	empireSize = EmpireArraySize(empireListe);
 	while(empireIndex <= empireSize){
 		fleetIndex = 0;
-		flotte = FlotteNumero(GetFleetArray(empire), 0);
-		sizeFleet = FleetArraySize(GetFleetArray(empire));
+		flotte = FlotteNumero(EmpireFleetGetArray(empire), 0);
+		sizeFleet = FleetArraySize(EmpireFleetGetArray(empire));
 		while(fleetIndex <= sizeFleet){
 			if(GetFleetSystem(flotte) == GetCameraSystem(camera)){
 				x = GetFleetX(flotte) - GetCameraXSystem(camera) - 3;
@@ -775,10 +775,10 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 					}
 					x += 3;
 					y += 3;
-					if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (GetCameraLock(camera) == false)))){
+					if((((150 <= x) && (170 >= x)) && ((110 <= y) && (130 >= y) && (GetCameraLockStatus(camera) == false)))){
 						gfx_SetColor(9);
 						gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);			
-						if((*key == sk_Enter) && (GetCameraLock(camera) == false)){
+						if((*key == sk_Enter) && (GetCameraLockStatus(camera) == false)){
 							OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_FLOTTE_DETAILS);
 							SetWindowSelection(fenetre, 1);
 							SetWindowSelectedFleet(fenetre, fleetIndex);
@@ -789,7 +789,7 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 				}
 			}
 			fleetIndex++;
-			flotte = FlotteNumero(GetFleetArray(empire), fleetIndex);
+			flotte = FlotteNumero(EmpireFleetGetArray(empire), fleetIndex);
 		}
 		empireIndex++;
 		empire = EmpireNumero(empireListe, empireIndex);
@@ -882,7 +882,7 @@ void DrawMap(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Cam
 		DessinerVueMap(systemeStellaires, camera, empireListe, parametres);
 	}
 	else if(GetCameraMapType(camera) == SYSTEME){
-		if(GetCameraLock(camera) == false){
+		if(GetCameraLockStatus(camera) == false){
 			switch(*key){
 				case sk_Mode:
 					SetCameraMapType(camera, NORMAL); //dezoomer

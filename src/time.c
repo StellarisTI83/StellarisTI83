@@ -85,7 +85,7 @@ int GetTimeYear(Date *date){
     return date->annee;
 }
 
-void AddTime(Date *date, int d){
+void IncrementTime(Date *date){
     date->jour++;
     if(date->jour == 31){
         date->jour = 1;
