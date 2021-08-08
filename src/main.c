@@ -287,16 +287,16 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 			}
 			switch(index) {
 				case 0:
-					strcpy(string, _(LC_CHARGER));
+					strcpy(string, _(lc_load));
 					break;
 				case 1:
-					strcpy(string, _(LC_NOUVELLE_PARTIE));
+					strcpy(string, _(lc_new_game));
 					break;
 				case 2:
-					strcpy(string, _(LC_OPTIONS));
+					strcpy(string, _(lc_settings));
 					break;
 				case 3:
-					strcpy(string, _(LC_QUITTER));
+					strcpy(string, _(lc_exit));
 					break;
 			}
 			

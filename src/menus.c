@@ -145,11 +145,11 @@ static int8_t MenuQuitter(char* key, ti_var_t* sauvegarde, EmpireListe* empireLi
 	gfx_Rectangle_NoClip(110, 170, 100, 18);
 	gfx_SetColor(7);
 
-	gfx_PrintStringXY(_(LC_RETOUR), 160 - strlen(_(LC_RETOUR)) * 4, 55);
-	gfx_PrintStringXY(_(LC_SAUVEGARDER), 160 - strlen(_(LC_SAUVEGARDER)) * 4, 85);
-	gfx_PrintStringXY(_(LC_CHARGER), 160 - strlen(_(LC_CHARGER)) * 4, 115);
-	gfx_PrintStringXY(_(LC_OPTIONS), 160 - strlen(_(LC_OPTIONS)) * 4, 145);
-	gfx_PrintStringXY(_(LC_QUITTER), 160 - strlen(_(LC_QUITTER)) * 4, 175);
+	gfx_PrintStringXY(_(lc_back), 160 - strlen(_(lc_back)) * 4, 55);
+	gfx_PrintStringXY(_(lc_save), 160 - strlen(_(lc_save)) * 4, 85);
+	gfx_PrintStringXY(_(lc_load), 160 - strlen(_(lc_load)) * 4, 115);
+	gfx_PrintStringXY(_(lc_settings), 160 - strlen(_(lc_settings)) * 4, 145);
+	gfx_PrintStringXY(_(lc_exit), 160 - strlen(_(lc_exit)) * 4, 175);
 	if(*key == sk_Enter)
 	{
 		switch(GetWindowSelection(fenetre))
@@ -507,7 +507,7 @@ static void MenuSystemePlaneteResume(char *key, SystemeStellaire **systemeStella
 /**
  *Ecrie le nom de l'ordre de district
  */
-void OrdreDistrictNom(Villes *villes){
+static void OrdreDistrictNom(Villes *villes){
 	OrdreFile *ordreQueue;
 	int nombredOrdres = 0;
 	int niveau = 181;
@@ -735,7 +735,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 /**
  * Ecrit le nom du batiment
  * */
-char *PlaneteBatimentNom(Batiment batiment, int niveau, char* nom){
+static char *PlaneteBatimentNom(Batiment batiment, int niveau, char* nom){
 	char levelStr[10];
 	if(batiment != AUCUN_DISTRICT_VILLE){
 		switch(batiment){
@@ -1125,7 +1125,7 @@ static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeSte
 /**
  *Dessine le menu des détails sur la flotte sélectionnée par les menus MenuSystemeFlotte et MenuListeFlottes
  */
-void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
 	char niveau = 0;
 	Flotte* flotte = NULL;
 	switch(*key) {
@@ -1772,7 +1772,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
 /**
  *Renvoie le nom du module
  */
-char* ModuleNom(Module module, char* nomDuModule){
+static char* ModuleNom(Module module, char* nomDuModule){
 	switch(module){
 		case AUCUN_MODULE:
 			strcpy(nomDuModule, "Aucun");
@@ -1805,7 +1805,7 @@ char* ModuleNom(Module module, char* nomDuModule){
 /**
  * Ecrire module
  * */
-void EcrireModule(Module module, int selection, int numero, int *niveau){
+static void EcrireModule(Module module, int selection, int numero, int *niveau){
 	char nomDuModule[50];
 	gfx_SetTextFGColor(1);
 	if(selection == numero){gfx_SetTextFGColor(13);}
@@ -1822,7 +1822,7 @@ void EcrireModule(Module module, int selection, int numero, int *niveau){
 /**
  *Dessine le menu des modules de la station du systeme
  */
-void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
 	Station *station = GetSystemStation(systemeStellaires[GetCameraSystem(camera)]);
 	OrdreFile *ordreQueue = GetStationOrderQueue(station);
 	int niveau = 120;
@@ -1978,7 +1978,7 @@ void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire **sys
 /**
  *Choisi un module
  */
-void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
 	int niveau = 53;
 	char nomDuModule[50];
 	int i = 0;
@@ -2150,7 +2150,7 @@ void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire 
 /**
  *Dessine le menu des modules de la station du systeme
  */
-void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
 	char ordreStation[50];
 	int niveau = 55, nombreDeChantiers = 0, travail = 0, prix = 0;
 	int i = 0;
@@ -2373,7 +2373,7 @@ void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire **sy
 /**
  *Choisi un module
  */
-void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
 	int prix = 0, travail = 0;
 	char nom[50];
 	switch(*key){
@@ -2567,7 +2567,7 @@ static void MenuSysteme(char* key, EmpireListe* empireListe, Parametres* paramet
 /**
  *Dessine le menu du marché galactique
  */
-void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenetre){
+static void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenetre){
 	if(*key == sk_Clear){
 		CloseMenu(fenetre, camera);
 		*key = 0;
@@ -2648,7 +2648,7 @@ void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenetre){
 /**
  *Dessine le menu avec la lste des flottes du joueur
  */
-void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
+static void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
 	char niveau = 0;
 	int sizeFleet = 0, compteurFlotte = 0;
 	Flotte* flotte = NULL;
@@ -2724,7 +2724,7 @@ void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenet
 /**
  *Dessine le menu de recherche
  */
-void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
+static void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
 	if(*key == sk_Clear) {
 		CloseMenu(fenetre, camera);
 	}
@@ -2736,7 +2736,7 @@ void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
 /**
  *Dessine le menu avec les contacts
  */
-void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
+static void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
 	int nombreEmpire, empireSelectionne = 2;
 	Empire *empire = NULL;
 	int niveau = 57;
@@ -2786,7 +2786,7 @@ void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *
 	}
 }
 
-void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre) {
+static void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre) {
 	Empire *empire = EmpireNumero(empireListe, GetWindowPrevious(fenetre));
 	Empire *joueur = EmpireNumero(empireListe, 1);
 	int boutonY = 55;
@@ -3078,7 +3078,7 @@ void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fe
 	}
 }
 
-void MenuContactsEffectuerAction(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre) {
+static void MenuContactsEffectuerAction(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre) {
 	Empire *empire = EmpireNumero(empireListe, GetWindowPrevious(fenetre));
 	int boutonIndex = 1;
 	Relations *relations = RelationNumero(EmpireRelationGetArray(empire), GetWindowPrevious(fenetre));

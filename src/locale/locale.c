@@ -15,13 +15,13 @@
 char localeLanguage;
 ti_var_t languageVar;
 
-char* lc_charger;
-char* lc_nouvelle_partie;
-char* lc_options;
-char* lc_quitter;
-char* lc_sauvegarder;
-char* lc_retour;
-char* lc_create_galaxie;
+char* lc_charger_array;
+char* lc_nouvelle_partie_array;
+char* lc_options_array;
+char* lc_quitter_array;
+char* lc_sauvegarder_array;
+char* lc_retour_array;
+char* lc_create_galaxie_array;
 
 void setLanguage(char languageNumber){
 	localeLanguage = languageNumber;
@@ -34,8 +34,10 @@ char getLanguage(){
 
 char initializeLanguage(){
 	char header = 0;
-	int numeroString, taille = 0, fin = 0;
-	char chaineTemporaire[100];
+	uint16_t indexString, taille = 0, fin = 0;
+	char chaineTemporaire[MAX_VALUE_LENGTH];
+	uint16_t numberOfString = 0;
+
 	ti_CloseAll();
 	switch(localeLanguage){
 		case LC_FR:
@@ -45,76 +47,79 @@ char initializeLanguage(){
 			languageVar = ti_Open("lcEN", "r");
 			break;
 	}
-	ti_Read(&header, sizeof(char), 1, languageVar);
-	if(header != localeLanguage){
-		return LOCALE_ERROR;
-	}
-	numeroString = 1;
-	fin = 1;
-	while(fin){
-		ti_Read(&taille, sizeof(int), 1, languageVar);
+	ti_Read(&numberOfString, sizeof(uint16_t), 1, languageVar);
+
+	indexString = 0;
+	dbg_printf("of %d:", numberOfString);
+
+	while(fin < numberOfString) {
+		memset(&chaineTemporaire, 0, sizeof(char) * MAX_VALUE_LENGTH);
+		ti_Read(&taille, sizeof(uint16_t), 1, languageVar);
 		strcpy(&chaineTemporaire, "Error");
-		ti_Read(&chaineTemporaire, sizeof(char) * taille, 1, languageVar);
-		switch(numeroString){
-			case LC_CHARGER:
-				lc_charger = malloc(taille * sizeof(char));
-				strcpy(lc_charger, chaineTemporaire);
-				break;
-			case LC_NOUVELLE_PARTIE:
-				lc_nouvelle_partie = malloc(taille * sizeof(char));
-				strcpy(lc_nouvelle_partie, chaineTemporaire);
-				break;
-			case LC_OPTIONS:
-				lc_options = malloc(taille * sizeof(char));
-				strcpy(lc_options, chaineTemporaire);
-				break;
-			case LC_QUITTER:
-				lc_quitter = malloc(taille * sizeof(char));
-				strcpy(lc_quitter, chaineTemporaire);
-				break;
-			case LC_SAUVEGARDER:
-				lc_sauvegarder = malloc(taille * sizeof(char));
-				strcpy(lc_sauvegarder, chaineTemporaire);
-				break;
-			case LC_RETOUR:
-				lc_retour = malloc(taille * sizeof(char));
-				strcpy(lc_retour, chaineTemporaire);
-				break;
-			case LC_CREATE_GALAXIE:
-				lc_create_galaxie = malloc(taille * sizeof(char));
-				strcpy(lc_create_galaxie, chaineTemporaire);
-				fin = 0;
-				break;
+		if(taille < MAX_VALUE_LENGTH){
+			ti_Read(&indexString, sizeof(uint16_t), 1, languageVar);
+			ti_Read(&chaineTemporaire, sizeof(char) * taille, 1, languageVar);
+			switch(indexString){
+				case lc_load:
+					lc_charger_array = calloc(1, (taille + 1) * sizeof(char));
+					memcpy(lc_charger_array, chaineTemporaire, taille);
+					break;
+				case lc_new_game:
+					lc_nouvelle_partie_array = calloc(1, (taille + 1) * sizeof(char));
+					memcpy(lc_nouvelle_partie_array, chaineTemporaire, taille);
+					break;
+				case lc_settings:
+					lc_options_array = calloc(1, (taille + 1) * sizeof(char));;
+					memcpy(lc_options_array, chaineTemporaire, taille);
+					break;
+				case lc_exit:
+					lc_quitter_array = calloc(1, (taille + 1) * sizeof(char));;
+					memcpy(lc_quitter_array, chaineTemporaire, taille);
+					break;
+				case lc_save:
+					lc_sauvegarder_array = calloc(1, (taille + 1) * sizeof(char));;
+					memcpy(lc_sauvegarder_array, chaineTemporaire, taille);
+					break;
+				case lc_back:
+					lc_retour_array = calloc(1, (taille + 1) * sizeof(char));;
+					memcpy(lc_retour_array, chaineTemporaire, taille);
+					break;
+				case lc_create_galaxie:
+					lc_create_galaxie_array = calloc(1, (taille + 1) * sizeof(char));;
+					memcpy(lc_create_galaxie_array, chaineTemporaire, taille);
+					break;
+			}
 		}
-		numeroString++;
+		fin++;
+		dbg_printf("%d (s:%d, k:%d)'%s'\n", fin, taille, indexString, chaineTemporaire);
 	}
 	ti_Close(languageVar);
 	return 1;
 }
 
 
-char* gettext(int numero){
+char* gettext(local_keys numero){
 	switch(numero){
-		case LC_CHARGER:
-			return lc_charger;
+		case lc_load:
+			return lc_charger_array;
 			break;
-		case LC_NOUVELLE_PARTIE:
-			return lc_nouvelle_partie;
+		case lc_new_game:
+			return lc_nouvelle_partie_array;
 			break;
-		case LC_OPTIONS:
-			return lc_options;
+		case lc_settings:
+			return lc_options_array;
 			break;
-		case LC_QUITTER:
-			return lc_quitter;
+		case lc_exit:
+			return lc_quitter_array;
 			break;
-		case LC_SAUVEGARDER:
-			return lc_sauvegarder;
+		case lc_save:
+			return lc_sauvegarder_array;
 			break;
-		case LC_RETOUR:
-			return lc_retour;
+		case lc_back:
+			return lc_retour_array;
 			break;
-		case LC_CREATE_GALAXIE:
-			return lc_create_galaxie;
+		case lc_create_galaxie:
+			return lc_create_galaxie_array;
 			break;
 		default:
 			return "Error";

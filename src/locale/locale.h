@@ -3,24 +3,26 @@
 #define _LOCALE_INCLUDE
 
 
-#define LC_FR 1
-#define LC_EN 2
+enum _localeLanguageEnum {
+    LC_FR, LC_EN
+};
+typedef enum _localeLanguageEnum localeLanguageEnum;
 
-#define LC_CHARGER 1
-#define LC_NOUVELLE_PARTIE 2
-#define LC_OPTIONS 3
-#define LC_QUITTER 4
-#define LC_SAUVEGARDER 5
-#define LC_RETOUR 6
-#define LC_CREATE_GALAXIE 7
+enum _local_keys {
+    lc_none, lc_load, lc_new_game, lc_settings, lc_exit, lc_save, lc_back, lc_create_galaxie
+};
+
+typedef enum _local_keys local_keys;
 
 #define LOCALE_ERROR 0
+
+#define MAX_VALUE_LENGTH 100
 
 
 void setLanguage(char languageNumber);
 
 char getLanguage();
 char initializeLanguage();
-char* gettext(int numero);
+char* gettext(local_keys numero);
 
 #endif

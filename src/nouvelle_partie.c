@@ -1860,7 +1860,7 @@ static int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sau
 
 	gfx_SetDrawScreen();
 	gfx_FillScreen(1);
-	PrintCentered(_(LC_CREATE_GALAXIE), 120, 1, 0, 0);
+	PrintCentered(_(lc_create_galaxie), 120, 1, 0, 0);
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(49, 159, 222, 7);
 	gfx_SetColor(4);

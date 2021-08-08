@@ -58,7 +58,7 @@ struct RelationsStruct {
 	int opinion;
 	char opinionChange;
 	Attitude attitude;
-	char pactes;
+	char accords;
 };
 
 /* private variables =================================================== */
@@ -547,10 +547,10 @@ void RelationInsulter(Relations* relations) {
 	relations->opinion -= 200;
 }
 void RelationSetPacte(Relations* relations, Pacte pacte) {
-	relations->pactes = (relations->pactes | pacte);
+	relations->accords = (relations->accords | pacte);
 }
 Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte) {
-	if(relations->pactes & pacte) {
+	if(relations->accords & pacte) {
 		return true;
 	}
 	else {
