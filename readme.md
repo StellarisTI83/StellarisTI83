@@ -14,8 +14,8 @@ Thes instructions help you to run this program on your machine
 
 The game need the toolchain [CeDev](https://github.com/CE-Programming/toolchain) to be make
 
-- 64 bit can use the last version ([v8.8](https://github.com/CE-Programming/toolchain/releases/tag/v8.8))
-- 32 bit need to use the v8.6 and use the last _graphX_ include files from v8.8 ([v8.6](https://github.com/CE-Programming/toolchain/releases/tag/v8.8))
+- You nees to use the last version ([v8.8](https://github.com/CE-Programming/toolchain/releases/tag/v9.1))
+
 
 We recommend to use an emulator like [CeMu](https://github.com/CE-Programming/CEmu)
 
@@ -23,10 +23,6 @@ We recommend to use an emulator like [CeMu](https://github.com/CE-Programming/CE
 - 32 bit use the v1.0 version ([v1.0](https://github.com/CE-Programming/CEmu/releases/tag/v1.0))
 
 Use `make gfx` command to make the graphx files and `make` to compil the program.
-
-The gfx are made with convpng.
-
-**Warning!!** The gfx and the font cannot be made with the 32 bit version
 
 ## To do list (French)
 
@@ -45,6 +41,7 @@ The gfx are made with convpng.
 - [ ] Recherches
 - [ ] Rajout de plusieurs civilisations
   - [ ] Rajout de l'ia
+  - [ ] Diplomatie
 - [x] Rajout des notifications
 - [ ] Menu marché
 - [x] Revenus
