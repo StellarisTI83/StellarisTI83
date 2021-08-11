@@ -134,7 +134,7 @@ static void ReverseArray(int array[], int size){
     }
 }
 
-int PathFinding(SystemeStellaire *galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], int path[50], int debut, int fin){
+int PathFinding(SystemeStellaire **galaxie, int *path, int debut, int fin, int taillePath){
     NodeArray *listeOuverte = NULL;
     NodeArray *listeFermee = NULL;
     NodeArray *listeEnfants = NULL;
@@ -164,14 +164,14 @@ int PathFinding(SystemeStellaire *galaxie[LARGEUR_GALAXIE * LARGEUR_GALAXIE], in
     arrivee->f = 0;
     arrivee->numero = fin;
 
-    memset(path, 0, sizeof(int) * 50);
+    memset(path, 0, sizeof(int) * taillePath);
 
     listeOuverte = CreateNodeArray();
     listeFermee = CreateNodeArray();
     listeEnfants = CreateNodeArray();
     CopyNode(CreateNode(listeOuverte), depart);
 
-    while((ArraySize(listeOuverte) > 0) && (nombre_de_boucles < 50)){
+    while((ArraySize(listeOuverte) > 0) && (nombre_de_boucles < taillePath)){
         nombre_de_boucles++;
         current_node = listeOuverte->firstNode;
         current_index = 0;

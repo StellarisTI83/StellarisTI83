@@ -34,9 +34,12 @@ struct OrdreFileStruct{
 OrdreFile *CreerFileOrdres(){
 	OrdreFile *ordreFile = NULL;
 	ordreFile = calloc(1, sizeof(OrdreFile));
-	if(ordreFile == NULL)
-		exit(EXIT_FAILURE);
-
+    if(!ordreFile){
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgerr, "Malloc returned NULL when creating order queue");
+		#endif
+        exit(EXIT_FAILURE);
+    }
 	ordreFile->premierOrdre = NULL;
 	return ordreFile;
 }
@@ -53,10 +56,16 @@ void SupprimerFileOrdres(OrdreFile *ordreFile){
 }
 
 void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, int info1, int info2, int prix){
-	Ordre *ordreElement = NULL, *ordrePrecedent = NULL;
+	Ordre *ordreElement = NULL;
 
 	if(ordreFile->premierOrdre == NULL){
 		ordreFile->premierOrdre = calloc(1, sizeof(Ordre));
+		if(!ordreFile->premierOrdre){
+			#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgerr, "Malloc returned NULL when creating order");
+			#endif
+			exit(EXIT_FAILURE);
+		}
 		ordreElement = ordreFile->premierOrdre;
 	}
 	else{
@@ -65,6 +74,12 @@ void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, in
 			ordreElement = ordreElement->ordreSuivant;
 		}
 		ordreElement->ordreSuivant = calloc(1, sizeof(Ordre));
+			if(!ordreFile->premierOrdre){
+				#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgerr, "Malloc returned NULL when creating order");
+				#endif
+				exit(EXIT_FAILURE);
+			}
 		ordreElement = ordreElement->ordreSuivant;
 	}
 

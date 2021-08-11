@@ -44,7 +44,7 @@ typedef struct{
 
 Console console;
 
-static void FermerConsole();
+// static void FermerConsole();
 static void NouvelleLigneConsole(char *commande, char *reponse);
 static void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Parametres *parametres);
 
@@ -62,7 +62,6 @@ void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Came
 	int largeur = 200, hauteur = 10;
 	Ligne *ligneDeCommande = NULL;
 	char character = '.';
-	char *resultat = NULL;
 	int x = 0, y = 40;
 	gfx_SetColor(0);
 	ligneDeCommande = console.premiereLigne;
@@ -260,20 +259,20 @@ void NouvelleLigneConsole(char *commande, char *reponse){
 	strcpy(ligneDeCommande->reponse, reponse);
 }
 
-void FermerConsole(){
-	Ligne *ligneDeCommandePrecedent = NULL, *ligneDeCommande = console.premiereLigne;
-	while(ligneDeCommande != NULL){
-		ligneDeCommandePrecedent = ligneDeCommande;
-		ligneDeCommande = ligneDeCommande->commandeSuivante;
-		free(ligneDeCommande);
-	}
-	console.premiereLigne = NULL;
-}
+// void FermerConsole(){
+// 	Ligne *ligneDeCommandePrecedent = NULL, *ligneDeCommande = console.premiereLigne;
+// 	while(ligneDeCommande != NULL){
+// 		ligneDeCommandePrecedent = ligneDeCommande;
+// 		ligneDeCommande = ligneDeCommande->commandeSuivante;
+// 		free(ligneDeCommande);
+// 	}
+// 	console.premiereLigne = NULL;
+// }
 
 void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Parametres *parametres){
 	char *resultat = NULL;
 	char *fin = NULL;
-	int i = 0, nombre = 0;
+	int nombre = 0;
 	char nombreChar[10];
 	int jour = 0, mois = 0, annee = 0;
 	resultat = strstr(commande, "cash");

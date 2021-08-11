@@ -66,7 +66,10 @@ Planete *AllocPlanet(){
 }
 
 void SetPlanetHabitability(Planete *planete, int habitability){
-	planete->flags = (planete->flags | F_HABITABLE);
+	if(habitability)
+		planete->flags = (planete->flags | F_HABITABLE);
+	else
+		planete->flags = (planete->flags | !F_HABITABLE);
 }
 int GetPlanetHabitability(Planete *planete){
 	if((planete->flags & F_HABITABLE) != 0)

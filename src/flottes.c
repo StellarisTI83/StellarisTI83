@@ -51,11 +51,11 @@ struct FlotteStruct {
 
 	int chemin[50];
 
-	int nombreVaisseaux;
-	int nombreDeCorvette;
-	int nombreDeDestroyer;
-	int nombreDeCroiseur;
-	int nombreDeCuirasse;
+	char nombreVaisseaux;
+	char nombreDeCorvette;
+	char nombreDeDestroyer;
+	char nombreDeCroiseur;
+	char nombreDeCuirasse;
 };
 
 struct NoeudStruct {
@@ -72,10 +72,24 @@ struct ListeNoeds {
 	Noeud* noeud;
 };
 
+struct FleetTemplateStruct {
+	char nombreVaisseaux;
+	int ombreVaisseaux;
+	int puissance;
+	FlotteType type;
+
+	int coqueVie;
+	int coqueTotal;
+	int blindageVie;
+	int blindageTotal;
+	int bouclierVie;
+	int bouclierTotal;
+};
+
 /* entry points ======================================================== */
 
 /**
- *Crée une list de flottes
+ *Crée une liste de flottes
  */
 FlotteListe* CreerFlotteListe() {
 	return (FlotteListe*)CreateGenericList();
@@ -115,6 +129,12 @@ int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte) {
 Flotte* AjouterFlotte(FlotteListe* flotteliste) {
 	Flotte *pointeur = NULL;
 	pointeur = calloc(1, sizeof(Flotte));
+	if(!pointeur){
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgerr, "Malloc returned NULL when creating fleet");
+		#endif
+		exit(EXIT_FAILURE);
+	}
 	GenericCellAdd((GenericList*)flotteliste, pointeur);
 	return pointeur;
 }
@@ -394,7 +414,7 @@ int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires)
 	flotte->avancement = 0;
 	flotte->avancementTrajet = 1;
 	flotte->action = FLOTTE_BOUGER;
-	error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme);
+	error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme, sizeof(flotte->chemin)/sizeof(flotte->chemin[0]));
 	flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, GetHyperlaneX(systemeStellaires[(int)flotte->systeme], index), GetHyperlaneY(systemeStellaires[(int)flotte->systeme], index));
 	while((index < 4) && (GetHyperlaneDestination(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
 		index++;
@@ -486,4 +506,57 @@ Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
 	vecteur.xVecteur = ((x2 - x1) / norme) * 20.0;
 	vecteur.yVecteur = ((y2 - y1) / norme) * 20.0;
 	return vecteur;
+}
+
+
+
+/**
+ *Crée une liste de templates de flottes
+ */
+FleetTemplateListe* fleet_template_list_create() {
+	return (FlotteListe*)CreateGenericList();
+}
+
+/**
+ *Supprime une liste de templates de flottes
+ */
+void fleet_template_list_free(FleetTemplateListe* flotteliste) {
+	FreeGenericList((GenericList*)flotteliste);
+}
+
+/**
+ * Renvoi nombre de templates de flottes
+ */
+int fleet_template_list_size(FleetTemplateListe* flotteListe){
+	return GenericListArraySize((GenericList*)flotteListe);
+}
+
+/**
+ * Renvoi un pointeur vers le template flotte numero x, commence à 1
+ */
+FleetTemplate* fleet_template_get(FleetTemplateListe* flotteliste, int numero) {
+	return GenericCellGet((GenericList*)flotteliste, numero);
+}
+
+/**
+ * Rajoute une flotte à la liste des flotte envoyée
+ */
+FleetTemplate* fleet_template_add(FleetTemplateListe* flotteliste) {
+	FleetTemplate *pointeur = NULL;
+	pointeur = calloc(1, sizeof(FleetTemplate));
+	if(!pointeur){
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgerr, "Malloc returned NULL when creating fleet template");
+		#endif
+		exit(EXIT_FAILURE);
+	}
+	GenericCellAdd((GenericList*)flotteliste, pointeur);
+	return pointeur;
+}
+
+/**
+ * Supprime la flotte numero x à la liste de flottes envoyée
+ */
+void fleet_template_destroy(FleetTemplateListe* flotteliste, int numero) {
+	FreeGenericCell((GenericList*)flotteliste, numero);
 }

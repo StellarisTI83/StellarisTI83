@@ -915,7 +915,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
  *Dessine le menu de les batiments de planète
  */
 static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
-	int8_t nomPlanete[20], nom[50];
+	char nomPlanete[20], nom[50];
 	int decalage = 0;
 	int nombreDeBatiment = 0;
 	int supprimer = 0;

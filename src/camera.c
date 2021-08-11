@@ -57,7 +57,7 @@ struct FenetreStruct{
 	
 	int nombreDeVaisseaux; // utilisé dans la création de flottes
 	Villes *villes; // utilisé dans le changement de batiment
-	int* empire; // utilisé dans les relations
+	int empire; // utilisé dans les relations
 };
 
 /* entry points ======================================================== */

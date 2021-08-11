@@ -6,6 +6,7 @@
 #include "time.h"
 
 /* types =============================================================== */
+
 enum VueTypeEnum {CARTE, NORMAL, SYSTEME};
 
 typedef enum VueTypeEnum VueType;
@@ -23,11 +24,13 @@ MENU_SYSTEME_STATION_CHANTIER_CHOIX};
 typedef enum MenuSystemeEnum MenuSystem;
 
 /* structures ========================================================== */
+
 typedef struct CameraStruct Camera;
 
 typedef struct FenetreStruct Fenetre;
 
 /* entry points ======================================================== */
+
 Camera *AllocCamera();
 
 void SetCameraX(Camera *camera, int x);

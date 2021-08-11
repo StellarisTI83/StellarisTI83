@@ -24,6 +24,7 @@
 #include "nouvelle_partie.h"
 #include "ai.h"
 #include "parametres.h"
+#include "dlc.h"
 
 #include "locale/locale.h"
 
@@ -252,7 +253,7 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 		RedrawMenuBackground();
 		MoveStation(&vecteurStation);
 
-		PrintCentered("Stellaris", 10, 3, 1, -30);
+		PrintCentered("Stellaris", 30, 3, 1, -30);
 		gfx_PrintStringXY(VERSION_LOGICIEL, 5, 220);
 		gfx_SetTextXY(LCD_WIDTH - strlen(__DATE__) * 8 - strlen(__TIME__) * 8 - 36, 220);
 		gfx_PrintString(" ");
@@ -459,8 +460,10 @@ int main(void){
 	EmpireListe *empireListe = NULL;
 	Parametres *parametres = NULL;
 	#ifdef DEBUG_VERSION
-    	dbg_sprintf(dbgout, "Started Stellaris\n");
+    	dbg_sprintf(dbgout, "\nStarted Stellaris\n\n");
 	#endif
+
+	dlc_Load("data");
 
 	InitializeAll(&empireListe);
 	while (fin){
@@ -469,7 +472,7 @@ int main(void){
 	
 	gfx_End();
 	#ifdef DEBUG_VERSION
-    	dbg_sprintf(dbgout, "Close Stellaris\n");
+    	dbg_sprintf(dbgout, "\nClose Stellaris\n\n");
 	#endif
 	
     return 0;

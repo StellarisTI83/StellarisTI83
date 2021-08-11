@@ -31,7 +31,11 @@ typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
 
 typedef GenericList FlotteListe;
 
+typedef GenericList FleetTemplateListe;
+
 typedef struct FlotteStruct Flotte;
+
+typedef struct FleetTemplateStruct FleetTemplate;
 
 typedef struct VecteurStruct Vecteur;
 
@@ -82,4 +86,10 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires);
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **systemeStellaires);
 
+FleetTemplateListe* fleet_template_list_create();
+void fleet_template_list_free(FleetTemplateListe* flotteliste);
+int fleet_template_list_size(FleetTemplateListe* flotteListe);
+FleetTemplate* fleet_template_get(FleetTemplateListe* flotteliste, int numero);
+FleetTemplate* fleet_template_add(FleetTemplateListe* flotteliste);
+void fleet_template_destroy(FleetTemplateListe* flotteliste, int numero);
 #endif

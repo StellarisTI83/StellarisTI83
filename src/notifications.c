@@ -85,7 +85,13 @@ void DrawNotifications(NotificationList *notificationList, Date *date) {
 }
 
 void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NOTIFICATION_ID ID, int length) {
-    Notification *notification = malloc(sizeof(Notification));
+    Notification *notification = malloc(sizeof(Notification));	
+    if(!notification){
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgerr, "Malloc returned NULL when adding notification");
+		#endif
+        exit(EXIT_FAILURE);
+    }
     notification->type = type;
     notification->ID = ID;
     notification->length = length;

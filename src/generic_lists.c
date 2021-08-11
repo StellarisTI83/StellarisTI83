@@ -22,6 +22,12 @@ struct _genericList {
 
 GenericList *CreateGenericList() {
     GenericList *list = malloc(sizeof(GenericList));
+	if(!list){
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgerr, "Malloc returned NULL when creating generic list");
+		#endif
+        exit(EXIT_FAILURE);
+    }
     list->firstElement = NULL;
     return list;
 }
@@ -39,6 +45,12 @@ void FreeGenericList(GenericList *list) {
 void GenericCellAdd(GenericList *list, void *info) {
     GenericListElement *cell = calloc(1, sizeof(GenericListElement));
 
+	if(!cell){
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgerr, "Malloc returned NULL when adding generic cell");
+		#endif
+        exit(EXIT_FAILURE);
+    }
     
     cell->element = info;
     cell->nextElement = NULL;

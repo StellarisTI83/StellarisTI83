@@ -1850,11 +1850,13 @@ static int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sau
 	Flotte* flotte = NULL;
 	Planete *planete = NULL;
 
-	int *galaxie = NULL;
-	galaxie = malloc(LARGEUR_GALAXIE * LARGEUR_GALAXIE * 2 * sizeof(int));
+	int *galaxy = NULL;
+	galaxy = malloc(LARGEUR_GALAXIE * LARGEUR_GALAXIE * 2 * sizeof(int));
 
-	if(galaxie == NULL)
-	{
+	if(!galaxy) {    
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgerr, "Malloc returned NULL when creating galaxy");
+		#endif
 		exit(EXIT_FAILURE);
 	}
 
@@ -1865,14 +1867,14 @@ static int ChargementNouvellePartieGalaxie(Parametres *parametres, ti_var_t *sau
 	gfx_Rectangle_NoClip(49, 159, 222, 7);
 	gfx_SetColor(4);
 	gfx_SetTextXY(50, 50);
-	CreateGalacticMatrix(galaxie, espaceEntreEtoiles, &barreDeChargement);
+	CreateGalacticMatrix(galaxy, espaceEntreEtoiles, &barreDeChargement);
 
-	RandomGalacticMatrix(galaxie, coefficientDeplacementStellaire, &barreDeChargement);
+	RandomGalacticMatrix(galaxy, coefficientDeplacementStellaire, &barreDeChargement);
 	
-	RoundGalacticMatrix(galaxie, espaceEntreEtoiles, rayon, rayonInterieur, &barreDeChargement);
+	RoundGalacticMatrix(galaxy, espaceEntreEtoiles, rayon, rayonInterieur, &barreDeChargement);
 
-	k = GenerateSystemeStruct(galaxie, systemeStellaires, &barreDeChargement);
-	free(galaxie);
+	k = GenerateSystemeStruct(galaxy, systemeStellaires, &barreDeChargement);
+	free(galaxy);
 	
 	RecreateHyperlanes(systemeStellaires, &barreDeChargement, k);
 

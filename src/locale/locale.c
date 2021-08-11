@@ -3,14 +3,15 @@
 #include <stdint.h>
 #include <tice.h>
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
-#include <math.h>
-#include "locale.h"
 #include <fileioc.h>
+
+
+#include "main.h"
+
+#include "locale.h"
 
 char localeLanguage;
 ti_var_t languageVar;
@@ -33,29 +34,38 @@ char getLanguage(){
 }
 
 char initializeLanguage(){
-	char header = 0;
-	uint16_t indexString, taille = 0, fin = 0;
+	uint16_t indexString, taille = 0, index = 0;
 	char chaineTemporaire[MAX_VALUE_LENGTH];
+	char name[4] = {0};
 	uint16_t numberOfString = 0;
 
 	ti_CloseAll();
 	switch(localeLanguage){
 		case LC_FR:
-			languageVar = ti_Open("lcFR", "r");
+			strcpy(name, "lcFR");
 			break;
-		case LC_EN:
-			languageVar = ti_Open("lcEN", "r");
+		case 3:
+			strcpy(name, "lcEN");
+			break;
+		default:
+			#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgerr, "No language with id %d\n", localeLanguage);
+			#endif
 			break;
 	}
+	if(name[0])
+		languageVar = ti_Open(name, "r");
+
 	ti_Read(&numberOfString, sizeof(uint16_t), 1, languageVar);
 
 	indexString = 0;
-	dbg_printf("of %d:", numberOfString);
+	#ifdef DEBUG_VERSION
+	dbg_printf("\nInitialize language '%s'\nof %d:", name, numberOfString);
+	#endif
 
-	while(fin < numberOfString) {
+	while(index < numberOfString) {
 		memset(&chaineTemporaire, 0, sizeof(char) * MAX_VALUE_LENGTH);
 		ti_Read(&taille, sizeof(uint16_t), 1, languageVar);
-		strcpy(&chaineTemporaire, "Error");
 		if(taille < MAX_VALUE_LENGTH){
 			ti_Read(&indexString, sizeof(uint16_t), 1, languageVar);
 			ti_Read(&chaineTemporaire, sizeof(char) * taille, 1, languageVar);
@@ -88,11 +98,19 @@ char initializeLanguage(){
 					lc_create_galaxie_array = calloc(1, (taille + 1) * sizeof(char));;
 					memcpy(lc_create_galaxie_array, chaineTemporaire, taille);
 					break;
+				default:
+					#ifdef DEBUG_VERSION
+					dbg_sprintf(dbgerr, "No array with id %d\n", indexString);
+					#endif
+					break;
 			}
 		}
-		fin++;
-		dbg_printf("%d (s:%d, k:%d)'%s'\n", fin, taille, indexString, chaineTemporaire);
+		index++;
+		dbg_printf("%d (s:%d, k:%d)'%s'\n", index, taille, indexString, chaineTemporaire);
 	}
+	#ifdef DEBUG_VERSION
+	dbg_sprintf(dbgout, "\n");
+	#endif
 	ti_Close(languageVar);
 	return 1;
 }

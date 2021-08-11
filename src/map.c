@@ -310,41 +310,33 @@ static void DessinerVueMap(SystemeStellaire **systemeStellaires, Camera *camera,
 				switch(GetSystemStarType(systemeStellaires[i])){
 					case ETOILE_TYPE_B: // B
 						gfx_SetColor(15);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 					case ETOILE_TYPE_A: // A
 						gfx_SetColor(14);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 					case ETOILE_TYPE_F: // F
 						gfx_SetColor(1);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 					case ETOILE_TYPE_G: // G
 						gfx_SetColor(1);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 					case ETOILE_TYPE_K: // K
 						gfx_SetColor(13);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 					case ETOILE_TYPE_M: // M
 						gfx_SetColor(13);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 					case ETOILE_TYPE_TROU_NOIR: // trou noir
 						gfx_SetColor(13);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 					case ETOILE_TYPE_PULSAR: // pulsar
 						gfx_SetColor(14);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 					case ETOILE_TYPE_ETOILE_A_NEUTRONS: // étoile a neutrons
 						gfx_SetColor(14);
-						gfx_Circle_NoClip(x, y, 1);
 						break;
 				}
+				gfx_SetPixel(x, y);
 			}
 		}
 
