@@ -86,10 +86,22 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires);
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **systemeStellaires);
 
-FleetTemplateListe* fleet_template_list_create();
-void fleet_template_list_free(FleetTemplateListe* flotteliste);
-int fleet_template_list_size(FleetTemplateListe* flotteListe);
-FleetTemplate* fleet_template_get(FleetTemplateListe* flotteliste, int numero);
-FleetTemplate* fleet_template_add(FleetTemplateListe* flotteliste);
-void fleet_template_destroy(FleetTemplateListe* flotteliste, int numero);
+FleetTemplateListe* fleet_TemplateListCreate();
+void fleet_TemplateListFree(FleetTemplateListe* flotteliste);
+int fleet_TemplateListSize(FleetTemplateListe* flotteListe);
+FleetTemplate* fleet_TemplateGet(FleetTemplateListe* flotteliste, int numero);
+FleetTemplate* fleet_TemplateAdd(FleetTemplateListe* flotteliste);
+void fleet_TemplateDestroy(FleetTemplateListe* flotteliste, int numero);
+
+void fleet_TemplateSetType(FleetTemplate* fleetTemplate, FlotteType type);
+void fleet_TemplateSetPower(FleetTemplate* fleetTemplate, int puissance);
+void fleet_TemplateSetHull(FleetTemplate* fleetTemplate, int hull);
+void fleet_TemplateSetArmor(FleetTemplate* fleetTemplate, int armor);
+void fleet_TemplateSetShield(FleetTemplate* fleetTemplate, int shield);
+
+FlotteType fleet_TemplateGetType(FleetTemplate* fleetTemplate);
+int fleet_TemplateGetPower(FleetTemplate* fleetTemplate);
+int fleet_TemplateGetHull(FleetTemplate* fleetTemplate);
+int fleet_TemplateGetArmor(FleetTemplate* fleetTemplate);
+int fleet_TemplateGetShield(FleetTemplate* fleetTemplate);
 #endif

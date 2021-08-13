@@ -28,7 +28,6 @@
  *Exprime à l'écran les données envoyées pour la abrre du haut
  */
 static void PrintHUD(const unsigned int nombre, const int change, int x, int y) {
-	unsigned char longueur, color;
 	char nombreStr[10];
 	char changeStr[5];
 
@@ -236,20 +235,18 @@ static void DrawPointerHUD(Camera *camera){
 	}
 }
 
-static void WriteGalaxieNameHUD(Camera *camera, SystemeStellaire **systemeStellaires){
+static void WriteGalaxieNameHUD(Camera *camera, Parametres *parametres, SystemeStellaire **systemeStellaires){
     int16_t systeme = 0;
 	//nom galaxie
 	if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
 		if (GetCameraMapType(camera) == NORMAL) {
 			systeme = GetCameraViewedSystem(camera);
-		} 
-		else {
+		} else {
 			systeme = GetCameraSystem(camera);
 		}
-		if (GetSystemIntelLevel(systemeStellaires[systeme]) == INCONNU) {
+		if ((GetSystemIntelLevel(systemeStellaires[systeme]) == INCONNU) && (!GetSeeAll(parametres))) {
 			gfx_PrintStringXY("Inconnu", 132, 211);
-		}
-		else {
+		} else {
 			gfx_PrintStringXY(GetSystemName(systemeStellaires[systeme]), 160 - strlen(GetSystemName(systemeStellaires[systeme])) * 4, 211);
 		}
 	}
@@ -257,9 +254,7 @@ static void WriteGalaxieNameHUD(Camera *camera, SystemeStellaire **systemeStella
 
 /* entry points ======================================================== */
 
-int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche, NotificationList *notificationList) {
-	char valeurMineraiStr[4];
-	char nomPlanete[20];
+int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, NotificationList *notificationList) {
 	int menu = 0;
     Empire *joueur = EmpireNumero(empireListe, 1);
 	
@@ -273,7 +268,7 @@ int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sys
 	
     DrawPointerHUD(camera);
 
-    WriteGalaxieNameHUD(camera, systemeStellaires);
+    WriteGalaxieNameHUD(camera, parametres, systemeStellaires);
 	
 	DrawNotifications(notificationList, date);
 

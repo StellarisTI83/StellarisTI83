@@ -3171,7 +3171,7 @@ int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, Sy
 		case MENU_QUITTER:
 			fin = MenuQuitter(key, sauvegarde, empireListe, parametres, date, systemeStellaires, camera, marche, fenetre);
 
-			if (fin == 0){
+			if (!fin){
 				return 0;
 			}
 			break;

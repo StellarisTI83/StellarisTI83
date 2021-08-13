@@ -331,6 +331,7 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 			fin = 1;
 			break;
 		case 1:
+			gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
 			fin = NouvellePartieAvertissement(empireListe, parametres);
 			if (fin == 0){
 				/*lancer la nouvelle partie*/
@@ -472,7 +473,7 @@ int main(void){
 	
 	gfx_End();
 	#ifdef DEBUG_VERSION
-    	dbg_sprintf(dbgout, "\nClose Stellaris\n\n");
+    	dbg_sprintf(dbgout, "\nClose Stellaris2\n\n");
 	#endif
 	
     return 0;

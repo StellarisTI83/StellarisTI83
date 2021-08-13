@@ -102,6 +102,19 @@ EmpireListe* EmpireListeCreer() {
  * Supprime une liste d'empire
  */
 void EmpireListeSupprimer(EmpireListe* empireListe) {
+	Empire *empire = NULL;
+	int i = 1;
+    empire = GenericCellGet((GenericList*)empireListe, i);
+    while(empire != NULL) {
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Free empire %d, ", i);
+		#endif
+		if(empire->flotte)
+			SupprimerFlotteListe(empire->flotte);
+        free(empire);
+		i++;
+        empire = GenericCellGet((GenericList*)empireListe, i);
+    }
 	FreeGenericList((GenericList*)empireListe);
 }
 
@@ -133,6 +146,12 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
  *Supprime l'empire numero x à la liste des empires
  */
 void EmpireSupprimer(EmpireListe* empireListe, int numero) {
+	Empire *empire = GenericCellGet((GenericList*)empireListe, numero);
+	#ifdef DEBUG_VERSION
+	dbg_sprintf(dbgout, "Free empire %d, ", numero);
+	#endif
+	SupprimerFlotteListe(empire->flotte);
+	free(empire);
 	FreeGenericCell((GenericList*)empireListe, numero);
 }
 

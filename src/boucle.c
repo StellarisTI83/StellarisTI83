@@ -28,7 +28,7 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Parametres *
 	int boucle = true;
 	char key = 0;
 	
-	while (boucle == true) {
+	while (boucle) {
 		
 		key = os_GetCSC();
 		
@@ -38,11 +38,12 @@ int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Parametres *
 		//dessiner l'écran
 		boucle = DrawScreen(&key, empireListe, systemeStellaires, date, camera, fenetre, parametres, sauvegarde, marche, notificationList);
 
-		if(/*(!boot_CheckOnPressed()) || */(boucle == 0)) {
+		if(/*(!boot_CheckOnPressed()) || */!boucle) {
 			// StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
-			// EmpireListeSupprimer(empireListe);
+			EmpireListeSupprimer(empireListe);
 			return 0;
 		}
 	}
+	EmpireListeSupprimer(empireListe);
 	return 0;
 }

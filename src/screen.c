@@ -27,7 +27,7 @@ char DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeS
 
     DrawMap(empireListe, systemeStellaires, camera, key, date, fenetre, parametres);
 
-    DrawHUD(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche, notificationList);
+    DrawHUD(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, notificationList);
 
     fin = DrawMenu(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
     

@@ -73,17 +73,12 @@ struct ListeNoeds {
 };
 
 struct FleetTemplateStruct {
-	char nombreVaisseaux;
-	int ombreVaisseaux;
 	int puissance;
 	FlotteType type;
 
-	int coqueVie;
-	int coqueTotal;
-	int blindageVie;
-	int blindageTotal;
-	int bouclierVie;
-	int bouclierTotal;
+	int hull;
+	int armor;
+	int shield;
 };
 
 /* entry points ======================================================== */
@@ -99,6 +94,20 @@ FlotteListe* CreerFlotteListe() {
  *Supprime une liste des flottes
  */
 void SupprimerFlotteListe(FlotteListe* flotteliste) {
+    Flotte *flotte = NULL;
+	int i = 1;
+    flotte = GenericCellGet((GenericList*)flotteliste, i);
+    while(flotte != NULL) {
+		#ifdef DEBUG_VERSION
+		dbg_sprintf(dbgout, "Free fleet %d, ", i);
+		#endif
+        free(flotte);
+		i++;
+        flotte = GenericCellGet((GenericList*)flotteliste, i);
+    }
+	#ifdef DEBUG_VERSION
+	dbg_sprintf(dbgout, "\n");
+	#endif
 	FreeGenericList((GenericList*)flotteliste);
 }
 
@@ -143,6 +152,10 @@ Flotte* AjouterFlotte(FlotteListe* flotteliste) {
  *Supprime la flotte numero x à la liste de flottes envoyée
  */
 void SupprimerFlotte(FlotteListe* flotteliste, int numero) {
+	#ifdef DEBUG_VERSION
+	dbg_sprintf(dbgout, "Free fleet %d\n", numero);
+	#endif
+	free(GenericCellGet((GenericList*)flotteliste, numero));
 	FreeGenericCell((GenericList*)flotteliste, numero);
 }
 
@@ -513,35 +526,43 @@ Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
 /**
  *Crée une liste de templates de flottes
  */
-FleetTemplateListe* fleet_template_list_create() {
+FleetTemplateListe* fleet_TemplateListCreate() {
 	return (FlotteListe*)CreateGenericList();
 }
 
 /**
  *Supprime une liste de templates de flottes
  */
-void fleet_template_list_free(FleetTemplateListe* flotteliste) {
+void fleet_TemplateListFree(FleetTemplateListe* flotteliste) {
+	FleetTemplate *fleetTemplate = NULL;
+	int i = 0;
+    fleetTemplate = GenericCellGet((GenericList*)flotteliste, i);
+    while(fleetTemplate != NULL) {
+        free(fleetTemplate);
+		i++;
+        fleetTemplate = GenericCellGet((GenericList*)flotteliste, i);
+    }
 	FreeGenericList((GenericList*)flotteliste);
 }
 
 /**
  * Renvoi nombre de templates de flottes
  */
-int fleet_template_list_size(FleetTemplateListe* flotteListe){
+int fleet_TemplateListSize(FleetTemplateListe* flotteListe){
 	return GenericListArraySize((GenericList*)flotteListe);
 }
 
 /**
  * Renvoi un pointeur vers le template flotte numero x, commence à 1
  */
-FleetTemplate* fleet_template_get(FleetTemplateListe* flotteliste, int numero) {
+FleetTemplate* fleet_TemplateGet(FleetTemplateListe* flotteliste, int numero) {
 	return GenericCellGet((GenericList*)flotteliste, numero);
 }
 
 /**
  * Rajoute une flotte à la liste des flotte envoyée
  */
-FleetTemplate* fleet_template_add(FleetTemplateListe* flotteliste) {
+FleetTemplate* fleet_TemplateAdd(FleetTemplateListe* flotteliste) {
 	FleetTemplate *pointeur = NULL;
 	pointeur = calloc(1, sizeof(FleetTemplate));
 	if(!pointeur){
@@ -555,8 +576,47 @@ FleetTemplate* fleet_template_add(FleetTemplateListe* flotteliste) {
 }
 
 /**
- * Supprime la flotte numero x à la liste de flottes envoyée
+ * Supprime le template de flotte numero x à la liste de templates de flottes envoyée
  */
-void fleet_template_destroy(FleetTemplateListe* flotteliste, int numero) {
+void fleet_TemplateDestroy(FleetTemplateListe* flotteliste, int numero) {
+	free(GenericCellGet((GenericList*)flotteliste, numero));
 	FreeGenericCell((GenericList*)flotteliste, numero);
+}
+
+/**
+ * Set fleet template
+ */
+void fleet_TemplateSetType(FleetTemplate* fleetTemplate, FlotteType type){
+	fleetTemplate->type = type;
+}
+void fleet_TemplateSetPower(FleetTemplate* fleetTemplate, int puissance){
+	fleetTemplate->puissance = puissance;
+}
+void fleet_TemplateSetHull(FleetTemplate* fleetTemplate, int hull){
+	fleetTemplate->hull = hull;
+}
+void fleet_TemplateSetArmor(FleetTemplate* fleetTemplate, int armor){
+	fleetTemplate->armor = armor;
+}
+void fleet_TemplateSetShield(FleetTemplate* fleetTemplate, int shield){
+	fleetTemplate->shield = shield;
+}
+
+/**
+ * Get fleet template
+ */
+FlotteType fleet_TemplateGetType(FleetTemplate* fleetTemplate){
+	return fleetTemplate->type;
+}
+int fleet_TemplateGetPower(FleetTemplate* fleetTemplate){
+	return fleetTemplate->puissance;
+}
+int fleet_TemplateGetHull(FleetTemplate* fleetTemplate){
+	return fleetTemplate->hull;
+}
+int fleet_TemplateGetArmor(FleetTemplate* fleetTemplate){
+	return fleetTemplate->armor;
+}
+int fleet_TemplateGetShield(FleetTemplate* fleetTemplate){
+	return fleetTemplate->shield;
 }

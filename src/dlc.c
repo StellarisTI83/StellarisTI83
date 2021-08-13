@@ -14,7 +14,7 @@
 /* types =============================================================== */
 
 enum _keys {
-	ky_none, ky_struct, ky_name, ky_ship_size
+    ky_none, ky_struct, ky_name, ky_power, ky_ship_type, ky_hull_life, ky_armor_life, ky_shield_life
 };
 
 typedef enum _keys keys;
@@ -25,14 +25,15 @@ enum _value_type {
 
 typedef enum _value_type value_type;
 
+
 /* private functions =================================================== */
 
-static void dlc_Read_Chunk(void *data, size_t size, const char *slot, int* cursorIndex) {
+static void dlc_ReadChunk(void *data, size_t size, const char *slot, int* cursorIndex) {
 	memcpy(data, &slot[*cursorIndex], size);
 	*cursorIndex += size/sizeof(data[*cursorIndex]);
 }
 
-static int dlc_Parse(const char* dlc_var) {
+static int dlc_Parse(const char* dlc_var, void *liste, keys mother_key) {
 	uint16_t numberOfChunk;
 	int index = 0, cursorIndex = 0;
 	uint16_t sizeOfChunk;
@@ -40,35 +41,69 @@ static int dlc_Parse(const char* dlc_var) {
 	uint16_t intValue;
 	keys key;
 	char stringBuffer[MAX_VALUE_LENGTH];
+	FleetTemplate *fleetTemplate = NULL;
 	
-	dlc_Read_Chunk(&numberOfChunk, sizeof(uint16_t), dlc_var, &cursorIndex);
+	dlc_ReadChunk(&numberOfChunk, sizeof(uint16_t), dlc_var, &cursorIndex);
 	
+
 	#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgout, "number of chunk: %d\n", numberOfChunk);
 	#endif
 	while(index < numberOfChunk){
 		memset(stringBuffer, 0, MAX_VALUE_LENGTH * sizeof(char));
-		dlc_Read_Chunk(&sizeOfChunk, sizeof(uint16_t), dlc_var, &cursorIndex);
-		dlc_Read_Chunk(&keyRaw, sizeof(uint16_t), dlc_var, &cursorIndex);
+		dlc_ReadChunk(&sizeOfChunk, sizeof(uint16_t), dlc_var, &cursorIndex);
+		dlc_ReadChunk(&keyRaw, sizeof(uint16_t), dlc_var, &cursorIndex);
 		key = (keys)keyRaw;
 		switch(key) {
 			case ky_name:
-				dlc_Read_Chunk(&stringBuffer, sizeOfChunk, dlc_var, &cursorIndex);
+				dlc_ReadChunk(&stringBuffer, sizeOfChunk, dlc_var, &cursorIndex);
 				#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "size of chunk: %d, key: %d value(string): '%s'\n", sizeOfChunk, key, stringBuffer);
+				dbg_sprintf(dbgout, "size of chunk: %d, key: ky_name value(string): '%s'\n", sizeOfChunk, stringBuffer);
 				#endif
 				break;
-			case ky_ship_size:
-				dlc_Read_Chunk(&intValue, sizeOfChunk, dlc_var, &cursorIndex);
+			case ky_ship_type:
+				dlc_ReadChunk(&intValue, sizeOfChunk, dlc_var, &cursorIndex);
 				#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "size of chunk: %d, key: %d value(short): %d\n", sizeOfChunk, key, intValue);
+				dbg_sprintf(dbgout, "size of chunk: %d, key: ky_ship_type value(short): %d\n", sizeOfChunk, intValue);
 				#endif
+				fleet_TemplateSetType(liste, intValue);
+				break;
+			case ky_power:
+				dlc_ReadChunk(&intValue, sizeOfChunk, dlc_var, &cursorIndex);
+				#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "size of chunk: %d, key: ky_power value(short): %d\n", sizeOfChunk, intValue);
+				#endif
+				fleet_TemplateSetPower(liste, intValue);
+				break;
+			case ky_hull_life:
+				dlc_ReadChunk(&intValue, sizeOfChunk, dlc_var, &cursorIndex);
+				#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "size of chunk: %d, key: ky_hull_life value(short): %d\n", sizeOfChunk, intValue);
+				#endif
+				fleet_TemplateSetHull(liste, intValue);
+				break;
+			case ky_armor_life:
+				dlc_ReadChunk(&intValue, sizeOfChunk, dlc_var, &cursorIndex);
+				#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "size of chunk: %d, key: ky_armor_life value(short): %d\n", sizeOfChunk, intValue);
+				#endif
+				fleet_TemplateSetArmor(liste, intValue);
+				break;
+			case ky_shield_life:
+				dlc_ReadChunk(&intValue, sizeOfChunk, dlc_var, &cursorIndex);
+				#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgout, "size of chunk: %d, key: ky_shield_life value(short): %d\n", sizeOfChunk, intValue);
+				#endif
+				fleet_TemplateSetShield(liste, intValue);
 				break;
 			case ky_struct:
 				#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "size of chunk: %d, key: %d structure\n", sizeOfChunk, key);
+				dbg_sprintf(dbgout, "size of chunk: %d, key: ky_struct structure\n", sizeOfChunk);
 				#endif
-				cursorIndex = dlc_Parse(&dlc_var[cursorIndex]);
+				if(mother_key == ky_none){
+					fleetTemplate = fleet_TemplateAdd(liste);
+					cursorIndex = dlc_Parse(&dlc_var[cursorIndex], fleetTemplate, key);
+				}
 				break;
 			default:
 				#ifdef DEBUG_VERSION
@@ -78,6 +113,11 @@ static int dlc_Parse(const char* dlc_var) {
 		}
 		index++;
 	}
+	#ifdef DEBUG_VERSION
+	if(mother_key == ky_struct) {
+		dbg_printf("Type: %d, power: %d, hull: %d, armor: %d, shield: %d\n", fleet_TemplateGetType(liste), fleet_TemplateGetPower(liste), fleet_TemplateGetHull(liste), fleet_TemplateGetArmor(liste), fleet_TemplateGetShield(liste));
+	}
+	#endif
 	return cursorIndex;
 }
 
@@ -90,6 +130,7 @@ void dlc_Load(const char *name) {
 	ti_var_t dlc_var;
 	char *buffer;
 	uint16_t sizeOfChunk;
+	FleetTemplateListe *flotteListe = fleet_TemplateListCreate();
 
 	ti_CloseAll();
 
@@ -108,7 +149,7 @@ void dlc_Load(const char *name) {
         exit(EXIT_FAILURE);
     }
 	ti_Read(buffer, sizeOfChunk + 2, 1, dlc_var);
-	dlc_Parse(buffer);
+	dlc_Parse(buffer, flotteListe, ky_none);
 
 	free(buffer);
 	ti_Close(dlc_var);

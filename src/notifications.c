@@ -26,6 +26,14 @@ NotificationList *CreateNotificationList(){
 }
 
 void FreeNotificationList(NotificationList *notificationList) {
+    Notification *notification = NULL;
+	int i = 1;
+    notification = GenericCellGet((GenericList*)notification, i);
+    while(notification != NULL) {
+        free(notification);
+		i++;
+        notification = GenericCellGet((GenericList*)notification, i);
+    }
     FreeGenericList((GenericList*)notificationList);
 }
 
@@ -58,7 +66,7 @@ static void DrawNotificationLogo(int x, int y, NOTIFICATION_ID ID) {
 void DrawNotifications(NotificationList *notificationList, Date *date) {
     Notification *notification = NULL;
     int numberOfNotifications = GenericListArraySize((GenericList*)notificationList);
-    int notificationIndex = 1;
+    int notificationIndex;
     int x = 50;
     int y = 22;
     for(notificationIndex = 1; notificationIndex <= numberOfNotifications; notificationIndex++) {
