@@ -2,27 +2,27 @@
 palettes:
   - name: gfx_pal
     fixed-entries:
-      - color:  {index: 0, r: 0, g: 0, b: 0} #noir
-      - color:  {index: 1, r: 255, g: 255, b: 255} #blanc
-      - color:  {index: 2, r: 255, g: 0, b: 128} #violet qui fait mal aux yeux
-      - color:  {index: 3, r: 255, g: 0, b: 0} #rouge ennemis
-      - color:  {index: 4, r: 82, g: 137, b: 209} #un certain bleu
-      - color:  {index: 5, r: 175, g: 255, b: 233} #vert clair
-      - color:  {index: 6, r: 0, g: 29, b: 0 } #vert foncé centre
+      - color:  {index: 0, r: 0, g: 0, b: 0}  #black
+      - color:  {index: 1, r: 255, g: 255, b: 255} #white
+      - color:  {index: 2, r: 255, g: 0, b: 128} #transparent (purple)
+      - color:  {index: 3, r: 255, g: 0, b: 0} #red (ennemies)
+      - color:  {index: 4, r: 82, g: 137, b: 209} #blue
+      - color:  {index: 5, r: 175, g: 255, b: 233} #light green
+      - color:  {index: 6, r: 0, g: 29, b: 0 } #hud background green
       - color:  {index: 7, r: 35, g: 49, b: 44 } #vert clair bords
       - color:  {index: 8, r: 51, g: 91, b: 75 } #vert foncé
       - color:  {index: 9, r: 191, g: 86, b: 10 } #orange
 
-      - color:  {index: 10, r: 33, g: 24, b: 19 } #marron
-      - color:  {index: 11, r: 164, g: 173, b: 186} #gris-bleu
-      - color:  {index: 12, r: 143, g: 219, b: 203} #couleur des hyperlanes
-      - color:  {index: 13, r: 243, g: 188, b: 24} #jaune soleil
-      - color:  {index: 14, r: 212, g: 252, b: 255} #bleu clair soleil
-      - color:  {index: 15, r: 217, g: 200, b: 227} #violet soleil
-      - color:  {index: 16, r: 7, g: 87, b: 44} #vert vaisseaux interieur
-      - color:  {index: 17, r: 0, g: 188, b: 255} #bleu alliés
-      - color:  {index: 18, r: 230, g: 255, b: 13} #jaune neutres
-      - color:  {index: 19, r: 13, g: 181, b: 112} #vert vaisseaux bords
+      - color:  {index: 10, r: 33, g: 24, b: 19 } #brown
+      - color:  {index: 11, r: 164, g: 173, b: 186} #gray-blue (unknown hyperlanes colors)
+      - color:  {index: 12, r: 143, g: 219, b: 203} #gray-blue (known hyperlanes colors)
+      - color:  {index: 13, r: 243, g: 188, b: 24} #yellow (star)
+      - color:  {index: 14, r: 212, g: 252, b: 255} #blue (star outline)
+      - color:  {index: 15, r: 217, g: 200, b: 227} #purple (star outine)
+      - color:  {index: 16, r: 7, g: 87, b: 44} #green starship interior
+      - color:  {index: 17, r: 0, g: 188, b: 255} #blue allies
+      - color:  {index: 18, r: 230, g: 255, b: 13} #yellow neutral
+      - color:  {index: 19, r: 13, g: 181, b: 112} #green starship outlines
 
       - color:  {index: 20, r: 172, g: 124, b: 100} #couleur planete aride
       - color:  {index: 21, r: 198, g: 152, b: 102} #couleur planete desert

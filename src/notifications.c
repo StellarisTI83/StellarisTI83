@@ -27,7 +27,7 @@ NotificationList *CreateNotificationList(){
 
 void FreeNotificationList(NotificationList *notificationList) {
     Notification *notification = NULL;
-	int i = 1;
+	int i = 0;
     notification = GenericCellGet((GenericList*)notification, i);
     while(notification != NULL) {
         free(notification);
@@ -69,7 +69,7 @@ void DrawNotifications(NotificationList *notificationList, Date *date) {
     int notificationIndex;
     int x = 50;
     int y = 22;
-    for(notificationIndex = 1; notificationIndex <= numberOfNotifications; notificationIndex++) {
+    for(notificationIndex = 0; notificationIndex <= numberOfNotifications; notificationIndex++) {
         notification = GenericCellGet((GenericList*)notificationList, notificationIndex);
         if(notification != NULL) {
             if(notification->type == MED_PRIORITY)

@@ -530,7 +530,7 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
             SetSystemXY(systemeStellaires[k], x, y);
             
             CreateSystemStation(systemeStellaires[k]);
-            
+            SetSystemEmpire(systemeStellaires[k], -1);
 			etoile = randInt(1, 100);
 			trouNoir = 0;
 
@@ -756,7 +756,7 @@ void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStell
 	int i = 0, fin = 1, j = 0;
 	int k = LARGEUR_GALAXIE * LARGEUR_GALAXIE;
 	int planete = 0;
-	Empire *joueur = EmpireNumero(empireListe, 1);
+	Empire *joueur = EmpireNumero(empireListe, 0);
 	//creation joueur
 	while(fin == 1) { // choix du systeme
 		i = randInt(0, k - 1);
@@ -773,7 +773,7 @@ void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStell
 	SetSystemStarType(systemeStellaires[i], ETOILE_TYPE_K);
 	SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
 	SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);
-	SetSystemEmpire(systemeStellaires[i], 1);
+	SetSystemEmpire(systemeStellaires[i], 0);
 	SetSystemIntelLevel(systemeStellaires[i], TOTAL);
 
 	SetEmpireCredit(joueur, 100);
@@ -822,13 +822,13 @@ void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStell
 		dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, GetSystemX(systemeStellaires[i]), GetSystemY(systemeStellaires[i]), GetEmpireColor(joueur), planete, EmpireFleetGetArray(joueur), GetCameraX(camera), GetCameraY(camera));
 	#endif
 	
-	for(j = 2; j <= GetEmpireNumber(parametres); j++){
+	for(j = 1; j < GetEmpireNumber(parametres); j++){
 		Empire *empire = NULL;
 		fin = 1;
 		i = 0;
 		while(fin == 1) { // choix du systeme
 			i = randInt(0, k - 1);
-			if(((GetSystemX(systemeStellaires[i]) >= 160) && (GetSystemY(systemeStellaires[i]) >= 120)) && ((GetSystemStarType(systemeStellaires[i]) != ETOILE_TYPE_TROU_NOIR) && (GetSystemEmpire(systemeStellaires[i]) == 0)))
+			if(((GetSystemX(systemeStellaires[i]) >= 160) && (GetSystemY(systemeStellaires[i]) >= 120)) && ((GetSystemStarType(systemeStellaires[i]) != ETOILE_TYPE_TROU_NOIR) && (GetSystemEmpire(systemeStellaires[i]) == -1)))
 				fin = 0;
 		}
 		empire = EmpireAjouter(empireListe);
@@ -859,7 +859,7 @@ void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStell
 		EmpireFlotteNouvelle(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
 		EmpireFlotteNouvelle(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 
-		planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i])- 1);
+		planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i]) - 1);
 
 		SetSystemPlanetHabitability(systemeStellaires[i], planete, true);
 		SetSystemPlanetType(systemeStellaires[i], planete, HABITABLE_CONTINENTAL);

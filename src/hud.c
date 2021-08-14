@@ -1,21 +1,15 @@
 #include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 #include <tice.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <debug.h>
 #include <math.h>
-#include <errno.h>
 
 #include <graphx.h>
-#include <fileioc.h>
-#include <fontlibc.h>
 
 #include "gfx/gfx.h"
+#include "colors.h"
 
 #include "main.h"
 
@@ -25,255 +19,420 @@
 /* private functions =================================================== */
 
 /**
- *Exprime à l'écran les données envoyées pour la abrre du haut
+ * @brief 
+ * 
+ * @param currentState 
+ * @param change 
+ * @param x 
+ * @param y 
  */
-static void PrintHUD(const unsigned int nombre, const int change, int x, int y) {
-	char nombreStr[10];
-	char changeStr[5];
+static void PrintHUD(   const unsigned int currentState, 
+                        const int change, 
+                        const int x, 
+                        const int y) {
+    char nombreStr[10];
+    char changeStr[5];
 
-	//ecrire nombre
-	if(nombre < 1000){
-		sprintf(nombreStr, "%d", nombre);
-	} else {
-		sprintf(nombreStr, "%d", nombre/1000);
-		strcat(nombreStr, "K");
-	}
+    // print current state
+    if(currentState < 1000){
+        sprintf(nombreStr, "%d", currentState);
+    } else {
+        sprintf(nombreStr, "%d", currentState / 1000);
+        strcat(nombreStr, "K");
+    }
 
-	//ecrire change
-	if (change >=0){
-		gfx_SetTextFGColor(1);
-		sprintf(changeStr, "+%d", change);
-	} else {
-		gfx_SetTextFGColor(3);
-		sprintf(changeStr, "%d", change);
-	}
+    // print change
+    if (change >= 0){
+        gfx_SetTextFGColor(COLOR_WHITE);
+        sprintf(changeStr, "+%d", change);
+    } else {
+        gfx_SetTextFGColor(COLOR_RED);
+        sprintf(changeStr, "%d", change);
+    }
 
-	strcat(nombreStr, changeStr);
+    strcat(nombreStr, changeStr);
 
-	gfx_PrintStringXY(nombreStr, x, y);
+    gfx_PrintStringXY(nombreStr, x, y);
 }
 
-static void DrawBackgroundHUD(Date *date, Camera *camera){
-	//dessine le fond du hud
-	gfx_SetColor(6);
-	//barre du haut
-	gfx_FillRectangle(0, 0 , LCD_WIDTH, 22);
-	//barre du coté gauche
-	gfx_FillRectangle(0, 0, 20, 200);
-	gfx_FillTriangle(0, 200, 20, 200, 0, 220);
-	//barre du bas
-	if (GetTimeSpeed(date) == 0)
-	{
-		gfx_SetColor(10);
-	}
-	gfx_FillRectangle(100, 220, 120, 20);
-	gfx_FillTriangle(100, 220, 80, 240, 100, 240);
-	gfx_FillTriangle(220, 220, 240, 240, 220, 240);
-	//nom selection
-	if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
-		gfx_FillRectangle(110, 210, 100, 10);
-		gfx_FillTriangle(110, 210, 100, 220, 110, 220);
-		gfx_FillTriangle(210, 210, 210, 220, 220, 220);
-	}
+/**
+ * @brief Draw the hexagon of the flag
+ * 
+ */
+static void hud_DrawFlag(){
+    //coordinates of the hexagon
+    int flag[12] = {
+        17, 0,
+        0,  10,
+        0,  30,
+        17, 40,
+        35, 30,
+        35, 10,
+    };
+    // flag background
+    // gfx_SetColor(6);
+    // gfx_FillTriangle_NoClip(17, 30, 35, 30, 17, 40);
+    // gfx_FillRectangle_NoClip(17, 20, 18,10);
+    
+    // flag outines
+    gfx_SetColor(COLOR_HUD_OUTLINES);
+    gfx_Polygon_NoClip(flag, 6);
+    // gfx_FloodFill(17, 1, 0);
+    
 }
 
-static void DrawOutlinesHUD(Date *date, Camera *camera){
-	//dessine les bord du hud
-	gfx_SetColor(7);
-	//barre du haut
-	gfx_HorizLine_NoClip(20, 22, LCD_WIDTH-20);
-	//barre du coté gauche
-	gfx_VertLine_NoClip(20, 22, 179);
-	gfx_Line_NoClip(20, 200, 0, 220);
-	//barre du bas
-	if (GetTimeSpeed(date) == 0)
-	{
-		gfx_SetColor(9);
-	}
-	gfx_HorizLine_NoClip(100, 220, 120);
-	gfx_Line_NoClip(100, 220, 81, 239);
-	gfx_Line_NoClip(220, 220, 239, 239);
-	//nom selection
-	if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME))
-	{
-		gfx_HorizLine_NoClip(110, 210, 100);
-		gfx_Line_NoClip(110, 210, 100, 220);
-		gfx_Line_NoClip(210, 210, 220, 220);
-	}
+
+
+
+
+/**
+ * @brief Draw the icon of the speed / pause
+ * 
+ * @param date 
+ */
+static void hud_DrawSpeedIcon(Date *date){
+    //pause / avance
+    switch (GetTimeSpeed(date)){
+        case -2:
+            gfx_SetColor(COLOR_WHITE);
+            gfx_FillRectangle_NoClip(100, 225, 3, 9);
+            gfx_FillTriangle_NoClip(109, 225, 109, 233, 105, 229);
+            gfx_FillTriangle_NoClip(114, 225, 114, 233, 110, 229);
+            break;
+        case -1:
+            gfx_SetColor(COLOR_WHITE);
+            gfx_FillRectangle_NoClip(100, 225, 3, 9);
+            gfx_FillTriangle_NoClip(109, 225, 109, 233, 105, 229);
+            break;
+        case 0:
+            gfx_SetColor(COLOR_HUD_PAUSE_OUTLINES);
+            gfx_FillRectangle_NoClip(105, 225, 3, 9);
+            gfx_FillRectangle_NoClip(110, 225, 3, 9);
+            break;
+        case 1:
+            gfx_SetColor(COLOR_WHITE);
+            gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
+            break;	
+        case 2:
+            gfx_SetColor(COLOR_WHITE);
+            gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
+            gfx_FillTriangle_NoClip(110, 225, 110, 233, 114, 229);
+            break;
+        case 3:
+            gfx_SetColor(1);
+            gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
+            gfx_FillTriangle_NoClip(110, 225, 110, 233, 114, 229);
+            gfx_FillTriangle_NoClip(115, 225, 115, 233, 119, 229);
+            break;
+    }
+    gfx_SetColor(11);
 }
 
-static void DrawFlagHUD(){
-	//point de l'hexagone
-	int drapeau[12] = {
-		17, 0,
-		0, 10,
-		0, 30,
-		17, 40,
-		35, 30,
-		35, 10,
-	};
-	//drapeau intérieur
-	gfx_SetColor(6);
-	gfx_FillTriangle_NoClip(17, 30, 35, 30, 17, 40);
-	gfx_FillRectangle_NoClip(17, 20, 18,10);
-	
-	//drapeau bords
-	gfx_SetColor(7);
-	gfx_Polygon_NoClip(drapeau, 6);
-	gfx_FloodFill(17, 1, 0);
-	
-	//dessiner drapeau
-	gfx_SetColor(1);
-	gfx_Circle_NoClip(20, 15, 6);
-	gfx_Line_NoClip(10, 30, 20, 15);
-	gfx_FillCircle_NoClip(20, 15, 4);
-	gfx_Circle_NoClip(10, 30, 3);
-	gfx_SetColor(0);
-	gfx_FillCircle_NoClip(20, 15, 2);
+/**
+ * @brief Print the text of the HUD
+ * 
+ * @param player 
+ * @param date 
+ * @param camera 
+ * @param parametres 
+ * @param systemeStellaires 
+ */
+static void hud_PrintInfos( Empire *player, 
+                            Date *date, 
+                            Camera *camera,
+                            Parametres *parametres,
+                            SystemeStellaire **systemeStellaires){
+    char dayString[11];
+    char monthString[8];
+    char yearString[5];
+    int16_t system = 0;
+
+    // top bar
+    
+    // credit
+    gfx_TransparentSprite_NoClip(   credit, 
+                                    HUD_UP_BAR_LEFT,
+                                    HUD_UP_BAR_UP);
+
+    PrintHUD(   GetEmpireCredit(player), 
+                GetEmpireCreditChange(player), 
+                HUD_UP_BAR_LEFT - 15, 
+                HUD_UP_BAR_TEXT_X);
+
+    // minerals
+    gfx_TransparentSprite_NoClip(   minerai, 
+                                    HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP, 
+                                    1);
+
+    PrintHUD(   GetEmpireMinerals(player), 
+                GetEmpireMineralsChange(player), 
+                HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP - 15, 
+                HUD_UP_BAR_TEXT_X);
+
+    // food
+    gfx_TransparentSprite_NoClip(   food, 
+                                    HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 2, 
+                                    HUD_UP_BAR_UP);
+
+    PrintHUD(   GetEmpireFood(player), 
+                GetEmpireFoodChange(player), 
+                HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 2 - 15, 
+                HUD_UP_BAR_TEXT_X);
+
+    // alloy
+    gfx_TransparentSprite_NoClip(   fer, 
+                                    HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 3, 
+                                    HUD_UP_BAR_UP);
+
+    PrintHUD(   GetEmpireAlloys(player), 
+                GetEmpireAlloysChange(player), 
+                HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 3 - 15, 
+                HUD_UP_BAR_TEXT_X);
+    
+
+    
+    // side bar
+    gfx_TransparentSprite_NoClip(   contact, 
+                                    (HUD_WIDTH - contact_width) / 2, 
+                                    HUD_SIDE_BAR_UP);
+
+    gfx_TransparentSprite_NoClip(   market_icon, 
+                                    (HUD_WIDTH - market_icon_width) / 2, 
+                                    HUD_SIDE_BAR_UP + HUD_SIDE_BAR_GAP);
+
+    gfx_TransparentSprite_NoClip(   science, 
+                                    (HUD_WIDTH - science_width) / 2, 
+                                    HUD_SIDE_BAR_UP + HUD_SIDE_BAR_GAP * 2);
+
+    gfx_TransparentSprite_NoClip(   alliedFleet, 
+                                    (HUD_WIDTH - alliedFleet_width) / 2, 
+                                    HUD_SIDE_BAR_UP + HUD_SIDE_BAR_GAP * 3);
+    
+
+
+    // bottom bar
+
+    // date
+    if (GetTimeDay(date) < 10) {
+        sprintf(dayString, "0%d.", GetTimeDay(date));
+    } else {
+        sprintf(dayString, "%d.", GetTimeDay(date));
+    }
+    if (GetTimeMonth(date) < 10) {
+        sprintf(monthString, "0%d.", GetTimeMonth(date));
+    } else {
+        sprintf(monthString, "%d.", GetTimeMonth(date));
+    }
+    sprintf(yearString, "%d", GetTimeYear(date));
+
+    strcat(monthString, yearString);
+    strcat(dayString, monthString);
+
+    gfx_PrintStringXY(  dayString, 
+                        LCD_WIDTH / 2 - 4 * TEXT_HEIGHT, 
+                        LCD_HEIGHT - HUD_TIME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
+
+    if(IsCameraMoveFleet(camera) == TRUE){
+        gfx_SetColor(COLOR_HUD_BACKGROUND);
+        gfx_FillRectangle_NoClip(80, 28, 160, 11);
+        gfx_SetColor(COLOR_HUD_OUTLINES);
+        gfx_Rectangle_NoClip(80, 28, 160, 11);
+        gfx_PrintStringXY("Choisir destination", 84, 30);
+    }
+
+    // name of the system
+    if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
+        if (GetCameraMapType(camera) == NORMAL) {
+            system = GetCameraViewedSystem(camera);
+        } else {
+            system = GetCameraSystem(camera);
+        }
+        if ((GetSystemIntelLevel(systemeStellaires[system]) == INCONNU) && (!GetSeeAll(parametres))) {
+            gfx_PrintStringXY(  "Inconnu", 
+                                132, 
+                                LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
+        } else {
+            gfx_PrintStringXY(  GetSystemName(systemeStellaires[system]), 
+                                LCD_WIDTH / 2 - strlen(GetSystemName(systemeStellaires[system])) * TEXT_HEIGHT / 2, 
+                                LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
+        }
+    }
+
+    hud_DrawSpeedIcon(date);
 }
 
-static void WriteTextHUD(Empire *joueur, Date *date, Camera *camera){
-    char jourChar[11];
-	char moisChar[8];
-	char anneeChar[5];
-	gfx_SetTextTransparentColor(2);
-	gfx_SetTextBGColor(2);
-	
-	//texte
-	gfx_SetTextFGColor(8);
-	//barre du haut
-	gfx_TransparentSprite_NoClip(credit, 55 ,1);
-	PrintHUD(GetEmpireCredit(joueur), GetEmpireCreditChange(joueur), 40, 13);
-	gfx_TransparentSprite_NoClip(minerai, 100 ,1);
-	PrintHUD(GetEmpireMinerals(joueur), GetEmpireMineralsChange(joueur), 85, 13);
-	gfx_TransparentSprite_NoClip(food, 145 ,1);
-	PrintHUD(GetEmpireFood(joueur), GetEmpireFoodChange(joueur), 130, 13);
-	gfx_TransparentSprite_NoClip(fer, 190 ,1);
-	PrintHUD(GetEmpireAlloys(joueur), GetEmpireAlloysChange(joueur), 175, 13);
-	
-	//barre de gauche
-	gfx_TransparentSprite_NoClip(contact, 5, 50);
-	gfx_TransparentSprite_NoClip(market_icon, 5, 70);
-	gfx_TransparentSprite_NoClip(science, 5, 90);
-	gfx_TransparentSprite_NoClip(alliedFleet, 5, 110);
-	
-	//barre du bas
-	//date
-	if (GetTimeDay(date) < 10) {
-		sprintf(jourChar, "0%d.", GetTimeDay(date));
-	} else {
-		sprintf(jourChar, "%d.", GetTimeDay(date));
-	}
-	if (GetTimeMonth(date) < 10) {
-		sprintf(moisChar, "0%d.", GetTimeMonth(date));
-	} else {
-		sprintf(moisChar, "%d.", GetTimeMonth(date));
-	}
-	sprintf(anneeChar, "%d", GetTimeYear(date));
-	strcat(moisChar, anneeChar);
-	strcat(jourChar, moisChar);
-	gfx_PrintStringXY(jourChar, 125, 225);
-	if(IsCameraMoveFleet(camera) == TRUE){
-		gfx_SetColor(6);
-		gfx_FillRectangle_NoClip(80, 28, 160, 11);
-		gfx_SetColor(7);
-		gfx_Rectangle_NoClip(80, 28, 160, 11);
-		gfx_PrintStringXY("Choisir destination", 84, 30);
-	}
+
+
+
+/**
+ * @brief Draw the pointer at the center of the screen
+ * 
+ * @param camera 
+ */
+static void hud_DrawPointer(Camera *camera) {
+    //pointeur
+    if (GetCameraMapType(camera) == CARTE) {
+        gfx_Line_NoClip(GetCameraX(camera) / 2.5 + 5, GetCameraY(camera) / 2.5 - 30, GetCameraX(camera) / 2.5 + 15, GetCameraY(camera) / 2.5 - 30);
+        gfx_Line_NoClip(GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 25, GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 35);
+        gfx_Circle_NoClip(GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 30, 3);
+    } else {
+        gfx_Line_NoClip(150, 120, 170, 120);
+        gfx_Line_NoClip(160, 110, 160, 130);
+        gfx_FillCircle_NoClip(160, 120, 2);
+        gfx_Circle_NoClip(160, 120, 4);
+        gfx_Circle_NoClip(160, 120, 8);
+    }
 }
 
-static void DrawPauseHUD(Date *date){
-	//pause / avance
-	switch (GetTimeSpeed(date)){
-		case -2:
-			gfx_SetColor(1);
-			gfx_FillRectangle_NoClip(100, 225, 3, 9);
-			gfx_FillTriangle_NoClip(109, 225, 109, 233, 105, 229);
-			gfx_FillTriangle_NoClip(114, 225, 114, 233, 110, 229);
-			break;
-		case -1:
-			gfx_SetColor(1);
-			gfx_FillRectangle_NoClip(100, 225, 3, 9);
-			gfx_FillTriangle_NoClip(109, 225, 109, 233, 105, 229);
-			break;
-		case 0:
-			gfx_SetColor(9);
-			gfx_FillRectangle_NoClip(105, 225, 3, 9);
-			gfx_FillRectangle_NoClip(110, 225, 3, 9);
-			break;
-		case 1:
-			gfx_SetColor(1);
-			gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
-			break;	
-		case 2:
-			gfx_SetColor(1);
-			gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
-			gfx_FillTriangle_NoClip(110, 225, 110, 233, 114, 229);
-			break;
-		case 3:
-			gfx_SetColor(1);
-			gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
-			gfx_FillTriangle_NoClip(110, 225, 110, 233, 114, 229);
-			gfx_FillTriangle_NoClip(115, 225, 115, 233, 119, 229);
-			break;
-	}
-	gfx_SetColor(11);
-}
 
-static void DrawPointerHUD(Camera *camera){
-	//pointeur
-	if (GetCameraMapType(camera) == CARTE) {
-		gfx_Line_NoClip(GetCameraX(camera) / 2.5 + 5, GetCameraY(camera) / 2.5 - 30, GetCameraX(camera) / 2.5 + 15, GetCameraY(camera) / 2.5 - 30);
-		gfx_Line_NoClip(GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 25, GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 35);
-		gfx_Circle_NoClip(GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 30, 3);
-	} else {
-		gfx_Line_NoClip(150, 120, 170, 120);
-		gfx_Line_NoClip(160, 110, 160, 130);
-		gfx_FillCircle_NoClip(160, 120, 2);
-		gfx_Circle_NoClip(160, 120, 4);
-		gfx_Circle_NoClip(160, 120, 8);
-	}
-}
+/**
+ * @brief Function to draw the shapes of the screen
+ * 
+ * @param date
+ * @param camera
+ */
+static void hud_DrawShapes( Date *date, 
+                            Camera *camera){
+    //draw the background
+    gfx_SetColor(COLOR_HUD_BACKGROUND);
+    //top bar
+    gfx_FillRectangle(0, 0 , LCD_WIDTH, HUD_WIDTH);
+    //side bar
+    gfx_FillRectangle(0, HUD_WIDTH, HUD_WIDTH, HUD_HEIGHT - HUD_WIDTH);
+    gfx_FillTriangle(0, HUD_HEIGHT, HUD_WIDTH, HUD_HEIGHT, 0, HUD_HEIGHT + HUD_WIDTH);
+    
+    //bottom bar (date)
+    if (GetTimeSpeed(date) == 0) {
+        gfx_SetColor(COLOR_HUD_PAUSE_BACKGROUND);
+    }
+    
+    gfx_FillRectangle(	HUD_TIME_BAR_OFFSET,                        // x
+                        LCD_HEIGHT - HUD_TIME_BAR_HEIGHT,           // y
+                        HUD_TIME_BAR_WIDTH,                         // width
+                        HUD_TIME_BAR_HEIGHT);                       // height
+    
+    gfx_FillTriangle(	HUD_TIME_BAR_OFFSET,                        // x up   right
+                        LCD_HEIGHT - HUD_TIME_BAR_HEIGHT,           // y up   right
+                        HUD_TIME_BAR_OFFSET - HUD_TIME_BAR_HEIGHT,  // x down left
+                        LCD_HEIGHT,                                 // y down left
+                        HUD_TIME_BAR_OFFSET,                        // x down right
+                        LCD_HEIGHT);                                // y down right
+                        
+    gfx_FillTriangle(	LCD_WIDTH - HUD_TIME_BAR_OFFSET,            // x up   left
+                        LCD_HEIGHT - HUD_TIME_BAR_HEIGHT,           // y up   left
+                        LCD_WIDTH - HUD_TIME_BAR_OFFSET + HUD_TIME_BAR_HEIGHT,  // x down right
+                        LCD_HEIGHT,                                 // y down right
+                        LCD_WIDTH - HUD_TIME_BAR_OFFSET,            // x down left
+                        LCD_HEIGHT);                                // y down left
+    
+    //name above the bottom bar
+    if((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
+        gfx_FillRectangle(  HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y
+                            HUD_TIME_BAR_WIDTH - 2 * HUD_NAME_BAR_HEIGHT,           // width
+                            HUD_NAME_BAR_HEIGHT);                                   // height
+                            
+        gfx_FillTriangle(   HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x up   right
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y up   right
+                            HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x down right
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT,                       // y down right
+                            HUD_TIME_BAR_OFFSET,                                    // x down left
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT);                      // y down left
 
-static void WriteGalaxieNameHUD(Camera *camera, Parametres *parametres, SystemeStellaire **systemeStellaires){
-    int16_t systeme = 0;
-	//nom galaxie
-	if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
-		if (GetCameraMapType(camera) == NORMAL) {
-			systeme = GetCameraViewedSystem(camera);
-		} else {
-			systeme = GetCameraSystem(camera);
-		}
-		if ((GetSystemIntelLevel(systemeStellaires[systeme]) == INCONNU) && (!GetSeeAll(parametres))) {
-			gfx_PrintStringXY("Inconnu", 132, 211);
-		} else {
-			gfx_PrintStringXY(GetSystemName(systemeStellaires[systeme]), 160 - strlen(GetSystemName(systemeStellaires[systeme])) * 4, 211);
-		}
-	}
+        gfx_FillTriangle(   LCD_WIDTH - HUD_TIME_BAR_OFFSET - HUD_NAME_BAR_HEIGHT,  // x up   left
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y up   left
+                            LCD_WIDTH - HUD_TIME_BAR_OFFSET - HUD_NAME_BAR_HEIGHT,  // x down left
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT,                       // y down left
+                            LCD_WIDTH - HUD_TIME_BAR_OFFSET,                        // x down right
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT);                      // y down right
+    }
+
+    //draw the outlines of the hud
+    gfx_SetColor(COLOR_HUD_OUTLINES);
+    //top bar
+    gfx_HorizLine_NoClip(HUD_WIDTH, HUD_WIDTH, LCD_WIDTH - HUD_WIDTH);
+    //side bar
+    gfx_VertLine_NoClip(HUD_WIDTH, HUD_WIDTH, HUD_HEIGHT - HUD_WIDTH);
+    gfx_Line_NoClip(HUD_WIDTH, HUD_HEIGHT, 0, HUD_HEIGHT + HUD_WIDTH);
+
+
+
+    //down bar
+    if (GetTimeSpeed(date) == 0) {
+        gfx_SetColor(COLOR_HUD_PAUSE_OUTLINES);
+    }
+    gfx_HorizLine_NoClip((  LCD_WIDTH - HUD_TIME_BAR_WIDTH)/2,      // x
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT,       // y
+                            HUD_TIME_BAR_WIDTH);                    // width
+    
+    gfx_Line_NoClip(    HUD_TIME_BAR_OFFSET,                        // x up   right
+                        LCD_HEIGHT - HUD_TIME_BAR_HEIGHT,           // y up   right
+                        HUD_TIME_BAR_OFFSET - HUD_TIME_BAR_HEIGHT,  // x down left
+                        LCD_HEIGHT);                                // y down left
+
+    gfx_Line_NoClip(    LCD_WIDTH - HUD_TIME_BAR_OFFSET,            // x up   right
+                        LCD_HEIGHT - HUD_TIME_BAR_HEIGHT,           // y up   right
+                        LCD_WIDTH - HUD_TIME_BAR_OFFSET + HUD_TIME_BAR_HEIGHT,  // x up   right
+                        LCD_HEIGHT);                                // y up   right
+    
+    //name above the bottom bar
+    if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
+        gfx_HorizLine_NoClip(   HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x
+                                LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y
+                                HUD_TIME_BAR_WIDTH - 2 * HUD_NAME_BAR_HEIGHT);          // width
+
+        gfx_Line_NoClip(    HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,                  // x up   right
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT,     // y up   right
+                            HUD_TIME_BAR_OFFSET,                                        // x down left
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT);                          // y down left
+
+        gfx_Line_NoClip(    LCD_WIDTH - HUD_TIME_BAR_OFFSET - HUD_NAME_BAR_HEIGHT,      // x up   left
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT,     // y up   left
+                            LCD_WIDTH - HUD_TIME_BAR_OFFSET,                            // x down right
+                            LCD_HEIGHT - HUD_TIME_BAR_HEIGHT);                          // y down right
+    }
+
+    //draw flag
+    hud_DrawFlag();
 }
 
 /* entry points ======================================================== */
 
-int DrawHUD(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, NotificationList *notificationList) {
-	int menu = 0;
-    Empire *joueur = EmpireNumero(empireListe, 1);
-	
-	DrawBackgroundHUD(date, camera);
-	DrawOutlinesHUD(date, camera);
-	DrawFlagHUD();
+/**
+ * @brief Function to draw the HUD on the screen
+ * 
+ * @param empireListe EmpireListe*
+ * @param date Date*
+ * @param key char*
+ * @param camera Camera*
+ * @param systemeStellaires SystemeStellaire*
+ * @param fenetre Fenetre*
+ * @param parametres Parametres*
+ * @param notificationList NotificationList*
+ * @return int 
+ */
+int hud_Draw(   EmpireListe *empireListe, 
+                Date *date, 
+                char *key, 
+                Camera *camera, 
+                SystemeStellaire **systemeStellaires, 
+                Fenetre *fenetre, 
+                Parametres *parametres, 
+                NotificationList *notificationList)
+{
+    Empire *player = EmpireNumero(empireListe, 0);
+    
+    hud_DrawShapes(date, camera);
 
-	WriteTextHUD(joueur, date, camera);
-	
-    DrawPauseHUD(date);
-	
-    DrawPointerHUD(camera);
+    hud_PrintInfos(player, date, camera, parametres, systemeStellaires);
+    
+    hud_DrawPointer(camera);
+    
+    DrawNotifications(notificationList, date);
 
-    WriteGalaxieNameHUD(camera, parametres, systemeStellaires);
-	
-	DrawNotifications(notificationList, date);
-
-	if(GetCommandPromptStatus(fenetre) == true){ 
-		AfficherConsole(key, fenetre, empireListe, camera, date, parametres);
-	}
-	return menu;
+    if(GetCommandPromptStatus(fenetre) == true){ 
+        AfficherConsole(key, fenetre, empireListe, camera, date, parametres);
+    }
+ 
+    return 0;
 }

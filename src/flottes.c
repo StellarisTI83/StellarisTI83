@@ -95,11 +95,11 @@ FlotteListe* CreerFlotteListe() {
  */
 void SupprimerFlotteListe(FlotteListe* flotteliste) {
     Flotte *flotte = NULL;
-	int i = 1;
+	int i = 0;
     flotte = GenericCellGet((GenericList*)flotteliste, i);
     while(flotte != NULL) {
 		#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgout, "Free fleet %d, ", i);
+		dbg_sprintf(dbgout, ", Free fleet %d", i);
 		#endif
         free(flotte);
 		i++;
@@ -247,7 +247,7 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 
 int CalculateFleetPower(FlotteListe *flotteListe){
 	Flotte *flotte = NULL;
-	int compteur = 1;
+	int compteur = 0;
 	int arraySize = FleetArraySize(flotteListe);
 	int puissance = 0;
 	while(compteur < arraySize){
@@ -441,17 +441,17 @@ int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires)
 void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **systemeStellaires){
 	Empire* empire = NULL; 
 	Flotte* flotte = NULL;
-	int index = 0, numeroEmpire = 1;
-	int fleetSize = 1;
-	int fleetIndex = 1;
-	int empireSize = 1;
-	empire = EmpireNumero(empireListe, 1);
+	int index = 0, numeroEmpire = 0;
+	int fleetSize;
+	int fleetIndex;
+	int empireSize;
+	empire = EmpireNumero(empireListe, 0);
 	empireSize = EmpireArraySize(empireListe);
-	while(numeroEmpire <= empireSize){
-		flotte = FlotteNumero(EmpireFleetGetArray(empire), 1);
-		fleetIndex = 1;
+	while(numeroEmpire < empireSize){
+		flotte = FlotteNumero(EmpireFleetGetArray(empire), 0);
+		fleetIndex = 0;
 		fleetSize = FleetArraySize(EmpireFleetGetArray(empire));
-		while(fleetIndex <= fleetSize){
+		while(fleetIndex < fleetSize){
 			
 			//bouger la flotte
 			if(flotte->action != FLOTTE_AUCUNE_ACTION) {

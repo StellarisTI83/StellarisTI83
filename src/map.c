@@ -16,6 +16,7 @@
 #include <fontlibc.h>
 
 #include "gfx/gfx.h"
+#include "colors.h"
 
 #include "main.h"
 
@@ -25,10 +26,12 @@
 
 /* private functions =================================================== */
 
+static void CouleurEtoile(int type);
+
 /**
  *dessine à l'écran quand une planete est habitable en mode carte normale
  */
-static void DessinerPlanetesHabitables(SystemeStellaire **systemeStellaires, int i, int x, int y){
+static void DessinerPlanetesHabitables(SystemeStellaire **systemeStellaires, Parametres *parametres, int i, int x, int y){
 	char nombrePlanetesHabitablesSysteme = 0, nombrePlanetesHabiteesSysteme = 0;
 	int j = 0;
 	gfx_SetTextFGColor(1);
@@ -47,7 +50,7 @@ static void DessinerPlanetesHabitables(SystemeStellaire **systemeStellaires, int
 		gfx_FillRectangle(x - strlen(GetSystemName(systemeStellaires[i])) * 4, y + 8, strlen(GetSystemName(systemeStellaires[i])) * 8, 10);
 		gfx_PrintStringXY(GetSystemName(systemeStellaires[i]), x - (strlen(GetSystemName(systemeStellaires[i])) * 4), y + 9);
 	} else {
-		if(GetSystemIntelLevel(systemeStellaires[i]) >= FAIBLE) {
+		if(GetSystemIntelLevel(systemeStellaires[i]) >= FAIBLE || GetSeeAll(parametres)) {
 			if(GetSystemIntelLevel(systemeStellaires[i]) >= ELEVEE) {
 				gfx_SetTextFGColor(1);
 			} else {
@@ -69,12 +72,12 @@ static void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, Systeme
 	Empire *empire;
 	int system, xFlotte, yFlotte;
 	int index = 0, x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-	int empireIndex = 2;
-	int fleetIndex = 1;
+	int empireIndex = 1;
+	int fleetIndex = 0;
 	int size = 0;
 	int empireSize = 0;
 	//dessiner flottes joueur
-	flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 1)), 1);
+	flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 0)), 0);
 	size = FleetArraySize(EmpireFleetGetArray(joueur));
 	while(fleetIndex <= size) {
 		system = GetFleetSystem(flotte);
@@ -119,14 +122,14 @@ static void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, Systeme
 			index++;
 		}
 		fleetIndex++;
-		flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 1)), fleetIndex);
+		flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 0)), fleetIndex);
 	}
-	empire = EmpireNumero(empireListe, 2);
-	empireIndex = 2;
+	empire = EmpireNumero(empireListe, 1);
+	empireIndex = 1;
 	empireSize = EmpireArraySize(empireListe);
 	while(empireIndex <= empireSize){
-		fleetIndex = 1;
-		flotte = FlotteNumero(EmpireFleetGetArray(empire), 1);
+		fleetIndex = 0;
+		flotte = FlotteNumero(EmpireFleetGetArray(empire), 0);
 		size = FleetArraySize(EmpireFleetGetArray(empire));
 		while(fleetIndex <= size) {
 			system = GetFleetSystem(flotte);
@@ -217,7 +220,7 @@ static void DessinerVueMap(SystemeStellaire **systemeStellaires, Camera *camera,
 		}
 		if ( (((0 <= x) && (x <= 320)) && ((0 <= y)&& (y <= 240))) && ((GetSystemX(systemeStellaires[i]) != 0) && (GetSystemY(systemeStellaires[i]) != 0)) ) {
 			if((GetSystemIntelLevel(systemeStellaires[i]) != INCONNU) || GetSeeAll(parametres)) {
-				if(GetSystemEmpire(systemeStellaires[i]) != 0){
+				if(GetSystemEmpire(systemeStellaires[i]) != -1){
 					gfx_SetColor(GetEmpireColor(EmpireNumero(empireListe, GetSystemEmpire(systemeStellaires[i]))));
 					if(GetCameraMapType(camera) == NORMAL){
 						gfx_Circle(x, y, 20 * GetCameraZoom(camera));
@@ -229,7 +232,7 @@ static void DessinerVueMap(SystemeStellaire **systemeStellaires, Camera *camera,
 				}
 				
 				if(GetCameraMapType(camera) == NORMAL){
-					DessinerPlanetesHabitables(systemeStellaires, i, x, y);
+					DessinerPlanetesHabitables(systemeStellaires, parametres, i, x, y);
 				}
 
 				//dessiner hyperLanes
@@ -263,79 +266,42 @@ static void DessinerVueMap(SystemeStellaire **systemeStellaires, Camera *camera,
 			}
 			
 			if(GetCameraMapType(camera) == NORMAL){
+				CouleurEtoile(GetSystemStarType(systemeStellaires[i]));
 				switch(GetSystemStarType(systemeStellaires[i])){
 					case ETOILE_TYPE_B: //B
-						gfx_SetColor(15);
 						gfx_FillCircle(x, y, 1 * GetCameraZoom(camera));
 						break;
 					case ETOILE_TYPE_A: //A
-						gfx_SetColor(14);
 						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
 						break;
 					case ETOILE_TYPE_F: //F
-						gfx_SetColor(1);
 						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
 						break;
 					case ETOILE_TYPE_G: //G
-						gfx_SetColor(1);
 						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
 						break;
 					case ETOILE_TYPE_K: //K
-						gfx_SetColor(13);
 						gfx_FillCircle(x, y, 1 * GetCameraZoom(camera));
 						break;
 					case ETOILE_TYPE_M: //M
-						gfx_SetColor(13);
 						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
 						break;
 					case ETOILE_TYPE_TROU_NOIR: //trou noir
-						gfx_SetColor(13);
 						gfx_Circle(x, y, 2 * GetCameraZoom(camera));
 						break;
 					case ETOILE_TYPE_PULSAR: //pulsar
-						gfx_SetColor(14);
 						gfx_FillCircle(x, y, 1 * GetCameraZoom(camera));
 						break;
 					case ETOILE_TYPE_ETOILE_A_NEUTRONS: ///toile a neutrons
-						gfx_SetColor(14);
 						gfx_FillCircle(x, y, 1 * GetCameraZoom(camera));
 						gfx_Circle(x, y, 3 * GetCameraZoom(camera));
 						break;
 					default:
-						gfx_SetColor(15);
 						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
 						break;
 				}
 			} else {
-				switch(GetSystemStarType(systemeStellaires[i])){
-					case ETOILE_TYPE_B: // B
-						gfx_SetColor(15);
-						break;
-					case ETOILE_TYPE_A: // A
-						gfx_SetColor(14);
-						break;
-					case ETOILE_TYPE_F: // F
-						gfx_SetColor(1);
-						break;
-					case ETOILE_TYPE_G: // G
-						gfx_SetColor(1);
-						break;
-					case ETOILE_TYPE_K: // K
-						gfx_SetColor(13);
-						break;
-					case ETOILE_TYPE_M: // M
-						gfx_SetColor(13);
-						break;
-					case ETOILE_TYPE_TROU_NOIR: // trou noir
-						gfx_SetColor(13);
-						break;
-					case ETOILE_TYPE_PULSAR: // pulsar
-						gfx_SetColor(14);
-						break;
-					case ETOILE_TYPE_ETOILE_A_NEUTRONS: // étoile a neutrons
-						gfx_SetColor(14);
-						break;
-				}
+				CouleurEtoile(GetSystemStarType(systemeStellaires[i]));
 				gfx_SetPixel(x, y);
 			}
 		}
@@ -364,7 +330,7 @@ static void DessinerHyperlanesSysteme(SystemeStellaire **systemeStellaires, Came
 
 	systeme = systemeStellaires[GetCameraSystem(camera)];
 	
-	gfx_SetColor(11);
+	gfx_SetColor(COLOR_HYPERLANES_UNKNOWN);
 	index = 0;
 	// verifie que les hyperlane existent
 	while(index < 4){
@@ -386,25 +352,36 @@ static void DessinerHyperlanesSysteme(SystemeStellaire **systemeStellaires, Came
  */
 static void CouleurEtoile(int type){	
 	//dessiner etoile
-	switch(type)
-	{
-		case ETOILE_TYPE_B: //B
-			gfx_SetColor(15);
+	switch(type) {
+		case ETOILE_TYPE_B: // B
+			gfx_SetColor(COLOR_STAR_B);
 			break;
-		case ETOILE_TYPE_A: //A
-			gfx_SetColor(14);
+		case ETOILE_TYPE_A: // A
+			gfx_SetColor(COLOR_STAR_A);
 			break;
-		case ETOILE_TYPE_F: //F
-			gfx_SetColor(1);
+		case ETOILE_TYPE_F: // F
+			gfx_SetColor(COLOR_STAR_F);
 			break;
-		case ETOILE_TYPE_G: //G
-			gfx_SetColor(1);
+		case ETOILE_TYPE_G: // G
+			gfx_SetColor(COLOR_STAR_G);
 			break;
-		case ETOILE_TYPE_K: //K
-			gfx_SetColor(13);
+		case ETOILE_TYPE_K: // K
+			gfx_SetColor(COLOR_STAR_K);
 			break;
-		case ETOILE_TYPE_M: //M
-			gfx_SetColor(13);
+		case ETOILE_TYPE_M: // M
+			gfx_SetColor(COLOR_STAR_M);
+			break;
+		case ETOILE_TYPE_TROU_NOIR: // trou noir
+			gfx_SetColor(COLOR_STAR_BLACK_HOLE);
+			break;
+		case ETOILE_TYPE_PULSAR: // pulsar
+			gfx_SetColor(COLOR_STAR_PULSAR);
+			break;
+		case ETOILE_TYPE_ETOILE_A_NEUTRONS: // étoile a neutrons
+			gfx_SetColor(COLOR_STAR_NEUTRINOS);
+			break;
+		default:
+			gfx_SetColor(COLOR_STAR_DEFAULT);
 			break;
 	}
 }
@@ -448,22 +425,19 @@ static void DessinerEtoile(SystemeStellaire *systeme, Camera* camera, Fenetre *f
 		gfx_FillCircle(xEtoile, yEtoile, rayon);
 	}
 	else{
+		CouleurEtoile(GetSystemStarType(systeme));
 		switch(GetSystemStarType(systeme)){
 			case ETOILE_TYPE_TROU_NOIR: //trou noir
-				gfx_SetColor(13);
 				gfx_Circle(xEtoile, yEtoile, 4);
 				break;
 			case ETOILE_TYPE_PULSAR: //pulsar
-				gfx_SetColor(14);
 				gfx_FillCircle(xEtoile, yEtoile, 1);
 				break;
 			case ETOILE_TYPE_ETOILE_A_NEUTRONS: ///toile a neutrons
-				gfx_SetColor(14);
 				gfx_FillCircle(xEtoile, yEtoile, 1);
 				gfx_Circle(xEtoile, yEtoile, 8);
 				break;
 			default:
-				gfx_SetColor(13);
 				gfx_Rectangle(xEtoile, yEtoile, 4, 4);
 		}
 	}
@@ -667,12 +641,12 @@ void DessinerBase(SystemeStellaire *systeme, Camera* camera, Fenetre* fenetre, c
 static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fenetre *fenetre, char* key){
 	Empire* empire = NULL;
 	Flotte* flotte = NULL;
-	int empireIndex = 1, fleetIndex = 1;
+	int empireIndex = 0, fleetIndex = 0;
 	int empireSize = 0;
 	int sizeFleet = 0;
 	int x, y;
 	gfx_SetColor(11);
-	empire = EmpireNumero(empireListe, 1);
+	empire = EmpireNumero(empireListe, 0);
 	fleetIndex = 0;
 	flotte = FlotteNumero(EmpireFleetGetArray(empire), 0);
 	sizeFleet = FleetArraySize(EmpireFleetGetArray(empire));
@@ -724,10 +698,10 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Fen
 			}
 		}
 		fleetIndex++;
-		flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 1)), fleetIndex);
+		flotte = FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 0)), fleetIndex);
 	}
-	empire = EmpireNumero(empireListe, 2);
-	empireIndex = 2;
+	empire = EmpireNumero(empireListe, 1);
+	empireIndex = 1;
 	empireSize = EmpireArraySize(empireListe);
 	while(empireIndex <= empireSize){
 		fleetIndex = 0;
@@ -814,7 +788,7 @@ static void DessinerVueSysteme(SystemeStellaire **systemeStellaires, Camera* cam
  *contient aussi la gestion des évenements
  */
 void DrawMap(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Parametres *parametres){
-	Empire *joueur = EmpireNumero(empireListe, 1);
+	Empire *joueur = EmpireNumero(empireListe, 0);
 	gfx_SetColor(1);
 	if(GetCameraMapType(camera) == NORMAL) {
 		//gere les événements des touches

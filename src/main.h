@@ -19,6 +19,7 @@
 #define LARGEUR_GALAXIE 11
 
 #define TEXT_BG_COLOR 2
+#define TEXT_HEIGHT 8
 
 #define LIMITE_GAUCHE 180
 #define LIMITE_HAUT 160

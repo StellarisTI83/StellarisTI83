@@ -69,7 +69,7 @@ void GenericCellAdd(GenericList *list, void *info) {
 
 void *GenericCellGet(GenericList *list, int number) {
     GenericListElement *cell = list->firstElement;
-    int  actualCell = 1;
+    int  actualCell = 0;
     while(cell != NULL){
         if(actualCell == number){
             return cell->element;
@@ -109,7 +109,7 @@ void FreeGenericCell(GenericList *list, int number) {
 
 int GenericCellGetNumber(GenericList *list, void *info) {
     GenericListElement *temporaryCell = list->firstElement;
-    int  actualCell = 1;
+    int  actualCell = 0;
     while(temporaryCell != NULL){
         if(temporaryCell->element == info)
             return actualCell;

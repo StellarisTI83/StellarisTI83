@@ -1,15 +1,12 @@
 #include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <tice.h>
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
 #include <math.h>
-#include <errno.h>
+
+#include "main.h"
 
 #include "planetes.h"
 
@@ -111,8 +108,12 @@ int GetPlanetRadius(Planete *planete){
 }
 
 void SetPlanetName(Planete *planete, char* string){
-	if(strlen(string) < 9)
+	if(strlen(string) <= 9)
 		strcpy(planete->nom, string);
+	#ifdef DEBUG_VERSION
+	else
+		dbg_sprintf(dbgerr, "Name %s too long\n", string);
+	#endif
 }
 char* GetPlanetName(Planete *planete){
 	return planete->nom;

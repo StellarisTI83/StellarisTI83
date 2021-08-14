@@ -103,11 +103,11 @@ EmpireListe* EmpireListeCreer() {
  */
 void EmpireListeSupprimer(EmpireListe* empireListe) {
 	Empire *empire = NULL;
-	int i = 1;
+	int i = 0;
     empire = GenericCellGet((GenericList*)empireListe, i);
     while(empire != NULL) {
 		#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgout, "Free empire %d, ", i);
+		dbg_sprintf(dbgout, "Free empire %d", i);
 		#endif
 		if(empire->flotte)
 			SupprimerFlotteListe(empire->flotte);
@@ -148,7 +148,7 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
 void EmpireSupprimer(EmpireListe* empireListe, int numero) {
 	Empire *empire = GenericCellGet((GenericList*)empireListe, numero);
 	#ifdef DEBUG_VERSION
-	dbg_sprintf(dbgout, "Free empire %d, ", numero);
+	dbg_sprintf(dbgout, "Free empire %d", numero);
 	#endif
 	SupprimerFlotteListe(empire->flotte);
 	free(empire);
@@ -480,7 +480,7 @@ RelationsListe* RelationListeCreer() {
 void RelationAllListeUpdate(EmpireListe* empireListe) {
 	Empire* empire;
 	Relations* relations;
-	int index = 1;
+	int index = 0;
 	empire = EmpireNumero(empireListe, index);
 	while(empire != NULL) {
 		empire->relationsListe = RelationListeCreer();
@@ -499,8 +499,8 @@ void RelationAllListeUpdate(EmpireListe* empireListe) {
 void RelationListeUpdate(RelationsListe* relationsListe, EmpireListe* empireListe) {
 	Empire* empire;
 	Relations* relations;
-	int index = 1;
-	empire = EmpireNumero(empireListe, 1);
+	int index = 0;
+	empire = EmpireNumero(empireListe, 0);
 	while(empire != NULL) {
 		relations = RelationAjouter(relationsListe);
 		relations->empire = empire;
@@ -658,11 +658,11 @@ static void EmpireAIMilitaryFleet(Empire *empire, EmpireListe *empireListe, Flot
 static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
 	FlotteListe *flotteListe = EmpireFleetGetArray(empire);
 	int tailleFlotte = FleetArraySize(flotteListe);
-	if(tailleFlotte > 1){
-		int compteurFlotte = 1;
+	if(tailleFlotte > 0){
+		int compteurFlotte = 0;
 		Flotte *flotte = NULL;
 
-		while(compteurFlotte <= tailleFlotte){
+		while(compteurFlotte < tailleFlotte){
 			flotte = FlotteNumero(flotteListe, compteurFlotte);
 			if(GetFleetType(flotte) == FLOTTE_MILITAIRE)
 				EmpireAIMilitaryFleet(empire, empireListe, flotte, systemeStellaires);
@@ -677,13 +677,13 @@ static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, Syste
 
 void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date){
 	Empire *empire = NULL;
-	int empireCounter = 2;
+	int empireCounter = 1;
 	int empireTotalNumber = 0;
 
 	PlanetaryAI(empireListe, systemeStellaires);
 
 	empireTotalNumber = EmpireArraySize(empireListe);
-	while(empireCounter <= empireTotalNumber){
+	while(empireCounter < empireTotalNumber){
 		empire = EmpireNumero(empireListe, empireCounter);
 
 		EmpireAIEconomy(empireCounter, empire, empireListe, systemeStellaires, date);

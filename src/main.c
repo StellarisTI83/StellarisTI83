@@ -68,7 +68,7 @@ static void InitializeAll(EmpireListe **empireListe){
 
 	*empireListe = EmpireListeCreer();
 	joueur = EmpireAjouter(*empireListe);
-	EmpireFlotteCreer(EmpireNumero(*empireListe, 1));
+	EmpireFlotteCreer(EmpireNumero(*empireListe, 0));
 	
 }
 
@@ -223,7 +223,7 @@ static void Options(){
  * Menu principal
  */
 static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
-	char choix = 0, fin = 0, key = 0;
+	char choix = 1, fin = 0, key = 0;
 	int espacement = 0, niveau = 0, index = 0;
 	VecteurStation vecteurStation;
 	char string[20];
@@ -332,7 +332,8 @@ static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
 			break;
 		case 1:
 			gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
-			fin = NouvellePartieAvertissement(empireListe, parametres);
+			// fin = NouvellePartieAvertissement(empireListe, parametres);
+			fin = 0;
 			if (fin == 0){
 				/*lancer la nouvelle partie*/
 				ChargementNouvellePartie(empireListe, parametres);
@@ -473,7 +474,7 @@ int main(void){
 	
 	gfx_End();
 	#ifdef DEBUG_VERSION
-    	dbg_sprintf(dbgout, "\nClose Stellaris2\n\n");
+    	dbg_sprintf(dbgout, "\nClose Stellaris\n\n");
 	#endif
 	
     return 0;

@@ -95,7 +95,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres){
 	char key = 0, fin = 1;
 	int choix = 0;
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(empireListe, 1);
+	joueur = EmpireNumero(empireListe, 0);
 	while(fin) {
 		choix = GetEmpireSpecies(joueur);
 		do {
@@ -171,7 +171,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres){
 int NouvellePartieGouvernement(EmpireListe *empireListe, Parametres *parametres){
 	char key = 0, choix = 0, fin = 1;
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(empireListe, 1);
+	joueur = EmpireNumero(empireListe, 0);
 	while(fin) {
 		choix = 0;
 		do {
@@ -699,7 +699,7 @@ int NouvellePartiePrincipes(EmpireListe *empireListe, Parametres *parametres) {
 int NouvellePartieNom(EmpireListe *empireListe, Parametres *parametres) {
 	char key = 0, fin = 1, lettre = 0, majuscule = 1, curseur = 0, finBoucle = 0, erreur = 0;
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(empireListe, 1);
+	joueur = EmpireNumero(empireListe, 0);
 	while(fin) {
 		finBoucle = 0;
 		do {
@@ -956,7 +956,7 @@ int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
 	char key = 0, choix = 0, fin = 1, nombresEmpires = 4;
 	char nombreEmpiresChar[3] = "";
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(empireListe, 1);
+	joueur = EmpireNumero(empireListe, 0);
 
 	while(fin) {
 		do {
@@ -1023,7 +1023,7 @@ int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
  */
 static int InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **camera, Fenetre **fenetre, Marche **marche, Parametres **parametres, ti_var_t *sauvegarde){
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(*empireListe, 1);
+	joueur = EmpireNumero(*empireListe, 0);
 	ti_CloseAll();
 	*sauvegarde = ti_Open("sauv", "w");
 

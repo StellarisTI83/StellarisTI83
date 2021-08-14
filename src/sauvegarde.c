@@ -106,7 +106,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 		}
 		i++;
 	}
-	joueur = EmpireNumero(empireListe, 1);
+	joueur = EmpireNumero(empireListe, 0);
 
 	
 

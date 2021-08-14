@@ -11,6 +11,8 @@
 #include <math.h>
 #include <errno.h>
 
+#include "main.h"
+
 #include "systemes.h"
 #include "stations.h"
 
@@ -123,8 +125,12 @@ int GetSystemEmpire(SystemeStellaire *systemeStellaire){
 }
 
 void SetSystemName(SystemeStellaire *systemeStellaire, char* string){
-	if(strlen(string) < 9)
+	if(strlen(string) <= 9)
 		strcpy(systemeStellaire->nom, string);
+	#ifdef DEBUG_VERSION
+	else
+		dbg_sprintf(dbgerr, "Name %s too long\n", string);
+	#endif
 }
 char* GetSystemName(SystemeStellaire *systemeStellaire){
 	return systemeStellaire->nom;
