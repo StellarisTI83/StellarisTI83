@@ -51,9 +51,9 @@ int QuitterNouvellePartieAvertissement(){
 	char key = 0, choix = 1;
 	do {
 		gfx_FillScreen(1);
-		PrintCentered("ATTENTION", 50, 2, 3, 0);
-		PrintCentered("Voulez-vous", 80, 2, 0, 0);
-		PrintCentered("vraiment quitter?", 100, 2, 0, 0);
+		mainMenu_PrintSized("ATTENTION", 50, 2, 3, 0);
+		mainMenu_PrintSized("Voulez-vous", 80, 2, 0, 0);
+		mainMenu_PrintSized("vraiment quitter?", 100, 2, 0, 0);
 		switch (key) {
 		case sk_Right:
 			choix++;
@@ -67,12 +67,12 @@ int QuitterNouvellePartieAvertissement(){
 		/*dessiner le choix*/
 		switch (choix) {
 		case 0:
-			PrintCentered("oui    ", 160, 2, 4, 0);
-			PrintCentered("    non",160, 2, 0, 0);
+			mainMenu_PrintSized("oui    ", 160, 2, 4, 0);
+			mainMenu_PrintSized("    non",160, 2, 0, 0);
 			break;
 		case 1:
-			PrintCentered("oui    ", 160, 2, 0, 0);
-			PrintCentered("    non", 160, 2, 4, 0);
+			mainMenu_PrintSized("oui    ", 160, 2, 0, 0);
+			mainMenu_PrintSized("    non", 160, 2, 4, 0);
 			break;
 		}
 		gfx_SwapDraw();
@@ -101,7 +101,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres){
 		do {
 			gfx_SwapDraw();		
 			gfx_FillScreen(1);
-			PrintCentered("Esp~ce", 20, 3, 0, 0);
+			mainMenu_PrintSized("Esp~ce", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
 			
@@ -127,28 +127,28 @@ int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres){
 			/*dessiner le choix*/
 			switch (choix) {
 			case 0:
-				PrintCentered("Humaine", 70, 2, 4, 30);
-				PrintCentered("Mamalienne", 110, 2, 0, 30);
-				PrintCentered("Molluscoide", 150, 2, 0, 30);
-				PrintCentered("Reptilienne", 190, 2, 0, 30);
+				mainMenu_PrintSized("Humaine", 70, 2, 4, 30);
+				mainMenu_PrintSized("Mamalienne", 110, 2, 0, 30);
+				mainMenu_PrintSized("Molluscoide", 150, 2, 0, 30);
+				mainMenu_PrintSized("Reptilienne", 190, 2, 0, 30);
 				break;
 			case 1:
-				PrintCentered("Humaine", 70, 2, 0, 30);
-				PrintCentered("Mamalienne", 110, 2, 4, 30);
-				PrintCentered("Molluscoide", 150, 2, 0, 30);
-				PrintCentered("Reptilienne", 190, 2, 0, 30);
+				mainMenu_PrintSized("Humaine", 70, 2, 0, 30);
+				mainMenu_PrintSized("Mamalienne", 110, 2, 4, 30);
+				mainMenu_PrintSized("Molluscoide", 150, 2, 0, 30);
+				mainMenu_PrintSized("Reptilienne", 190, 2, 0, 30);
 				break;
 			case 2:
-				PrintCentered("Humaine", 70, 2, 0, 30);
-				PrintCentered("Mamalienne", 110, 2, 0, 30);
-				PrintCentered("Molluscoide", 150, 2, 4, 30);
-				PrintCentered("Reptilienne", 190, 2, 0, 30);
+				mainMenu_PrintSized("Humaine", 70, 2, 0, 30);
+				mainMenu_PrintSized("Mamalienne", 110, 2, 0, 30);
+				mainMenu_PrintSized("Molluscoide", 150, 2, 4, 30);
+				mainMenu_PrintSized("Reptilienne", 190, 2, 0, 30);
 				break;
 			case 3:
-				PrintCentered("Humaine", 70, 2, 0, 30);
-				PrintCentered("Mamalienne", 110, 2, 0, 30);
-				PrintCentered("Molluscoide", 150, 2, 0, 30);
-				PrintCentered("Reptilienne", 190, 2, 4, 30);
+				mainMenu_PrintSized("Humaine", 70, 2, 0, 30);
+				mainMenu_PrintSized("Mamalienne", 110, 2, 0, 30);
+				mainMenu_PrintSized("Molluscoide", 150, 2, 0, 30);
+				mainMenu_PrintSized("Reptilienne", 190, 2, 4, 30);
 				break;
 			}
 		} while(((key = os_GetCSC()) != sk_Enter) && (key != sk_Clear));
@@ -178,7 +178,7 @@ int NouvellePartieGouvernement(EmpireListe *empireListe, Parametres *parametres)
 			gfx_SwapDraw();
 			
 			gfx_FillScreen(1);
-			PrintCentered("Gouvernement", 20, 3, 0, 0);
+			mainMenu_PrintSized("Gouvernement", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
 			
@@ -207,28 +207,28 @@ int NouvellePartieGouvernement(EmpireListe *empireListe, Parametres *parametres)
 			switch (choix)
 			{
 				case 0:
-					PrintCentered("D/mocratie", 70, 2, 4, 30);
-					PrintCentered("Dictature", 110, 2, 0, 30);
-					PrintCentered("Corporation", 150, 2, 0, 30);
-					PrintCentered("Ruche", 190, 2, 0, 30);
+					mainMenu_PrintSized("D/mocratie", 70, 2, 4, 30);
+					mainMenu_PrintSized("Dictature", 110, 2, 0, 30);
+					mainMenu_PrintSized("Corporation", 150, 2, 0, 30);
+					mainMenu_PrintSized("Ruche", 190, 2, 0, 30);
 					break;
 				case 1:
-					PrintCentered("D/mocratie", 70, 2, 0, 30);
-					PrintCentered("Dictature", 110, 2, 4, 30);
-					PrintCentered("Corporation", 150, 2, 0, 30);
-					PrintCentered("Ruche", 190, 2, 0, 30);
+					mainMenu_PrintSized("D/mocratie", 70, 2, 0, 30);
+					mainMenu_PrintSized("Dictature", 110, 2, 4, 30);
+					mainMenu_PrintSized("Corporation", 150, 2, 0, 30);
+					mainMenu_PrintSized("Ruche", 190, 2, 0, 30);
 					break;
 				case 2:
-					PrintCentered("D/mocratie", 70, 2, 0, 30);
-					PrintCentered("Dictature", 110, 2, 0, 30);
-					PrintCentered("Corporation", 150, 2, 4, 30);
-					PrintCentered("Ruche", 190, 2, 0, 30);
+					mainMenu_PrintSized("D/mocratie", 70, 2, 0, 30);
+					mainMenu_PrintSized("Dictature", 110, 2, 0, 30);
+					mainMenu_PrintSized("Corporation", 150, 2, 4, 30);
+					mainMenu_PrintSized("Ruche", 190, 2, 0, 30);
 					break;
 				case 3:
-					PrintCentered("D/mocratie", 70, 2, 0, 30);
-					PrintCentered("Dictature", 110, 2, 0, 30);
-					PrintCentered("Corporation", 150, 2, 0, 30);
-					PrintCentered("Ruche", 190, 2, 4, 30);
+					mainMenu_PrintSized("D/mocratie", 70, 2, 0, 30);
+					mainMenu_PrintSized("Dictature", 110, 2, 0, 30);
+					mainMenu_PrintSized("Corporation", 150, 2, 0, 30);
+					mainMenu_PrintSized("Ruche", 190, 2, 4, 30);
 					break;
 			}
 		} while(((key = os_GetCSC()) != sk_Enter) && (key != sk_Clear));
@@ -256,7 +256,7 @@ int NouvellePartiePrincipes(EmpireListe *empireListe, Parametres *parametres) {
 		do {
 			gfx_SwapDraw();
 			gfx_FillScreen(1);
-			PrintCentered("Morales", 20, 3, 0, 0);
+			mainMenu_PrintSized("Morales", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
 			
@@ -708,10 +708,10 @@ int NouvellePartieNom(EmpireListe *empireListe, Parametres *parametres) {
 			}
 			gfx_SwapDraw();
 			gfx_FillScreen(1);
-			PrintCentered("Nom", 20, 3, 0, 20);
-			PrintCentered("Choississez le nom", 65, 1, 0, 30); 
-			PrintCentered("de votre empire :", 80, 1, 0, 30); 
-			PrintCentered("Entrer quand vous avez fini", 200, 1, 0, 30); 
+			mainMenu_PrintSized("Nom", 20, 3, 0, 20);
+			mainMenu_PrintSized("Choississez le nom", 65, 1, 0, 30); 
+			mainMenu_PrintSized("de votre empire :", 80, 1, 0, 30); 
+			mainMenu_PrintSized("Entrer quand vous avez fini", 200, 1, 0, 30); 
 			gfx_SetColor(6);
 			
 			if(erreur != 0) {
@@ -963,7 +963,7 @@ int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
 			gfx_SwapDraw();
 			
 			gfx_FillScreen(1);
-			PrintCentered("Parametres", 20, 3, 0, 0);
+			mainMenu_PrintSized("Parametres", 20, 3, 0, 0);
 			
 			gfx_SetColor(6);
 			
@@ -1001,8 +1001,8 @@ int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
 			/*dessiner le choix*/
 			switch (choix) {
 			case 0:
-				PrintCentered("Nombre d'empires", 70, 2, 4, 30);
-				PrintCentered(nombreEmpiresChar, 100, 2, 4, 30);
+				mainMenu_PrintSized("Nombre d'empires", 70, 2, 4, 30);
+				mainMenu_PrintSized(nombreEmpiresChar, 100, 2, 4, 30);
 				break;
 			}
 		} while(((key = os_GetCSC()) != sk_Enter) && (key != sk_Clear));
@@ -1023,8 +1023,12 @@ int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
  */
 static int InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **camera, Fenetre **fenetre, Marche **marche, Parametres **parametres, ti_var_t *sauvegarde){
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(*empireListe, 0);
 	ti_CloseAll();
+
+	*empireListe = EmpireListeCreer();
+	EmpireAjouter(*empireListe);
+	EmpireFlotteCreer(EmpireNumero(*empireListe, 0));
+
 	*sauvegarde = ti_Open("sauv", "w");
 
 	*parametres = AllocParametres();
@@ -1068,10 +1072,10 @@ int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres
 	while(fin){
 		do{
 			gfx_FillScreen(7);
-			PrintCentered("ATTENTION", 50, 2, 3, 0);
-			PrintCentered("Cela supprimera", 80, 2, 1, 0);
-			PrintCentered("toute sauvegarde", 100, 2, 1, 0);
-			PrintCentered("Continuer?", 140, 2, 1, 0);
+			mainMenu_PrintSized("ATTENTION", 50, 2, 3, 0);
+			mainMenu_PrintSized("Cela supprimera", 80, 2, 1, 0);
+			mainMenu_PrintSized("toute sauvegarde", 100, 2, 1, 0);
+			mainMenu_PrintSized("Continuer?", 140, 2, 1, 0);
 			switch (key){
 				case sk_Right:
 					choix++;
@@ -1090,12 +1094,12 @@ int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres
 			/*dessiner le choix*/
 			switch (choix){
 			case 0:
-				PrintCentered("oui    ", 180, 2, 4, 0);
-				PrintCentered("    non",180, 2, 1, 0);
+				mainMenu_PrintSized("oui    ", 180, 2, 4, 0);
+				mainMenu_PrintSized("    non",180, 2, 1, 0);
 				break;
 			case 1:
-				PrintCentered("oui    ", 180, 2, 1, 0);
-				PrintCentered("    non", 180, 2, 4, 0);
+				mainMenu_PrintSized("oui    ", 180, 2, 1, 0);
+				mainMenu_PrintSized("    non", 180, 2, 4, 0);
 				break;
 			}
 			gfx_SwapDraw();
@@ -1123,7 +1127,7 @@ int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres
 /**
  * Entrée de la création d'une nouvelle partie
  */
-void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
+void ChargementNouvellePartie(){
 	ti_var_t sauvegarde;
 	char fin = 0;
 	Date *date = NULL;
@@ -1132,6 +1136,8 @@ void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres){
 	Marche *marche = NULL;
 	SystemeStellaire *systemeStellaires[LARGEUR_GALAXIE * LARGEUR_GALAXIE];
 	NotificationList *notificationList = CreateNotificationList();
+	EmpireListe *empireListe = NULL;
+	Parametres *parametres = NULL;
 	
 	InitializeNewGame(&empireListe, &date, &camera, &fenetre, &marche, &parametres, &sauvegarde);
 

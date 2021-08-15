@@ -20,7 +20,7 @@ struct _genericList {
 
 /* entry points ======================================================== */
 
-GenericList *CreateGenericList() {
+GenericList *GenericList_Create() {
     GenericList *list = malloc(sizeof(GenericList));
 	if(!list){
 		#ifdef DEBUG_VERSION
@@ -32,7 +32,7 @@ GenericList *CreateGenericList() {
     return list;
 }
 
-void FreeGenericList(GenericList *list) {
+void GenericList_Free(GenericList *list) {
     GenericListElement *cell = NULL;
     while(list->firstElement != NULL) {
         cell = list->firstElement;
@@ -42,7 +42,17 @@ void FreeGenericList(GenericList *list) {
     free(list);
 }
 
-void GenericCellAdd(GenericList *list, void *info) {
+int GenericList_ArraySize(GenericList *list) {
+    GenericListElement *cell = list->firstElement;
+    int size = 0;
+    while(cell != NULL) {
+        cell = cell->nextElement;
+        size++;
+    }
+    return size;
+}
+
+void GenericCell_Add(GenericList *list, void *info) {
     GenericListElement *cell = calloc(1, sizeof(GenericListElement));
 
 	if(!cell){
@@ -67,11 +77,11 @@ void GenericCellAdd(GenericList *list, void *info) {
     }
 }
 
-void *GenericCellGet(GenericList *list, int number) {
+void *GenericCell_Get(GenericList *list, int index) {
     GenericListElement *cell = list->firstElement;
     int  actualCell = 0;
     while(cell != NULL){
-        if(actualCell == number){
+        if(actualCell == index){
             return cell->element;
             #ifdef DEBUG_VERSION
                 dbg_sprintf(dbgout, "Cell: %p, Next: %p\n", cell, cell->nextElement);
@@ -84,18 +94,18 @@ void *GenericCellGet(GenericList *list, int number) {
     return NULL;
 }
 
-void FreeGenericCell(GenericList *list, int number) {
+void GenericCell_Free(GenericList *list, int index) {
     GenericListElement *temporaryCell = list->firstElement;
-    if(number == 1) {
+    if(index == 0) {
         GenericListElement *cell = list->firstElement;
         list->firstElement = temporaryCell->nextElement;
         free(cell);
         return;
     }
     else {
-        int actualCell = 2;
+        int actualCell = 1;
         while(temporaryCell->nextElement != NULL) {
-            if(actualCell == number) {
+            if(actualCell == index) {
                 GenericListElement *cell = temporaryCell->nextElement;
                 temporaryCell->nextElement = temporaryCell->nextElement->nextElement;
                 free(cell);
@@ -107,7 +117,7 @@ void FreeGenericCell(GenericList *list, int number) {
     }
 }
 
-int GenericCellGetNumber(GenericList *list, void *info) {
+int GenericCell_GetNumber(GenericList *list, void *info) {
     GenericListElement *temporaryCell = list->firstElement;
     int  actualCell = 0;
     while(temporaryCell != NULL){
@@ -118,14 +128,4 @@ int GenericCellGetNumber(GenericList *list, void *info) {
         actualCell++;
     }
     return 0;
-}
-
-int GenericListArraySize(GenericList *list) {
-    GenericListElement *cell = list->firstElement;
-    int size = 0;
-    while(cell != NULL) {
-        cell = cell->nextElement;
-        size++;
-    }
-    return size;
 }

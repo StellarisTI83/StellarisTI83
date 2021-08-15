@@ -10,6 +10,6 @@
 int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres);
 void PrintText(const char *str, int x, int y, int taille, int color);
 
-void ChargementNouvellePartie(EmpireListe *empireListe, Parametres *parametres);
+void ChargementNouvellePartie();
 
 #endif

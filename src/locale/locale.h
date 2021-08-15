@@ -3,6 +3,8 @@
 #define _LOCALE_INCLUDE
 
 
+#define _(String) gettext(String)
+
 enum _localeLanguageEnum {
     LC_FR, LC_EN
 };
@@ -21,7 +23,7 @@ typedef enum _local_keys local_keys;
 
 void setLanguage(char languageNumber);
 
-char getLanguage();
+localeLanguageEnum getLanguage();
 char initializeLanguage();
 char* gettext(local_keys numero);
 

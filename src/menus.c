@@ -249,7 +249,7 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 		}
 		gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Flotte ");
-		PrintInt(RecupererFlotteNumero(EmpireFleetGetArray(joueur), flotteDuSysteme[i]) + 1);
+		mainMenu_PrintInt(RecupererFlotteNumero(EmpireFleetGetArray(joueur), flotteDuSysteme[i]) + 1);
 		gfx_HorizLine_NoClip(50, niveau + 11, 220);
 		niveau += 17;
 		i++;
@@ -453,30 +453,30 @@ static void MenuSystemePlaneteResume(char *key, SystemeStellaire **systemeStella
 	if(GetPlanetCityPopulation(planete) > 0){
 		gfx_SetTextXY(157, 84);
 		gfx_TransparentSprite_NoClip(criminality_pop_icon, 150, 84);
-		PrintInt(GetPlanetCityCrimianity(planete));
+		mainMenu_PrintInt(GetPlanetCityCrimianity(planete));
 		
 		gfx_SetTextXY(157, 94);
 		gfx_TransparentSprite_NoClip(free_houses_icon, 150, 94);
-		PrintInt(GetPlanetCityUrbanDistrictNumber(planete));
+		mainMenu_PrintInt(GetPlanetCityUrbanDistrictNumber(planete));
 		
 		gfx_SetTextXY(157, 104);
 		gfx_TransparentSprite_NoClip(amienties_icon, 150, 104);
-		PrintInt(GetPlanetCityAmienties(planete));
+		mainMenu_PrintInt(GetPlanetCityAmienties(planete));
 
 		gfx_SetTextXY(157, 114);
 		gfx_TransparentSprite_NoClip(free_job_icon, 150, 114);
 		if(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete) > 0){
-			PrintInt(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete));
+			mainMenu_PrintInt(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete));
 		} else {
-			PrintInt(0);
+			mainMenu_PrintInt(0);
 		}
 		
 		gfx_SetTextXY(157, 124);
 		gfx_TransparentSprite_NoClip(unemployed_pop_icon, 150, 124);
 		if(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete) < 0) {
-			PrintInt(-(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete)));
+			mainMenu_PrintInt(-(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete)));
 		} else {
-			PrintInt(0);
+			mainMenu_PrintInt(0);
 		}
 
 		niveau = 158;
@@ -534,21 +534,21 @@ static void OrdreDistrictNom(Villes *villes){
 				break;
 			case CONSTRUIRE_BATIMENT:
 				gfx_PrintString("Construit batiment ");
-				PrintInt(GetOrderInfo1(ordreQueue));
+				mainMenu_PrintInt(GetOrderInfo1(ordreQueue));
 				break;
 		}
 		if(GetOrder(ordreQueue) != AUCUN_ORDRE_VILLE){
 			gfx_SetTextXY(45, niveau += 9);
 			gfx_PrintString("(");
 			gfx_SetTextFGColor(13);
-			PrintInt((GetOrderTotalTime(ordreQueue) - GetOrderProgress(ordreQueue)) * 100 / 12);
+			mainMenu_PrintInt((GetOrderTotalTime(ordreQueue) - GetOrderProgress(ordreQueue)) * 100 / 12);
 			gfx_PrintString("%");
 			gfx_SetTextFGColor(1);
 			gfx_PrintString(")");
 			nombredOrdres = NombredOrdres(ordreQueue);
 			if(nombredOrdres > 1){
 				gfx_PrintString(" (+");
-				PrintInt(nombredOrdres - 1);
+				mainMenu_PrintInt(nombredOrdres - 1);
 				gfx_PrintString(")");
 			}
 		}
@@ -598,7 +598,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 		gfx_SetTextXY(50, niveau + 2);
 		gfx_PrintString("Districts urbains");
 		gfx_SetTextXY(50, niveau + 12);
-		PrintInt(GetPlanetCityUrbanDistrictNumber(planete));
+		mainMenu_PrintInt(GetPlanetCityUrbanDistrictNumber(planete));
 		gfx_PrintString("|10");
 
 		niveau += 24;
@@ -613,7 +613,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 		gfx_SetTextXY(50, niveau + 2);
 		gfx_PrintString("Districts g/n/rateurs");
 		gfx_SetTextXY(50, niveau + 12);
-		PrintInt(GetPlanetCityGeneratorDistrictNumber(planete));
+		mainMenu_PrintInt(GetPlanetCityGeneratorDistrictNumber(planete));
 		gfx_PrintString("|10");
 
 		niveau += 24;
@@ -628,7 +628,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 		gfx_SetTextXY(50, niveau + 2);
 		gfx_PrintString("Districts miniers");
 		gfx_SetTextXY(50, niveau + 12);
-		PrintInt(GetPlanetCityMiningDistrictNumber(planete));
+		mainMenu_PrintInt(GetPlanetCityMiningDistrictNumber(planete));
 		gfx_PrintString("|10");
 
 		niveau += 24;
@@ -643,7 +643,7 @@ static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStel
 		gfx_SetTextXY(50, niveau + 2);
 		gfx_PrintString("Districts agricoles");
 		gfx_SetTextXY(50, niveau + 12);
-		PrintInt(GetPlanetCityAgricultureDistrictNumber(planete));
+		mainMenu_PrintInt(GetPlanetCityAgricultureDistrictNumber(planete));
 		gfx_PrintString("|10");
 	}
 	OrdreDistrictNom(GetPlanetCity(planete));
@@ -815,7 +815,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Batiment ");
-	PrintInt(GetWindowPrevious(fenetre));
+	mainMenu_PrintInt(GetWindowPrevious(fenetre));
 	
 	gfx_SetTextFGColor(1);
 	if(GetWindowSelection(fenetre) == 1){
@@ -826,7 +826,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	PrintInt(0);
+	mainMenu_PrintInt(0);
 	niveau += 15;
 
 	gfx_SetTextFGColor(1);
@@ -841,7 +841,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 	if(GetEmpireAlloys(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(400);
+	mainMenu_PrintInt(400);
 	niveau += 15;
 
 	gfx_SetTextFGColor(1);
@@ -856,7 +856,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 	if(GetEmpireAlloys(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(400);
+	mainMenu_PrintInt(400);
 	niveau += 15;
 
 	gfx_SetTextFGColor(1);
@@ -871,7 +871,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 	if(GetEmpireAlloys(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(400);
+	mainMenu_PrintInt(400);
 	niveau += 15;
 
 	gfx_SetTextFGColor(1);
@@ -886,7 +886,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 	if(GetEmpireAlloys(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(400);
+	mainMenu_PrintInt(400);
 	niveau += 15;
 
 	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)]) != -1){
@@ -1227,22 +1227,22 @@ static void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStella
 	gfx_SetTextFGColor(34);
 	gfx_SetTextXY(50, niveau);
 	gfx_TransparentSprite_NoClip(life_icon, 45, niveau + 1);
-	PrintInt(GetFleetHullPourcent(flotte));
+	mainMenu_PrintInt(GetFleetHullPourcent(flotte));
 	gfx_PrintString("%");
 	gfx_SetTextXY(170, niveau);
 	gfx_TransparentSprite_NoClip(blindage_icon, 45, niveau + 1);
-	PrintInt(GetFleetArmorPourcent(flotte));
+	mainMenu_PrintInt(GetFleetArmorPourcent(flotte));
 	gfx_PrintString("%");
 	niveau += 14;
 	gfx_SetTextXY(50, niveau);
 	gfx_TransparentSprite_NoClip(bouclier_icon, 45, niveau);
-	PrintInt(GetFleetShieldPourcent(flotte));
+	mainMenu_PrintInt(GetFleetShieldPourcent(flotte));
 	gfx_PrintString("%");
 	if(GetFleetType(flotte) == FLOTTE_MILITAIRE){
 		gfx_SetTextFGColor(18);
 		gfx_SetTextXY(170, niveau);
 		gfx_TransparentSprite_NoClip(fleet_power_icon, 165, niveau + 2);
-		PrintInt(GetFleetPower(flotte));
+		mainMenu_PrintInt(GetFleetPower(flotte));
 	}
 	gfx_SetTextFGColor(1);
 	
@@ -1273,25 +1273,25 @@ static void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStella
 
 			//ecrire la liste des vaisseaux
 			gfx_SetTextXY(45, niveau);
-			PrintInt(GetFleetCorvetteNumber(flotte));
+			mainMenu_PrintInt(GetFleetCorvetteNumber(flotte));
 			gfx_PrintString(" Corvette(s)");
 			gfx_SetTextFGColor(1);
 
 			gfx_SetTextXY(165, niveau);
 			niveau += 14;
-			PrintInt(GetFleetDestroyerNumber(flotte));
+			mainMenu_PrintInt(GetFleetDestroyerNumber(flotte));
 			gfx_PrintString(" Destroyer(s)");
 			gfx_SetTextFGColor(1);
 			
 			gfx_SetTextXY(45, niveau);
-			PrintInt(GetFleetCruiserNumber(flotte));
+			mainMenu_PrintInt(GetFleetCruiserNumber(flotte));
 			gfx_PrintString(" Croiseur(s)");
 			gfx_SetTextFGColor(1);
 
 			
 			gfx_SetTextXY(165, niveau);
 			niveau += 14;
-			PrintInt(GetFleetBattleshipNumber(flotte));
+			mainMenu_PrintInt(GetFleetBattleshipNumber(flotte));
 			gfx_PrintString(" Cuirass/(s)");
 			gfx_SetTextFGColor(1);
 
@@ -1484,7 +1484,7 @@ static char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOr
 		if(nombredOrdres > 1){
 			gfx_PrintString("(+");
 			gfx_SetTextFGColor(13);
-			PrintInt(nombredOrdres - 1);
+			mainMenu_PrintInt(nombredOrdres - 1);
 			gfx_SetTextFGColor(1);
 			gfx_PrintString(")");
 		}
@@ -1659,12 +1659,12 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
 		gfx_PrintString("Am/liorer");
 		gfx_SetTextXY(212 - strlen(evolution) * 4, 92);
 		gfx_PrintString(evolution);
-		gfx_SetTextXY(227 - TailleInt(prixAmelioration) * 4, 104);
-		gfx_TransparentSprite_NoClip(fer, 212 - TailleInt(prixAmelioration) * 4, 103);
+		gfx_SetTextXY(227 - mainMenu_IntLen(prixAmelioration) * 4, 104);
+		gfx_TransparentSprite_NoClip(fer, 212 - mainMenu_IntLen(prixAmelioration) * 4, 103);
 		if(GetEmpireAlloys(joueur) < prixAmelioration){
 			gfx_SetTextFGColor(3);
 		}
-		PrintInt(prixAmelioration);
+		mainMenu_PrintInt(prixAmelioration);
 	}
 	else{
 		gfx_SetTextXY(212 - strlen("Am/lioration max") * 4, 92);
@@ -1688,21 +1688,21 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire
 	//ecrire les statistiques
 	gfx_SetTextXY(50, niveau);
 	gfx_TransparentSprite_NoClip(life_icon, 45, niveau + 1);
-	PrintInt(GetStationHullPourcent(station));
+	mainMenu_PrintInt(GetStationHullPourcent(station));
 	gfx_PrintString("%");
 	gfx_SetTextXY(170, niveau);
 	gfx_TransparentSprite_NoClip(blindage_icon, 165, niveau + 1);
-	PrintInt(GetStationArmorPourcent(station));
+	mainMenu_PrintInt(GetStationArmorPourcent(station));
 	gfx_PrintString("%");
 	niveau += 9;
 	gfx_SetTextXY(50, niveau);
 	gfx_TransparentSprite_NoClip(bouclier_icon, 45, niveau);
-	PrintInt(GetStationShieldPourcent(station));
+	mainMenu_PrintInt(GetStationShieldPourcent(station));
 	gfx_PrintString("%");
 	gfx_SetTextFGColor(18);
 	gfx_SetTextXY(170, niveau);
 	gfx_TransparentSprite_NoClip(fleet_power_icon, 165, niveau + 2);
-	PrintInt(GetStationPower(station));
+	mainMenu_PrintInt(GetStationPower(station));
 	
 	niveau = 181;
 	
@@ -1811,7 +1811,7 @@ static void EcrireModule(Module module, int selection, int numero, int *niveau){
 	if(selection == numero){gfx_SetTextFGColor(13);}
 	gfx_SetTextXY(144 - strlen("Module ") * 4, *niveau);
 	gfx_PrintString("Module ");
-	PrintInt(numero);
+	mainMenu_PrintInt(numero);
 	*niveau += 10;
 	ModuleNom(module, nomDuModule);
 	gfx_SetTextXY(160 - strlen(nomDuModule) * 4, *niveau);
@@ -2030,7 +2030,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Module ");
-	PrintInt(GetWindowPrevious(fenetre));
+	mainMenu_PrintInt(GetWindowPrevious(fenetre));
 	
 	if(GetWindowScroll(fenetre)<= 1){
 		gfx_SetTextFGColor(1);
@@ -2039,7 +2039,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
 		gfx_TransparentSprite_NoClip(fer, 45, niveau);
-		PrintInt(0);
+		mainMenu_PrintInt(0);
 		niveau += 15;
 	}
 
@@ -2053,7 +2053,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 		if(GetEmpireAlloys(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
-		PrintInt(50);
+		mainMenu_PrintInt(50);
 		niveau += 15;
 	}
 
@@ -2066,7 +2066,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 	if(GetEmpireAlloys(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(50);
+	mainMenu_PrintInt(50);
 	niveau += 15;
 
 	gfx_SetTextFGColor(1);
@@ -2078,7 +2078,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 	if(GetEmpireAlloys(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(50);
+	mainMenu_PrintInt(50);
 	niveau += 15;
 
 	gfx_SetTextFGColor(1);
@@ -2090,7 +2090,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 	if(GetEmpireAlloys(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(50);
+	mainMenu_PrintInt(50);
 	niveau += 15;
 
 	gfx_SetTextFGColor(1);
@@ -2102,7 +2102,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 	if(GetEmpireAlloys(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(50);
+	mainMenu_PrintInt(50);
 	niveau += 15;
 
 	if(GetWindowScroll(fenetre)>= 2){
@@ -2115,7 +2115,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 		if(GetEmpireAlloys(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
-		PrintInt(50);
+		mainMenu_PrintInt(50);
 		niveau += 15;
 	}
 
@@ -2129,7 +2129,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 		if(GetEmpireAlloys(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
-		PrintInt(50);
+		mainMenu_PrintInt(50);
 		niveau += 15;
 	}
 
@@ -2479,13 +2479,13 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeSt
 	gfx_PrintString(nom);
 	gfx_SetTextXY(45, 60);
 	gfx_PrintString("Nombre de vaisseaux : ");
-	PrintInt(GetWindowFleetSize(fenetre));
+	mainMenu_PrintInt(GetWindowFleetSize(fenetre));
 	gfx_SetTextXY(60, 74);
 	gfx_TransparentSprite_NoClip(fer, 45, 74);
 	if(GetWindowFleetSize(fenetre) * prix > GetEmpireAlloys(joueur)){
 		gfx_SetTextFGColor(3);
 	}
-	PrintInt(GetWindowFleetSize(fenetre) * prix);
+	mainMenu_PrintInt(GetWindowFleetSize(fenetre) * prix);
 
 	if(*key == sk_Enter){
 		if(GetEmpireAlloys(joueur) >= prix * GetWindowFleetSize(fenetre)){
@@ -2704,7 +2704,7 @@ static void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera
 		}
 		gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Flotte ");
-		PrintInt(compteurFlotte + 1);
+		mainMenu_PrintInt(compteurFlotte + 1);
 		gfx_SetColor(7);
 		gfx_HorizLine_NoClip(50, niveau + 12, 220);
 		niveau += 18;
@@ -2823,7 +2823,7 @@ static void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *cam
 		default:
 			gfx_SetTextXY(66, 64);
 			gfx_PrintString("Sprite Error :");
-			PrintInt(GetEmpireSpecies(empire));
+			mainMenu_PrintInt(GetEmpireSpecies(empire));
 			break;
 	}
 	switch(GetEmpireClothes(empire)){
@@ -2839,7 +2839,7 @@ static void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *cam
 		default:
 			gfx_SetTextXY(57, 88);
 			gfx_PrintString("Sprite Error :");
-			PrintInt(GetEmpireClothes(empire));
+			mainMenu_PrintInt(GetEmpireClothes(empire));
 			break;
 	}
 	
@@ -2853,27 +2853,27 @@ static void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *cam
 	gfx_SetTextXY(58, 122);
 	if(RelationGetOpinion(relations) < -750){
 		gfx_SetTextFGColor(3);
-		PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(RelationGetOpinion(relations));
 		gfx_PrintString(" Terribles");
 	}
 	else if(RelationGetOpinion(relations) < -300){
 		gfx_SetTextFGColor(9);
-		PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(RelationGetOpinion(relations));
 		gfx_PrintString(" Tendues");
 	}
 	else if(RelationGetOpinion(relations) < 300){
 		gfx_SetTextFGColor(13);
-		PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(RelationGetOpinion(relations));
 		gfx_PrintString(" Neutres");
 	}
 	else if(RelationGetOpinion(relations) < 750){
 		gfx_SetTextFGColor(19);
-		PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(RelationGetOpinion(relations));
 		gfx_PrintString(" Positives");
 	}
 	else{
 		gfx_SetTextFGColor(17);
-		PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(RelationGetOpinion(relations));
 		gfx_PrintString(" Excellentes");
 	}
 	
@@ -3105,7 +3105,7 @@ static void MenuContactsEffectuerAction(char *key, EmpireListe *empireListe, Cam
 		default:
 			gfx_SetTextXY(66, 64);
 			gfx_PrintString("Sprite Error :");
-			PrintInt(GetEmpireSpecies(empire));
+			mainMenu_PrintInt(GetEmpireSpecies(empire));
 			break;
 	}
 	switch(GetEmpireClothes(empire)){
@@ -3121,7 +3121,7 @@ static void MenuContactsEffectuerAction(char *key, EmpireListe *empireListe, Cam
 		default:
 			gfx_SetTextXY(57, 88);
 			gfx_PrintString("Sprite Error :");
-			PrintInt(GetEmpireClothes(empire));
+			mainMenu_PrintInt(GetEmpireClothes(empire));
 			break;
 	}
 	
@@ -3130,7 +3130,7 @@ static void MenuContactsEffectuerAction(char *key, EmpireListe *empireListe, Cam
 	gfx_SetTextXY(50, 120);
 	switch(GetWindowSelection(fenetre)) {
 		case(4):
-			PrintMultipleLines("Are you in great physical pain, or is that your thinking expression ?");
+			mainMenu_PrintMultipleLines("Are you in great physical pain, or is that your thinking expression ?");
 			gfx_SetTextXY(60, 187);
 			gfx_SetTextFGColor(13);
 			gfx_PrintString("Confirmer");

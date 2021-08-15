@@ -95,7 +95,7 @@ char * empireNamePrefix[] = {
  * Crée une liste d'empires
  */
 EmpireListe* EmpireListeCreer() {
-	return (EmpireListe*)CreateGenericList();
+	return (EmpireListe*)GenericList_Create();
 }
 
 /**
@@ -104,7 +104,7 @@ EmpireListe* EmpireListeCreer() {
 void EmpireListeSupprimer(EmpireListe* empireListe) {
 	Empire *empire = NULL;
 	int i = 0;
-    empire = GenericCellGet((GenericList*)empireListe, i);
+    empire = GenericCell_Get((GenericList*)empireListe, i);
     while(empire != NULL) {
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgout, "Free empire %d", i);
@@ -113,23 +113,23 @@ void EmpireListeSupprimer(EmpireListe* empireListe) {
 			SupprimerFlotteListe(empire->flotte);
         free(empire);
 		i++;
-        empire = GenericCellGet((GenericList*)empireListe, i);
+        empire = GenericCell_Get((GenericList*)empireListe, i);
     }
-	FreeGenericList((GenericList*)empireListe);
+	GenericList_Free((GenericList*)empireListe);
 }
 
 /**
  * Renvoi nombre d'empires
  */
 int EmpireArraySize(EmpireListe* empireListe){
-	return GenericListArraySize((GenericList*)empireListe);
+	return GenericList_ArraySize((GenericList*)empireListe);
 }
 
 /**
  * Renvoi un pointeur vers l'empire numero x
  */
 Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
-	return (Empire*)GenericCellGet((GenericList*)empireListe, numero);
+	return (Empire*)GenericCell_Get((GenericList*)empireListe, numero);
 }
 
 /**
@@ -138,7 +138,7 @@ Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
 Empire* EmpireAjouter(EmpireListe* empireListe) {
 	Empire *pointeur = NULL;
 	pointeur = calloc(1, sizeof(Empire));
-	GenericCellAdd((GenericList*)empireListe, pointeur);
+	GenericCell_Add((GenericList*)empireListe, pointeur);
 	return pointeur;
 }
 
@@ -146,13 +146,13 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
  *Supprime l'empire numero x à la liste des empires
  */
 void EmpireSupprimer(EmpireListe* empireListe, int numero) {
-	Empire *empire = GenericCellGet((GenericList*)empireListe, numero);
+	Empire *empire = GenericCell_Get((GenericList*)empireListe, numero);
 	#ifdef DEBUG_VERSION
 	dbg_sprintf(dbgout, "Free empire %d", numero);
 	#endif
 	SupprimerFlotteListe(empire->flotte);
 	free(empire);
-	FreeGenericCell((GenericList*)empireListe, numero);
+	GenericCell_Free((GenericList*)empireListe, numero);
 }
 
 /**
@@ -471,7 +471,7 @@ int GetEmpirePowerEconomic(Empire *empire){
  * Crée une liste de relations
  */
 RelationsListe* RelationListeCreer() {
-	return (RelationsListe*)CreateGenericList();
+	return (RelationsListe*)GenericList_Create();
 }
 
 /**
@@ -514,21 +514,21 @@ void RelationListeUpdate(RelationsListe* relationsListe, EmpireListe* empireList
  * Supprime une liste de relations
  */
 void RelationListeSupprimer(RelationsListe* relationsListe) {
-	FreeGenericList((RelationsListe*)relationsListe);
+	GenericList_Free((RelationsListe*)relationsListe);
 }
 
 /**
  * Renvoi nombre de relations
  */
 int RelationArraySize(RelationsListe* relationsListe){
-	return GenericListArraySize((GenericList*)relationsListe);
+	return GenericList_ArraySize((GenericList*)relationsListe);
 }
 
 /**
  * Renvoi un pointeur vers les relations de l'empire numero x
  */
 Relations* RelationNumero(RelationsListe* relationsListe, int numero) {
-	return (Relations*)GenericCellGet((GenericList*)relationsListe, numero);
+	return (Relations*)GenericCell_Get((GenericList*)relationsListe, numero);
 }
 /**
  * Rajoute la relation d'un empire à la liste des relations
@@ -536,14 +536,14 @@ Relations* RelationNumero(RelationsListe* relationsListe, int numero) {
 Relations* RelationAjouter(RelationsListe* relationsListe) {
 	Relations *pointeur = NULL;
 	pointeur = calloc(1, sizeof(Relations));
-	GenericCellAdd((GenericList*)relationsListe, pointeur);
+	GenericCell_Add((GenericList*)relationsListe, pointeur);
 	return pointeur;
 }
 /**
  *Supprime la relation numero x à la liste des relations
  */
 void RelationSupprimer(RelationsListe* relationsListe, int numero) {
-	FreeGenericCell((GenericList*)relationsListe, numero);
+	GenericCell_Free((GenericList*)relationsListe, numero);
 }
 
 int RelationGetOpinion(Relations* relations) {

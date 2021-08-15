@@ -1,6 +1,7 @@
 #ifndef H_DLC
 #define H_DLC
 
-void dlc_Load(const char *name);
+FleetTemplateListe *dlc_Load(const char *name);
+void dlc_Unload(FleetTemplateListe *fleetTemplateList);
 
 #endif

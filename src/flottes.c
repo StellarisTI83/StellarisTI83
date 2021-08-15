@@ -87,7 +87,7 @@ struct FleetTemplateStruct {
  *Crée une liste de flottes
  */
 FlotteListe* CreerFlotteListe() {
-	return (FlotteListe*)CreateGenericList();
+	return (FlotteListe*)GenericList_Create();
 }
 
 /**
@@ -96,40 +96,40 @@ FlotteListe* CreerFlotteListe() {
 void SupprimerFlotteListe(FlotteListe* flotteliste) {
     Flotte *flotte = NULL;
 	int i = 0;
-    flotte = GenericCellGet((GenericList*)flotteliste, i);
+    flotte = GenericCell_Get((GenericList*)flotteliste, i);
     while(flotte != NULL) {
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgout, ", Free fleet %d", i);
 		#endif
         free(flotte);
 		i++;
-        flotte = GenericCellGet((GenericList*)flotteliste, i);
+        flotte = GenericCell_Get((GenericList*)flotteliste, i);
     }
 	#ifdef DEBUG_VERSION
 	dbg_sprintf(dbgout, "\n");
 	#endif
-	FreeGenericList((GenericList*)flotteliste);
+	GenericList_Free((GenericList*)flotteliste);
 }
 
 /**
  * Renvoi nombre de flottes
  */
 int FleetArraySize(FlotteListe* flotteListe){
-	return GenericListArraySize((GenericList*)flotteListe);
+	return GenericList_ArraySize((GenericList*)flotteListe);
 }
 
 /**
  *Renvoi un pointeur vers la flotte numero x, commence à 1
  */
 Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
-	return GenericCellGet((GenericList*)flotteliste, numero);
+	return GenericCell_Get((GenericList*)flotteliste, numero);
 }
 
 /**
  *Renvoi le numéro de la flotte suivant son pointeur
  */
 int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte) {
-	return GenericCellGetNumber((GenericList*)flotteliste, flotte);
+	return GenericCell_GetNumber((GenericList*)flotteliste, flotte);
 }
 
 /**
@@ -144,7 +144,7 @@ Flotte* AjouterFlotte(FlotteListe* flotteliste) {
 		#endif
 		exit(EXIT_FAILURE);
 	}
-	GenericCellAdd((GenericList*)flotteliste, pointeur);
+	GenericCell_Add((GenericList*)flotteliste, pointeur);
 	return pointeur;
 }
 
@@ -155,8 +155,8 @@ void SupprimerFlotte(FlotteListe* flotteliste, int numero) {
 	#ifdef DEBUG_VERSION
 	dbg_sprintf(dbgout, "Free fleet %d\n", numero);
 	#endif
-	free(GenericCellGet((GenericList*)flotteliste, numero));
-	FreeGenericCell((GenericList*)flotteliste, numero);
+	free(GenericCell_Get((GenericList*)flotteliste, numero));
+	GenericCell_Free((GenericList*)flotteliste, numero);
 }
 
 /**
@@ -251,7 +251,7 @@ int CalculateFleetPower(FlotteListe *flotteListe){
 	int arraySize = FleetArraySize(flotteListe);
 	int puissance = 0;
 	while(compteur < arraySize){
-		flotte = GenericCellGet((GenericList*)flotteListe, compteur);
+		flotte = GenericCell_Get((GenericList*)flotteListe, compteur);
 		compteur++;
 		puissance += flotte->puissance;
 	}
@@ -527,7 +527,7 @@ Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
  *Crée une liste de templates de flottes
  */
 FleetTemplateListe* fleet_TemplateListCreate() {
-	return (FlotteListe*)CreateGenericList();
+	return (FlotteListe*)GenericList_Create();
 }
 
 /**
@@ -536,27 +536,27 @@ FleetTemplateListe* fleet_TemplateListCreate() {
 void fleet_TemplateListFree(FleetTemplateListe* flotteliste) {
 	FleetTemplate *fleetTemplate = NULL;
 	int i = 0;
-    fleetTemplate = GenericCellGet((GenericList*)flotteliste, i);
+    fleetTemplate = GenericCell_Get((GenericList*)flotteliste, i);
     while(fleetTemplate != NULL) {
         free(fleetTemplate);
 		i++;
-        fleetTemplate = GenericCellGet((GenericList*)flotteliste, i);
+        fleetTemplate = GenericCell_Get((GenericList*)flotteliste, i);
     }
-	FreeGenericList((GenericList*)flotteliste);
+	GenericList_Free((GenericList*)flotteliste);
 }
 
 /**
  * Renvoi nombre de templates de flottes
  */
 int fleet_TemplateListSize(FleetTemplateListe* flotteListe){
-	return GenericListArraySize((GenericList*)flotteListe);
+	return GenericList_ArraySize((GenericList*)flotteListe);
 }
 
 /**
  * Renvoi un pointeur vers le template flotte numero x, commence à 1
  */
 FleetTemplate* fleet_TemplateGet(FleetTemplateListe* flotteliste, int numero) {
-	return GenericCellGet((GenericList*)flotteliste, numero);
+	return GenericCell_Get((GenericList*)flotteliste, numero);
 }
 
 /**
@@ -571,7 +571,7 @@ FleetTemplate* fleet_TemplateAdd(FleetTemplateListe* flotteliste) {
 		#endif
 		exit(EXIT_FAILURE);
 	}
-	GenericCellAdd((GenericList*)flotteliste, pointeur);
+	GenericCell_Add((GenericList*)flotteliste, pointeur);
 	return pointeur;
 }
 
@@ -579,8 +579,8 @@ FleetTemplate* fleet_TemplateAdd(FleetTemplateListe* flotteliste) {
  * Supprime le template de flotte numero x à la liste de templates de flottes envoyée
  */
 void fleet_TemplateDestroy(FleetTemplateListe* flotteliste, int numero) {
-	free(GenericCellGet((GenericList*)flotteliste, numero));
-	FreeGenericCell((GenericList*)flotteliste, numero);
+	free(GenericCell_Get((GenericList*)flotteliste, numero));
+	GenericCell_Free((GenericList*)flotteliste, numero);
 }
 
 /**

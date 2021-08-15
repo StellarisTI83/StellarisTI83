@@ -549,7 +549,7 @@ static int GenerateSystemeStruct(int *galaxie, SystemeStellaire **systemeStellai
 				etoile = ETOILE_TYPE_M;
 			} else if(etoile <= 90) {
 				etoile = ETOILE_TYPE_TROU_NOIR;
-				trouNoir = TRUE;
+				trouNoir = true;
 			} else if(etoile <= 95) {
 				etoile = ETOILE_TYPE_PULSAR;
 			} else {
@@ -905,7 +905,7 @@ int ChargementNouvellePartieGalaxie(SystemeStellaire **systemeStellaires){
 
 	gfx_SetDrawScreen();
 	gfx_FillScreen(1);
-	PrintCentered(_(lc_create_galaxie), 120, 1, 0, 0);
+	mainMenu_PrintSized(_(lc_create_galaxie), 120, 1, 0, 0);
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(49, 159, 222, 7);
 	gfx_SetColor(4);

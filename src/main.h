@@ -4,15 +4,18 @@
 /* macros ============================================================== */
 
 /**
- * Version du jeu
+ * @brief Game version
+ * 
  */
 #define VERSION_LOGICIEL "v0.4.0-a"
 
-/* Debug Version*/
+/**
+ * @brief If defined, debug version
+ * 
+ */
 
 #define DEBUG_VERSION
 
-#define _(String) gettext(String)
 
 /* constants =========================================================== */
 
@@ -26,9 +29,6 @@
 
 #define X_CENTRE_SYSTEME 480
 #define Y_CENTRE_SYSTEME 360
-
-#define FALSE 0
-#define TRUE 1
 
 #define RAYON_DE_VUE_SYSTEME 160
 
@@ -46,9 +46,38 @@ typedef struct {
 
 /* entry points ======================================================== */
 
-void PrintCentered(const char *str, int y, int taille, int color, int differenceX);
-void PrintInt(int nombre);
-void PrintMultipleLines(char str[]);
-int TailleInt(int nombre);
+/**
+ * @brief Print sized string
+ * 
+ * @param str           The string printed
+ * @param y             Y position of the string
+ * @param taille        Size to print
+ * @param color
+ * @param xOffset       xOffset of the
+ */
+void mainMenu_PrintMultipleLines(char *str);
+
+/**
+ * @brief Print a string on multiple lines after \c gfx_SetTextXY
+ * 
+ * @param str 
+ */
+void mainMenu_PrintSized(const char *str, int y, int taille, int color, int differenceX);
+
+/**
+ * @brief Print an int with the right size
+ * 
+ * @param number 
+ */
+void mainMenu_PrintInt(int nombre);
+
+
+/**
+ * @brief Return the number of character in an int
+ * 
+ * @param number 
+ * @return int 
+ */
+int mainMenu_IntLen(int nombre);
 
 #endif

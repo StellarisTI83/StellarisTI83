@@ -4,9 +4,9 @@
 
 #include "main.h"
 
-#include "dlc.h"
 #include "ai.h"
 #include "flottes.h"
+#include "dlc.h"
 #include "systemes.h"
 
 #define MAX_VALUE_LENGTH 255
@@ -126,11 +126,11 @@ static int dlc_Parse(const char* dlc_var, void *liste, keys mother_key) {
 /**
  * Load a dlc/data set with his name
  */
-void dlc_Load(const char *name) {
+FleetTemplateListe *dlc_Load(const char *name) {
 	ti_var_t dlc_var;
 	char *buffer;
 	uint16_t sizeOfChunk;
-	FleetTemplateListe *flotteListe = fleet_TemplateListCreate();
+	FleetTemplateListe *fleetTemplateList = fleet_TemplateListCreate();
 
 	ti_CloseAll();
 
@@ -149,8 +149,19 @@ void dlc_Load(const char *name) {
         exit(EXIT_FAILURE);
     }
 	ti_Read(buffer, sizeOfChunk + 2, 1, dlc_var);
-	dlc_Parse(buffer, flotteListe, ky_none);
+	dlc_Parse(buffer, fleetTemplateList, ky_none);
 
 	free(buffer);
 	ti_Close(dlc_var);
+	return fleetTemplateList;
+}
+
+void dlc_Unload(FleetTemplateListe *fleetTemplateList) {
+	int index = 0;
+	FleetTemplate *fleetTemplate = (FleetTemplate*)GenericCell_Get((GenericList*)fleetTemplateList, index);
+	while (fleetTemplate) {
+		free(fleetTemplate);
+		index++;
+		fleetTemplate = (FleetTemplate*)GenericCell_Get((GenericList*)fleetTemplateList, index);
+	}
 }
