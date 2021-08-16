@@ -591,13 +591,13 @@ static void PlanetaryAI(EmpireListe *empireListe, StarSystem **systemeStellaires
 	Empire *empire;
 	Planete *planete = NULL;
 	while(systemeNumero < GALAXY_WIDTH * GALAXY_WIDTH){
-		if(GetSystemEmpire(systemeStellaires[systemeNumero]) != 0){
+		if(starSystem_EmpireGet(systemeStellaires[systemeNumero]) != 0){
 			planeteNumero = 0;
-			empire = EmpireNumero(empireListe, GetSystemEmpire(systemeStellaires[systemeNumero]));
+			empire = EmpireNumero(empireListe, starSystem_EmpireGet(systemeStellaires[systemeNumero]));
 			taille = GetSystemPlanetNumber(systemeStellaires[systemeNumero]);
 			while(planeteNumero < taille){
-				if(GetPlanetCityStatus(GetSystemPlanet(systemeStellaires[systemeNumero], planeteNumero))){
-					planete = GetSystemPlanet(systemeStellaires[systemeNumero], planeteNumero);
+				if(GetPlanetCityStatus(starSystem_PlanetGet(systemeStellaires[systemeNumero], planeteNumero))){
+					planete = starSystem_PlanetGet(systemeStellaires[systemeNumero], planeteNumero);
 					/*La "planete" est habitée et "empire" contient son empire*/
 					
 				}
@@ -615,7 +615,7 @@ static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireListe *empir
 			OrdreFile *ordreQueue;
 			Station *station;
 			AddEmpireAlloys(empire, -100);
-			station = GetSystemStation(systemeStellaires[GetEmpireSystemCapital(empire)]);
+			station = starSystem_StationGet(systemeStellaires[GetEmpireSystemCapital(empire)]);
 			ordreQueue = GetStationOrderQueue(station);
 			#ifdef DEBUG_VERSION
 				dbg_sprintf(dbgout, "Empire %d create a science fleet in system %d\n", numeroEmpire, GetEmpireSystemCapital(empire));
@@ -639,11 +639,11 @@ static void EmpireAICivilianFleet(Empire *empire, EmpireListe *empireListe, Flot
 				int systemIndex = 0;
 				int systemeDestination = 0;
 				for(systemIndex = 0; systemIndex < 4; systemIndex++){
-					systemeDestination = GetHyperlaneDestination(systemeStellaires[GetFleetSystem(flotte)], systemIndex);
-					if(!GetSystemEmpire(systemeStellaires[systemeDestination]) && systemeDestination != 255){
-						MoveFleet(flotte, GetHyperlaneDestination(systemeStellaires[GetFleetSystem(flotte)], systemIndex), systemeStellaires);
+					systemeDestination = hyperlane_DestinationGet(systemeStellaires[GetFleetSystem(flotte)], systemIndex);
+					if(!starSystem_EmpireGet(systemeStellaires[systemeDestination]) && systemeDestination != 255){
+						MoveFleet(flotte, hyperlane_DestinationGet(systemeStellaires[GetFleetSystem(flotte)], systemIndex), systemeStellaires);
 						#ifdef DEBUG_VERSION
-							dbg_sprintf(dbgout, "Empire %p move science fleet from %d to %d\n", empire, GetFleetSystem(flotte), GetHyperlaneDestination(systemeStellaires[GetFleetSystem(flotte)], systemIndex));
+							dbg_sprintf(dbgout, "Empire %p move science fleet from %d to %d\n", empire, GetFleetSystem(flotte), hyperlane_DestinationGet(systemeStellaires[GetFleetSystem(flotte)], systemIndex));
 						#endif
 						systemIndex = 4;
 					}

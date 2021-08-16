@@ -39,20 +39,20 @@ static void CalculerNiveauDeConnaissance(StarSystem **systemeStellaires, EmpireL
 	int numeroSysteme = 0;
 
 	while(numeroSysteme < GALAXY_WIDTH * GALAXY_WIDTH) {
-		if(GetSystemIntelLevel(systemeStellaires[numeroSysteme])  >= MOYEN) {
-			SetSystemIntelLevel(systemeStellaires[numeroSysteme], MOYEN);
+		if(starSystem_IntelLevelGet(systemeStellaires[numeroSysteme])  >= INTEL_MEDIUM) {
+			starSystem_IntelLevelSet(systemeStellaires[numeroSysteme], INTEL_MEDIUM);
 		}
 		else {
-			SetSystemIntelLevel(systemeStellaires[numeroSysteme], INCONNU);
+			starSystem_IntelLevelSet(systemeStellaires[numeroSysteme], INTEL_UNKNOWN);
 		}
-		if((GetSystemStationLevel(systemeStellaires[numeroSysteme]) > INCONNU) && (GetSystemEmpire(systemeStellaires[numeroSysteme]) == -1)) {
-			SetSystemIntelLevel(systemeStellaires[numeroSysteme], TOTAL);
+		if((starSystem_StationLevelGet(systemeStellaires[numeroSysteme]) > INTEL_UNKNOWN) && (starSystem_EmpireGet(systemeStellaires[numeroSysteme]) == -1)) {
+			starSystem_IntelLevelSet(systemeStellaires[numeroSysteme], INTEL_FULL);
 		}
 		numeroSysteme++;
 	}
 	sizeFleet = FleetArraySize(EmpireFleetGetArray(EmpireNumero(empireListe, 0)));
 	while(indexFleet <= sizeFleet){
-        SetSystemIntelLevel(systemeStellaires[GetFleetSystem(FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 0)), indexFleet))], ELEVEE);
+        starSystem_IntelLevelSet(systemeStellaires[GetFleetSystem(FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 0)), indexFleet))], INTEL_HIGH);
 		indexFleet++;
 	}
 }
@@ -69,21 +69,21 @@ void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireListe* empir
 	int numeroEmpire = 0;
 	// Empire *joueur = EmpireNumero(empireListe, 0);
 	while(numero < (GALAXY_WIDTH * GALAXY_WIDTH) - 1){
-		ordre = GetSystemStationOrder(systemeStellaires[numero]);
+		ordre = starSystem_StationOrderGet(systemeStellaires[numero]);
 		if(ordre != AUCUN_ORDRE_STATION){
-			if(GetSystemStationOrderProgress(systemeStellaires[numero]) > 1){
-				UnincrementSystemStationOrderProgress(systemeStellaires[numero]);
+			if(starSystem_StationOrderProgressGet(systemeStellaires[numero]) > 1){
+				starSystem_StationOrderProgressIncrement(systemeStellaires[numero]);
 			}
 			else{
-				info1 = GetSystemStationInfo1(systemeStellaires[numero]);
-				info2 = GetSystemStationInfo2(systemeStellaires[numero]);
-				numeroEmpire = GetSystemEmpire(systemeStellaires[numero]);
+				info1 = starSystem_StationInfo1Get(systemeStellaires[numero]);
+				info2 = starSystem_StationInfo2Get(systemeStellaires[numero]);
+				numeroEmpire = starSystem_EmpireGet(systemeStellaires[numero]);
 				switch(ordre){
 				case AMELIORER_STATION:
-					SetSystemStationLevel(systemeStellaires[numero], (Stationlevel)(GetSystemStationLevel(systemeStellaires[numero]) + 1));
+					starSystem_StationLevelSet(systemeStellaires[numero], (Stationlevel)(starSystem_StationLevelGet(systemeStellaires[numero]) + 1));
 					break;
 				case CONSTRUIRE_MODULE:
-					SetSystemStationModule(systemeStellaires[numero], info1 - 1, (Module)info2);
+					starSystem_StationModuleSet(systemeStellaires[numero], info1 - 1, (Module)info2);
 					break;
 				case CONSTRUIRE_VAISSEAU:
 					nombreDeVaisseaux = info2;
@@ -118,7 +118,7 @@ void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireListe* empir
 				default:
 					break;
 				}
-				EndSystemStationOrder(systemeStellaires[numero]);
+				starSystem_StationOrderEnd(systemeStellaires[numero]);
 			}
 		}
 		numero++;
@@ -131,7 +131,7 @@ void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireListe* empir
  */
 void EffectuerActionsPlanetes(StarSystem **systemeStellaires){
 	int i = 0, j = 0;
-	Villes *villes = NULL;
+	City *villes = NULL;
 	// Batiment *batiment = NULL;
 	OrdreConstruction ordre;
 	for(i = 0; i < GALAXY_WIDTH * GALAXY_WIDTH; i++){
@@ -232,7 +232,7 @@ static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeSte
 			}
 			break;
 		case sk_Del:
-			if ((GetCameraZoom(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && ((GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU) || settings_SeeAllGet(parametres))))) {
+			if ((GetCameraZoom(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && ((starSystem_IntelLevelGet(systemeStellaires[GetCameraViewedSystem(camera)]) != INTEL_UNKNOWN) || settings_SeeAllGet(parametres))))) {
 				SetCameraLock(camera, false);
 				SetCameraMapType(camera, SYSTEME);
 				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
@@ -254,7 +254,7 @@ static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeSte
 			}
 			break;
 		case sk_Enter:
-			if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU || settings_SeeAllGet(parametres)))){
+			if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (starSystem_IntelLevelGet(systemeStellaires[GetCameraViewedSystem(camera)]) != INTEL_UNKNOWN || settings_SeeAllGet(parametres)))){
 				SetCameraLock(camera, false);
 				SetCameraMapType(camera, SYSTEME);
 				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
@@ -418,8 +418,8 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 
 	//retirer et ajouter argent systemes et planetes
 	for(systemIndex = 0; systemIndex < GALAXY_WIDTH * GALAXY_WIDTH; systemIndex++){
-		if(GetSystemEmpire(systemeStellaires[systemIndex]) != -1){
-			empire = EmpireNumero(empireListe, GetSystemEmpire(systemeStellaires[systemIndex]));
+		if(starSystem_EmpireGet(systemeStellaires[systemIndex]) != -1){
+			empire = EmpireNumero(empireListe, starSystem_EmpireGet(systemeStellaires[systemIndex]));
 			planetaryArraySize = GetSystemPlanetNumber(systemeStellaires[systemIndex]);
 
 			for(planetaryIndex = 0; planetaryIndex < planetaryArraySize; planetaryIndex++){

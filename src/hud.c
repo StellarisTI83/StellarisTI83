@@ -247,13 +247,13 @@ static void hud_PrintInfos( Empire *player,
         } else {
             system = GetCameraSystem(camera);
         }
-        if ((GetSystemIntelLevel(systemeStellaires[system]) == INCONNU) && (!settings_SeeAllGet(settings))) {
+        if ((starSystem_IntelLevelGet(systemeStellaires[system]) == INTEL_UNKNOWN) && (!settings_SeeAllGet(settings))) {
             gfx_PrintStringXY(  "Inconnu", 
                                 132, 
                                 LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
         } else {
-            gfx_PrintStringXY(  GetSystemName(systemeStellaires[system]), 
-                                LCD_WIDTH / 2 - strlen(GetSystemName(systemeStellaires[system])) * TEXT_HEIGHT / 2, 
+            gfx_PrintStringXY(  starSystem_NameGet(systemeStellaires[system]), 
+                                LCD_WIDTH / 2 - strlen(starSystem_NameGet(systemeStellaires[system])) * TEXT_HEIGHT / 2, 
                                 LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
         }
     }

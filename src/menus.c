@@ -285,51 +285,51 @@ static void MenuSystemeEtoile(char *key, StarSystem **systemeStellaires, Camera 
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Proxima ");
-	gfx_PrintString(GetSystemName(systemeStellaires[GetCameraSystem(camera)]));
+	gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]));
 	gfx_SetTextXY(160, 62);
 	gfx_PrintString("Classe : ");
-	switch(GetSystemStarType(systemeStellaires[GetCameraSystem(camera)])) {
-		case ETOILE_TYPE_B:
+	switch(starSystem_StarTypeGet(systemeStellaires[GetCameraSystem(camera)])) {
+		case STAR_TYPE_B:
 			gfx_PrintString("B");
 			gfx_SetColor(1);
 			gfx_FillCircle_NoClip(95, 106, 45);				
 			gfx_SetColor(15);
 			gfx_Circle_NoClip(95, 106, 45);
 			break;
-		case ETOILE_TYPE_A:
+		case STAR_TYPE_A:
 			gfx_PrintString("A");
 			gfx_SetColor(1);
 			gfx_FillCircle_NoClip(95, 106, 40);				
 			gfx_SetColor(14);
 			gfx_Circle_NoClip(95, 106, 40);
 			break;
-		case ETOILE_TYPE_F:
+		case STAR_TYPE_F:
 			gfx_PrintString("F");
 			gfx_SetColor(1);
 			gfx_FillCircle_NoClip(95, 106, 35);				
 			break;
-		case ETOILE_TYPE_G:
+		case STAR_TYPE_G:
 			gfx_PrintString("G");
 			gfx_SetColor(1);
 			gfx_FillCircle_NoClip(95, 106, 32);				
 			gfx_SetColor(13);
 			gfx_Circle_NoClip(95, 106, 32);
 			break;
-		case ETOILE_TYPE_K:
+		case STAR_TYPE_K:
 			gfx_PrintString("K");
 			gfx_SetColor(13);
 			gfx_FillCircle_NoClip(95, 106, 30);				
 			gfx_SetColor(9);
 			gfx_Circle_NoClip(95, 106, 30);
 			break;
-		case ETOILE_TYPE_M:
+		case STAR_TYPE_M:
 			gfx_PrintString("M");
 			gfx_SetColor(9);
 			gfx_FillCircle_NoClip(95, 106, 10);				
 			gfx_SetColor(13);
 			gfx_Circle_NoClip(95, 106, 10);
 			break;
-		case ETOILE_TYPE_TROU_NOIR:
+		case STAR_TYPE_BLACKHOLE:
 			gfx_PrintString("trou noir");
 			gfx_SetColor(1);
 			gfx_Circle_NoClip(95, 106, 40);	
@@ -354,7 +354,7 @@ static void MenuSystemeEtoile(char *key, StarSystem **systemeStellaires, Camera 
 			gfx_HorizLine_NoClip(48, 105, 94);
 			gfx_HorizLine_NoClip(48, 106, 94);
 			break;
-		case ETOILE_TYPE_PULSAR:
+		case STAR_TYPE_PULSAR:
 			gfx_PrintString("pulsar");
 			gfx_SetColor(14);
 			gfx_FillCircle_NoClip(95, 106, 4);
@@ -362,7 +362,7 @@ static void MenuSystemeEtoile(char *key, StarSystem **systemeStellaires, Camera 
 			gfx_SetColor(1);
 			gfx_Circle_NoClip(95, 106, 4);
 			break;
-		case ETOILE_TYPE_ETOILE_A_NEUTRONS:
+		case STAR_TYPE_NEUTRON:
 			gfx_PrintString("/toile a neutrons");
 			gfx_SetColor(14);
 			gfx_FillCircle_NoClip(95, 106, 4);	
@@ -438,7 +438,7 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
 		}
 	}
 	else{
-		gfx_PrintString(GetSystemName(systemeStellaires[GetCameraSystem(camera)]));
+		gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]));
 		gfx_PrintString(nomPlanete);
 		gfx_SetTextFGColor(3);
 		gfx_PrintStringXY("Non-habitable", 150, 62);
@@ -507,7 +507,7 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
 /**
  *Ecrie le nom de l'ordre de district
  */
-static void OrdreDistrictNom(Villes *villes){
+static void OrdreDistrictNom(City *villes){
 	OrdreFile *ordreQueue;
 	int nombredOrdres = 0;
 	int niveau = 181;
@@ -670,7 +670,7 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
 		}
 	}
 
-	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)]) != -1){
+	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[GetCameraSystem(camera)]) != -1){
 		if(GetWindowSelection(fenetre) == 5){
 			AddEmpireMinerals(EmpireNumero(empireListe, 0), GetOrderPrice(GetCityOrderQueue(GetPlanetCity(planete))));
 			FinirOrdre(GetCityOrderQueue(GetPlanetCity(planete)));
@@ -889,7 +889,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	mainMenu_PrintInt(400);
 	niveau += 15;
 
-	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)]) != -1){
+	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[GetCameraSystem(camera)]) != -1){
 		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_PLANETE_BATIMENT);
 		if(GetWindowSelection(fenetre) != 0){
 			IncrementWindowSelection(fenetre);
@@ -1044,7 +1044,7 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
 		gfx_Line_NoClip(265, niveau + 12, 275, niveau + 2);
 	}
 	
-	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)]) != -1){
+	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[GetCameraSystem(camera)]) != -1){
 		if(GetWindowSelection(fenetre) == 5){
 			AddEmpireMinerals(EmpireNumero(empireListe, 0), GetOrderPrice(GetCityOrderQueue(GetPlanetCity(planete))));
 			FinirOrdre(GetCityOrderQueue(GetPlanetCity(planete)));
@@ -1074,7 +1074,7 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
 		}
 		*key = 0;
 	}
-	if(*key == sk_Enter && GetSystemEmpire(systemeStellaires[GetCameraSystem(camera)]) != -1){
+	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[GetCameraSystem(camera)]) != -1){
 		if((supprimer == 1) && (GetWindowSelection(fenetre) == 7)){
 			AddEmpireMinerals(EmpireNumero(empireListe, 0), GetOrderPrice(GetCityOrderQueue(GetPlanetCity(planete))));
 			FinirOrdre(GetCityOrderQueue(GetPlanetCity(planete)));
@@ -1346,7 +1346,7 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
 				gfx_PrintString("Construit une base sur");
 				gfx_SetTextXY(45, 177);
 				gfx_SetTextFGColor(13);
-				gfx_PrintString(GetSystemName(systemeStellaires[GetFleetArriveSystem(flotte)]));
+				gfx_PrintString(starSystem_NameGet(systemeStellaires[GetFleetArriveSystem(flotte)]));
 				break;
 			}
 			break;
@@ -1359,7 +1359,7 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
 		case FLOTTE_BOUGER:
 			gfx_PrintString("Se d/place vers ");
 			gfx_SetTextFGColor(13);
-			gfx_PrintString(GetSystemName(systemeStellaires[GetFleetArriveSystem(flotte)]));
+			gfx_PrintString(starSystem_NameGet(systemeStellaires[GetFleetArriveSystem(flotte)]));
 			break;
 	}
 	if(*key == sk_Enter){ //effectuer l'action
@@ -1500,7 +1500,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 	char ordreStation[50];
 	int prixAmelioration = 0, tempsAmelioration = 0;
 	int maximum = 2;
-	Station *station = GetSystemStation(systemeStellaires[GetCameraSystem(camera)]);
+	Station *station = starSystem_StationGet(systemeStellaires[GetCameraSystem(camera)]);
 	Ordre *ordre = RecupererOrdre(GetStationOrderQueue(station));
 	int niveau = 120;
 	if(ordre != NULL){
@@ -1566,7 +1566,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Station de ");
-	gfx_PrintString(GetSystemName(systemeStellaires[GetCameraSystem(camera)]));
+	gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]));
 	gfx_SetTextXY(150, 62);
 	switch(GetStationLevel(station)){
 		case AVANT_POSTE:
@@ -1823,7 +1823,7 @@ static void EcrireModule(Module module, int selection, int numero, int *niveau){
  *Dessine le menu des modules de la station du systeme
  */
 static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
-	Station *station = GetSystemStation(systemeStellaires[GetCameraSystem(camera)]);
+	Station *station = starSystem_StationGet(systemeStellaires[GetCameraSystem(camera)]);
 	OrdreFile *ordreQueue = GetStationOrderQueue(station);
 	int niveau = 120;
 	char ordreStation[50];
@@ -1880,7 +1880,7 @@ static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **sy
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Station de ");
-	gfx_PrintString(GetSystemName(systemeStellaires[GetCameraSystem(camera)]) );
+	gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]) );
 	gfx_SetTextXY(150, 62);
 
 	switch(GetStationLevel(station)){
@@ -2154,7 +2154,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 	char ordreStation[50];
 	int niveau = 55, nombreDeChantiers = 0, travail = 0, prix = 0;
 	int i = 0;
-	Station *station = GetSystemStation(systemeStellaires[GetCameraSystem(camera)]);
+	Station *station = starSystem_StationGet(systemeStellaires[GetCameraSystem(camera)]);
 	OrdreFile *ordreQueue = GetStationOrderQueue(station);
 	switch(*key){
 		default:
@@ -2212,7 +2212,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Station de ");
-	gfx_PrintString(GetSystemName(systemeStellaires[GetCameraSystem(camera)]));
+	gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]));
 	i = 0;
 	while(i < 6){
 		if(GetStationModule(station, i) == CHANTIER_SPATIAL){
@@ -2490,7 +2490,7 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSyste
 	if(*key == sk_Enter){
 		if(GetEmpireAlloys(joueur) >= prix * GetWindowFleetSize(fenetre)){
 			AddEmpireAlloys(joueur, -(prix * GetWindowFleetSize(fenetre)));
-			NouvelOrdre(GetStationOrderQueue(GetSystemStation(systemeStellaires[GetCameraSystem(camera)])),
+			NouvelOrdre(GetStationOrderQueue(starSystem_StationGet(systemeStellaires[GetCameraSystem(camera)])),
 				CONSTRUIRE_VAISSEAU,
 				1, 
 				travail * GetWindowFleetSize(fenetre),

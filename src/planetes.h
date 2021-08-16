@@ -56,7 +56,7 @@ typedef enum PlanetType_Struct PlanetType;
 
 /* structures ========================================================== */
 
-typedef struct VillesStruct Villes;
+typedef struct VillesStruct City;
 
 typedef struct PlaneteStruct Planete;
 
@@ -111,16 +111,16 @@ int GetPlanetCityJob(Planete *planete);
 int GetPlanetCityCrimianity(Planete *planete);
 int GetPlanetCityAmienties(Planete *planete);
 
-Villes *GetPlanetCity(Planete *planete);
+City *GetPlanetCity(Planete *planete);
 
-Ordre* GetCityOrderElement(Villes *villes);
-OrdreFile* GetCityOrderQueue(Villes *villes);
-OrdreConstruction GetCityOrder(Villes *villes);
-int GetCityOrderProgress(Villes *villes);
-void UnincrementCityOrderProgress(Villes *villes);
-void EndCityOrder(Villes *villes);
+Ordre* GetCityOrderElement(City *villes);
+OrdreFile* GetCityOrderQueue(City *villes);
+OrdreConstruction GetCityOrder(City *villes);
+int GetCityOrderProgress(City *villes);
+void UnincrementCityOrderProgress(City *villes);
+void EndCityOrder(City *villes);
 
-int GetCityOrderInfo1(Villes *villes);
-int GetCityOrderInfo2(Villes *villes);
+int GetCityOrderInfo1(City *villes);
+int GetCityOrderInfo2(City *villes);
 
 #endif

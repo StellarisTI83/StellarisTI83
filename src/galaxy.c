@@ -1,3 +1,5 @@
+#include <tice.h>
+
 #include <debug.h>
 #include <fileioc.h>
 #include <math.h>
@@ -321,7 +323,7 @@ static void galaxy_MatrixCrop(  int *galaxyMatrix,
     }
 }
 
-static void CreatePlanetSystem(StarSystem *systemeStellaire, int numeroPlanete, int habitable){
+static void galaxy_PlanetCreate(StarSystem *systemeStellaire, int numeroPlanete, int habitable){
     int rayonOrbite = 0, taille = 0, type = 0;
     int x = 0;
     int y = 0;
@@ -508,24 +510,140 @@ static void CreatePlanetSystem(StarSystem *systemeStellaire, int numeroPlanete, 
         break;
     }
 
-    SetSystemPlanetHabitability(systemeStellaire, numeroPlanete, habitable);
-    SetSystemPlanetOrbitRadius(systemeStellaire, numeroPlanete, rayonOrbite);
+    starSystem_PlanetHabitabilitySet(systemeStellaire, numeroPlanete, habitable);
+    starSystem_PlanetRadiusOrbitSet(systemeStellaire, numeroPlanete, rayonOrbite);
 
     x = randInt(X_CENTRE_SYSTEME - rayonOrbite, X_CENTRE_SYSTEME + rayonOrbite); //aleatoire de x
     y = sqrt(pow((double)rayonOrbite, 2.0) - pow((double)(x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME; //calcule de y pour ce x
     if(randInt(0, 1) == 1) {
     y = Y_CENTRE_SYSTEME - (y - Y_CENTRE_SYSTEME);
 }
-    SetSystemPlanetXY(systemeStellaire, numeroPlanete, x, y);
+    starSystem_PlanetXYSet(systemeStellaire, numeroPlanete, x, y);
 
-    SetSystemPlanetType(systemeStellaire, numeroPlanete, type);
-    SetSystemPlanetRadius(systemeStellaire, numeroPlanete, taille);
+    starSystem_PlanetTypeSet(systemeStellaire, numeroPlanete, type);
+    starSystem_PlanetRadiusSet(systemeStellaire, numeroPlanete, taille);
 
     if(habitable == 1) {
-        SetSystemPlanetName(systemeStellaire, numeroPlanete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+        starSystem_PlanetNameSet(systemeStellaire, numeroPlanete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
     }
 }
 
+static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition){
+    StarSystem *starSystem = NULL;
+    StarType star = STAR_NONE;
+    int planetNumber, habitablePlanetNumber;
+    int planetIndex;
+    // Create the structure of the star system
+    starSystem = starSystem_Create();
+
+    // Set the star system position
+    starSystem_SetXY(starSystem, xPosition, yPosition);
+
+    // Create the station for the system
+    starSystem_StationCreate(starSystem);
+
+    // Set the empire
+    starSystem_EmpireSet(starSystem, NO_EMPIRE);
+    
+    // Set the intel level
+    starSystem_IntelLevelSet(starSystem, INTEL_UNKNOWN);
+
+    // Randomize the star
+    star = randInt(1, STAR_TOTAL_PROBABILITY);
+
+    if(star <= STAR_TYPE_B_PROBABILITY) {
+        star = STAR_TYPE_B;
+    } else if(star <= STAR_TYPE_A_PROBABILITY + STAR_TYPE_B_PROBABILITY) {
+        star = STAR_TYPE_A;
+    } else if(star <= STAR_TYPE_F_PROBABILITY + STAR_TYPE_A_PROBABILITY + STAR_TYPE_B_PROBABILITY) {
+        star = STAR_TYPE_F;
+    } else if(star <= STAR_TYPE_G_PROBABILITY + STAR_TYPE_F_PROBABILITY + STAR_TYPE_A_PROBABILITY + STAR_TYPE_B_PROBABILITY) {
+        star = STAR_TYPE_G;
+    } else if(star <= STAR_TYPE_K_PROBABILITY + STAR_TYPE_G_PROBABILITY + STAR_TYPE_F_PROBABILITY + STAR_TYPE_A_PROBABILITY + STAR_TYPE_B_PROBABILITY) {
+        star = STAR_TYPE_K;
+    } else if(star <= STAR_TYPE_M_PROBABILITY + STAR_TYPE_K_PROBABILITY + STAR_TYPE_G_PROBABILITY + STAR_TYPE_F_PROBABILITY + STAR_TYPE_A_PROBABILITY + STAR_TYPE_B_PROBABILITY) {
+        star = STAR_TYPE_M;
+    } else if(star <= STAR_TYPE_BLACKHOLE_PROBABILITY + STAR_TYPE_M_PROBABILITY + STAR_TYPE_K_PROBABILITY + STAR_TYPE_G_PROBABILITY + STAR_TYPE_F_PROBABILITY + STAR_TYPE_A_PROBABILITY + STAR_TYPE_B_PROBABILITY) {
+        star = STAR_TYPE_BLACKHOLE;
+    } else if(star <= STAR_TYPE_PULSAR_PROBABILITY + STAR_TYPE_BLACKHOLE_PROBABILITY + STAR_TYPE_M_PROBABILITY + STAR_TYPE_K_PROBABILITY + STAR_TYPE_G_PROBABILITY + STAR_TYPE_F_PROBABILITY + STAR_TYPE_A_PROBABILITY + STAR_TYPE_B_PROBABILITY) {
+        star = STAR_TYPE_PULSAR;
+    } else {
+        star = STAR_TYPE_NEUTRON;
+    }
+    star = STAR_TYPE_F;
+    starSystem_StarTypeSet(starSystem, star);
+
+
+    // Set the number of planet
+    SetSystemPlanetNumber(starSystem, 0);
+
+    planetNumber = randInt(1, 5);
+    habitablePlanetNumber = 0;
+
+    if((starSystem_StarTypeGet(starSystem) == STAR_TYPE_M) ||
+    ((starSystem_StarTypeGet(starSystem) == STAR_TYPE_G) || 
+    (starSystem_StarTypeGet(starSystem) == STAR_TYPE_K))){
+        habitablePlanetNumber = randInt(0, planetNumber);
+        SetSystemPlanetHabitableNumber(starSystem, habitablePlanetNumber);
+    }
+
+    planetIndex = 0;
+    while(planetIndex < planetNumber){
+        starSystem_PlanetCreate(starSystem, planetIndex);
+        galaxy_PlanetCreate(starSystem, planetIndex, randInt(1, 10));
+        planetIndex++;
+    }	
+
+    planetIndex = 0;	
+    while(planetIndex < planetNumber){
+        planetIndex++;
+    }
+    SetSystemPlanetNumber(starSystem, planetNumber);
+
+    hyperlane_DestinationSet(starSystem, 0, 255);
+    hyperlane_DestinationSet(starSystem, 1, 255);
+    hyperlane_DestinationSet(starSystem, 2, 255);
+    hyperlane_DestinationSet(starSystem, 3, 255);
+
+    return starSystem;
+}
+
+/**
+ * @brief The function to generate every star system
+ * 
+ * @param galaxyMatrix 
+ * @param starSystem 
+ * @param loading 
+ * @return int 
+ */
+static int galaxy_AllSystemGenerate(int *galaxyMatrix, 
+                                    StarSystem **starSystem,
+                                    int *loading){
+    int xIndex = 0, yIndex = 0, starIndex = 0;
+    int xPosition = 0, yPosition = 0;
+    
+    #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Generate system structure\n");
+    #endif
+
+    while(yIndex < GALAXY_WIDTH) {
+        while(xIndex < GALAXY_WIDTH * 2) {
+            
+            // Get the positions
+            xPosition   =   galaxyMatrix[yIndex * GALAXY_WIDTH * 2 + xIndex];
+            yPosition   =   galaxyMatrix[yIndex * GALAXY_WIDTH * 2 + xIndex + 1];
+
+            starSystem[starIndex] = galaxy_SystemGenerate(xPosition, yPosition);
+
+            starIndex++;
+            xIndex += 2;
+            gfx_FillRectangle_NoClip(50, 160, *loading += 1, 5);
+        }
+        xIndex = 0;
+        yIndex++;
+    }
+    return starIndex;
+}
 
 // TODO Refactor the function
 /**
@@ -568,33 +686,33 @@ static int GenerateSystemeStruct(int *galaxie, StarSystem **systemeStellaires, i
 
             starSystem_SetXY(systemeStellaires[k], x, y);
             
-            CreateSystemStation(systemeStellaires[k]);
-            SetSystemEmpire(systemeStellaires[k], -1);
+            starSystem_StationCreate(systemeStellaires[k]);
+            starSystem_EmpireSet(systemeStellaires[k], -1);
             etoile = randInt(1, 100);
             trouNoir = 0;
 
-            SetSystemIntelLevel(systemeStellaires[k], INCONNU);
+            starSystem_IntelLevelSet(systemeStellaires[k], INTEL_UNKNOWN);
             if(etoile <= 10) {
-                etoile = ETOILE_TYPE_B;
+                etoile = STAR_TYPE_B;
             } else if(etoile <= 30) {
-                etoile = ETOILE_TYPE_A;
+                etoile = STAR_TYPE_A;
             } else if(etoile <= 44) {
-                etoile = ETOILE_TYPE_F;
+                etoile = STAR_TYPE_F;
             } else if(etoile <= 57) {
-                etoile = ETOILE_TYPE_G;
+                etoile = STAR_TYPE_G;
             } else if(etoile <= 70) {
-                etoile = ETOILE_TYPE_K;
+                etoile = STAR_TYPE_K;
             } else if(etoile <= 85) {
-                etoile = ETOILE_TYPE_M;
+                etoile = STAR_TYPE_M;
             } else if(etoile <= 90) {
-                etoile = ETOILE_TYPE_TROU_NOIR;
+                etoile = STAR_TYPE_BLACKHOLE;
                 trouNoir = true;
             } else if(etoile <= 95) {
-                etoile = ETOILE_TYPE_PULSAR;
+                etoile = STAR_TYPE_PULSAR;
             } else {
-                etoile = ETOILE_TYPE_ETOILE_A_NEUTRONS;
+                etoile = STAR_TYPE_NEUTRON;
             }
-            SetSystemStationLevel(systemeStellaires[k], AUCUNE_STATION);
+            starSystem_StationLevelSet(systemeStellaires[k], AUCUNE_STATION);
             nombrePlanetes = 0;
             nombrePlanetes = randInt(1, 100);
             if(nombrePlanetes <= 8) {
@@ -611,13 +729,13 @@ static int GenerateSystemeStruct(int *galaxie, StarSystem **systemeStellaires, i
             if(trouNoir == 1) {
                 nombrePlanetes = 0;
             }
-            SetSystemStarType(systemeStellaires[k], etoile);
+            starSystem_StarTypeSet(systemeStellaires[k], etoile);
             
             SetSystemPlanetNumber(systemeStellaires[k], 0);
             
-            if((GetSystemStarType(systemeStellaires[k]) == ETOILE_TYPE_M) ||
-            ((GetSystemStarType(systemeStellaires[k]) == ETOILE_TYPE_G) || 
-            (GetSystemStarType(systemeStellaires[k]) == ETOILE_TYPE_K))){
+            if((starSystem_StarTypeGet(systemeStellaires[k]) == STAR_TYPE_M) ||
+            ((starSystem_StarTypeGet(systemeStellaires[k]) == STAR_TYPE_G) || 
+            (starSystem_StarTypeGet(systemeStellaires[k]) == STAR_TYPE_K))){
                 nombrePlanetesHabitables = randInt(0, nombrePlanetes);
                 SetSystemPlanetHabitableNumber(systemeStellaires[k], nombrePlanetesHabitables);
             }
@@ -682,23 +800,23 @@ static int GenerateSystemeStruct(int *galaxie, StarSystem **systemeStellaires, i
                 //hyperLane3 = 1;
             }
             
-            SetHyperlaneDestination(systemeStellaires[k], 0, 255);
-            SetHyperlaneDestination(systemeStellaires[k], 1, 255);
-            SetHyperlaneDestination(systemeStellaires[k], 2, 255);
-            SetHyperlaneDestination(systemeStellaires[k], 3, 255);
+            hyperlane_DestinationSet(systemeStellaires[k], 0, 255);
+            hyperlane_DestinationSet(systemeStellaires[k], 1, 255);
+            hyperlane_DestinationSet(systemeStellaires[k], 2, 255);
+            hyperlane_DestinationSet(systemeStellaires[k], 3, 255);
             
             if((starSystem_GetX(systemeStellaires[k - GALAXY_WIDTH]) != 0) && (hyperLane1)) {
                 if((k - GALAXY_WIDTH > 0) && (k - GALAXY_WIDTH < 255))
-                    SetHyperlaneDestination(systemeStellaires[k], 0, k - GALAXY_WIDTH);
+                    hyperlane_DestinationSet(systemeStellaires[k], 0, k - GALAXY_WIDTH);
             }
             
             if((starSystem_GetX(systemeStellaires[k - 1]) != 0) && (hyperLane2)) {
                 if((k - 1 > 0) && (k - 1 < 255))
-                    SetHyperlaneDestination(systemeStellaires[k], 1, k - 1);
+                    hyperlane_DestinationSet(systemeStellaires[k], 1, k - 1);
             }
             
             nomInt = randInt(0, (sizeof(nomGalaxies)/sizeof(nomGalaxies[0])) - 1);
-            SetSystemName(systemeStellaires[k], nomGalaxies[nomInt]);
+            starSystem_NameSet(systemeStellaires[k], nomGalaxies[nomInt]);
             
             //gestion des planetes
             switch(nombrePlanetes){
@@ -716,13 +834,13 @@ static int GenerateSystemeStruct(int *galaxie, StarSystem **systemeStellaires, i
 
             planetIndex = 0;
             while(planetIndex < nombrePlanetes){
-                CreateSystemPlanet(systemeStellaires[k], planetIndex);
+                starSystem_PlanetCreate(systemeStellaires[k], planetIndex);
                 planetIndex++;
             }	
 
             planetIndex = 0;	
             while(planetIndex < nombrePlanetes){
-                CreatePlanetSystem(systemeStellaires[k], planetIndex, randInt(1, 10));
+                galaxy_PlanetCreate(systemeStellaires[k], planetIndex, randInt(1, 10));
                 planetIndex++;
             }
             SetSystemPlanetNumber(systemeStellaires[k], nombrePlanetes);
@@ -751,11 +869,11 @@ static void RecreateHyperlanes(StarSystem **systemeStellaires, int k){
     while(i < k) {
         StarSystem *systeme;
         systeme = systemeStellaires[i];
-        if(GetHyperlaneDestination(systeme, 0) != 255) {
-            SetHyperlaneDestination(systemeStellaires[GetHyperlaneDestination(systeme, 0)], 2, i);
+        if(hyperlane_DestinationGet(systeme, 0) != 255) {
+            hyperlane_DestinationSet(systemeStellaires[hyperlane_DestinationGet(systeme, 0)], 2, i);
         }
-        if(GetHyperlaneDestination(systeme, 1) != 255) {
-            SetHyperlaneDestination(systemeStellaires[GetHyperlaneDestination(systeme, 1)], 3, i);
+        if(hyperlane_DestinationGet(systeme, 1) != 255) {
+            hyperlane_DestinationSet(systemeStellaires[hyperlane_DestinationGet(systeme, 1)], 3, i);
         }
         i++;
     }
@@ -769,16 +887,16 @@ static void RecreateHyperlanes(StarSystem **systemeStellaires, int k){
         //calcul des positions de sortie
         j = 0;
         while(j < 4){
-            if(GetHyperlaneDestination(systeme, j) != 255){
-                if((starSystem_GetX(systemeStellaires[GetHyperlaneDestination(systeme, j)]) != 0) && (starSystem_GetY(systemeStellaires[GetHyperlaneDestination(systeme, j)]) != 0)){
+            if(hyperlane_DestinationGet(systeme, j) != 255){
+                if((starSystem_GetX(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) != 0) && (starSystem_GetY(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) != 0)){
                     double angle = 0;
 
-                    angle = atan2(starSystem_GetY(systemeStellaires[GetHyperlaneDestination(systeme, j)]) - starSystem_GetY(systeme), starSystem_GetX(systemeStellaires[GetHyperlaneDestination(systeme, j)]) - starSystem_GetX(systeme));
+                    angle = atan2(starSystem_GetY(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) - starSystem_GetY(systeme), starSystem_GetX(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) - starSystem_GetX(systeme));
                     
                     x = X_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * cos(angle));
 
                     y = Y_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * sin(angle));
-                    SetHyperlaneXY(systeme, j, x, y);
+                    hyperlane_XYSet(systeme, j, x, y);
                 }
             }
             j++;
@@ -802,7 +920,10 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
     while(fin == 1) { // choix du systeme
         i = randInt(0, k - 1);
         gfx_SetTextXY(50, 70);
-        if(((starSystem_GetX(systemeStellaires[i]) >= 160) && (starSystem_GetY(systemeStellaires[i]) >= 120)) && (GetSystemStarType(systemeStellaires[i]) != ETOILE_TYPE_TROU_NOIR))
+        #ifdef DEBUG_VERSION
+            dbg_sprintf(dbgout, "%d %d %d\n", starSystem_GetX(systemeStellaires[i]), starSystem_GetY(systemeStellaires[i]), starSystem_StarTypeGet(systemeStellaires[i]));
+        #endif
+        if(((starSystem_GetX(systemeStellaires[i]) >= 160) && (starSystem_GetY(systemeStellaires[i]) >= 120)) && (starSystem_StarTypeGet(systemeStellaires[i]) != STAR_TYPE_BLACKHOLE))
             fin = 0;
     }
     #ifdef DEBUG_VERSION
@@ -811,11 +932,11 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
     SetEmpireColor(joueur, 9);
     SetEmpireSystemCapital(joueur, i);
 
-    SetSystemStarType(systemeStellaires[i], ETOILE_TYPE_K);
+    starSystem_StarTypeSet(systemeStellaires[i], STAR_TYPE_K);
     SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
     SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);
-    SetSystemEmpire(systemeStellaires[i], 0);
-    SetSystemIntelLevel(systemeStellaires[i], TOTAL);
+    starSystem_EmpireSet(systemeStellaires[i], 0);
+    starSystem_IntelLevelSet(systemeStellaires[i], INTEL_FULL);
 
     SetEmpireCredit(joueur, 100);
     SetEmpireMinerals(joueur, 100);
@@ -823,9 +944,9 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
     SetEmpireAlloys(joueur, 100);
     SetEmpireConsumerGoods(joueur, 100);
 
-    SetSystemStationLevel(systemeStellaires[i], PORT_STELLAIRE);
-    SetSystemStationModule(systemeStellaires[i], 0, CHANTIER_SPATIAL);
-    SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
+    starSystem_StationLevelSet(systemeStellaires[i], PORT_STELLAIRE);
+    starSystem_StationModuleSet(systemeStellaires[i], 0, CHANTIER_SPATIAL);
+    starSystem_StationModuleSet(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
     
 
     EmpireFlotteNouvelle(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
@@ -840,16 +961,16 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
 
     planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i]) - 1);
 
-    SetSystemPlanetHabitability(systemeStellaires[i], planete, true);
-    SetSystemPlanetType(systemeStellaires[i], planete, HABITABLE_CONTINENTAL);
+    starSystem_PlanetHabitabilitySet(systemeStellaires[i], planete, true);
+    starSystem_PlanetTypeSet(systemeStellaires[i], planete, HABITABLE_CONTINENTAL);
 
-    SetCameraXSystem(camera, GetSystemPlanetX(systemeStellaires[i], planete) - 160);
-    SetCameraYSystem(camera, GetSystemPlanetY(systemeStellaires[i], planete) - 120);
-    SetSystemPlanetName(systemeStellaires[i], planete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+    SetCameraXSystem(camera, starSystem_PlanetXGet(systemeStellaires[i], planete) - 160);
+    SetCameraYSystem(camera, starSystem_PlanetYGet(systemeStellaires[i], planete) - 120);
+    starSystem_PlanetNameSet(systemeStellaires[i], planete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 
-    CreateSystemPlanetCity(systemeStellaires[i], planete);
-    SetSystemPlanetCityPopulation(systemeStellaires[i], planete, 27);
-    SetSystemPlanetCityDistrict(systemeStellaires[i], planete, 4, 3, 3, 3);
+    starSystem_PlanetCityCreate(systemeStellaires[i], planete);
+    starSystem_PlanetCityPopulationSet(systemeStellaires[i], planete, 27);
+    starSystem_PlanetCityDistrictSet(systemeStellaires[i], planete, 4, 3, 3, 3);
 
     CalculateSystemPlanetCityJob(systemeStellaires[i], planete);
 
@@ -869,7 +990,7 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
         i = 0;
         while(fin == 1) { // choix du systeme
             i = randInt(0, k - 1);
-            if(((starSystem_GetX(systemeStellaires[i]) >= 160) && (starSystem_GetY(systemeStellaires[i]) >= 120)) && ((GetSystemStarType(systemeStellaires[i]) != ETOILE_TYPE_TROU_NOIR) && (GetSystemEmpire(systemeStellaires[i]) == -1)))
+            if(((starSystem_GetX(systemeStellaires[i]) >= 160) && (starSystem_GetY(systemeStellaires[i]) >= 120)) && ((starSystem_StarTypeGet(systemeStellaires[i]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(systemeStellaires[i]) == -1)))
                 fin = 0;
         }
         empire = EmpireAjouter(empireListe);
@@ -880,11 +1001,11 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
 
         SetEmpireColor(empire, randInt(20, 29));
         SetEmpireSystemCapital(empire, i);
-        SetSystemStarType(systemeStellaires[i], ETOILE_TYPE_K);
+        starSystem_StarTypeSet(systemeStellaires[i], STAR_TYPE_K);
         SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
         SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);
-        SetSystemEmpire(systemeStellaires[i], j);
-        SetSystemIntelLevel(systemeStellaires[i], INCONNU);
+        starSystem_EmpireSet(systemeStellaires[i], j);
+        starSystem_IntelLevelSet(systemeStellaires[i], INTEL_UNKNOWN);
 
         SetEmpireCredit(empire, 100);
         SetEmpireMinerals(empire, 100);
@@ -892,9 +1013,9 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
         SetEmpireAlloys(empire, 100);
         SetEmpireConsumerGoods(empire, 100);
         
-        SetSystemStationLevel(systemeStellaires[i], PORT_STELLAIRE);
-        SetSystemStationModule(systemeStellaires[i], 0, CHANTIER_SPATIAL);
-        SetSystemStationModule(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
+        starSystem_StationLevelSet(systemeStellaires[i], PORT_STELLAIRE);
+        starSystem_StationModuleSet(systemeStellaires[i], 0, CHANTIER_SPATIAL);
+        starSystem_StationModuleSet(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
 
         EmpireFlotteNouvelle(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
         EmpireFlotteNouvelle(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
@@ -902,13 +1023,13 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
 
         planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i]) - 1);
 
-        SetSystemPlanetHabitability(systemeStellaires[i], planete, true);
-        SetSystemPlanetType(systemeStellaires[i], planete, HABITABLE_CONTINENTAL);
-        SetSystemPlanetName(systemeStellaires[i], planete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+        starSystem_PlanetHabitabilitySet(systemeStellaires[i], planete, true);
+        starSystem_PlanetTypeSet(systemeStellaires[i], planete, HABITABLE_CONTINENTAL);
+        starSystem_PlanetNameSet(systemeStellaires[i], planete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
 
-        CreateSystemPlanetCity(systemeStellaires[i], planete);
-        SetSystemPlanetCityPopulation(systemeStellaires[i], planete, 27);
-        SetSystemPlanetCityDistrict(systemeStellaires[i], planete, 4, 3, 3, 3);
+        starSystem_PlanetCityCreate(systemeStellaires[i], planete);
+        starSystem_PlanetCityPopulationSet(systemeStellaires[i], planete, 27);
+        starSystem_PlanetCityDistrictSet(systemeStellaires[i], planete, 4, 3, 3, 3);
 
         CalculateSystemPlanetCityJob(systemeStellaires[i], planete);
 
@@ -931,7 +1052,7 @@ void galaxy_CreateNew(StarSystem **starSystem){
     int radiusExtern = ((SPACE_BETWEEN_STARS * GALAXY_WIDTH) - SPACE_BETWEEN_STARS) / 2 - 25; 
     int radiusIntern = 50;
     int *galaxyMatrix = NULL;
-    int k;
+    int starNumber;
     galaxyMatrix = malloc(GALAXY_WIDTH * GALAXY_WIDTH * 2 * sizeof(int));
     if(!galaxyMatrix) {
 		#ifdef DEBUG_VERSION
@@ -951,8 +1072,11 @@ void galaxy_CreateNew(StarSystem **starSystem){
     
     galaxy_MatrixCrop(galaxyMatrix, radiusExtern, radiusIntern, &loading);
 
-    k = GenerateSystemeStruct(galaxyMatrix, starSystem, &loading);
+    starNumber = galaxy_AllSystemGenerate(galaxyMatrix, starSystem, &loading);
 
     free(galaxyMatrix);
-    RecreateHyperlanes(starSystem, k);
+    // RecreateHyperlanes(starSystem, starNumber);
+    #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "End of galaxy\n");
+    #endif
 }

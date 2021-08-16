@@ -56,7 +56,7 @@ struct FenetreStruct{
 	int commandPrompt;
 	
 	int nombreDeVaisseaux; // utilisé dans la création de flottes
-	Villes *villes; // utilisé dans le changement de batiment
+	City *villes; // utilisé dans le changement de batiment
 	int empire; // utilisé dans les relations
 };
 
@@ -298,10 +298,10 @@ void SetWindowErrorCountdown(Window *fenetre, int countdown){
 	fenetre->errorCountDown = countdown;
 }
 
-void SetWindowCity(Window *fenetre, Villes *city){
+void SetWindowCity(Window *fenetre, City *city){
 	fenetre->villes = city;
 }
-Villes *GetWindowCity(Window *fenetre){
+City *GetWindowCity(Window *fenetre){
 	return fenetre->villes;
 }
 

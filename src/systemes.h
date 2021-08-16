@@ -5,119 +5,196 @@
 #include "stations.h"
 
 /* types =============================================================== */
-typedef enum {INCONNU, FAIBLE, MOYEN, ELEVEE, TOTAL} IntelLevel;
+/**
+ * @brief The different intel levels
+ * 
+ */
+typedef enum {  INTEL_UNKNOWN, 
+                INTEL_LOW, 
+                INTEL_MEDIUM, 
+                INTEL_HIGH, 
+                INTEL_FULL} IntelLevel;
 
-typedef enum {ETOILE_TYPE_B = 1, ETOILE_TYPE_A, ETOILE_TYPE_F, ETOILE_TYPE_G, ETOILE_TYPE_K, ETOILE_TYPE_M, ETOILE_TYPE_TROU_NOIR, ETOILE_TYPE_PULSAR, ETOILE_TYPE_ETOILE_A_NEUTRONS} StarType;
+
+/**
+ * @brief The different star types
+ * 
+ */
+typedef enum {  STAR_NONE,
+                STAR_TYPE_B = 1, 
+                STAR_TYPE_A, 
+                STAR_TYPE_F, 
+                STAR_TYPE_G, 
+                STAR_TYPE_K, 
+                STAR_TYPE_M, 
+                STAR_TYPE_BLACKHOLE, 
+                STAR_TYPE_PULSAR, 
+                STAR_TYPE_NEUTRON} StarType;
 
 /* structures ========================================================== */
+
 typedef struct HyperlaneStruct Hyperlane;
 
 typedef struct StarSystemStruct StarSystem;
 
 /* internal public functions =========================================== */
+/**
+ * @brief To alloc a star system
+ * 
+ * @return StarSystem* 
+ */
 StarSystem* starSystem_Create();
 
-void starSystem_SetXY(StarSystem *systemeStellaire, int x, int y);
-int starSystem_GetX(StarSystem *systemeStellaire);
-int starSystem_GetY(StarSystem *systemeStellaire);
 
-void SetSystemEmpire(StarSystem *systemeStellaire, int number);
-int GetSystemEmpire(StarSystem *systemeStellaire);
+/**
+ * @brief Set the coordinates of a star system
+ * 
+ * @param starSystem 
+ * @param x 
+ * @param y 
+ */
+void starSystem_SetXY(StarSystem *starSystem, int x, int y);
 
-void SetSystemName(StarSystem *systemeStellaire, char* string);
-char* GetSystemName(StarSystem *systemeStellaire);
+/**
+ * @brief To get the X position of a star system
+ * 
+ * @param starSystem 
+ * @return int 
+ */
+int starSystem_GetX(StarSystem *starSystem);
 
-void SetSystemIntelLevel(StarSystem *systemeStellaire, IntelLevel niveau);
-IntelLevel GetSystemIntelLevel(StarSystem *systemeStellaire);
-
-void SetSystemStarType(StarSystem *systemeStellaire, StarType type);
-StarType GetSystemStarType(StarSystem *systemeStellaire);
-
-Station *GetSystemStation(StarSystem *systemeStellaire);
-
-void CreateSystemStation(StarSystem *systemeStellaire);
-void SetSystemStationModule(StarSystem *systemeStellaire, int moduleNumber, Module module);
-Module GetSystemStationModule(StarSystem *systemeStellaire, int moduleNumber);
-
-void SetSystemStationLevel(StarSystem *systemeStellaire, Stationlevel level);
-Stationlevel GetSystemStationLevel(StarSystem *systemeStellaire);
-
-OrdreStation GetSystemStationOrder(StarSystem *systemeStellaire);
-void EndSystemStationOrder(StarSystem *systemeStellaire);
-
-int GetSystemStationOrderProgress(StarSystem *systemeStellaire);
-void UnincrementSystemStationOrderProgress(StarSystem *systemeStellaire);
-
-int GetSystemStationInfo1(StarSystem *systemeStellaire);
-int GetSystemStationInfo2(StarSystem *systemeStellaire);
+/**
+ * @brief To get the Y position of a star system
+ * 
+ * @param starSystem 
+ * @return int 
+ */
+int starSystem_GetY(StarSystem *starSystem);
 
 
-void SetHyperlaneDestination(StarSystem *systemeStellaire, int numeroHyperlane, int destination);
-int GetHyperlaneDestination(StarSystem *systemeStellaire, int numeroHyperlane);
+/**
+ * @brief Set the empire owning the star system
+ * 
+ * @param starSystem 
+ * @param number 
+ */
+void starSystem_EmpireSet(StarSystem *starSystem, int number);
 
-void SetHyperlaneXY(StarSystem *systemeStellaire, int numeroHyperlane, int x, int y);
-int GetHyperlaneX(StarSystem *systemeStellaire, int numeroHyperlane);
-int GetHyperlaneY(StarSystem *systemeStellaire, int numeroHyperlane);
+/**
+ * @brief Get the empire owning the star system
+ * 
+ * @param starSystem 
+ * @return int 
+ */
+int starSystem_EmpireGet(StarSystem *starSystem);
 
-void CreateSystemPlanet(StarSystem *systemeStellaire, int position);
-Planete *GetSystemPlanet(StarSystem *systemeStellaire, int position);
+/**
+ * @brief Set the name of the star system
+ * 
+ * @param starSystem 
+ * @param string 
+ */
+void starSystem_NameSet(StarSystem *starSystem, char* string);
 
-void SetSystemPlanetHabitability(StarSystem *systemeStellaire, int number, int habitability);
-int GetSystemPlanetHabitability(StarSystem *systemeStellaire, int number);
+/**
+ * @brief Get the name of a star system
+ * 
+ * @param starSystem 
+ * @return char* 
+ */
+char* starSystem_NameGet(StarSystem *starSystem);
 
-void SetSystemPlanetOrbitRadius(StarSystem *systemeStellaire, int number, int);
-int GetSystemPlanetOrbitRadius(StarSystem *systemeStellaire, int number);
+void starSystem_IntelLevelSet(StarSystem *starSystem, IntelLevel niveau);
+IntelLevel starSystem_IntelLevelGet(StarSystem *starSystem);
 
-void SetSystemPlanetXY(StarSystem *systemeStellaire, int number, int x, int y);
-int GetSystemPlanetX(StarSystem *systemeStellaire, int number);
-int GetSystemPlanetY(StarSystem *systemeStellaire, int number);
+void starSystem_StarTypeSet(StarSystem *starSystem, StarType type);
+StarType starSystem_StarTypeGet(StarSystem *starSystem);
 
-void SetSystemPlanetType(StarSystem *systemeStellaire, int number, PlanetType type);
-PlanetType GetSystemPlanetType(StarSystem *systemeStellaire, int number);
+Station *starSystem_StationGet(StarSystem *starSystem);
 
-void SetSystemPlanetRadius(StarSystem *systemeStellaire, int number, int radius);
-int GetSystemPlanetRadius(StarSystem *systemeStellaire, int number);
+void starSystem_StationCreate(StarSystem *starSystem);
+void starSystem_StationModuleSet(StarSystem *starSystem, int moduleNumber, Module module);
+Module starSystem_StationModuleGet(StarSystem *starSystem, int moduleNumber);
 
-void SetSystemPlanetName(StarSystem *systemeStellaire, int number, char* string);
-char* GetSystemPlanetName(StarSystem *systemeStellaire, int number);
+void starSystem_StationLevelSet(StarSystem *starSystem, Stationlevel level);
+Stationlevel starSystem_StationLevelGet(StarSystem *starSystem);
 
-void CreateSystemPlanetCity(StarSystem *systemeStellaire, int number);
+OrdreStation starSystem_StationOrderGet(StarSystem *starSystem);
+void starSystem_StationOrderEnd(StarSystem *starSystem);
 
-void SetSystemPlanetCityPopulation(StarSystem *systemeStellaire, int number, int population);
-int GetSystemPlanetCityPopulation(StarSystem *systemeStellaire, int number);
+int starSystem_StationOrderProgressGet(StarSystem *starSystem);
+void starSystem_StationOrderProgressIncrement(StarSystem *starSystem);
 
-void SetSystemPlanetCityDistrict(StarSystem *systemeStellaire, int number, int urban, int generator, int mining, int agriculture);
+int starSystem_StationInfo1Get(StarSystem *starSystem);
+int starSystem_StationInfo2Get(StarSystem *starSystem);
 
-void AddSystemPlanetCityUrbanDistrict(StarSystem *systemeStellaire, int number, int urban);
-int GetSystemPlanetCityUrbanDistrict(StarSystem *systemeStellaire, int number);
 
-void AddSystemPlanetCityGeneratorDistrict(StarSystem *systemeStellaire, int number, int generator);
-int GetSystemPlanetCityGeneratorDistrict(StarSystem *systemeStellaire, int number);
+void hyperlane_DestinationSet(StarSystem *starSystem, int numeroHyperlane, int destination);
+int hyperlane_DestinationGet(StarSystem *starSystem, int numeroHyperlane);
 
-void AddSystemPlanetCityMiningDistrict(StarSystem *systemeStellaire, int number, int mining);
-int GetSystemPlanetCityMiningDistrict(StarSystem *systemeStellaire, int number);
+void hyperlane_XYSet(StarSystem *starSystem, int numeroHyperlane, int x, int y);
+int hyperlane_XGet(StarSystem *starSystem, int numeroHyperlane);
+int hyperlane_YGet(StarSystem *starSystem, int numeroHyperlane);
 
-void AddSystemPlanetCityAgricultureDistrict(StarSystem *systemeStellaire, int number, int agriculture);
-int GetSystemPlanetCityAgricultureDistrict(StarSystem *systemeStellaire, int number);
+void starSystem_PlanetCreate(StarSystem *starSystem, int position);
+Planete *starSystem_PlanetGet(StarSystem *starSystem, int position);
 
-void SetSystemPlanetCityBuilding(StarSystem *systemeStellaire, int number, int buildingNumber, Batiment batiment, int level);
-Batiment GetSystemPlanetCityBuildingNumber(StarSystem *systemeStellaire, int number, int buildingNumber);
-int GetSystemPlanetCityBuildingLevel(StarSystem *systemeStellaire, int number, int buildingNumber);
+void starSystem_PlanetHabitabilitySet(StarSystem *starSystem, int number, int habitability);
+int starSystem_PlanetHabitabilityGet(StarSystem *starSystem, int number);
 
-int CalculateSystemPlanetCityJob(StarSystem *systemeStellaire, int number);
-int GetSystemPlanetCityJob(StarSystem *systemeStellaire, int number);
+void starSystem_PlanetRadiusOrbitSet(StarSystem *starSystem, int number, int);
+int starSystem_PlanetRadiusOrbitGet(StarSystem *starSystem, int number);
 
-Planete *GetPlanet(StarSystem *systemeStellaire, int number);
+void starSystem_PlanetXYSet(StarSystem *starSystem, int number, int x, int y);
+int starSystem_PlanetXGet(StarSystem *starSystem, int number);
+int starSystem_PlanetYGet(StarSystem *starSystem, int number);
 
-void SetSystemPlanetNumber(StarSystem *systemeStellaire, int number);
-int GetSystemPlanetNumber(StarSystem *systemeStellaire);
+void starSystem_PlanetTypeSet(StarSystem *starSystem, int number, PlanetType type);
+PlanetType starSystem_PlanetTypeGet(StarSystem *starSystem, int number);
 
-void SetSystemPlanetHabitableNumber(StarSystem *systemeStellaire, int number);
-int GetSystemPlanetHabitableNumber(StarSystem *systemeStellaire);
+void starSystem_PlanetRadiusSet(StarSystem *starSystem, int number, int radius);
+int starSystem_PlanetRadiusGet(StarSystem *starSystem, int number);
 
-void SetSystemPlanetInhabitedNumber(StarSystem *systemeStellaire, int number);
-int GetSystemPlanetInhabitedNumber(StarSystem *systemeStellaire);
+void starSystem_PlanetNameSet(StarSystem *starSystem, int number, char* string);
+char* starSystem_PlanetNameGet(StarSystem *starSystem, int number);
 
-Villes *GetSystemPlanetCity(StarSystem *systemeStellaire, int number);
+void starSystem_PlanetCityCreate(StarSystem *starSystem, int number);
+
+void starSystem_PlanetCityPopulationSet(StarSystem *starSystem, int number, int population);
+int starSystem_PlanetCityPopulationGet(StarSystem *starSystem, int number);
+
+void starSystem_PlanetCityDistrictSet(StarSystem *starSystem, int number, int urban, int generator, int mining, int agriculture);
+
+void AddSystemPlanetCityUrbanDistrict(StarSystem *starSystem, int number, int urban);
+int GetSystemPlanetCityUrbanDistrict(StarSystem *starSystem, int number);
+
+void AddSystemPlanetCityGeneratorDistrict(StarSystem *starSystem, int number, int generator);
+int GetSystemPlanetCityGeneratorDistrict(StarSystem *starSystem, int number);
+
+void AddSystemPlanetCityMiningDistrict(StarSystem *starSystem, int number, int mining);
+int GetSystemPlanetCityMiningDistrict(StarSystem *starSystem, int number);
+
+void AddSystemPlanetCityAgricultureDistrict(StarSystem *starSystem, int number, int agriculture);
+int GetSystemPlanetCityAgricultureDistrict(StarSystem *starSystem, int number);
+
+void SetSystemPlanetCityBuilding(StarSystem *starSystem, int number, int buildingNumber, Batiment batiment, int level);
+Batiment GetSystemPlanetCityBuildingNumber(StarSystem *starSystem, int number, int buildingNumber);
+int GetSystemPlanetCityBuildingLevel(StarSystem *starSystem, int number, int buildingNumber);
+
+int CalculateSystemPlanetCityJob(StarSystem *starSystem, int number);
+int GetSystemPlanetCityJob(StarSystem *starSystem, int number);
+
+Planete *GetPlanet(StarSystem *starSystem, int number);
+
+void SetSystemPlanetNumber(StarSystem *starSystem, int number);
+int GetSystemPlanetNumber(StarSystem *starSystem);
+
+void SetSystemPlanetHabitableNumber(StarSystem *starSystem, int number);
+int GetSystemPlanetHabitableNumber(StarSystem *starSystem);
+
+void SetSystemPlanetInhabitedNumber(StarSystem *starSystem, int number);
+int GetSystemPlanetInhabitedNumber(StarSystem *starSystem);
+
+City *GetSystemPlanetCity(StarSystem *starSystem, int number);
 
 #endif

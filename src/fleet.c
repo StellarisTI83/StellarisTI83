@@ -386,7 +386,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 		if(systeme == flotte->systeme){
 			SetCameraMoveFleet(camera, false);
 			flotte->action = FLOTTE_AUCUNE_ACTION;
-		} else if(((flotte->type == FLOTTE_SCIENTIFIQUE) && (GetSystemIntelLevel(systemeStellaires[systeme]) == INCONNU)) || (GetSystemIntelLevel(systemeStellaires[systeme]) != INCONNU)){
+		} else if(((flotte->type == FLOTTE_SCIENTIFIQUE) && (starSystem_IntelLevelGet(systemeStellaires[systeme]) == INTEL_UNKNOWN)) || (starSystem_IntelLevelGet(systemeStellaires[systeme]) != INTEL_UNKNOWN)){
 			SetCameraMoveFleet(camera, false);
 			
 			SetCameraEmpire(camera, 0);
@@ -428,8 +428,8 @@ int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires){
 	flotte->avancementTrajet = 1;
 	flotte->action = FLOTTE_BOUGER;
 	error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme, sizeof(flotte->chemin)/sizeof(flotte->chemin[0]));
-	flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, GetHyperlaneX(systemeStellaires[(int)flotte->systeme], index), GetHyperlaneY(systemeStellaires[(int)flotte->systeme], index));
-	while((index < 4) && (GetHyperlaneDestination(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
+	flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, hyperlane_XGet(systemeStellaires[(int)flotte->systeme], index), hyperlane_YGet(systemeStellaires[(int)flotte->systeme], index));
+	while((index < 4) && (hyperlane_DestinationGet(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
 		index++;
 	}
 	return error;
@@ -464,8 +464,8 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, StarSystem **systemeStell
 					if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) < pow((double)10, 2.0)) {
 						//arrivé au centre du systeme
 						if(flotte->action == FLOTTE_CONSTRUIRE_BASE) {
-							SetStationLevel(GetSystemStation(systemeStellaires[(int)flotte->systeme]), AVANT_POSTE);
-							SetSystemEmpire(systemeStellaires[(int)flotte->systeme], numeroEmpire);
+							SetStationLevel(starSystem_StationGet(systemeStellaires[(int)flotte->systeme]), AVANT_POSTE);
+							starSystem_EmpireSet(systemeStellaires[(int)flotte->systeme], numeroEmpire);
 						}
 						flotte->action = FLOTTE_AUCUNE_ACTION;
 					}
@@ -476,22 +476,22 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, StarSystem **systemeStell
 					if(flotte->avancement >= 1){
 
 						index = 0;
-						while((index < 4) && (GetHyperlaneDestination(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index) != flotte->systeme)){
+						while((index < 4) && (hyperlane_DestinationGet(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index) != flotte->systeme)){
 							index++;
 						}
 						
-						flotte->x = GetHyperlaneX(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index);
-						flotte->y = GetHyperlaneY(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index);
+						flotte->x = hyperlane_XGet(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index);
+						flotte->y = hyperlane_YGet(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index);
 
 						flotte->avancement = 0;
 						flotte->systeme = flotte->chemin[(int)flotte->avancementTrajet];
 						flotte->avancementTrajet++;
 
 						index = 0;
-						while((index < 4) && (GetHyperlaneDestination(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
+						while((index < 4) && (hyperlane_DestinationGet(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
 							index++;
 						}
-						flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, GetHyperlaneX(systemeStellaires[(int)flotte->systeme], index), GetHyperlaneY(systemeStellaires[(int)flotte->systeme], index));
+						flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, hyperlane_XGet(systemeStellaires[(int)flotte->systeme], index), hyperlane_YGet(systemeStellaires[(int)flotte->systeme], index));
 					} else {
 						flotte->avancement = 1;
 					}

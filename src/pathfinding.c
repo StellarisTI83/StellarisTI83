@@ -219,7 +219,7 @@ int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int tailleP
         children_index = 0;
         while(children_index < 4){
             enfant[children_index] = current_node->numero;
-            index = GetHyperlaneDestination(galaxie[current_node->numero], children_index);
+            index = hyperlane_DestinationGet(galaxie[current_node->numero], children_index);
             if(index != 255){
                 children = CreateNode(listeEnfants);
                 children->numero = index;

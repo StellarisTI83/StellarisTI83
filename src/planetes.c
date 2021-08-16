@@ -50,7 +50,7 @@ struct PlaneteStruct{
 	unsigned char flags;
 	PlanetType planetType; 
 	int population;
-	Villes *villes;
+	City *villes;
 };
 
 /* entry points ======================================================== */
@@ -120,7 +120,7 @@ char* GetPlanetName(Planete *planete){
 }
 
 void CreatePlanetCity(Planete *planete){
-	planete->villes = calloc(1, sizeof(Villes));
+	planete->villes = calloc(1, sizeof(City));
 	planete->villes->ordreFile = CreerFileOrdres();
 }
 int GetPlanetCityStatus(Planete *planete){
@@ -296,32 +296,32 @@ int GetPlanetCityAmienties(Planete *planete){
 		return 0;
 }
 
-Villes *GetPlanetCity(Planete *planete){
+City *GetPlanetCity(Planete *planete){
 	return planete->villes;
 }
 
-Ordre* GetCityOrderElement(Villes *villes){
+Ordre* GetCityOrderElement(City *villes){
 	return RecupererOrdre(villes->ordreFile);
 }
-OrdreFile* GetCityOrderQueue(Villes *villes){
+OrdreFile* GetCityOrderQueue(City *villes){
 	return villes->ordreFile;
 }
-OrdreConstruction GetCityOrder(Villes *villes){
+OrdreConstruction GetCityOrder(City *villes){
 	return GetOrder(villes->ordreFile);
 }
-int GetCityOrderProgress(Villes *villes){
+int GetCityOrderProgress(City *villes){
 	return GetOrderProgress(villes->ordreFile);
 }
-void UnincrementCityOrderProgress(Villes *villes){
+void UnincrementCityOrderProgress(City *villes){
 	UnincrementOrderProgress(villes->ordreFile);
 }
-void EndCityOrder(Villes *villes){
+void EndCityOrder(City *villes){
 	FinirOrdre(villes->ordreFile);
 }
 
-int GetCityOrderInfo1(Villes *villes){
+int GetCityOrderInfo1(City *villes){
 	return GetOrderInfo1(villes->ordreFile);
 }
-int GetCityOrderInfo2(Villes *villes){
+int GetCityOrderInfo2(City *villes){
 	return GetOrderInfo2(villes->ordreFile);
 }

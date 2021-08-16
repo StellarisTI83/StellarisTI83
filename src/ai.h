@@ -48,6 +48,8 @@ typedef struct EmpireStruct Empire;
 typedef struct RelationsStruct Relations;
 
 
+#define NO_EMPIRE -1
+
 /* entry points ======================================================== */
 
 #include "fleet.h"

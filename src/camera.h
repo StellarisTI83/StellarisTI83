@@ -134,8 +134,8 @@ int GetWindowErrorCountDown(Window *fenetre);
 void UnincrementWindowErrorCountdown(Window *fenetre);
 void SetWindowErrorCountdown(Window *fenetre, int countdown);
 
-void SetWindowCity(Window *fenetre, Villes *city);
-Villes *GetWindowCity(Window *fenetre);
+void SetWindowCity(Window *fenetre, City *city);
+City *GetWindowCity(Window *fenetre);
 void SetWindowEmpire(Window *fenetre, int empire);
 int GetWindowEmpire(Window *fenetre);
 
