@@ -34,6 +34,9 @@ GenericList *GenericList_Create() {
 
 void GenericList_Free(GenericList *list) {
     GenericListElement *cell = NULL;
+    if(!list)
+        return;
+
     while(list->firstElement != NULL) {
         cell = list->firstElement;
         list->firstElement = cell->nextElement;
@@ -43,8 +46,12 @@ void GenericList_Free(GenericList *list) {
 }
 
 int GenericList_ArraySize(GenericList *list) {
-    GenericListElement *cell = list->firstElement;
+    GenericListElement *cell;
     int size = 0;
+    if(!list)
+        return size;
+    
+    cell = list->firstElement;
     while(cell != NULL) {
         cell = cell->nextElement;
         size++;
@@ -53,8 +60,12 @@ int GenericList_ArraySize(GenericList *list) {
 }
 
 void GenericCell_Add(GenericList *list, void *info) {
-    GenericListElement *cell = calloc(1, sizeof(GenericListElement));
+    GenericListElement *cell;
+    
+    if(!list)
+        return;
 
+    cell = calloc(1, sizeof(GenericListElement));
 	if(!cell){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when adding generic cell");
@@ -95,7 +106,12 @@ void *GenericCell_Get(GenericList *list, int index) {
 }
 
 void GenericCell_Free(GenericList *list, int index) {
-    GenericListElement *temporaryCell = list->firstElement;
+    GenericListElement *temporaryCell;
+
+    if(!list)
+        return;
+    
+    temporaryCell = list->firstElement;
     if(index == 0) {
         GenericListElement *cell = list->firstElement;
         list->firstElement = temporaryCell->nextElement;
@@ -118,8 +134,13 @@ void GenericCell_Free(GenericList *list, int index) {
 }
 
 int GenericCell_GetNumber(GenericList *list, void *info) {
-    GenericListElement *temporaryCell = list->firstElement;
+    GenericListElement *temporaryCell;
     int  actualCell = 0;
+    
+    if(!list)
+        return 0;
+    
+    temporaryCell = list->firstElement;
     while(temporaryCell != NULL){
         if(temporaryCell->element == info)
             return actualCell;

@@ -18,6 +18,7 @@
 #include "main.h"
 
 #include "ai.h"
+#include "galaxy.h"
 
 /* structures ========================================================== */
 
@@ -104,6 +105,8 @@ EmpireListe* EmpireListeCreer() {
 void EmpireListeSupprimer(EmpireListe* empireListe) {
 	Empire *empire = NULL;
 	int i = 0;
+	if(!empireListe)
+		return;
     empire = GenericCell_Get((GenericList*)empireListe, i);
     while(empire != NULL) {
 		#ifdef DEBUG_VERSION
@@ -479,7 +482,6 @@ RelationsListe* RelationListeCreer() {
  */
 void RelationAllListeUpdate(EmpireListe* empireListe) {
 	Empire* empire;
-	Relations* relations;
 	int index = 0;
 	empire = EmpireNumero(empireListe, index);
 	while(empire != NULL) {
@@ -582,14 +584,14 @@ Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte) {
 
 /*Empires AI*/
 
-static void PlanetaryAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+static void PlanetaryAI(EmpireListe *empireListe, StarSystem **systemeStellaires){
 	int systemeNumero = 0;
 	int planeteNumero = 0;
 	int taille = 0;
 	Empire *empire;
 	Planete *planete = NULL;
-	while(systemeNumero < LARGEUR_GALAXIE * LARGEUR_GALAXIE){
-		if(GetSystemEmpire(systemeStellaires) != 0){
+	while(systemeNumero < GALAXY_WIDTH * GALAXY_WIDTH){
+		if(GetSystemEmpire(systemeStellaires[systemeNumero]) != 0){
 			planeteNumero = 0;
 			empire = EmpireNumero(empireListe, GetSystemEmpire(systemeStellaires[systemeNumero]));
 			taille = GetSystemPlanetNumber(systemeStellaires[systemeNumero]);
@@ -606,7 +608,7 @@ static void PlanetaryAI(EmpireListe *empireListe, SystemeStellaire **systemeStel
 	}
 }
 
-static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date){
+static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date){
 	if(GetTimeYear(date) < 2300){
 		//constuire flotte scientifique
 		if(GetEmpireAlloys(empire) >= 100){
@@ -629,7 +631,7 @@ static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireListe *empir
 	}
 }
 
-static void EmpireAICivilianFleet(Empire *empire, EmpireListe *empireListe, Flotte *flotte, SystemeStellaire **systemeStellaires){
+static void EmpireAICivilianFleet(Empire *empire, EmpireListe *empireListe, Flotte *flotte, StarSystem **systemeStellaires){
 	if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
 		// int systeme = GetFleetSystem(flotte);
 		if(GetFleetType(flotte) == FLOTTE_SCIENTIFIQUE){
@@ -651,11 +653,11 @@ static void EmpireAICivilianFleet(Empire *empire, EmpireListe *empireListe, Flot
 	}
 }
 
-static void EmpireAIMilitaryFleet(Empire *empire, EmpireListe *empireListe, Flotte *flotte, SystemeStellaire **systemeStellaires){
+static void EmpireAIMilitaryFleet(Empire *empire, EmpireListe *empireListe, Flotte *flotte, StarSystem **systemeStellaires){
 
 }
 
-static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, StarSystem **systemeStellaires){
 	FlotteListe *flotteListe = EmpireFleetGetArray(empire);
 	int tailleFlotte = FleetArraySize(flotteListe);
 	if(tailleFlotte > 0){
@@ -675,7 +677,7 @@ static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, Syste
 	}
 }
 
-void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date){
+void EmpireAI(EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date){
 	Empire *empire = NULL;
 	int empireCounter = 1;
 	int empireTotalNumber = 0;

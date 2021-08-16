@@ -3,8 +3,8 @@
 
 #include "ai.h"
 #include "camera.h"
-#include "flottes.h"
-#include "parametres.h"
+#include "fleet.h"
+#include "settings.h"
 #include "systemes.h"
 #include "time.h"
 
@@ -14,6 +14,6 @@
 
 /* entry points ======================================================== */
 
-void DrawMap(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Parametres *parametres);
+void DrawMap(EmpireListe *empireListe, StarSystem **systemeStellaires, Camera *camera, char *key, Time *date, Window *fenetre, Settings *parametres);
 
 #endif

@@ -3,8 +3,16 @@
 
 #include "ai.h"
 #include "camera.h"
-#include "parametres.h"
+#include "settings.h"
 #include "systemes.h"
+
+#define GALAXY_WIDTH    11
+
+#define SPACE_BETWEEN_STARS     50
+#define RANDOMIZE_COEFFICIENT   100
+
+#define LIMIT_LEFT  180
+#define LIMIT_TOP   160
 
 /* constants =========================================================== */
 #define RAYON_PLANETE1 30
@@ -13,7 +21,12 @@
 #define RAYON_PLANETE4 110
 #define RAYON_PLANETE5 130
 
-void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Camera *camera);
-int ChargementNouvellePartieGalaxie(SystemeStellaire **systemeStellaires);
+void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **systemeStellaires, Camera *camera);
+/**
+ * @brief Create a new galaxy in the sent aray
+ * 
+ * @param systemeStellaires 
+ */
+void galaxy_CreateNew(StarSystem **starSystem);
 
 #endif

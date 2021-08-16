@@ -1,0 +1,161 @@
+#include <graphx.h>
+
+#include <debug.h>
+
+#include "gfx/gfx.h"
+#include "colors.h"
+
+#include "ai.h"
+#include "camera.h"
+#include "galaxy.h"
+#include "loop.h"
+#include "notifications.h"
+
+#include "new_game.h"
+
+/* private functions =================================================== */
+
+/**
+ * @brief Initialize the main structures of the game
+ * 
+ * @param empireListe 
+ * @param settings 
+ * @param time 
+ * @param camera 
+ * @param window 
+ */
+static void newGame_Initialize( EmpireListe **empireListe, 
+                                Settings **settings, 
+                                Time **time,
+                                Camera **camera,
+                                Window **window){
+    *empireListe = EmpireListeCreer();
+    EmpireAjouter(*empireListe);
+    EmpireFlotteCreer(EmpireNumero(*empireListe, 0));
+
+    
+    *settings = setting_Malloc();
+    settings_SeeAllSet(*settings, false);
+
+    *time = AllocDate();
+    SetTime(*time, NEW_GAME_START_DAY, NEW_GAME_START_MONTH, NEW_GAME_START_YEAR);
+    SetTimeSpeed(*time, 0, 1);
+    AddTimeClock(*time);
+
+    *camera = AllocCamera();
+    SetCameraXVector(*camera, 0);
+    SetCameraYVector(*camera, 0);
+    
+    SetCameraZoom(*camera, ZOOM_MAX);
+    SetCameraMapType(*camera, SYSTEME);
+
+    *window = AllocFenetre();
+    CloseMenu(*window, *camera);
+}
+
+/* entry points ======================================================== */
+
+void newGame_Start(){
+    EmpireListe *empireListe = NULL;
+    StarSystem *starSystem[GALAXY_WIDTH * GALAXY_WIDTH];
+    Window *window = NULL;
+    Settings *settings = NULL;
+    Camera *camera = NULL;
+    Time *time = NULL;
+	Market *market = NULL;
+	NotificationList *notificationList = CreateNotificationList();
+
+    gfx_FillScreen(COLOR_DARK_GREEN);
+    gfx_BlitBuffer();
+    gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
+
+    newGame_Initialize(&empireListe, &settings, &time, &camera, &window);
+    
+    galaxy_CreateNew(starSystem);
+	settings_EmpireNumberSet(settings, 4);
+
+	CreerEmpires(settings, empireListe, starSystem, camera);
+	UpdatePlayersData(false, empireListe, starSystem, notificationList);
+
+	gfx_SetDrawBuffer();
+    game_MainLoop(  empireListe, 
+                    settings, 
+                    time, 
+                    starSystem, 
+                    camera, 
+                    window, 
+                    market, 
+                    notificationList);
+
+    game_Close( empireListe, 
+                starSystem, 
+                settings, 
+                time, 
+                camera, 
+                window, 
+                market,
+                notificationList);
+}
+
+void game_Close(EmpireListe *empireListe, 
+                StarSystem **starSystem,
+                Settings *settings, 
+                Time *time,
+                Camera *camera,
+                Window *window,
+                Market *market,
+                NotificationList *notificationList){
+    int index = 0;
+    if(empireListe)
+        EmpireListeSupprimer(empireListe);
+
+    if(starSystem){
+        index = 0;
+        while(index < GALAXY_WIDTH * GALAXY_WIDTH){
+            if(starSystem[index])
+                free(starSystem[index]);
+            index++;
+        }
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Free galaxy\n");
+        #endif
+    }
+
+    if(settings){
+        free(settings);
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Free settings\n");
+        #endif
+    }
+
+    if(time){
+        free(time);
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Free time\n");
+        #endif
+    }
+
+    if(camera){
+        free(camera);
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Free camera\n");
+        #endif
+    }
+
+    if(window){
+        free(window);
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Free window\n");
+        #endif
+    }
+
+    if(market){
+        free(market);
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Free market\n");
+        #endif
+    }
+
+    if(notificationList)
+        FreeNotificationList(notificationList);
+}

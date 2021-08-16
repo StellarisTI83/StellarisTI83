@@ -19,13 +19,8 @@
 
 /* constants =========================================================== */
 
-#define LARGEUR_GALAXIE 11
-
-#define TEXT_BG_COLOR 2
-#define TEXT_HEIGHT 8
-
-#define LIMITE_GAUCHE 180
-#define LIMITE_HAUT 160
+#define TEXT_BG_COLOR	2
+#define TEXT_HEIGHT		8
 
 #define X_CENTRE_SYSTEME 480
 #define Y_CENTRE_SYSTEME 360
@@ -42,7 +37,7 @@ typedef struct {
 	int valeurMinerai;
 	int valeurNourriture;
 	int valeurFer;
-} Marche;
+} Market;
 
 /* entry points ======================================================== */
 

@@ -7,27 +7,46 @@
 
 /* types =============================================================== */
 
-enum VueTypeEnum {CARTE, NORMAL, SYSTEME};
+typedef enum {  CARTE, 
+                NORMAL, 
+                SYSTEME} VueType;
 
-typedef enum VueTypeEnum VueType;
+typedef enum {  ZOOM_MIN = 0, 
+                ZOOM_NORMAL, 
+                ZOOM_MAX} ZoomLevel;
 
-enum ClassMenuEnum {MENU_QUITTER = -1, MENU_AUCUN, MENU_SYSTEME, MENU_MARCHE, MENU_FLOTTE, MENU_RECHERCHE, MENU_CONTACTS, MENU_CONTACTS_DETAILS, MENU_CONTACTS_EFFECTUER_ACTION};
 
-typedef enum ClassMenuEnum ClassMenu;
+typedef enum {  MENU_QUITTER = -1, 
+                MENU_AUCUN, 
+                MENU_SYSTEME, 
+                MENU_MARCHE, 
+                MENU_FLOTTE, 
+                MENU_RECHERCHE, 
+                MENU_CONTACTS, 
+                MENU_CONTACTS_DETAILS, 
+                MENU_CONTACTS_EFFECTUER_ACTION} ClassMenu;
 
-enum MenuSystemeEnum {MENU_SYSTEME_AUCUN, MENU_SYSTEME_FLOTTES = 1, MENU_SYSTEME_ETOILE, 
-MENU_SYSTEME_PLANETE_RESUME, MENU_SYSTEME_PLANETE_DISTRICT, MENU_SYSTEME_PLANETE_BATIMENT, MENU_SYSTEME_PLANETE_BATIMENT_CHOIX, 
-MENU_SYSTEME_FLOTTE_DETAILS, 
-MENU_SYSTEME_STATION_RESUME, MENU_SYSTEME_STATION_MODULES, MENU_SYSTEME_STATION_MODULES_CHOIX, MENU_SYSTEME_STATION_CHANTIER,
-MENU_SYSTEME_STATION_CHANTIER_CHOIX};
 
-typedef enum MenuSystemeEnum MenuSystem;
+typedef enum {  MENU_SYSTEME_AUCUN, 
+                        MENU_SYSTEME_FLOTTES = 1, 
+                        MENU_SYSTEME_ETOILE, 
+                        MENU_SYSTEME_PLANETE_RESUME, 
+                        MENU_SYSTEME_PLANETE_DISTRICT, 
+                        MENU_SYSTEME_PLANETE_BATIMENT, 
+                        MENU_SYSTEME_PLANETE_BATIMENT_CHOIX, 
+                        MENU_SYSTEME_FLOTTE_DETAILS, 
+                        MENU_SYSTEME_STATION_RESUME, 
+                        MENU_SYSTEME_STATION_MODULES, 
+                        MENU_SYSTEME_STATION_MODULES_CHOIX, 
+                        MENU_SYSTEME_STATION_CHANTIER,
+                        MENU_SYSTEME_STATION_CHANTIER_CHOIX} MenuSystem;
+
 
 /* structures ========================================================== */
 
 typedef struct CameraStruct Camera;
 
-typedef struct FenetreStruct Fenetre;
+typedef struct FenetreStruct Window;
 
 /* entry points ======================================================== */
 
@@ -82,49 +101,49 @@ void SetCameraEmpire(Camera *camera, int empire);
 int GetCameraEmpire(Camera *camera);
 
 //fenetre
-Fenetre *AllocFenetre();
+Window *AllocFenetre();
 
-void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme);
-void CloseMenu(Fenetre *fenetre, Camera *camera);
-ClassMenu GetOpenedMenuClass(Fenetre *fenetre);
-MenuSystem GetOpenedMenuDetails(Fenetre *fenetre);
-void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu);
+void OpenMenu(Window *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme);
+void CloseMenu(Window *fenetre, Camera *camera);
+ClassMenu GetOpenedMenuClass(Window *fenetre);
+MenuSystem GetOpenedMenuDetails(Window *fenetre);
+void SetWindowMenuSystem(Window *fenetre, MenuSystem menu);
 
-void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
-void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
-int GetCommandPromptStatus(Fenetre *fenetre);
+void OpenCommandPrompt(Window *fenetre, Camera *camera, Time *date);
+void CloseCommandPrompt(Window *fenetre, Camera *camera, Time *date);
+int GetCommandPromptStatus(Window *fenetre);
 
-void SetWindowPlanet(Fenetre *fenetre, int planete);
-int GetWindowPlanet(Fenetre *fenetre);
+void SetWindowPlanet(Window *fenetre, int planete);
+int GetWindowPlanet(Window *fenetre);
 
-void SetWindowSelection(Fenetre *fenetre, int selection);
-int GetWindowSelection(Fenetre *fenetre);
-void IncrementWindowSelection(Fenetre *fenetre);
-void UnincrementWindowSelection(Fenetre *fenetre);
-void AddWindowSelection(Fenetre *fenetre, int number);
+void SetWindowSelection(Window *fenetre, int selection);
+int GetWindowSelection(Window *fenetre);
+void IncrementWindowSelection(Window *fenetre);
+void UnincrementWindowSelection(Window *fenetre);
+void AddWindowSelection(Window *fenetre, int number);
 
-void SetWindowSelectedFleet(Fenetre *fenetre, int fleet);
-int GetWindowSelectedFleet(Fenetre *fenetre);
+void SetWindowSelectedFleet(Window *fenetre, int fleet);
+int GetWindowSelectedFleet(Window *fenetre);
 
-void SetWindowPrevious(Fenetre *fenetre, int previous);
-int GetWindowPrevious(Fenetre *fenetre);
+void SetWindowPrevious(Window *fenetre, int previous);
+int GetWindowPrevious(Window *fenetre);
 
-Error GetWindowError(Fenetre *fenetre);
-void SetWindowError(Fenetre *fenetre, Error error);
-int GetWindowErrorCountDown(Fenetre *fenetre);
-void UnincrementWindowErrorCountdown(Fenetre *fenetre);
-void SetWindowErrorCountdown(Fenetre *fenetre, int countdown);
+Error GetWindowError(Window *fenetre);
+void SetWindowError(Window *fenetre, Error error);
+int GetWindowErrorCountDown(Window *fenetre);
+void UnincrementWindowErrorCountdown(Window *fenetre);
+void SetWindowErrorCountdown(Window *fenetre, int countdown);
 
-void SetWindowCity(Fenetre *fenetre, Villes *city);
-Villes *GetWindowCity(Fenetre *fenetre);
-void SetWindowEmpire(Fenetre *fenetre, int empire);
-int GetWindowEmpire(Fenetre *fenetre);
+void SetWindowCity(Window *fenetre, Villes *city);
+Villes *GetWindowCity(Window *fenetre);
+void SetWindowEmpire(Window *fenetre, int empire);
+int GetWindowEmpire(Window *fenetre);
 
-void SetWindowScroll(Fenetre *fenetre, int scroll);
-void AddWindowScroll(Fenetre *fenetre, int scroll);
-int GetWindowScroll(Fenetre *fenetre);
+void SetWindowScroll(Window *fenetre, int scroll);
+void AddWindowScroll(Window *fenetre, int scroll);
+int GetWindowScroll(Window *fenetre);
 
-void SetWindowFleetSize(Fenetre *fenetre, int size);
-void AddWindowFleetSize(Fenetre *fenetre, int size);
-int GetWindowFleetSize(Fenetre *fenetre);
+void SetWindowFleetSize(Window *fenetre, int size);
+void AddWindowFleetSize(Window *fenetre, int size);
+int GetWindowFleetSize(Window *fenetre);
 #endif

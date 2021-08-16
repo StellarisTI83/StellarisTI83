@@ -17,20 +17,20 @@
 
 /* structures ========================================================== */
 struct DateStruct{
-	char vitesse;
-	char vitesseSauvegardee; //vitesse sauvegardé pour quand on passe de pause à action
-	char jour;
-	char mois;
-	int annee;
-	int horloge;
+	gameSpeed speed;
+	gameSpeed previousSpeed; //vitesse sauvegardé pour quand on passe de pause à action
+	char day;
+	char month;
+	int year;
+	int tick;
 };
 
 /* entry points ======================================================== */
-Date *AllocDate(){
-    return calloc(1, sizeof(Date));
+Time *AllocDate(){
+    return calloc(1, sizeof(Time));
 }
 
-void SetTime(Date *date, int d, int m, int y){
+void SetTime(Time *date, char d, char m, int y){
     if(d > 30)
         d = 30;
     if(d < 1)
@@ -46,101 +46,103 @@ void SetTime(Date *date, int d, int m, int y){
     if(y < 2200)
         y = 2200;
 
-    date->jour = d;
-    date->mois = m;
-    date->annee = y;
+    date->day = d;
+    date->month = m;
+    date->year = y;
 }
-int GetTimeSpeed(Date *date){
-    return date->vitesse;
+int GetTimeSpeed(Time *date){
+    return date->speed;
 }
-void SetTimeSpeed(Date *date, int speed, int savedSpeed){
-    date->vitesse = speed;
-    date->vitesseSauvegardee = savedSpeed;
+void SetTimeSpeed(Time *date, gameSpeed speed, int savedSpeed){
+    date->speed = speed;
+    date->previousSpeed = savedSpeed;
 }
-void SetTimeSpeedOnly(Date *date, int speed){
-    date->vitesse = speed;
-}
-
-void PauseGame(Date *date){
-    date->vitesseSauvegardee = date->vitesse;
-    date->vitesse = 0;
-}
-void UnpauseGame(Date *date){
-    date->vitesse = date->vitesseSauvegardee;
+void SetTimeSpeedOnly(Time *date, gameSpeed speed){
+    date->speed = speed;
 }
 
-void AddTimeClock(Date *date){
-    date->horloge++;
+void PauseGame(Time *date){
+    date->previousSpeed = date->speed;
+    date->speed = 0;
 }
-int GetTimeClock(Date *date){
-    return date->horloge;
-}
-int GetTimeDay(Date *date){
-    return date->jour;
-}
-int GetTimeMonth(Date *date){
-    return date->mois;
-}
-int GetTimeYear(Date *date){
-    return date->annee;
+void UnpauseGame(Time *date){
+    date->speed = date->previousSpeed;
 }
 
-void IncrementTime(Date *date){
-    date->jour++;
-    if(date->jour == 31){
-        date->jour = 1;
-        date->mois++;
+void AddTimeClock(Time *date){
+    date->tick++;
+}
+int GetTimeClock(Time *date){
+    return date->tick;
+}
+int GetTimeDay(Time *date){
+    return date->day;
+}
+int GetTimeMonth(Time *date){
+    return date->month;
+}
+int GetTimeYear(Time *date){
+    return date->year;
+}
+
+void IncrementTime(Time *date){
+    date->day++;
+    if(date->day == 31){
+        date->day = 1;
+        date->month++;
     }
-    if(date->mois == 13){
-        date->mois = 1;
-        date->annee++;
+    if(date->month == 13){
+        date->month = 1;
+        date->year++;
     }
 }
 
-void IncrementTimeSpeed(Date *date) {
-    date->vitesse++;
-    if(date->vitesse > 3)
-        date->vitesse = 3;
+void IncrementTimeSpeed(Time *date) {
+    date->speed++;
+    if(date->speed > TIME_SPEED_VERY_FAST)
+        date->speed = TIME_SPEED_VERY_FAST;
 }
-void UnincrementTimeSpeed(Date *date) {
-    date->vitesse--;
-    if(date->vitesse < -2)
-        date->vitesse = -2;
+void UnincrementTimeSpeed(Time *date) {
+    date->speed--;
+    if(date->speed < TIME_SPEED_VERY_SLOW)
+        date->speed = TIME_SPEED_VERY_SLOW;
 }
 
-void UpdateClock(Date *date) {
-	switch (date->vitesse) {
-		case -2:
-			date->horloge ++;
+void UpdateClock(Time *date) {
+	switch (date->speed) {
+		case TIME_SPEED_VERY_SLOW:
+			date->tick ++;
 			break;
-		case -1:
-			date->horloge += 2;
+		case TIME_SPEED_SLOW:
+			date->tick += 2;
 			break;
-		case 1:
-			date->horloge += 3;
+		case TIME_SPEED_NORMAL:
+			date->tick += 3;
 			break;
-		case 2:
-			date->horloge += 4;
+		case TIME_SPEED_FAST:
+			date->tick += 4;
 			break;
-		case 3:
-			date->horloge += 6;
+		case TIME_SPEED_VERY_FAST:
+			date->tick += 6;
 			break;
+        default:
+            break;
 	}
     
     //protection contre le fait de faire plusieurs fois les actions calculées au 0 de l'horloge
-	if (date->horloge >= 24) {
-		date->horloge = 0;
+	if (date->tick >= 24) {
+		date->tick = 0;
 	}
-	if ((date->horloge == 0) && (date->vitesse !=0)) {
-		date->jour++;
-		if(date->jour > 30) {
-            date->jour = 1;
-            date->mois++;
+	if ((date->tick == 0) && (date->speed != TIME_SPEED_PAUSE)) {
+		date->day++;
+		if(date->day > 30) {
+            date->day = 1;
+            date->month++;
 		}
 
-		if(date->mois > 12) {
-            date->mois = 1;
-            date->annee++;
+		if(date->month > 12) {
+            date->month = 1;
+            date->year++;
 		}
 	}
 }

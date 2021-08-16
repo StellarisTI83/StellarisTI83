@@ -1,36 +1,43 @@
 #ifndef H_TIME
 #define H_TIME
 
+typedef enum {  TIME_SPEED_VERY_SLOW = -2,
+                TIME_SPEED_SLOW,
+                TIME_SPEED_PAUSE,
+                TIME_SPEED_NORMAL,
+                TIME_SPEED_FAST,
+                TIME_SPEED_VERY_FAST} gameSpeed;
+
 /* structures ========================================================== */
 
-typedef struct DateStruct Date;
+typedef struct DateStruct Time;
 
 /* entry points ======================================================== */
 
-Date *AllocDate();
+Time *AllocDate();
 
-void SetTime(Date *date, int d, int m, int y);
-void SetTimeSpeed(Date *date, int speed, int savedSpeed);
-void SetTimeSpeedOnly(Date *date, int speed);
-int GetTimeSpeed(Date *date);
-void PauseGame(Date *date);
-void UnpauseGame(Date *date);
+void SetTime(Time *date, char d, char m, int y);
+void SetTimeSpeed(Time *date, gameSpeed speed, gameSpeed savedSpeed);
+void SetTimeSpeedOnly(Time *date, gameSpeed speed);
+int GetTimeSpeed(Time *date);
+void PauseGame(Time *date);
+void UnpauseGame(Time *date);
 
-void IncrementTimeSpeed(Date *date);
-void UnincrementTimeSpeed(Date *date);
+void IncrementTimeSpeed(Time *date);
+void UnincrementTimeSpeed(Time *date);
 
-void AddTimeClock(Date *date);
-int GetTimeClock(Date *date);
-int GetTimeDay(Date *date);
-int GetTimeMonth(Date *date);
-int GetTimeYear(Date *date);
+void AddTimeClock(Time *date);
+int GetTimeClock(Time *date);
+int GetTimeDay(Time *date);
+int GetTimeMonth(Time *date);
+int GetTimeYear(Time *date);
 
-void IncrementTime(Date *date);
+void IncrementTime(Time *date);
 
-void IncrementTimeSpeed(Date *date);
-void UnincrementTimeSpeed(Date *date);
+void IncrementTimeSpeed(Time *date);
+void UnincrementTimeSpeed(Time *date);
 
-void UpdateClock(Date *date);
+void UpdateClock(Time *date);
 
 
 

@@ -5,7 +5,7 @@
 #include "camera.h"
 #include "main.h"
 #include "notifications.h"
-#include "parametres.h"
+#include "settings.h"
 #include "time.h"
 
 #define HUD_WIDTH 22
@@ -24,11 +24,11 @@
 #define HUD_SIDE_BAR_GAP 20
 
 int hud_Draw(   EmpireListe *empireListe, 
-                Date *date, 
+                Time *date, 
                 char *key, 
                 Camera *camera, 
-                SystemeStellaire **systemeStellaires, 
-                Fenetre *fenetre, 
-                Parametres *parametres, 
+                StarSystem **systemeStellaires, 
+                Window *fenetre, 
+                Settings *parametres, 
                 NotificationList *notificationList);
 #endif

@@ -14,7 +14,7 @@
 #include "main.h"
 
 #include "nouvelle_partie.h"
-#include "flottes.h"
+#include "fleet.h"
 #include "pathfinding.h"
 
 static Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2);
@@ -361,7 +361,7 @@ int GetFleetArriveSystem(Flotte *flotte){
 /**
  *Donne l'ordre de faire bouger la flotte numero x
  */
-void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *fenetre, Camera *camera, EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *fenetre, Camera *camera, EmpireListe *empireListe, StarSystem **systemeStellaires){
 	Empire* empire;
 	Flotte* flotte;
 	int error;
@@ -393,8 +393,8 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 			SetCameraFleet(camera, 0);
 
 			SetCameraMapType(camera, SYSTEME);
-			SetCameraX(camera, GetSystemX(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
-			SetCameraY(camera, GetSystemY(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
+			SetCameraX(camera, starSystem_GetX(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
+			SetCameraY(camera, starSystem_GetY(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
 			
 			error = MoveFleet(flotte, systeme, systemeStellaires);
 			
@@ -412,7 +412,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 	}
 }
 
-int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires){
+int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires){
 	int error = 0;
 	int index = 0;
 
@@ -438,7 +438,7 @@ int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires)
 /**
  * Fait effectuer les action des flottes
  */
-void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **systemeStellaires){
+void EffectuerActionsFlottes(EmpireListe* empireListe, StarSystem **systemeStellaires){
 	Empire* empire = NULL; 
 	Flotte* flotte = NULL;
 	int index = 0, numeroEmpire = 0;

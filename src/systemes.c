@@ -1,5 +1,4 @@
-#include <stdbool.h>
-#include <stddef.h>
+
 #include <stdint.h>
 #include <tice.h>
 
@@ -18,284 +17,284 @@
 
 /* structures ========================================================== */
 struct HyperlaneStruct{
-	int destination;
-	int x;
-	int y;
+    int         destination;
+    int         x;
+    int         y;
 };
 
-struct SystemeStellaireStruct{
-	char nom[10];
-	int x;
-	int y;
+struct StarSystemStruct{
+    char        name[10];
+    int         x;
+    int         y;
 
-	EtoileType etoileType; //1 = B, 2 = A, 3 = F, 4 = G, 5 = K, 6 = M, 7 = trou noir, 8 = pulsar, 9 = etoile a neutron / B : violet, A : Bleu, F : Blanc, G K et M: orange
-	char nombrePlanetes;
-	char nombrePlanetesHabitees;
-	char nombrePlanetesHabitables;
-	char empire;
+    StarType    starType;
+    char        planetNumber;
+    char        inhabitedPlanetNumber;
+    char        habitablePlanetNumber;
+    char        empire;
 
-	Hyperlane hyperlane[4];
+    Hyperlane   hyperlane[4];
 
-	NiveauDeConnaissance niveauDeConnaissance; //0 = inconnu, 1 = faible, 2 = moyen, 3 = haut, 4 = total (intel level)
+    IntelLevel  intelLevel;
 
-	Planete *planetes[5];
-	Station* station;
+    Planete     *planets[5];
+    Station     *station;
 };
 
 /* entry points ======================================================== */
 
-SystemeStellaire* AllocSystem(){
-	return calloc(1, sizeof(SystemeStellaire));
+StarSystem* starSystem_Create(){
+    return calloc(1, sizeof(StarSystem));
 }
 
-void SetSystemXY(SystemeStellaire *systemeStellaire, int x, int y){
-	systemeStellaire->x = x;
-	systemeStellaire->y = y;
+void starSystem_SetXY(StarSystem *systemeStellaire, int x, int y){
+    systemeStellaire->x = x;
+    systemeStellaire->y = y;
 }
-int GetSystemX(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->x;
+int starSystem_GetX(StarSystem *systemeStellaire){
+    return systemeStellaire->x;
 }
-int GetSystemY(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->y;
+int starSystem_GetY(StarSystem *systemeStellaire){
+    return systemeStellaire->y;
 }
 
 //station
-void CreateSystemStation(SystemeStellaire *systemeStellaire){
-	systemeStellaire->station = AllocStation();
+void CreateSystemStation(StarSystem *systemeStellaire){
+    systemeStellaire->station = AllocStation();
 }
 
-void SetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber, Module module){
-	SetStationModule(systemeStellaire->station, moduleNumber, module);
+void SetSystemStationModule(StarSystem *systemeStellaire, int moduleNumber, Module module){
+    SetStationModule(systemeStellaire->station, moduleNumber, module);
 }
-Module GetSystemStationModule(SystemeStellaire *systemeStellaire, int moduleNumber){
-	return GetStationModule(systemeStellaire->station, moduleNumber);
-}
-
-void SetSystemIntelLevel(SystemeStellaire *systemeStellaire, NiveauDeConnaissance niveau){
-	systemeStellaire->niveauDeConnaissance = niveau;
-}
-NiveauDeConnaissance GetSystemIntelLevel(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->niveauDeConnaissance;
+Module GetSystemStationModule(StarSystem *systemeStellaire, int moduleNumber){
+    return GetStationModule(systemeStellaire->station, moduleNumber);
 }
 
-void SetSystemStarType(SystemeStellaire *systemeStellaire, EtoileType type){
-	systemeStellaire->etoileType = type;
+void SetSystemIntelLevel(StarSystem *systemeStellaire, IntelLevel niveau){
+    systemeStellaire->intelLevel = niveau;
 }
-EtoileType GetSystemStarType(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->etoileType;
+IntelLevel GetSystemIntelLevel(StarSystem *systemeStellaire){
+    return systemeStellaire->intelLevel;
+}
+
+void SetSystemStarType(StarSystem *systemeStellaire, StarType type){
+    systemeStellaire->starType = type;
+}
+StarType GetSystemStarType(StarSystem *systemeStellaire){
+    return systemeStellaire->starType;
 }
 
 //stations
-Station *GetSystemStation(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->station;
+Station *GetSystemStation(StarSystem *systemeStellaire){
+    return systemeStellaire->station;
 }
-void SetSystemStationLevel(SystemeStellaire *systemeStellaire, Stationlevel level){
-	SetStationLevel(systemeStellaire->station, level);
+void SetSystemStationLevel(StarSystem *systemeStellaire, Stationlevel level){
+    SetStationLevel(systemeStellaire->station, level);
 }
-Stationlevel GetSystemStationLevel(SystemeStellaire *systemeStellaire){
-	return GetStationLevel(systemeStellaire->station);
-}
-
-OrdreStation GetSystemStationOrder(SystemeStellaire *systemeStellaire){
-	return GetStationOrder(systemeStellaire->station);
-}
-void EndSystemStationOrder(SystemeStellaire *systemeStellaire){
-	EndStationOrder(systemeStellaire->station);
+Stationlevel GetSystemStationLevel(StarSystem *systemeStellaire){
+    return GetStationLevel(systemeStellaire->station);
 }
 
-int GetSystemStationOrderProgress(SystemeStellaire *systemeStellaire){
-	return GetStationOrderProgress(systemeStellaire->station);
+OrdreStation GetSystemStationOrder(StarSystem *systemeStellaire){
+    return GetStationOrder(systemeStellaire->station);
 }
-void UnincrementSystemStationOrderProgress(SystemeStellaire *systemeStellaire){
-	UnincrementStationOrderProgress(systemeStellaire->station);
-}
-
-int GetSystemStationInfo1(SystemeStellaire *systemeStellaire){
-	return GetStationOrderInfo1(systemeStellaire->station);
-}
-int GetSystemStationInfo2(SystemeStellaire *systemeStellaire){
-	return GetStationOrderInfo2(systemeStellaire->station);
+void EndSystemStationOrder(StarSystem *systemeStellaire){
+    EndStationOrder(systemeStellaire->station);
 }
 
-void SetSystemEmpire(SystemeStellaire *systemeStellaire, int empire){
-	systemeStellaire->empire = empire;
+int GetSystemStationOrderProgress(StarSystem *systemeStellaire){
+    return GetStationOrderProgress(systemeStellaire->station);
 }
-int GetSystemEmpire(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->empire;
+void UnincrementSystemStationOrderProgress(StarSystem *systemeStellaire){
+    UnincrementStationOrderProgress(systemeStellaire->station);
 }
 
-void SetSystemName(SystemeStellaire *systemeStellaire, char* string){
-	if(strlen(string) <= 9)
-		strcpy(systemeStellaire->nom, string);
-	#ifdef DEBUG_VERSION
-	else
-		dbg_sprintf(dbgerr, "Name %s too long\n", string);
-	#endif
+int GetSystemStationInfo1(StarSystem *systemeStellaire){
+    return GetStationOrderInfo1(systemeStellaire->station);
 }
-char* GetSystemName(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->nom;
+int GetSystemStationInfo2(StarSystem *systemeStellaire){
+    return GetStationOrderInfo2(systemeStellaire->station);
+}
+
+void SetSystemEmpire(StarSystem *systemeStellaire, int empire){
+    systemeStellaire->empire = empire;
+}
+int GetSystemEmpire(StarSystem *systemeStellaire){
+    return systemeStellaire->empire;
+}
+
+void SetSystemName(StarSystem *systemeStellaire, char* string){
+    if(strlen(string) <= 9)
+        strcpy(systemeStellaire->name, string);
+    #ifdef DEBUG_VERSION
+    else
+        dbg_sprintf(dbgerr, "Name %s too long\n", string);
+    #endif
+}
+char* GetSystemName(StarSystem *systemeStellaire){
+    return systemeStellaire->name;
 }
 
 
 
 //hyperlanes
-void SetHyperlaneDestination(SystemeStellaire *systemeStellaire, int numeroHyperlane, int destination){
-	systemeStellaire->hyperlane[numeroHyperlane].destination = destination;
+void SetHyperlaneDestination(StarSystem *systemeStellaire, int numeroHyperlane, int destination){
+    systemeStellaire->hyperlane[numeroHyperlane].destination = destination;
 }
-int GetHyperlaneDestination(SystemeStellaire *systemeStellaire, int numeroHyperlane){
-	return systemeStellaire->hyperlane[numeroHyperlane].destination;
+int GetHyperlaneDestination(StarSystem *systemeStellaire, int numeroHyperlane){
+    return systemeStellaire->hyperlane[numeroHyperlane].destination;
 }
 
-void SetHyperlaneXY(SystemeStellaire *systemeStellaire, int numeroHyperlane, int x, int y){
-	systemeStellaire->hyperlane[numeroHyperlane].x = x;
-	systemeStellaire->hyperlane[numeroHyperlane].y = y;
+void SetHyperlaneXY(StarSystem *systemeStellaire, int numeroHyperlane, int x, int y){
+    systemeStellaire->hyperlane[numeroHyperlane].x = x;
+    systemeStellaire->hyperlane[numeroHyperlane].y = y;
 }
-int GetHyperlaneX(SystemeStellaire *systemeStellaire, int numeroHyperlane){
-	return systemeStellaire->hyperlane[numeroHyperlane].x;
+int GetHyperlaneX(StarSystem *systemeStellaire, int numeroHyperlane){
+    return systemeStellaire->hyperlane[numeroHyperlane].x;
 }
-int GetHyperlaneY(SystemeStellaire *systemeStellaire, int numeroHyperlane){
-	return systemeStellaire->hyperlane[numeroHyperlane].y;
+int GetHyperlaneY(StarSystem *systemeStellaire, int numeroHyperlane){
+    return systemeStellaire->hyperlane[numeroHyperlane].y;
 }
 
 // planetes
-void CreateSystemPlanet(SystemeStellaire *systemeStellaire, int position){
-	systemeStellaire->planetes[position] = AllocPlanet();
+void CreateSystemPlanet(StarSystem *systemeStellaire, int position){
+    systemeStellaire->planets[position] = AllocPlanet();
 }
-Planete *GetSystemPlanet(SystemeStellaire *systemeStellaire, int position){
-	return systemeStellaire->planetes[position];
-}
-
-void SetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number, int habitability){
-	SetPlanetHabitability(systemeStellaire->planetes[number], habitability);
-}
-int GetSystemPlanetHabitability(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetHabitability(systemeStellaire->planetes[number]);
+Planete *GetSystemPlanet(StarSystem *systemeStellaire, int position){
+    return systemeStellaire->planets[position];
 }
 
-void SetSystemPlanetOrbitRadius(SystemeStellaire *systemeStellaire, int number, int orbitRadius){
-	SetPlanetOrbitRadius(systemeStellaire->planetes[number], orbitRadius);
+void SetSystemPlanetHabitability(StarSystem *systemeStellaire, int number, int habitability){
+    SetPlanetHabitability(systemeStellaire->planets[number], habitability);
 }
-int GetSystemPlanetOrbitRadius(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetOrbitRadius(systemeStellaire->planetes[number]);
-}
-
-void SetSystemPlanetXY(SystemeStellaire *systemeStellaire, int number, int x, int y){
-	SetPlanetXY(systemeStellaire->planetes[number], x, y);
-}
-int GetSystemPlanetX(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetX(systemeStellaire->planetes[number]);
-}
-int GetSystemPlanetY(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetY(systemeStellaire->planetes[number]);
+int GetSystemPlanetHabitability(StarSystem *systemeStellaire, int number){
+    return GetPlanetHabitability(systemeStellaire->planets[number]);
 }
 
-void SetSystemPlanetType(SystemeStellaire *systemeStellaire, int number, PlanetType type){
-	SetPlanetType(systemeStellaire->planetes[number], type);
+void SetSystemPlanetOrbitRadius(StarSystem *systemeStellaire, int number, int orbitRadius){
+    SetPlanetOrbitRadius(systemeStellaire->planets[number], orbitRadius);
 }
-PlanetType GetSystemPlanetType(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetType(systemeStellaire->planetes[number]);
-}
-
-void SetSystemPlanetRadius(SystemeStellaire *systemeStellaire, int number, int radius){
-	SetPlanetRadius(systemeStellaire->planetes[number], radius);
-}
-int GetSystemPlanetRadius(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetRadius(systemeStellaire->planetes[number]);
+int GetSystemPlanetOrbitRadius(StarSystem *systemeStellaire, int number){
+    return GetPlanetOrbitRadius(systemeStellaire->planets[number]);
 }
 
-void SetSystemPlanetName(SystemeStellaire *systemeStellaire, int number, char* string){
-	SetPlanetName(systemeStellaire->planetes[number], string);
+void SetSystemPlanetXY(StarSystem *systemeStellaire, int number, int x, int y){
+    SetPlanetXY(systemeStellaire->planets[number], x, y);
 }
-char* GetSystemPlanetName(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetName(systemeStellaire->planetes[number]);
+int GetSystemPlanetX(StarSystem *systemeStellaire, int number){
+    return GetPlanetX(systemeStellaire->planets[number]);
 }
-
-void CreateSystemPlanetCity(SystemeStellaire *systemeStellaire, int number){
-	CreatePlanetCity(systemeStellaire->planetes[number]);
-}
-
-
-void SetSystemPlanetCityPopulation(SystemeStellaire *systemeStellaire, int number, int population){
-	SetPlanetCityPopulation(systemeStellaire->planetes[number], population);
-}
-int GetSystemPlanetCityPopulation(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetCityPopulation(systemeStellaire->planetes[number]);
+int GetSystemPlanetY(StarSystem *systemeStellaire, int number){
+    return GetPlanetY(systemeStellaire->planets[number]);
 }
 
-void SetSystemPlanetCityDistrict(SystemeStellaire *systemeStellaire, int number, int urban, int generator, int mining, int agriculture){
-	SetPlanetCityDistrict(systemeStellaire->planetes[number], urban, generator, mining, agriculture);
+void SetSystemPlanetType(StarSystem *systemeStellaire, int number, PlanetType type){
+    SetPlanetType(systemeStellaire->planets[number], type);
+}
+PlanetType GetSystemPlanetType(StarSystem *systemeStellaire, int number){
+    return GetPlanetType(systemeStellaire->planets[number]);
 }
 
-void AddSystemPlanetCityUrbanDistrict(SystemeStellaire *systemeStellaire, int number, int urban){
-	AddPlanetCityUrbanDistrict(systemeStellaire->planetes[number], urban);
+void SetSystemPlanetRadius(StarSystem *systemeStellaire, int number, int radius){
+    SetPlanetRadius(systemeStellaire->planets[number], radius);
 }
-int GetSystemPlanetCityUrbanDistrict(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetCityUrbanDistrictNumber(systemeStellaire->planetes[number]);
-}
-
-void AddSystemPlanetCityGeneratorDistrict(SystemeStellaire *systemeStellaire, int number, int generator){
-	AddPlanetCityGeneratorDistrict(systemeStellaire->planetes[number], generator);
-}
-int GetSystemPlanetCityGeneratorDistrict(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetCityGeneratorDistrictNumber(systemeStellaire->planetes[number]);
+int GetSystemPlanetRadius(StarSystem *systemeStellaire, int number){
+    return GetPlanetRadius(systemeStellaire->planets[number]);
 }
 
-void AddSystemPlanetCityMiningDistrict(SystemeStellaire *systemeStellaire, int number, int mining){
-	AddPlanetCityMiningDistrict(systemeStellaire->planetes[number], mining);
+void SetSystemPlanetName(StarSystem *systemeStellaire, int number, char* string){
+    SetPlanetName(systemeStellaire->planets[number], string);
 }
-int GetSystemPlanetCityMiningDistrict(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetCityMiningDistrictNumber(systemeStellaire->planetes[number]);
-}
-
-void AddSystemPlanetCityAgricultureDistrict(SystemeStellaire *systemeStellaire, int number, int agriculture){
-	AddPlanetCityAgricultureDistrict(systemeStellaire->planetes[number], agriculture);
-}
-int GetSystemPlanetCityAgricultureDistrict(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetCityAgricultureDistrictNumber(systemeStellaire->planetes[number]);
+char* GetSystemPlanetName(StarSystem *systemeStellaire, int number){
+    return GetPlanetName(systemeStellaire->planets[number]);
 }
 
-void SetSystemPlanetCityBuilding(SystemeStellaire *systemeStellaire, int number, int buildingNumber, Batiment batiment, int level){
-	SetPlanetCityBuilding(systemeStellaire->planetes[number], buildingNumber, batiment, level);
-}
-Batiment GetSystemPlanetCityBuildingNumber(SystemeStellaire *systemeStellaire, int number, int buildingNumber){
-	return GetPlanetCityBuildingNumber(systemeStellaire->planetes[number], buildingNumber);
-}
-int GetSystemPlanetCityBuildingLevel(SystemeStellaire *systemeStellaire, int number, int buildingNumber){
-	return GetPlanetCityBuildingNumber(systemeStellaire->planetes[number], buildingNumber);
+void CreateSystemPlanetCity(StarSystem *systemeStellaire, int number){
+    CreatePlanetCity(systemeStellaire->planets[number]);
 }
 
-int CalculateSystemPlanetCityJob(SystemeStellaire *systemeStellaire, int number){
-	return CalculatePlanetCityJob(systemeStellaire->planetes[number]);
+
+void SetSystemPlanetCityPopulation(StarSystem *systemeStellaire, int number, int population){
+    SetPlanetCityPopulation(systemeStellaire->planets[number], population);
 }
-int GetSystemPlanetCityJob(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetCityJob(systemeStellaire->planetes[number]);
+int GetSystemPlanetCityPopulation(StarSystem *systemeStellaire, int number){
+    return GetPlanetCityPopulation(systemeStellaire->planets[number]);
 }
 
-Planete *GetPlanet(SystemeStellaire *systemeStellaire, int number){
-	return systemeStellaire->planetes[number];
+void SetSystemPlanetCityDistrict(StarSystem *systemeStellaire, int number, int urban, int generator, int mining, int agriculture){
+    SetPlanetCityDistrict(systemeStellaire->planets[number], urban, generator, mining, agriculture);
 }
 
-void SetSystemPlanetNumber(SystemeStellaire *systemeStellaire, int number){
-	systemeStellaire->nombrePlanetes = number;
+void AddSystemPlanetCityUrbanDistrict(StarSystem *systemeStellaire, int number, int urban){
+    AddPlanetCityUrbanDistrict(systemeStellaire->planets[number], urban);
 }
-int GetSystemPlanetNumber(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->nombrePlanetes;
-}
-
-void SetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire, int number){
-	systemeStellaire->nombrePlanetesHabitables = number;
-}
-int GetSystemPlanetHabitableNumber(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->nombrePlanetesHabitables;
+int GetSystemPlanetCityUrbanDistrict(StarSystem *systemeStellaire, int number){
+    return GetPlanetCityUrbanDistrictNumber(systemeStellaire->planets[number]);
 }
 
-void SetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire, int number){
-	systemeStellaire->nombrePlanetesHabitees = number;
+void AddSystemPlanetCityGeneratorDistrict(StarSystem *systemeStellaire, int number, int generator){
+    AddPlanetCityGeneratorDistrict(systemeStellaire->planets[number], generator);
 }
-int GetSystemPlanetInhabitedNumber(SystemeStellaire *systemeStellaire){
-	return systemeStellaire->nombrePlanetesHabitees;
+int GetSystemPlanetCityGeneratorDistrict(StarSystem *systemeStellaire, int number){
+    return GetPlanetCityGeneratorDistrictNumber(systemeStellaire->planets[number]);
 }
 
-Villes *GetSystemPlanetCity(SystemeStellaire *systemeStellaire, int number){
-	return GetPlanetCity(systemeStellaire->planetes[number]);
+void AddSystemPlanetCityMiningDistrict(StarSystem *systemeStellaire, int number, int mining){
+    AddPlanetCityMiningDistrict(systemeStellaire->planets[number], mining);
+}
+int GetSystemPlanetCityMiningDistrict(StarSystem *systemeStellaire, int number){
+    return GetPlanetCityMiningDistrictNumber(systemeStellaire->planets[number]);
+}
+
+void AddSystemPlanetCityAgricultureDistrict(StarSystem *systemeStellaire, int number, int agriculture){
+    AddPlanetCityAgricultureDistrict(systemeStellaire->planets[number], agriculture);
+}
+int GetSystemPlanetCityAgricultureDistrict(StarSystem *systemeStellaire, int number){
+    return GetPlanetCityAgricultureDistrictNumber(systemeStellaire->planets[number]);
+}
+
+void SetSystemPlanetCityBuilding(StarSystem *systemeStellaire, int number, int buildingNumber, Batiment batiment, int level){
+    SetPlanetCityBuilding(systemeStellaire->planets[number], buildingNumber, batiment, level);
+}
+Batiment GetSystemPlanetCityBuildingNumber(StarSystem *systemeStellaire, int number, int buildingNumber){
+    return GetPlanetCityBuildingNumber(systemeStellaire->planets[number], buildingNumber);
+}
+int GetSystemPlanetCityBuildingLevel(StarSystem *systemeStellaire, int number, int buildingNumber){
+    return GetPlanetCityBuildingNumber(systemeStellaire->planets[number], buildingNumber);
+}
+
+int CalculateSystemPlanetCityJob(StarSystem *systemeStellaire, int number){
+    return CalculatePlanetCityJob(systemeStellaire->planets[number]);
+}
+int GetSystemPlanetCityJob(StarSystem *systemeStellaire, int number){
+    return GetPlanetCityJob(systemeStellaire->planets[number]);
+}
+
+Planete *GetPlanet(StarSystem *systemeStellaire, int number){
+    return systemeStellaire->planets[number];
+}
+
+void SetSystemPlanetNumber(StarSystem *systemeStellaire, int number){
+    systemeStellaire->planetNumber = number;
+}
+int GetSystemPlanetNumber(StarSystem *systemeStellaire){
+    return systemeStellaire->planetNumber;
+}
+
+void SetSystemPlanetHabitableNumber(StarSystem *systemeStellaire, int number){
+    systemeStellaire->habitablePlanetNumber = number;
+}
+int GetSystemPlanetHabitableNumber(StarSystem *systemeStellaire){
+    return systemeStellaire->habitablePlanetNumber;
+}
+
+void SetSystemPlanetInhabitedNumber(StarSystem *systemeStellaire, int number){
+    systemeStellaire->inhabitedPlanetNumber = number;
+}
+int GetSystemPlanetInhabitedNumber(StarSystem *systemeStellaire){
+    return systemeStellaire->inhabitedPlanetNumber;
+}
+
+Villes *GetSystemPlanetCity(StarSystem *systemeStellaire, int number){
+    return GetPlanetCity(systemeStellaire->planets[number]);
 }

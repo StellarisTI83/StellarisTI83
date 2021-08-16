@@ -50,7 +50,7 @@ typedef struct RelationsStruct Relations;
 
 /* entry points ======================================================== */
 
-#include "flottes.h"
+#include "fleet.h"
 
 EmpireListe* EmpireListeCreer();
 void EmpireListeSupprimer(EmpireListe*);
@@ -151,6 +151,6 @@ void RelationInsulter(Relations* relations);
 void RelationSetPacte(Relations* relations, Pacte pacte);
 Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte);
 
-void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date);
+void EmpireAI(EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date);
 
 #endif

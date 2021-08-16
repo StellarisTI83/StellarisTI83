@@ -1,13 +1,11 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include <tice.h>
 
 #include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
 #include <math.h>
-#include <errno.h>
 
 #include <graphx.h>
 #include <fileioc.h>
@@ -20,10 +18,10 @@
 #include "colors.h"
 
 #include "main.h"
-#include "nouvelle_partie.h"
 #include "ai.h"
-#include "parametres.h"
+#include "settings.h"
 #include "dlc.h"
+#include "new_game.h"
 
 #include "locale/locale.h"
 
@@ -119,8 +117,6 @@ static void mainMenu_StationFree(StationVector **stationVector, gfx_sprite_t **s
     free(*station);
     free(*stationVector);
 }
-
-// FIXME Background don't work
 
 // FIXME Background don't work
 
@@ -238,7 +234,7 @@ static int mainMenu_Draw(){
 }
 
 
-// FIXME Show the background
+// FIXME Background don't work
 
 /**
  * @brief 
@@ -522,10 +518,7 @@ int main(void){
             case MAIN_MENU_LOAD:
                 break;
             case MAIN_MENU_NEW_GAME:
-                gfx_FillScreen(COLOR_WHITE);
-                gfx_BlitBuffer();
-                gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
-                ChargementNouvellePartie();
+                newGame_Start();
                 break;
             case MAIN_MENU_SETTINGS:
                 loop = mainMenu_Settings();

@@ -19,7 +19,7 @@ enum NOTIFICATION_ID_STRUCT {
 };
 
 typedef enum NOTIFICATION_TYPE_STRUCT NOTIFICATION_TYPE;
-typedef enum NOTIFICATION_ID_STRUCT NOTIFICATION_ID;
+typedef enum NOTIFICATION_ID_STRUCT NotificationId;
 
 typedef GenericList NotificationList;
 
@@ -29,7 +29,7 @@ typedef struct NotificationStruct Notification;
 
 NotificationList *CreateNotificationList();
 void FreeNotificationList(NotificationList *notificationList);
-void DrawNotifications(NotificationList *notificationList, Date *date);
-void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NOTIFICATION_ID ID, int length);
+void DrawNotifications(NotificationList *notificationList, Time *date);
+void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NotificationId ID, int length);
 
 #endif

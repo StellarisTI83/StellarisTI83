@@ -6,11 +6,11 @@
 
 #include "ai.h"
 #include "camera.h"
-#include "flottes.h"
+#include "fleet.h"
 #include "time.h"
-#include "parametres.h"
+#include "settings.h"
 #include "systemes.h"
 
-int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche);
+int DrawMenu(EmpireListe *empireListe, Time *date, char *key, Camera *camera, StarSystem **systemeStellaires, Window *fenetre, Settings *parametres, Market *marche);
 
 #endif

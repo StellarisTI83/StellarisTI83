@@ -15,7 +15,7 @@
 
 struct NotificationStruct {
     NOTIFICATION_TYPE type;
-    NOTIFICATION_ID ID;
+    NotificationId ID;
     int length;
 };
 
@@ -27,11 +27,16 @@ NotificationList *CreateNotificationList(){
 
 void FreeNotificationList(NotificationList *notificationList) {
     Notification *notification = NULL;
-	int i = 0;
+    int i = 0;
+    #ifdef DEBUG_VERSION
+    dbg_sprintf(dbgout, "Free notification list\n");
+    #endif
+    if(!notificationList)
+        return;
     notification = GenericCell_Get((GenericList*)notification, i);
     while(notification != NULL) {
         free(notification);
-		i++;
+        i++;
         notification = GenericCell_Get((GenericList*)notification, i);
     }
     GenericList_Free((GenericList*)notificationList);
@@ -59,11 +64,15 @@ static void DrawNotificationMed(int x, int y) {
     gfx_SetPixel(x + 7, y + 6);
 }
 
-static void DrawNotificationLogo(int x, int y, NOTIFICATION_ID ID) {
-    gfx_Sprite_NoClip(low_ressources_icon, x + 1, y + 7);
+static void DrawNotificationLogo(int x, int y, NotificationId ID) {
+    switch(ID){
+        default:
+            gfx_Sprite_NoClip(low_ressources_icon, x + 1, y + 7);
+            break;
+    }
 }
 
-void DrawNotifications(NotificationList *notificationList, Date *date) {
+void DrawNotifications(NotificationList *notificationList, Time *date) {
     Notification *notification = NULL;
     int numberOfNotifications = GenericList_ArraySize((GenericList*)notificationList);
     int notificationIndex;
@@ -92,12 +101,12 @@ void DrawNotifications(NotificationList *notificationList, Date *date) {
         AddTimeClock(date);
 }
 
-void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NOTIFICATION_ID ID, int length) {
+void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NotificationId ID, int length) {
     Notification *notification = malloc(sizeof(Notification));	
     if(!notification){
-		#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgerr, "Malloc returned NULL when adding notification");
-		#endif
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Malloc returned NULL when adding notification");
+        #endif
         exit(EXIT_FAILURE);
     }
     notification->type = type;

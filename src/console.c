@@ -18,11 +18,11 @@
 #include "gfx/gfx.h"
 
 #include "main.h"
-#include "boucle.h"
+#include "loop.h"
 #include "map.h"
 #include "nouvelle_partie.h"
 #include "sauvegarde.h"
-#include "flottes.h"
+#include "fleet.h"
 #include "updating.h"
 #include "console.h"
 
@@ -46,7 +46,7 @@ Console console;
 
 // static void FermerConsole();
 static void NouvelleLigneConsole(char *commande, char *reponse);
-static void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Parametres *parametres);
+static void RechercherCommande(char *commande, EmpireListe *empireListe, Time *date, Settings *parametres);
 
 void EcrireConsoleString(char *chaine){
 	NouvelleLigneConsole("", chaine);
@@ -58,7 +58,7 @@ void EcrireConsoleInt(int nombre){
 	NouvelleLigneConsole("", chaine);
 }
 
-void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Camera *camera, Date *date, Parametres *parametres){
+void AfficherConsole(char *key, Window *fenetre, EmpireListe *empireListe, Camera *camera, Time *date, Settings *parametres){
 	int largeur = 200, hauteur = 10;
 	Ligne *ligneDeCommande = NULL;
 	char character = '.';
@@ -269,7 +269,7 @@ void NouvelleLigneConsole(char *commande, char *reponse){
 // 	console.premiereLigne = NULL;
 // }
 
-void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Parametres *parametres){
+void RechercherCommande(char *commande, EmpireListe *empireListe, Time *date, Settings *parametres){
 	char *resultat = NULL;
 	char *fin = NULL;
 	int nombre = 0;
@@ -400,15 +400,15 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 
 	resultat = strstr(commande, "see all");
 	if(resultat == commande){
-		switch(GetSeeAll(parametres)){
+		switch(settings_SeeAllGet(parametres)){
 			case true:
-				SetSeeAll(parametres, false);
+				settings_SeeAllSet(parametres, false);
 				#ifdef DEBUG_VERSION
 					dbg_sprintf(dbgout, "See all desactivated\n");
 				#endif
 				break;
 			case false:
-				SetSeeAll(parametres, true);
+				settings_SeeAllSet(parametres, true);
 				#ifdef DEBUG_VERSION
 					dbg_sprintf(dbgout, "See all activated\n");
 				#endif

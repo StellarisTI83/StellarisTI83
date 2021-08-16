@@ -1,8 +1,3 @@
-/*************************************************
-*												 *
-*  Fichier pour la cration de nouvelles parties  *
-*											     *
-*************************************************/
 #include <tice.h>
 
 #include <stdio.h>
@@ -20,15 +15,15 @@
 #include "main.h"
 
 #include "ai.h"
-#include "boucle.h"
+#include "loop.h"
 #include "camera.h"
 #include "console.h"
-#include "flottes.h"
+#include "fleet.h"
 #include "galaxy.h"
 #include "map.h"
 #include "nouvelle_partie.h"
 #include "notifications.h"
-#include "parametres.h"
+#include "settings.h"
 #include "systemes.h"
 #include "time.h"
 
@@ -38,11 +33,11 @@
 
 /* private functions =================================================== */
 static int QuitterNouvellePartieAvertissement();
-static int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres);
-static int NouvellePartieGouvernement(EmpireListe *empireListe, Parametres *parametres);
-static int NouvellePartiePrincipes(EmpireListe *empireListe, Parametres *parametres);
-static int NouvellePartieNom(EmpireListe *empireListe, Parametres *parametres);
-static int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres);
+static int NouvellePartieEspece(EmpireListe *empireListe, Settings *parametres);
+static int NouvellePartieGouvernement(EmpireListe *empireListe, Settings *parametres);
+static int NouvellePartiePrincipes(EmpireListe *empireListe, Settings *parametres);
+static int NouvellePartieNom(EmpireListe *empireListe, Settings *parametres);
+static int NouvellePartieParametres(EmpireListe *empireListe, Settings *parametres);
 
 /**
  * avertissement lorsqu'on veut quitter la creation d'une nouvelle partie
@@ -91,7 +86,7 @@ int QuitterNouvellePartieAvertissement(){
 /**
  * choix de l'espece
  */
-int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres){
+int NouvellePartieEspece(EmpireListe *empireListe, Settings *parametres){
 	char key = 0, fin = 1;
 	int choix = 0;
 	Empire *joueur = NULL;
@@ -168,7 +163,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Parametres *parametres){
 /**
  * Choix du gouvernement
  */
-int NouvellePartieGouvernement(EmpireListe *empireListe, Parametres *parametres){
+int NouvellePartieGouvernement(EmpireListe *empireListe, Settings *parametres){
 	char key = 0, choix = 0, fin = 1;
 	Empire *joueur = NULL;
 	joueur = EmpireNumero(empireListe, 0);
@@ -247,7 +242,7 @@ int NouvellePartieGouvernement(EmpireListe *empireListe, Parametres *parametres)
 }
 
 /*nouvelle partie principes*/
-int NouvellePartiePrincipes(EmpireListe *empireListe, Parametres *parametres) {
+int NouvellePartiePrincipes(EmpireListe *empireListe, Settings *parametres) {
 	char key = 0, fin = 1, selection = 2;
 	char principe1 = -1, principe2 = -1, principe3 = -1, principe4 = -1;
 	while(fin) {
@@ -696,7 +691,7 @@ int NouvellePartiePrincipes(EmpireListe *empireListe, Parametres *parametres) {
 /**
  * Choix du nom de l'empire
  */
-int NouvellePartieNom(EmpireListe *empireListe, Parametres *parametres) {
+int NouvellePartieNom(EmpireListe *empireListe, Settings *parametres) {
 	char key = 0, fin = 1, lettre = 0, majuscule = 1, curseur = 0, finBoucle = 0, erreur = 0;
 	Empire *joueur = NULL;
 	joueur = EmpireNumero(empireListe, 0);
@@ -951,7 +946,7 @@ int NouvellePartieNom(EmpireListe *empireListe, Parametres *parametres) {
 	return 0;
 }
 
-int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
+int NouvellePartieParametres(EmpireListe *empireListe, Settings *parametres)
 {
 	char key = 0, choix = 0, fin = 1, nombresEmpires = 4;
 	char nombreEmpiresChar[3] = "";
@@ -1021,7 +1016,7 @@ int NouvellePartieParametres(EmpireListe *empireListe, Parametres *parametres)
 /**
  * Initialize all for a new game
  */
-static int InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **camera, Fenetre **fenetre, Marche **marche, Parametres **parametres, ti_var_t *sauvegarde){
+static int InitializeNewGame(EmpireListe **empireListe, Time **date, Camera **camera, Window **fenetre, Market **marche, Settings **parametres, ti_var_t *sauvegarde){
 	Empire *joueur = NULL;
 	ti_CloseAll();
 
@@ -1031,9 +1026,9 @@ static int InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **ca
 
 	*sauvegarde = ti_Open("sauv", "w");
 
-	*parametres = AllocParametres();
+	*parametres = setting_Malloc();
 
-	SetSeeAll(*parametres, false);
+	settings_SeeAllSet(*parametres, false);
 
 	*date = AllocDate();
 	SetTime(*date, 1, 1, 2200);
@@ -1065,7 +1060,7 @@ static int InitializeNewGame(EmpireListe **empireListe, Date **date, Camera **ca
  * Message d'avertissement avant une nouvelle partie. 
  * Cela supprimera toute sauvegarde
  */
-int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres){
+int NouvellePartieAvertissement(EmpireListe *empireListe, Settings *parametres){
 	char key = 0, choix = 1, fin = 1, nouvellePartie = 1;
 	gfx_FillScreen(0);
 	gfx_SwapDraw();
@@ -1130,27 +1125,27 @@ int NouvellePartieAvertissement(EmpireListe *empireListe, Parametres *parametres
 void ChargementNouvellePartie(){
 	ti_var_t sauvegarde;
 	char fin = 0;
-	Date *date = NULL;
+	Time *date = NULL;
 	Camera *camera = NULL;
-	Fenetre *fenetre = NULL;
-	Marche *marche = NULL;
-	SystemeStellaire *systemeStellaires[LARGEUR_GALAXIE * LARGEUR_GALAXIE];
+	Window *fenetre = NULL;
+	Market *marche = NULL;
+	StarSystem *systemeStellaires[GALAXY_WIDTH * GALAXY_WIDTH];
 	NotificationList *notificationList = CreateNotificationList();
 	EmpireListe *empireListe = NULL;
-	Parametres *parametres = NULL;
+	Settings *parametres = NULL;
 	
 	InitializeNewGame(&empireListe, &date, &camera, &fenetre, &marche, &parametres, &sauvegarde);
 
-	fin = ChargementNouvellePartieGalaxie(systemeStellaires);
+	galaxy_CreateNew(systemeStellaires);
 	
-	SetEmpireNumber(parametres, 4);
+	settings_EmpireNumberSet(parametres, 4);
 	CreerEmpires(parametres, empireListe, systemeStellaires, camera);
 	UpdatePlayersData(false, empireListe, systemeStellaires, notificationList);
 
 	PauseGame(date);
 
 	gfx_SetDrawBuffer();
-	StellarisBoucle(&sauvegarde, empireListe, parametres, date, systemeStellaires, camera, fenetre, marche, notificationList);
+	game_MainLoop(empireListe, parametres, date, systemeStellaires, camera, fenetre, marche, notificationList);
 }
 
 /**

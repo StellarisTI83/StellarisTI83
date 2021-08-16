@@ -209,129 +209,129 @@ int GetCameraEmpire(Camera *camera){
 }
 
 //fenetre
-Fenetre *AllocFenetre(){
-	return calloc(1, sizeof(Fenetre));
+Window *AllocFenetre(){
+	return calloc(1, sizeof(Window));
 }
 
-void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme){
+void OpenMenu(Window *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme){
 	fenetre->menu = classMenu;
 	fenetre->menuDetails = menuSysteme;
 	fenetre->selection = 1;
 	camera->lock = true;
 }
-void CloseMenu(Fenetre *fenetre, Camera *camera){
+void CloseMenu(Window *fenetre, Camera *camera){
 	fenetre->menu = MENU_AUCUN;
 	fenetre->menuDetails = MENU_SYSTEME_AUCUN;
 	camera->lock = false;
 }
-ClassMenu GetOpenedMenuClass(Fenetre *fenetre){
+ClassMenu GetOpenedMenuClass(Window *fenetre){
 	return fenetre->menu;
 }
-MenuSystem GetOpenedMenuDetails(Fenetre *fenetre){
+MenuSystem GetOpenedMenuDetails(Window *fenetre){
 	return fenetre->menuDetails;
 }
 
-void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date){
+void OpenCommandPrompt(Window *fenetre, Camera *camera, Time *date){
 	fenetre->commandPrompt = true;
 	camera->lock = true;
 	PauseGame(date);
 }
-void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date){
+void CloseCommandPrompt(Window *fenetre, Camera *camera, Time *date){
 	fenetre->commandPrompt = false;
 	camera->lock = false;
 	UnpauseGame(date);
 }
-int GetCommandPromptStatus(Fenetre *fenetre){
+int GetCommandPromptStatus(Window *fenetre){
 	return fenetre->commandPrompt;
 }
 
-void SetWindowPlanet(Fenetre *fenetre, int planete){
+void SetWindowPlanet(Window *fenetre, int planete){
 	fenetre->planete = planete;
 }
-int GetWindowPlanet(Fenetre *fenetre){
+int GetWindowPlanet(Window *fenetre){
 	return fenetre->planete;
 }
 
-void SetWindowSelection(Fenetre *fenetre, int selection){
+void SetWindowSelection(Window *fenetre, int selection){
 	fenetre->selection = selection;
 }
-int GetWindowSelection(Fenetre *fenetre){
+int GetWindowSelection(Window *fenetre){
 	return fenetre->selection;
 }
-void IncrementWindowSelection(Fenetre *fenetre){
+void IncrementWindowSelection(Window *fenetre){
 	fenetre->selection++;
 }
-void UnincrementWindowSelection(Fenetre *fenetre){
+void UnincrementWindowSelection(Window *fenetre){
 	fenetre->selection--;
 }
-void AddWindowSelection(Fenetre *fenetre, int number){
+void AddWindowSelection(Window *fenetre, int number){
 	fenetre->selection += number;
 }
 
-void SetWindowSelectedFleet(Fenetre *fenetre, int fleet){
+void SetWindowSelectedFleet(Window *fenetre, int fleet){
 	fenetre->flotteSelectionee = fleet;
 }
-int GetWindowSelectedFleet(Fenetre *fenetre){
+int GetWindowSelectedFleet(Window *fenetre){
 	return fenetre->flotteSelectionee;
 }
 
-void SetWindowPrevious(Fenetre *fenetre, int previous){
+void SetWindowPrevious(Window *fenetre, int previous){
 	fenetre->precedente = previous;
 }
-int GetWindowPrevious(Fenetre *fenetre){
+int GetWindowPrevious(Window *fenetre){
 	return fenetre->precedente;
 }
 
-Error GetWindowError(Fenetre *fenetre){
+Error GetWindowError(Window *fenetre){
 	return fenetre->error;
 }
-void SetWindowError(Fenetre *fenetre, Error error){
+void SetWindowError(Window *fenetre, Error error){
 	fenetre->error = error;
 }
-int GetWindowErrorCountDown(Fenetre *fenetre){
+int GetWindowErrorCountDown(Window *fenetre){
 	return fenetre->errorCountDown;
 }
-void UnincrementWindowErrorCountdown(Fenetre *fenetre){
+void UnincrementWindowErrorCountdown(Window *fenetre){
 	fenetre->errorCountDown--;
 }
-void SetWindowErrorCountdown(Fenetre *fenetre, int countdown){
+void SetWindowErrorCountdown(Window *fenetre, int countdown){
 	fenetre->errorCountDown = countdown;
 }
 
-void SetWindowCity(Fenetre *fenetre, Villes *city){
+void SetWindowCity(Window *fenetre, Villes *city){
 	fenetre->villes = city;
 }
-Villes *GetWindowCity(Fenetre *fenetre){
+Villes *GetWindowCity(Window *fenetre){
 	return fenetre->villes;
 }
 
-void SetWindowEmpire(Fenetre *fenetre, int empire){
+void SetWindowEmpire(Window *fenetre, int empire){
 	fenetre->empire = empire;
 }
-int GetWindowEmpire(Fenetre *fenetre){
+int GetWindowEmpire(Window *fenetre){
 	return fenetre->empire;
 }
 
-void SetWindowScroll(Fenetre *fenetre, int scroll){
+void SetWindowScroll(Window *fenetre, int scroll){
 	fenetre->scroll = scroll;
 }
-void AddWindowScroll(Fenetre *fenetre, int scroll){
+void AddWindowScroll(Window *fenetre, int scroll){
 	fenetre->scroll += scroll;
 }
-int GetWindowScroll(Fenetre *fenetre){
+int GetWindowScroll(Window *fenetre){
 	return fenetre->scroll;
 }
 
-void SetWindowFleetSize(Fenetre *fenetre, int size){
+void SetWindowFleetSize(Window *fenetre, int size){
 	fenetre->nombreDeVaisseaux = size;
 }
-void AddWindowFleetSize(Fenetre *fenetre, int size){
+void AddWindowFleetSize(Window *fenetre, int size){
 	fenetre->nombreDeVaisseaux += size;
 }
-int GetWindowFleetSize(Fenetre *fenetre){
+int GetWindowFleetSize(Window *fenetre){
 	return fenetre->nombreDeVaisseaux;
 }
 
-void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu){
+void SetWindowMenuSystem(Window *fenetre, MenuSystem menu){
 	fenetre->menuDetails = menu;
 }

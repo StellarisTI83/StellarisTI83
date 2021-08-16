@@ -21,7 +21,7 @@
 
 #include "menus.h"
 
-#include "boucle.h"
+#include "loop.h"
 #include "console.h"
 #include "map.h"
 #include "nouvelle_partie.h"
@@ -35,7 +35,7 @@
 /**
  * Base pour dessiner les menus
  */
-static void DrawMenuBase(char planetePopulation, char niveauMenu, Fenetre *fenetre) {
+static void DrawMenuBase(char planetePopulation, char niveauMenu, Window *fenetre) {
 	int niveau = 40;
 	gfx_SetColor(6);
 	gfx_FillRectangle_NoClip(40, 40, 240, 160);
@@ -90,7 +90,7 @@ static void DrawMenuBase(char planetePopulation, char niveauMenu, Fenetre *fenet
 /**
  * Dessine le menu lorsqu'on appui sur echap
  */
-static int8_t MenuQuitter(char* key, ti_var_t* sauvegarde, EmpireListe* empireListe, Parametres* parametres, Date* date, SystemeStellaire **systemeStellaires, Camera* camera, Marche* marche, Fenetre* fenetre){
+static int8_t MenuQuitter(char* key, EmpireListe* empireListe, Settings* parametres, Time* date, StarSystem **systemeStellaires, Camera* camera, Market* marche, Window* fenetre){
 	switch(*key) {
 		default:
 			break;
@@ -173,7 +173,7 @@ static int8_t MenuQuitter(char* key, ti_var_t* sauvegarde, EmpireListe* empireLi
 /**
  * Dessine le menu des flottes du système
  */
-static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStellaire **systemeStellaires, Camera* camera, Fenetre* fenetre){
+static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, StarSystem **systemeStellaires, Camera* camera, Window* fenetre){
 	int niveau = 0, i = 0;
 	int8_t compteur = 0, compteurFlotte = 0;
 	int fleetIndex = 0;
@@ -267,7 +267,7 @@ static void MenuSystemeFlotte(char* key, EmpireListe* empireListe, SystemeStella
 /**
  * Dessine le menu de resumé de l'étoile
  */
-static void MenuSystemeEtoile(char *key, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeEtoile(char *key, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
 	switch(*key) {
 		default:
 			break;
@@ -375,7 +375,7 @@ static void MenuSystemeEtoile(char *key, SystemeStellaire **systemeStellaires, C
 	}
 }
 
-static void NumeroPlanete(int numero, int *decalage, Planete *planete, char *nomPlanete, SystemeStellaire *systeme){
+static void NumeroPlanete(int numero, int *decalage, Planete *planete, char *nomPlanete, StarSystem *systeme){
 	switch(numero){
 	case 0:
 		*decalage = 186;
@@ -413,7 +413,7 @@ static void NumeroPlanete(int numero, int *decalage, Planete *planete, char *nom
 /**
  *Dessine le menu de resumé de planète
  */
-static void MenuSystemePlaneteResume(char *key, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
 	char populationChar[5], nomPlanete[20];
 	int decalage = 0;
 	int niveau = 0;
@@ -561,7 +561,7 @@ static void OrdreDistrictNom(Villes *villes){
 /**
  *Dessine le menu des districts de planète
  */
-static void MenuSystemePlaneteDistrict(char *key, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
+static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires, Camera *camera, Window *fenetre, EmpireListe *empireListe){
 	int8_t nomPlanete[20];
 	int decalage = 0;
 	int maximum = 4;
@@ -767,7 +767,7 @@ static char *PlaneteBatimentNom(Batiment batiment, int niveau, char* nom){
 /**
  *Choisi un batiment
  */
-static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
 	int niveau = 53;
 	char nomDuBatiment[50];
 	int i = 0, prix = 0;
@@ -914,7 +914,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, SystemeSt
 /**
  *Dessine le menu de les batiments de planète
  */
-static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, EmpireListe *empireListe){
+static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaires, Camera *camera, Window *fenetre, EmpireListe *empireListe){
 	char nomPlanete[20], nom[50];
 	int decalage = 0;
 	int nombreDeBatiment = 0;
@@ -1125,7 +1125,7 @@ static void MenuSystemePlaneteBatiments(char *key, SystemeStellaire **systemeSte
 /**
  *Dessine le menu des détails sur la flotte sélectionnée par les menus MenuSystemeFlotte et MenuListeFlottes
  */
-static void MenuSystemeFlotteDetails(char *key, SystemeStellaire **systemeStellaires, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, EmpireListe *empireListe, Camera *camera, Window *fenetre){
 	char niveau = 0;
 	Flotte* flotte = NULL;
 	switch(*key) {
@@ -1495,7 +1495,7 @@ static char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOr
 /**
  *Dessine le menu de la station du systeme
  */
-static void MenuSystemeStationResume(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
 	char evolution[25] = {0};
 	char ordreStation[50];
 	int prixAmelioration = 0, tempsAmelioration = 0;
@@ -1822,7 +1822,7 @@ static void EcrireModule(Module module, int selection, int numero, int *niveau){
 /**
  *Dessine le menu des modules de la station du systeme
  */
-static void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
 	Station *station = GetSystemStation(systemeStellaires[GetCameraSystem(camera)]);
 	OrdreFile *ordreQueue = GetStationOrderQueue(station);
 	int niveau = 120;
@@ -1978,7 +1978,7 @@ static void MenuSystemeStationModules(char *key, Empire *joueur, SystemeStellair
 /**
  *Choisi un module
  */
-static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
 	int niveau = 53;
 	char nomDuModule[50];
 	int i = 0;
@@ -2150,7 +2150,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, SystemeSte
 /**
  *Dessine le menu des modules de la station du systeme
  */
-static void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
 	char ordreStation[50];
 	int niveau = 55, nombreDeChantiers = 0, travail = 0, prix = 0;
 	int i = 0;
@@ -2373,7 +2373,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, SystemeStellai
 /**
  *Choisi un module
  */
-static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre){
+static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
 	int prix = 0, travail = 0;
 	char nom[50];
 	switch(*key){
@@ -2507,7 +2507,7 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, SystemeSt
 /**
  * Dessine le menu systeme
  */
-static void MenuSysteme(char* key, EmpireListe* empireListe, Parametres* parametres, Date* date, SystemeStellaire **systemeStellaires, Camera* camera, Fenetre* fenetre){
+static void MenuSysteme(char* key, EmpireListe* empireListe, Settings* parametres, Time* date, StarSystem **systemeStellaires, Camera* camera, Window* fenetre){
 	Empire *joueur = EmpireNumero(empireListe, 0);
 	switch(GetOpenedMenuDetails(fenetre))
 	{				
@@ -2567,7 +2567,7 @@ static void MenuSysteme(char* key, EmpireListe* empireListe, Parametres* paramet
 /**
  *Dessine le menu du marché galactique
  */
-static void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenetre){
+static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetre){
 	if(*key == sk_Clear){
 		CloseMenu(fenetre, camera);
 		*key = 0;
@@ -2648,7 +2648,7 @@ static void MenuMarche(char *key, Marche *marche, Camera *camera, Fenetre *fenet
 /**
  *Dessine le menu avec la lste des flottes du joueur
  */
-static void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
+static void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera, Window *fenetre){
 	char niveau = 0;
 	int sizeFleet = 0, compteurFlotte = 0;
 	Flotte* flotte = NULL;
@@ -2723,7 +2723,7 @@ static void MenuListeFLottes(char *key, EmpireListe *empireListe, Camera *camera
 /**
  *Dessine le menu de recherche
  */
-static void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
+static void MenuRecherche(char *key, Camera *camera, Window *fenetre){
 	if(*key == sk_Clear) {
 		CloseMenu(fenetre, camera);
 	}
@@ -2735,7 +2735,7 @@ static void MenuRecherche(char *key, Camera *camera, Fenetre *fenetre){
 /**
  *Dessine le menu avec les contacts
  */
-static void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre){
+static void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Window *fenetre){
 	int nombreEmpire, empireSelectionne = 1;
 	Empire *empire = NULL;
 	int niveau = 57;
@@ -2785,7 +2785,7 @@ static void MenuContacts(char *key, EmpireListe *empireListe, Camera *camera, Fe
 	}
 }
 
-static void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre) {
+static void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *camera, Window *fenetre) {
 	Empire *empire = EmpireNumero(empireListe, GetWindowPrevious(fenetre));
 	Empire *joueur = EmpireNumero(empireListe, 0);
 	int boutonY = 55;
@@ -3077,7 +3077,7 @@ static void MenuContactsDetails(char *key, EmpireListe *empireListe, Camera *cam
 	}
 }
 
-static void MenuContactsEffectuerAction(char *key, EmpireListe *empireListe, Camera *camera, Fenetre *fenetre) {
+static void MenuContactsEffectuerAction(char *key, EmpireListe *empireListe, Camera *camera, Window *fenetre) {
 	Empire *empire = EmpireNumero(empireListe, GetWindowPrevious(fenetre));
 	int boutonIndex = 1;
 	Relations *relations = RelationNumero(EmpireRelationGetArray(empire), GetWindowPrevious(fenetre));
@@ -3163,12 +3163,12 @@ static void MenuContactsEffectuerAction(char *key, EmpireListe *empireListe, Cam
 /**
  * Fonction gérant les differents menus in-game
  */
-int DrawMenu(EmpireListe *empireListe, Date *date, char *key, Camera *camera, SystemeStellaire **systemeStellaires, Fenetre *fenetre, Parametres *parametres, ti_var_t* sauvegarde, Marche *marche){
+int DrawMenu(EmpireListe *empireListe, Time *date, char *key, Camera *camera, StarSystem **systemeStellaires, Window *fenetre, Settings *parametres, Market *marche){
 	int8_t fin = 1;
 
 	switch(GetOpenedMenuClass(fenetre)){
 		case MENU_QUITTER:
-			fin = MenuQuitter(key, sauvegarde, empireListe, parametres, date, systemeStellaires, camera, marche, fenetre);
+			fin = MenuQuitter(key, empireListe, parametres, date, systemeStellaires, camera, marche, fenetre);
 
 			if (!fin){
 				return 0;

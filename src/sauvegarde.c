@@ -24,11 +24,11 @@
 #include "gfx/gfx.h"
 
 #include "main.h"
-#include "boucle.h"
+#include "loop.h"
 #include "map.h"
 #include "nouvelle_partie.h"
 #include "sauvegarde.h"
-#include "flottes.h"
+#include "fleet.h"
 #include "console.h"
 #include "ai.h"
 

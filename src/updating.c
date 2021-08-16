@@ -17,11 +17,12 @@
 
 #include "main.h"
 
-#include "boucle.h"
-#include "flottes.h"
+#include "loop.h"
+#include "fleet.h"
 #include "map.h"
 #include "nouvelle_partie.h"
 #include "sauvegarde.h"
+#include "settings.h"
 #include "time.h"
 #include "updating.h"
 
@@ -32,12 +33,12 @@
 /**
  * calcule le niveau de connaissance (intel level) du systeme
  */
-static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, EmpireListe *empireListe){
+static void CalculerNiveauDeConnaissance(StarSystem **systemeStellaires, EmpireListe *empireListe){
 	int sizeFleet = 0;
 	int indexFleet = 0;
 	int numeroSysteme = 0;
 
-	while(numeroSysteme < LARGEUR_GALAXIE * LARGEUR_GALAXIE) {
+	while(numeroSysteme < GALAXY_WIDTH * GALAXY_WIDTH) {
 		if(GetSystemIntelLevel(systemeStellaires[numeroSysteme])  >= MOYEN) {
 			SetSystemIntelLevel(systemeStellaires[numeroSysteme], MOYEN);
 		}
@@ -59,7 +60,7 @@ static void CalculerNiveauDeConnaissance(SystemeStellaire **systemeStellaires, E
 /**
  * Effectue les actions de station
  */
-void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe* empireListe){
+void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireListe* empireListe){
 	int numero = 0, nombreDeVaisseaux = 0;
 	int nombreDeCorvette = 0, nombreDeDestroyer = 0, nombreDeCroiseur = 0, nombreDeCuirasse = 0;
 	OrdreStation ordre = AUCUN_ORDRE_STATION;
@@ -67,7 +68,7 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
     int info2 = 0;
 	int numeroEmpire = 0;
 	// Empire *joueur = EmpireNumero(empireListe, 0);
-	while(numero < (LARGEUR_GALAXIE * LARGEUR_GALAXIE) - 1){
+	while(numero < (GALAXY_WIDTH * GALAXY_WIDTH) - 1){
 		ordre = GetSystemStationOrder(systemeStellaires[numero]);
 		if(ordre != AUCUN_ORDRE_STATION){
 			if(GetSystemStationOrderProgress(systemeStellaires[numero]) > 1){
@@ -128,12 +129,12 @@ void EffectuerActionsStations(SystemeStellaire **systemeStellaires, EmpireListe*
 /**
  * Effectue les actions des planetes
  */
-void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires){
+void EffectuerActionsPlanetes(StarSystem **systemeStellaires){
 	int i = 0, j = 0;
 	Villes *villes = NULL;
 	// Batiment *batiment = NULL;
 	OrdreConstruction ordre;
-	for(i = 0; i < LARGEUR_GALAXIE * LARGEUR_GALAXIE; i++){
+	for(i = 0; i < GALAXY_WIDTH * GALAXY_WIDTH; i++){
 		for(j = 0; j < GetSystemPlanetNumber(systemeStellaires[i]); j++){
 			villes = GetSystemPlanetCity(systemeStellaires[i], j);
 			if(villes != NULL){
@@ -173,7 +174,7 @@ void EffectuerActionsPlanetes(SystemeStellaire **systemeStellaires){
 /**
  * Update time
  */
-static void UpdateTime(Date *date, char *key, Fenetre *fenetre){
+static void UpdateTime(Time *date, char *key, Window *fenetre){
 	//différentes actions des touches
 	if(!GetCommandPromptStatus(fenetre)){
 		switch(*key){
@@ -195,14 +196,14 @@ static void UpdateTime(Date *date, char *key, Fenetre *fenetre){
 	UpdateClock(date);
 }
 
-static void UpdateWorld(EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+static void UpdateWorld(EmpireListe *empireListe, StarSystem **systemeStellaires){
     EffectuerActionsFlottes(empireListe, systemeStellaires);
     EffectuerActionsStations(systemeStellaires, empireListe);
     EffectuerActionsPlanetes(systemeStellaires);
     CalculerNiveauDeConnaissance(systemeStellaires, empireListe);
 }
 
-static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres){
+static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, Settings *parametres){
 	if(GetCameraMapType(camera) == NORMAL){
 		switch(*key){
 		case sk_Up:
@@ -231,7 +232,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 			}
 			break;
 		case sk_Del:
-			if ((GetCameraZoom(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && ((GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU) || GetSeeAll(parametres))))) {
+			if ((GetCameraZoom(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && ((GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU) || settings_SeeAllGet(parametres))))) {
 				SetCameraLock(camera, false);
 				SetCameraMapType(camera, SYSTEME);
 				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
@@ -253,7 +254,7 @@ static void TestKey(char *key, EmpireListe *empireListe, SystemeStellaire **syst
 			}
 			break;
 		case sk_Enter:
-			if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU || GetSeeAll(parametres)))){
+			if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (GetSystemIntelLevel(systemeStellaires[GetCameraViewedSystem(camera)]) != INCONNU || settings_SeeAllGet(parametres)))){
 				SetCameraLock(camera, false);
 				SetCameraMapType(camera, SYSTEME);
 				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
@@ -381,7 +382,7 @@ static void UpdateEmpirePower(EmpireListe *empireListe) {
 }
 
 /* entry points ======================================================== */
-void UpdatePlayersData(char appliquer, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, NotificationList *notificationList){
+void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **systemeStellaires, NotificationList *notificationList){
 	Empire *empire = NULL;
 	Flotte *flotte = NULL;
 	FlotteListe *flotteListe = NULL;
@@ -416,7 +417,7 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, SystemeStellair
 	}
 
 	//retirer et ajouter argent systemes et planetes
-	for(systemIndex = 0; systemIndex < LARGEUR_GALAXIE * LARGEUR_GALAXIE; systemIndex++){
+	for(systemIndex = 0; systemIndex < GALAXY_WIDTH * GALAXY_WIDTH; systemIndex++){
 		if(GetSystemEmpire(systemeStellaires[systemIndex]) != -1){
 			empire = EmpireNumero(empireListe, GetSystemEmpire(systemeStellaires[systemIndex]));
 			planetaryArraySize = GetSystemPlanetNumber(systemeStellaires[systemIndex]);
@@ -513,7 +514,7 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, SystemeStellair
 	}
 }
 
-int UpdateGame(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, NotificationList *notificationList, Parametres *parametres){
+int UpdateGame(char *key, EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, NotificationList *notificationList, Settings *parametres){
     if(!GetCommandPromptStatus(fenetre))
 		TestKey(key, empireListe, systemeStellaires, date, camera, fenetre, parametres);
 

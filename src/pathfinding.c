@@ -134,7 +134,7 @@ static void ReverseArray(int array[], int size){
     }
 }
 
-int PathFinding(SystemeStellaire **galaxie, int *path, int debut, int fin, int taillePath){
+int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int taillePath){
     NodeArray *listeOuverte = NULL;
     NodeArray *listeFermee = NULL;
     NodeArray *listeEnfants = NULL;
@@ -148,8 +148,8 @@ int PathFinding(SystemeStellaire **galaxie, int *path, int debut, int fin, int t
     int enfant[4], parent;
 
 
-    depart->x = GetSystemX(galaxie[debut]);
-    depart->y = GetSystemY(galaxie[debut]);
+    depart->x = starSystem_GetX(galaxie[debut]);
+    depart->y = starSystem_GetY(galaxie[debut]);
     depart->g = 0;
     depart->h = 0;
     depart->f = 0;
@@ -157,8 +157,8 @@ int PathFinding(SystemeStellaire **galaxie, int *path, int debut, int fin, int t
     depart->suivant = NULL;
     depart->parent = 0;
 
-    arrivee->x = GetSystemX(galaxie[fin]);
-    arrivee->y = GetSystemY(galaxie[fin]);
+    arrivee->x = starSystem_GetX(galaxie[fin]);
+    arrivee->y = starSystem_GetY(galaxie[fin]);
     arrivee->g = 0;
     arrivee->h = 0;
     arrivee->f = 0;
@@ -223,8 +223,8 @@ int PathFinding(SystemeStellaire **galaxie, int *path, int debut, int fin, int t
             if(index != 255){
                 children = CreateNode(listeEnfants);
                 children->numero = index;
-                children->x = GetSystemX(galaxie[index]);
-                children->y = GetSystemY(galaxie[index]);
+                children->x = starSystem_GetX(galaxie[index]);
+                children->y = starSystem_GetY(galaxie[index]);
                 children->parent = current_node->numero;
             }
             children_index++;

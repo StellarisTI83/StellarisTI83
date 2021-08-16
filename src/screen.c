@@ -24,7 +24,7 @@
 /**
  * 
  * */
-char DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche, NotificationList *notificationList) {
+char DrawScreen(char *key, EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, Settings *parametres, Market *marche, NotificationList *notificationList) {
     int8_t fin = 1;
     gfx_ZeroScreen();
 
@@ -32,7 +32,7 @@ char DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeS
 
     hud_Draw(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, notificationList);
 
-    fin = DrawMenu(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
+    fin = DrawMenu(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, marche);
     
 	gfx_SwapDraw();
     

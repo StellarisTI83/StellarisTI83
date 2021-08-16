@@ -4,7 +4,7 @@
 #include "ai.h"
 #include "console.h"
 #include "console.h"
-#include "flottes.h"
+#include "fleet.h"
 #include "map.h"
 #include "menus.h"
 #include "nouvelle_partie.h"
@@ -17,6 +17,13 @@
 
 /* entry points ======================================================== */
 
-int StellarisBoucle(ti_var_t *sauvegarde, EmpireListe *empireListe, Parametres *parametres, Date *date, SystemeStellaire **systemeStellaires, Camera *camera, Fenetre *fenetre, Marche *marche, NotificationList *notificationList);	
+int game_MainLoop(	EmpireListe *empireListe, 
+					Settings *settings, 
+					Time *time, 
+					StarSystem **starSystems, 
+					Camera *camera, 
+					Window *window, 
+					Market *marche, 
+					NotificationList *notificationList);
 
 #endif
