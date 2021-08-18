@@ -1,0 +1,32 @@
+name: Make
+
+on:
+  push:
+    branches:
+    - main
+    - release/*
+  pull_request:
+    branches:
+    - main
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download File To Workspace
+      uses: carlosperate/download-file-action@v1.0.3
+      with:
+        file-url: https://github.com/CE-Programming/toolchain/releases/download/v9.1/linux_CEdev.zip
+        
+    - uses: brunoborges/justextract@v1
+      with:
+        file: ./linux_CEdev.zip
+  
+    - uses: actions/checkout@v2
+      with:
+        path: ${{github.workspace}}/StellarisTI83
+    
+    - name: make
+      run: make -C ${{github.workspace}}/StellarisTI83
+    
