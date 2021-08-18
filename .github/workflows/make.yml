@@ -17,13 +17,15 @@ jobs:
 
     steps:
     - name: Download File To Workspace
+      id: download
       uses: carlosperate/download-file-action@v1.0.3
       with:
         file-url: https://github.com/CE-Programming/toolchain/releases/download/v9.1/linux_CEdev.zip
-        
-    - uses: brunoborges/justextract@v1
+
+    - uses: DuckSoft/extract-7z-action@v1.0
       with:
-        file: ./linux_CEdev.zip
+        pathSource: ${{steps.download.outputs.file-path}}
+        pathTarget: ./CEDev
   
     - uses: actions/checkout@v2
       with:
