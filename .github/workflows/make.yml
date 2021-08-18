@@ -39,5 +39,5 @@ jobs:
     - run: export PATH=$CEDEV/bin:$PATH
     
     - name: make
-      run: make -C ${{github.workspace}}/StellarisTI83
+      run: echo $CEDEV; make -C ${{github.workspace}}/StellarisTI83
     
