@@ -34,10 +34,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: ${{github.workspace}}/StellarisTI83
-        
-    - run: export CEDEV=${{github.workspace}}/CEDev
-    - run: export PATH=$CEDEV/bin:$PATH
     
     - name: make
-      run: echo $CEDEV; make -C ${{github.workspace}}/StellarisTI83
+      run: export CEDEV=${{github.workspace}}/CEDev; export PATH=$CEDEV/bin:$PATH; make -C ${{github.workspace}}/StellarisTI83
     
