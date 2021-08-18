@@ -28,7 +28,7 @@ jobs:
         pathSource: ${{steps.download.outputs.file-path}}
         pathTarget: ${{github.workspace}}/CEDev
         
-    - run: pwd
+    - run: chmod u+x ${{github.workspace}}/CEDev/bin/*
   
     - name: Checkout Repository
       uses: actions/checkout@v2
