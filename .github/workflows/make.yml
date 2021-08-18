@@ -26,14 +26,16 @@ jobs:
       uses: DuckSoft/extract-7z-action@v1.0
       with:
         pathSource: ${{steps.download.outputs.file-path}}
-        pathTarget: ./CEDev
+        pathTarget: ${{github.workspace}}/CEDev
+        
+    - run: pwd
   
     - name: Checkout Repository
       uses: actions/checkout@v2
       with:
         path: ${{github.workspace}}/StellarisTI83
         
-    - run: export CEDEV=/CEdev
+    - run: export CEDEV=${{github.workspace}}/CEDev
     - run: export PATH=$CEDEV/bin:$PATH
     
     - name: make
