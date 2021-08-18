@@ -16,20 +16,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Download File To Workspace
+    - name: Download Toolchain To Workspace
       id: download
       uses: carlosperate/download-file-action@v1.0.3
       with:
         file-url: https://github.com/CE-Programming/toolchain/releases/download/v9.1/linux_CEdev.zip
-
-    - uses: DuckSoft/extract-7z-action@v1.0
+    
+    - name: Unzip Toolchain
+      uses: DuckSoft/extract-7z-action@v1.0
       with:
         pathSource: ${{steps.download.outputs.file-path}}
         pathTarget: ./CEDev
   
-    - uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
       with:
         path: ${{github.workspace}}/StellarisTI83
+        
+    - run: export CEDEV=/CEdev
+    - run: export PATH=$CEDEV/bin:$PATH
     
     - name: make
       run: make -C ${{github.workspace}}/StellarisTI83
