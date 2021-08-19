@@ -23,14 +23,15 @@ struct DateStruct{
 	char month;
 	int year;
 	int tick;
+    int fps;
 };
 
 /* entry points ======================================================== */
-Time *AllocDate(){
+Time *time_Alloc(){
     return calloc(1, sizeof(Time));
 }
 
-void SetTime(Time *date, char d, char m, int y){
+void time_DateSet(Time *time, char d, char m, int y){
     if(d > 30)
         d = 30;
     if(d < 1)
@@ -46,104 +47,112 @@ void SetTime(Time *date, char d, char m, int y){
     if(y < 2200)
         y = 2200;
 
-    date->day = d;
-    date->month = m;
-    date->year = y;
+    time->day = d;
+    time->month = m;
+    time->year = y;
 }
-int GetTimeSpeed(Time *date){
-    return date->speed;
+int GetTimeSpeed(Time *time){
+    return time->speed;
 }
-void SetTimeSpeed(Time *date, gameSpeed speed, int savedSpeed){
-    date->speed = speed;
-    date->previousSpeed = savedSpeed;
+void time_SpeedSet(Time *time, gameSpeed speed, int savedSpeed){
+    time->speed = speed;
+    time->previousSpeed = savedSpeed;
 }
-void SetTimeSpeedOnly(Time *date, gameSpeed speed){
-    date->speed = speed;
-}
-
-void PauseGame(Time *date){
-    date->previousSpeed = date->speed;
-    date->speed = 0;
-}
-void UnpauseGame(Time *date){
-    date->speed = date->previousSpeed;
+void SetTimeSpeedOnly(Time *time, gameSpeed speed){
+    time->speed = speed;
 }
 
-void AddTimeClock(Time *date){
-    date->tick++;
+void PauseGame(Time *time){
+    time->previousSpeed = time->speed;
+    time->speed = 0;
 }
-int GetTimeClock(Time *date){
-    return date->tick;
-}
-int GetTimeDay(Time *date){
-    return date->day;
-}
-int GetTimeMonth(Time *date){
-    return date->month;
-}
-int GetTimeYear(Time *date){
-    return date->year;
+void UnpauseGame(Time *time){
+    time->speed = time->previousSpeed;
 }
 
-void IncrementTime(Time *date){
-    date->day++;
-    if(date->day == 31){
-        date->day = 1;
-        date->month++;
+void AddTimeClock(Time *time){
+    time->tick++;
+}
+int GetTimeClock(Time *time){
+    return time->tick;
+}
+int GetTimeDay(Time *time){
+    return time->day;
+}
+int GetTimeMonth(Time *time){
+    return time->month;
+}
+int GetTimeYear(Time *time){
+    return time->year;
+}
+
+void IncrementTime(Time *time){
+    time->day++;
+    if(time->day == 31){
+        time->day = 1;
+        time->month++;
     }
-    if(date->month == 13){
-        date->month = 1;
-        date->year++;
+    if(time->month == 13){
+        time->month = 1;
+        time->year++;
     }
 }
 
-void IncrementTimeSpeed(Time *date) {
-    date->speed++;
-    if(date->speed > TIME_SPEED_VERY_FAST)
-        date->speed = TIME_SPEED_VERY_FAST;
+void IncrementTimeSpeed(Time *time) {
+    time->speed++;
+    if(time->speed > TIME_SPEED_VERY_FAST)
+        time->speed = TIME_SPEED_VERY_FAST;
 }
-void UnincrementTimeSpeed(Time *date) {
-    date->speed--;
-    if(date->speed < TIME_SPEED_VERY_SLOW)
-        date->speed = TIME_SPEED_VERY_SLOW;
+void UnincrementTimeSpeed(Time *time) {
+    time->speed--;
+    if(time->speed < TIME_SPEED_VERY_SLOW)
+        time->speed = TIME_SPEED_VERY_SLOW;
 }
 
-void UpdateClock(Time *date) {
-	switch (date->speed) {
+void UpdateClock(Time *time) {
+	switch (time->speed) {
 		case TIME_SPEED_VERY_SLOW:
-			date->tick ++;
+			time->tick ++;
 			break;
 		case TIME_SPEED_SLOW:
-			date->tick += 2;
+			time->tick += 2;
 			break;
 		case TIME_SPEED_NORMAL:
-			date->tick += 3;
+			time->tick += 3;
 			break;
 		case TIME_SPEED_FAST:
-			date->tick += 4;
+			time->tick += 4;
 			break;
 		case TIME_SPEED_VERY_FAST:
-			date->tick += 6;
+			time->tick += 6;
 			break;
         default:
             break;
 	}
     
     //protection contre le fait de faire plusieurs fois les actions calculées au 0 de l'horloge
-	if (date->tick >= 24) {
-		date->tick = 0;
+	if (time->tick >= 24) {
+		time->tick = 0;
 	}
-	if ((date->tick == 0) && (date->speed != TIME_SPEED_PAUSE)) {
-		date->day++;
-		if(date->day > 30) {
-            date->day = 1;
-            date->month++;
+	if ((time->tick == 0) && (time->speed != TIME_SPEED_PAUSE)) {
+		time->day++;
+		if(time->day > 30) {
+            time->day = 1;
+            time->month++;
 		}
 
-		if(date->month > 12) {
-            date->month = 1;
-            date->year++;
+		if(time->month > 12) {
+            time->month = 1;
+            time->year++;
 		}
 	}
+}
+
+void time_FPSSet(Time *time, long fps) {
+    time->fps = fps;
+}
+
+long time_FPSGet(Time *time) {
+    return time->fps;
 }
 

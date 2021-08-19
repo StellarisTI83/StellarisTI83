@@ -1,4 +1,5 @@
 #include <graphx.h>
+#include <tice.h>
 
 #include <debug.h>
 
@@ -29,17 +30,17 @@ static void newGame_Initialize( EmpireListe **empireListe,
                                 Time **time,
                                 Camera **camera,
                                 Window **window){
-    *empireListe = EmpireListeCreer();
-    EmpireAjouter(*empireListe);
-    EmpireFlotteCreer(EmpireNumero(*empireListe, 0));
+    *empireListe = empire_ListCreate();
+    empire_Add(*empireListe);
+    empire_FleetCreate(empire_Get(*empireListe, 0));
 
     
     *settings = setting_Malloc();
     settings_SeeAllSet(*settings, false);
 
-    *time = AllocDate();
-    SetTime(*time, NEW_GAME_START_DAY, NEW_GAME_START_MONTH, NEW_GAME_START_YEAR);
-    SetTimeSpeed(*time, 0, 1);
+    *time = time_Alloc();
+    time_DateSet(*time, NEW_GAME_START_DAY, NEW_GAME_START_MONTH, NEW_GAME_START_YEAR);
+    time_SpeedSet(*time, 0, 1);
     AddTimeClock(*time);
 
     *camera = AllocCamera();
@@ -47,10 +48,15 @@ static void newGame_Initialize( EmpireListe **empireListe,
     SetCameraYVector(*camera, 0);
     
     SetCameraZoom(*camera, ZOOM_MAX);
-    SetCameraMapType(*camera, SYSTEME);
+    SetCameraMapType(*camera, VUE_SYSTEM);
 
     *window = AllocFenetre();
     CloseMenu(*window, *camera);
+    
+    timer_Disable(1);
+    timer_Set(1, ONE_SECOND);
+    timer_SetReload(1, ONE_SECOND);
+    timer_Enable(1, TIMER_32K, TIMER_0INT, TIMER_UP);
 }
 
 /* entry points ======================================================== */
@@ -107,7 +113,7 @@ void game_Close(EmpireListe *empireListe,
                 NotificationList *notificationList){
     int index = 0;
     if(empireListe)
-        EmpireListeSupprimer(empireListe);
+        empire_ListFree(empireListe);
 
     if(starSystem){
         index = 0;

@@ -28,11 +28,11 @@
 #define STAR_TOTAL_PROBABILITY          STAR_TYPE_B_PROBABILITY + STAR_TYPE_A_PROBABILITY + STAR_TYPE_F_PROBABILITY + STAR_TYPE_G_PROBABILITY + STAR_TYPE_K_PROBABILITY + STAR_TYPE_M_PROBABILITY + STAR_TYPE_BLACKHOLE_PROBABILITY + STAR_TYPE_PULSAR_PROBABILITY + STAR_TYPE_NEUTRON_PROBABILITY 
 
 /* constants =========================================================== */
-#define RAYON_PLANETE1 30
-#define RAYON_PLANETE2 60
-#define RAYON_PLANETE3 90
-#define RAYON_PLANETE4 110
-#define RAYON_PLANETE5 130
+#define RADIUS_PLANET1 30
+#define RADIUS_PLANET2 60
+#define RADIUS_PLANET3 90
+#define RADIUS_PLANET4 110
+#define RADIUS_PLANET5 130
 
 void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **systemeStellaires, Camera *camera);
 /**

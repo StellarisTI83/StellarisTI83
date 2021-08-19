@@ -7,7 +7,7 @@
  * @brief Game version
  * 
  */
-#define VERSION_LOGICIEL "v0.4.0-a"
+#define VERSION_GAME "v0.4.0-a"
 
 /**
  * @brief If defined, debug version
@@ -21,11 +21,6 @@
 
 #define TEXT_BG_COLOR	2
 #define TEXT_HEIGHT		8
-
-#define X_CENTRE_SYSTEME 480
-#define Y_CENTRE_SYSTEME 360
-
-#define RAYON_DE_VUE_SYSTEME 160
 
 /* types =============================================================== */
 

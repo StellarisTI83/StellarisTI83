@@ -28,7 +28,7 @@ struct StarSystemStruct{
     int         y;
 
     StarType    starType;
-    char        planetNumber;
+    int         planetNumber;
     char        inhabitedPlanetNumber;
     char        habitablePlanetNumber;
     char        empire;
@@ -156,9 +156,10 @@ int hyperlane_YGet(StarSystem *starSystem, int numeroHyperlane){
     return starSystem->hyperlane[numeroHyperlane].y;
 }
 
-// planetes
-void starSystem_PlanetCreate(StarSystem *starSystem, int position){
-    starSystem->planets[position] = AllocPlanet();
+// planets
+void starSystem_PlanetAlloc(StarSystem *starSystem){
+    starSystem->planets[starSystem->planetNumber] = AllocPlanet();
+    starSystem->planetNumber++;
 }
 Planete *starSystem_PlanetGet(StarSystem *starSystem, int position){
     return starSystem->planets[position];
@@ -166,6 +167,7 @@ Planete *starSystem_PlanetGet(StarSystem *starSystem, int position){
 
 void starSystem_PlanetHabitabilitySet(StarSystem *starSystem, int number, int habitability){
     SetPlanetHabitability(starSystem->planets[number], habitability);
+    starSystem->habitablePlanetNumber++;
 }
 int starSystem_PlanetHabitabilityGet(StarSystem *starSystem, int number){
     return GetPlanetHabitability(starSystem->planets[number]);

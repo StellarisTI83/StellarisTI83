@@ -1,5 +1,5 @@
 # STELLARIS TI remake
-
+[![Make](https://github.com/StellarisTI83/StellarisTI83/actions/workflows/make.yml/badge.svg)](https://github.com/StellarisTI83/StellarisTI83/actions/workflows/make.yml)
 ## Presentation
 
 This is a remake of Stellaris (by _Paradox Development Studio_) for TI-83 Premium CE and TI-84 Plus CE.

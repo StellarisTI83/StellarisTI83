@@ -6,47 +6,42 @@
 /* types =============================================================== */
 
 
-enum Batiment_Struct {AUCUN_DISTRICT_VILLE = 1,
+typedef enum {  AUCUN_DISTRICT_VILLE,
                 CAPITALE,
                 FONDERIE, 
                 LABORATOIRE, 
                 USINE_CIVILE, 
-                THEATRE} ;
-
-typedef enum Batiment_Struct Batiment;
+                THEATRE} Batiment;
 
 
-enum OrdreConstruction_Struct {AUCUN_ORDRE_VILLE,
-                        CONSTRUIRE_DISTRICT_URBAIN,
-                        CONSTRUIRE_DISTRICT_GENERATEUR, 
-                        CONSTRUIRE_DISTRICT_MINIER,
-                        CONSTRUIRE_DISTRICT_AGRICOLE, 
-                        CONSTRUIRE_BATIMENT} ;
 
-typedef enum OrdreConstruction_Struct OrdreConstruction;
+typedef enum {  AUCUN_ORDRE_VILLE,
+                CONSTRUIRE_DISTRICT_URBAIN,
+                CONSTRUIRE_DISTRICT_GENERATEUR, 
+                CONSTRUIRE_DISTRICT_MINIER,
+                CONSTRUIRE_DISTRICT_AGRICOLE, 
+                CONSTRUIRE_BATIMENT} OrdreConstruction;
 
-/* 1 = arid, 2 = Desert, 3 = Savanna, 4 = Alpine, 5 = Arctic, 6 = Tundra, 7 = continental, 8 = ocean, 9 = tropical, 10 = monde aride,
- * 11 = monde aride froid, 12 = brisé, 13 = monde gelé, 14 = géante gazeuse, 15 = monde en fusion, 16 = toxic world
+/**
+ * @brief The different planet types
+ * 
  */
-
-enum PlanetType_Struct {HABITABLE_ARID = 1, 
-                  HABITABLE_DESERT, 
-                  HABITABLE_SAVANNA, 
-                  HABITABLE_ALPINE, 
-                  HABITABLE_ARCTIC, 
-                  HABITABLE_TUNDRA,
-                  HABITABLE_CONTINENTAL, 
-                  HABITABLE_OCEAN, 
-                  HABITABLE_TROPICAL,
-                  ARID, 
-                  COLD_ARID, 
-                  BROKE, 
-                  FROZEN, 
-                  GAS_GIANT, 
-                  MOLTEN, 
-                  TOXIC};
-
-typedef enum PlanetType_Struct PlanetType;
+typedef enum {  HABITABLE_ARID = 1, 
+                HABITABLE_DESERT, 
+                HABITABLE_SAVANNA, 
+                HABITABLE_ALPINE, 
+                HABITABLE_ARCTIC, 
+                HABITABLE_TUNDRA,
+                HABITABLE_CONTINENTAL, 
+                HABITABLE_OCEAN, 
+                HABITABLE_TROPICAL,
+                ARID, 
+                COLD_ARID, 
+                BROKE, 
+                FROZEN, 
+                GAS_GIANT, 
+                MOLTEN, 
+                TOXIC} PlanetType;
 
 /* flags =============================================================== */
 

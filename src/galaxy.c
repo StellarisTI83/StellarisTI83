@@ -19,7 +19,7 @@
 
 /* private variables =================================================== */
 
-char * nomGalaxies[] = {
+char * nameStars[] = {
     "Yekt",
     "Veax",
     "Uthau",
@@ -133,7 +133,7 @@ char * nomGalaxies[] = {
 };
 
 
-char * nomPlanetes[] = {
+char * planetesName[] = {
     "Egnepra",
     "Aceonerth",
     "Tochade",
@@ -323,212 +323,237 @@ static void galaxy_MatrixCrop(  int *galaxyMatrix,
     }
 }
 
-static void galaxy_PlanetCreate(StarSystem *systemeStellaire, int numeroPlanete, int habitable){
-    int rayonOrbite = 0, taille = 0, type = 0;
+/**
+ * @brief Function to generate a planet
+ * 
+ * @param starSystem 
+ * @param planetIndex 
+ * @param habitable 
+ */
+static void galaxy_PlanetInitialize(StarSystem *starSystem, int planetIndex){
+    int orbitRadius = 0, size = 0, type = 0;
     int x = 0;
     int y = 0;
+    bool habitable = 0;
 
+    starSystem_PlanetAlloc(starSystem);
+
+    // Choice of the type of the planet
     type = randInt(1, 100);
-    switch(numeroPlanete + 1){
-    case 5:
-        if(type <= 60) {
-            type = GAS_GIANT; //geante gazeuse
-            habitable = 0;
-        } else if (type <= 90){
-            type = COLD_ARID; //monde aride froid
-            habitable = 0;
-        } else {
-            type = BROKE; //monde brisé
-            habitable = 0;
-        }
-        break;
-    case 4:
-        if(type <= 30) {
-            type = GAS_GIANT; //geante gazeuse
-            habitable = 0;
-        } else if (type <= 70){
-            type = COLD_ARID; //monde aride froid
-            habitable = 0;
-        } else if (type <= 75){
-            type = HABITABLE_ALPINE; //monde Alpine habitable
-            habitable = 1;
-        } else if (type <= 80){
-            type = HABITABLE_ARCTIC; //monde Arctic froid
-            habitable = 1;
-        } else if (type <= 85){
-            type = HABITABLE_TUNDRA; //monde Tundra habitable
-            habitable = 1;
-        } else if (type <= 90){
-            type = HABITABLE_CONTINENTAL; //monde continental froid
-            habitable = 1;
-        } else {
-            type = BROKE; //monde brisé
-            habitable = 0;
-        }	
-        break;
-    case 3:
-        if(type <= 5) {
-            type = GAS_GIANT; //geante gazeuse
-            habitable = 0;
-        } else if (type <= 20){
-            type = TOXIC; //monde toxique
-            habitable = 0;
-        } else if (type <= 60){
-            type = COLD_ARID; //monde aride froid
-            habitable = 0;
-        } else if (type <= 70){
-            type = HABITABLE_ALPINE; //monde Alpine habitable
-            habitable = 1;
-        } else if (type <= 74){
-            type = HABITABLE_ARCTIC; //monde Arctic froid
-            habitable = 1;
-        } else if (type <= 78){
-            type = HABITABLE_TUNDRA; //monde Tundra habitable
-            habitable = 1;
-        } else if (type <= 82){
-            type = HABITABLE_CONTINENTAL; //monde continental froid
-            habitable = 1;
-        } else if (type <= 86){
-            type = HABITABLE_OCEAN; //monde ocean
-            habitable = 1;
-        } else {
-            type = BROKE; //monde brisé
-            habitable = 0;
-        }
-        break;
-    case 2:
-        if(type <= 2) {
-            type = GAS_GIANT; //geante gazeuse
-            habitable = 0;
-        } else if (type <= 30){
-            type = TOXIC; //monde toxique
-            habitable = 0;
-        } else if (type <= 80){
-            type = ARID; //monde arid 
-            habitable = 0;
-        } else if (type <= 83){
-            type = HABITABLE_CONTINENTAL; //monde continental habitable
-            habitable = 1;
-        } else if (type <= 86){
-            type = HABITABLE_OCEAN; //monde ocean habitable
-            habitable = 1;
-        } else if (type <= 89){
-            type = HABITABLE_TROPICAL; //monde tropical habitable
-            habitable = 1;
-        } else {
-            type = BROKE; //monde brisé
-            habitable = 0;
-        }
-        break;
-    case 1:
-        if(type <= 3) {
-            type = HABITABLE_ARID; //monde arid
-            habitable = 1;
-        } else if (type <= 6){
-            type = HABITABLE_DESERT; //monde Desert
-            habitable = 1;
-        } else if (type <= 9){
-            type = HABITABLE_SAVANNA; //monde Savanna
-            habitable = 1;
-        } else if (type <= 40){
-            type = ARID; //monde aride
-            habitable = 0;
-        } else if (type <= 50){
-            type = BROKE; //monde brisé
-            habitable = 0;
-        } else{
-            type = MOLTEN; //monde en fusion
-            habitable = 0;
-        }
-        break;
+    switch(planetIndex){
+        case 4:
+            if(type <= 60) {
+                type = GAS_GIANT;
+                habitable = false;
+            } else if (type <= 90){
+                type = COLD_ARID;
+                habitable = false;
+            } else {
+                type = BROKE;
+                habitable = false;
+            }
+            break;
+        case 3:
+            if(type <= 30) {
+                type = GAS_GIANT;
+                habitable = false;
+            } else if (type <= 70){
+                type = COLD_ARID;
+                habitable = false;
+            } else if (type <= 75){
+                type = HABITABLE_ALPINE;
+                habitable = true;
+            } else if (type <= 80){
+                type = HABITABLE_ARCTIC;
+                habitable = true;
+            } else if (type <= 85){
+                type = HABITABLE_TUNDRA;
+                habitable = true;
+            } else if (type <= 90){
+                type = HABITABLE_CONTINENTAL;
+                habitable = true;
+            } else {
+                type = BROKE;
+                habitable = false;
+            }	
+            break;
+        case 2:
+            if(type <= 5) {
+                type = GAS_GIANT;
+                habitable = false;
+            } else if (type <= 20){
+                type = TOXIC;
+                habitable = false;
+            } else if (type <= 60){
+                type = COLD_ARID;
+                habitable = false;
+            } else if (type <= 70){
+                type = HABITABLE_ALPINE;
+                habitable = true;
+            } else if (type <= 74){
+                type = HABITABLE_ARCTIC;
+                habitable = true;
+            } else if (type <= 78){
+                type = HABITABLE_TUNDRA;
+                habitable = true;
+            } else if (type <= 82){
+                type = HABITABLE_CONTINENTAL;
+                habitable = true;
+            } else if (type <= 86){
+                type = HABITABLE_OCEAN;
+                habitable = true;
+            } else {
+                type = BROKE;
+                habitable = false;
+            }
+            break;
+        case 1:
+            if(type <= 2) {
+                type = GAS_GIANT; 
+                habitable = false;
+            } else if (type <= 30){
+                type = TOXIC; 
+                habitable = false;
+            } else if (type <= 80){
+                type = ARID; 
+                habitable = false;
+            } else if (type <= 83){
+                type = HABITABLE_CONTINENTAL; 
+                habitable = true;
+            } else if (type <= 86){
+                type = HABITABLE_OCEAN; 
+                habitable = true;
+            } else if (type <= 89){
+                type = HABITABLE_TROPICAL; 
+                habitable = true;
+            } else {
+                type = BROKE; 
+                habitable = false;
+            }
+            break;
+        case 0:
+            if(type <= 3) {
+                type = HABITABLE_ARID; 
+                habitable = true;
+            } else if (type <= 6){
+                type = HABITABLE_DESERT; 
+                habitable = true;
+            } else if (type <= 9){
+                type = HABITABLE_SAVANNA; 
+                habitable = true;
+            } else if (type <= 40){
+                type = ARID;
+                habitable = false;
+            } else if (type <= 50){
+                type = BROKE;
+                habitable = false;
+            } else{
+                type = MOLTEN;
+                habitable = false;
+            }
+            break;
     }
+    starSystem_PlanetTypeSet(starSystem, planetIndex, type);
 
-    taille = randInt(1, 100);
-    switch(numeroPlanete + 1){
-    case 1:
-        rayonOrbite = randInt(RAYON_PLANETE1, RAYON_PLANETE1 + 10);
-        if(taille <= 10) {
-            taille = 2;
-        } else if(taille <= 70) {
-            taille = 3;
-        } else if(taille <= 90) {
-            taille = 4;
-        } else {
-            taille = 5;
-        }
-        break;
-    case 2:
-        rayonOrbite = randInt(RAYON_PLANETE2, RAYON_PLANETE2 + 10);
-        if(taille <= 10) {
-            taille = 2;
-        } else if(taille <= 70) {
-            taille = 3;
-        } else if(taille <= 90) {
-            taille = 4;
-        } else {
-            taille = 5;
-        }
-        break;
-    case 3:
-        rayonOrbite = randInt(RAYON_PLANETE3, RAYON_PLANETE3 + 10);
-        if(taille <= 10) {
-            taille = 2;
-        } else if(taille <= 70) {
-            taille = 3;
-        } else if(taille <= 90) {
-            taille = 4;
-        } else {
-            taille = 5;
-        }
-        break;
-    case 4:
-        rayonOrbite = randInt(RAYON_PLANETE4, RAYON_PLANETE4 + 10);
-        if(taille <= 10) {
-            taille = 2;
-        } else if(taille <= 70) {
-            taille = 3;
-        } else if(taille <= 90) {
-            taille = 4;
-        } else {
-            taille = 5;
-        }
-        break;
-    case 5:
-        rayonOrbite = randInt(RAYON_PLANETE5, RAYON_PLANETE5 + 10);
-        if(type == 14) {
-            taille = 5;
-        }
-        if(taille <= 10) {
-            taille = 2;
-        } else if(taille <= 70) {
-            taille = 3;
-        } else if(taille <= 90) {
-            taille = 4;
-        } else {
-            taille = 5;
-        }
-        break;
+    // Choice of the size of the planet
+    size = randInt(1, 100);
+    switch(planetIndex){
+        case 0:
+            orbitRadius = randInt(RADIUS_PLANET1, RADIUS_PLANET1 + 10);
+            if(size <= 10) {
+                size = 2;
+            } else if(size <= 70) {
+                size = 3;
+            } else if(size <= 90) {
+                size = 4;
+            } else {
+                size = 5;
+            }
+            break;
+        case 1:
+            orbitRadius = randInt(RADIUS_PLANET2, RADIUS_PLANET2 + 10);
+            if(size <= 10) {
+                size = 2;
+            } else if(size <= 70) {
+                size = 3;
+            } else if(size <= 90) {
+                size = 4;
+            } else {
+                size = 5;
+            }
+            break;
+        case 2:
+            orbitRadius = randInt(RADIUS_PLANET3, RADIUS_PLANET3 + 10);
+            if(size <= 10) {
+                size = 2;
+            } else if(size <= 70) {
+                size = 3;
+            } else if(size <= 90) {
+                size = 4;
+            } else {
+                size = 5;
+            }
+            break;
+        case 3:
+            orbitRadius = randInt(RADIUS_PLANET4, RADIUS_PLANET4 + 10);
+            if(size <= 10) {
+                size = 2;
+            } else if(size <= 70) {
+                size = 3;
+            } else if(size <= 90) {
+                size = 4;
+            } else {
+                size = 5;
+            }
+            break;
+        case 4:
+            orbitRadius = randInt(RADIUS_PLANET5, RADIUS_PLANET5 + 10);
+            if(type == GAS_GIANT) {
+                size = 5;
+            } else if(size <= 10) {
+                size = 2;
+            } else if(size <= 70) {
+                size = 3;
+            } else if(size <= 90) {
+                size = 4;
+            } else {
+                size = 5;
+            }
+            break;
     }
+    starSystem_PlanetRadiusOrbitSet(starSystem, planetIndex, orbitRadius);
+    starSystem_PlanetRadiusSet(starSystem, planetIndex, size);
 
-    starSystem_PlanetHabitabilitySet(systemeStellaire, numeroPlanete, habitable);
-    starSystem_PlanetRadiusOrbitSet(systemeStellaire, numeroPlanete, rayonOrbite);
-
-    x = randInt(X_CENTRE_SYSTEME - rayonOrbite, X_CENTRE_SYSTEME + rayonOrbite); //aleatoire de x
-    y = sqrt(pow((double)rayonOrbite, 2.0) - pow((double)(x - X_CENTRE_SYSTEME), 2.0)) + Y_CENTRE_SYSTEME; //calcule de y pour ce x
+    // Set the x position
+    x = randInt(SYSTEM_MIDDLE_X - orbitRadius, 
+                SYSTEM_MIDDLE_X + orbitRadius);
+    
+    // Set the y position
+    y = sqrt(pow((double)orbitRadius, 2.0) - pow((double)(x - SYSTEM_MIDDLE_X), 2.0)) + SYSTEM_MIDDLE_Y;
     if(randInt(0, 1) == 1) {
-    y = Y_CENTRE_SYSTEME - (y - Y_CENTRE_SYSTEME);
-}
-    starSystem_PlanetXYSet(systemeStellaire, numeroPlanete, x, y);
-
-    starSystem_PlanetTypeSet(systemeStellaire, numeroPlanete, type);
-    starSystem_PlanetRadiusSet(systemeStellaire, numeroPlanete, taille);
-
-    if(habitable == 1) {
-        starSystem_PlanetNameSet(systemeStellaire, numeroPlanete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+        y = SYSTEM_MIDDLE_Y - (y - SYSTEM_MIDDLE_Y);
     }
+    starSystem_PlanetXYSet( starSystem, 
+                            planetIndex, 
+                            x, 
+                            y);
+
+    //Set the name of the planet
+    if(habitable)
+        starSystem_PlanetNameSet(   starSystem, 
+                                    planetIndex, 
+                                    planetesName[randInt(0, (sizeof(planetesName)/sizeof(planetesName[0])) - 1 )]);
 }
 
-static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition){
+/**
+ * @brief Function to generate a system
+ * 
+ * @param xPosition 
+ * @param yPosition 
+ * @param starIndex 
+ * @return StarSystem* 
+ */
+static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition, int starIndex){
     StarSystem *starSystem = NULL;
     StarType star = STAR_NONE;
     int planetNumber, habitablePlanetNumber;
@@ -574,31 +599,26 @@ static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition){
     starSystem_StarTypeSet(starSystem, star);
 
 
-    // Set the number of planet
-    SetSystemPlanetNumber(starSystem, 0);
-
+    // Randomize the number of planet
     planetNumber = randInt(1, 5);
     habitablePlanetNumber = 0;
 
+    // Randomize the number of habitable planet
     if((starSystem_StarTypeGet(starSystem) == STAR_TYPE_M) ||
     ((starSystem_StarTypeGet(starSystem) == STAR_TYPE_G) || 
     (starSystem_StarTypeGet(starSystem) == STAR_TYPE_K))){
         habitablePlanetNumber = randInt(0, planetNumber);
-        SetSystemPlanetHabitableNumber(starSystem, habitablePlanetNumber);
     }
 
+    // Randomize the number of habitable planet
     planetIndex = 0;
     while(planetIndex < planetNumber){
-        starSystem_PlanetCreate(starSystem, planetIndex);
-        galaxy_PlanetCreate(starSystem, planetIndex, randInt(1, 10));
+        galaxy_PlanetInitialize(starSystem, planetIndex);
         planetIndex++;
     }	
 
-    planetIndex = 0;	
-    while(planetIndex < planetNumber){
-        planetIndex++;
-    }
-    SetSystemPlanetNumber(starSystem, planetNumber);
+
+    starSystem_NameSet(starSystem, nameStars[starIndex]);
 
     hyperlane_DestinationSet(starSystem, 0, 255);
     hyperlane_DestinationSet(starSystem, 1, 255);
@@ -633,7 +653,7 @@ static int galaxy_AllSystemGenerate(int *galaxyMatrix,
             xPosition   =   galaxyMatrix[yIndex * GALAXY_WIDTH * 2 + xIndex];
             yPosition   =   galaxyMatrix[yIndex * GALAXY_WIDTH * 2 + xIndex + 1];
 
-            starSystem[starIndex] = galaxy_SystemGenerate(xPosition, yPosition);
+            starSystem[starIndex] = galaxy_SystemGenerate(xPosition, yPosition, starIndex);
 
             starIndex++;
             xIndex += 2;
@@ -643,216 +663,6 @@ static int galaxy_AllSystemGenerate(int *galaxyMatrix,
         yIndex++;
     }
     return starIndex;
-}
-
-// TODO Refactor the function
-/**
- * generate the struct of the system
- */
-static int GenerateSystemeStruct(int *galaxie, StarSystem **systemeStellaires, int *barreDeChargement){//enregistrer matrice et generer hyperlane
-    int largeur = 0;
-    int hauteur = 0;
-    int x = 0;
-    int y = 0;
-    int k = 0;
-
-    int nombrePlanetes = 0;
-    int nombrePlanetesHabitables = 0;
-    int planeteHabitable[5] = {0};
-    int nombreHyperlanes = 0;
-    int nomInt = 0;
-
-    int planetIndex = 0;
-
-    int hyperLane1 = 0;
-    int hyperLane2 = 0;
-    int hyperLane3 = 0;
-    int hyperLaneSup1 = 0;
-    int hyperLaneSup2 = 0;
-
-    StarType etoile = 0;
-    int trouNoir = 0;
-
-    #ifdef DEBUG_VERSION
-        dbg_sprintf(dbgout, "Generate system structure\n");
-    #endif
-
-    while(hauteur < GALAXY_WIDTH) {
-        while(largeur < GALAXY_WIDTH * 2) {
-            systemeStellaires[k] = starSystem_Create();
-
-            x = galaxie[hauteur * GALAXY_WIDTH * 2 + largeur];
-            y = galaxie[hauteur * GALAXY_WIDTH * 2 + largeur + 1];
-
-            starSystem_SetXY(systemeStellaires[k], x, y);
-            
-            starSystem_StationCreate(systemeStellaires[k]);
-            starSystem_EmpireSet(systemeStellaires[k], -1);
-            etoile = randInt(1, 100);
-            trouNoir = 0;
-
-            starSystem_IntelLevelSet(systemeStellaires[k], INTEL_UNKNOWN);
-            if(etoile <= 10) {
-                etoile = STAR_TYPE_B;
-            } else if(etoile <= 30) {
-                etoile = STAR_TYPE_A;
-            } else if(etoile <= 44) {
-                etoile = STAR_TYPE_F;
-            } else if(etoile <= 57) {
-                etoile = STAR_TYPE_G;
-            } else if(etoile <= 70) {
-                etoile = STAR_TYPE_K;
-            } else if(etoile <= 85) {
-                etoile = STAR_TYPE_M;
-            } else if(etoile <= 90) {
-                etoile = STAR_TYPE_BLACKHOLE;
-                trouNoir = true;
-            } else if(etoile <= 95) {
-                etoile = STAR_TYPE_PULSAR;
-            } else {
-                etoile = STAR_TYPE_NEUTRON;
-            }
-            starSystem_StationLevelSet(systemeStellaires[k], AUCUNE_STATION);
-            nombrePlanetes = 0;
-            nombrePlanetes = randInt(1, 100);
-            if(nombrePlanetes <= 8) {
-                nombrePlanetes = 1;
-            } else if(nombrePlanetes <= 20) {
-                nombrePlanetes = 2;
-            } else if(nombrePlanetes <= 50) {
-                nombrePlanetes = 3;
-            } else if(nombrePlanetes <= 80) {
-                nombrePlanetes = 4;
-            } else {
-                nombrePlanetes = 5;
-            }
-            if(trouNoir == 1) {
-                nombrePlanetes = 0;
-            }
-            starSystem_StarTypeSet(systemeStellaires[k], etoile);
-            
-            SetSystemPlanetNumber(systemeStellaires[k], 0);
-            
-            if((starSystem_StarTypeGet(systemeStellaires[k]) == STAR_TYPE_M) ||
-            ((starSystem_StarTypeGet(systemeStellaires[k]) == STAR_TYPE_G) || 
-            (starSystem_StarTypeGet(systemeStellaires[k]) == STAR_TYPE_K))){
-                nombrePlanetesHabitables = randInt(0, nombrePlanetes);
-                SetSystemPlanetHabitableNumber(systemeStellaires[k], nombrePlanetesHabitables);
-            }
-            nombreHyperlanes = randInt(1, 15);
-            
-            hyperLane1 = 1;
-            hyperLane2 = 1;
-            hyperLane3 = 1;
-            
-            if(nombreHyperlanes == 1)
-            {
-                do
-                {
-                    hyperLaneSup1 = randInt(1, 2);
-                    hyperLaneSup2 = randInt(1, 2);
-                } while(hyperLaneSup1 == hyperLaneSup2);
-                switch(hyperLaneSup1)
-                    {
-                    case 1:
-                        hyperLane1 = 0;
-                        break;
-                    case 2:
-                        hyperLane2 = 0;
-                        break;
-                    /*case 3:
-                        hyperLane3 = 0;
-                        break;
-                }
-                switch(hyperlaneSup2)
-                {
-                    case 1:
-                        hyperLane1 = 0;
-                        break;
-                    case 2:
-                        hyperLane2 = 0;
-                        break;
-                    case 3:
-                        hyperLane3 = 0;
-                        break;*/
-                }
-            }
-            else if(nombreHyperlanes <= 5)
-            {
-                hyperLaneSup1 = randInt(1, 3);
-                switch(hyperLaneSup1)
-                {
-                    case 1:
-                        hyperLane1 = 0;
-                        break;
-                    case 2:
-                        hyperLane2 = 0;
-                        break;
-                    /*case 3:
-                        hyperLane3 = 0;
-                        break;*/
-                }
-            }	
-            else
-            {
-                hyperLane1 = 1;
-                hyperLane2 = 1;
-                //hyperLane3 = 1;
-            }
-            
-            hyperlane_DestinationSet(systemeStellaires[k], 0, 255);
-            hyperlane_DestinationSet(systemeStellaires[k], 1, 255);
-            hyperlane_DestinationSet(systemeStellaires[k], 2, 255);
-            hyperlane_DestinationSet(systemeStellaires[k], 3, 255);
-            
-            if((starSystem_GetX(systemeStellaires[k - GALAXY_WIDTH]) != 0) && (hyperLane1)) {
-                if((k - GALAXY_WIDTH > 0) && (k - GALAXY_WIDTH < 255))
-                    hyperlane_DestinationSet(systemeStellaires[k], 0, k - GALAXY_WIDTH);
-            }
-            
-            if((starSystem_GetX(systemeStellaires[k - 1]) != 0) && (hyperLane2)) {
-                if((k - 1 > 0) && (k - 1 < 255))
-                    hyperlane_DestinationSet(systemeStellaires[k], 1, k - 1);
-            }
-            
-            nomInt = randInt(0, (sizeof(nomGalaxies)/sizeof(nomGalaxies[0])) - 1);
-            starSystem_NameSet(systemeStellaires[k], nomGalaxies[nomInt]);
-            
-            //gestion des planetes
-            switch(nombrePlanetes){
-            case 5:
-                planeteHabitable[4] = randInt(1, 10);
-            case 4:
-                planeteHabitable[3] = randInt(1, 10);
-            case 3:
-                planeteHabitable[2] = randInt(1, 10);
-            case 2:
-                planeteHabitable[1] = randInt(1, 10);
-            case 1:
-                planeteHabitable[0] = randInt(1, 10);
-            }
-
-            planetIndex = 0;
-            while(planetIndex < nombrePlanetes){
-                starSystem_PlanetCreate(systemeStellaires[k], planetIndex);
-                planetIndex++;
-            }	
-
-            planetIndex = 0;	
-            while(planetIndex < nombrePlanetes){
-                galaxy_PlanetCreate(systemeStellaires[k], planetIndex, randInt(1, 10));
-                planetIndex++;
-            }
-            SetSystemPlanetNumber(systemeStellaires[k], nombrePlanetes);
-
-            k++;
-            largeur += 2;
-        }
-        gfx_FillRectangle_NoClip(50, 160, *barreDeChargement += 3, 5);
-        largeur = 0;
-        hauteur++;
-    }
-    return k;
 }
 
 // TODO Refactor the function
@@ -893,9 +703,9 @@ static void RecreateHyperlanes(StarSystem **systemeStellaires, int k){
 
                     angle = atan2(starSystem_GetY(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) - starSystem_GetY(systeme), starSystem_GetX(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) - starSystem_GetX(systeme));
                     
-                    x = X_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * cos(angle));
+                    x = SYSTEM_MIDDLE_X + ((SYSTEM_VIEW_RADIUS + 5) * cos(angle));
 
-                    y = Y_CENTRE_SYSTEME + ((RAYON_DE_VUE_SYSTEME + 5) * sin(angle));
+                    y = SYSTEM_MIDDLE_Y + ((SYSTEM_VIEW_RADIUS + 5) * sin(angle));
                     hyperlane_XYSet(systeme, j, x, y);
                 }
             }
@@ -915,7 +725,7 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
     int i = 0, fin = 1, j = 0;
     int k = GALAXY_WIDTH * GALAXY_WIDTH;
     int planete = 0;
-    Empire *joueur = EmpireNumero(empireListe, 0);
+    Empire *joueur = empire_Get(empireListe, 0);
     //creation joueur
     while(fin == 1) { // choix du systeme
         i = randInt(0, k - 1);
@@ -949,11 +759,11 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
     starSystem_StationModuleSet(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
     
 
-    EmpireFlotteNouvelle(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+    empire_FleetAdd(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
 
-    EmpireFlotteNouvelle(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+    empire_FleetAdd(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
 
-    EmpireFlotteNouvelle(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+    empire_FleetAdd(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
     
     SetCameraX(camera, starSystem_GetX(systemeStellaires[i])*2); // centre la vue sur le systeme
     SetCameraY(camera, starSystem_GetY(systemeStellaires[i])*2);
@@ -966,7 +776,7 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
 
     SetCameraXSystem(camera, starSystem_PlanetXGet(systemeStellaires[i], planete) - 160);
     SetCameraYSystem(camera, starSystem_PlanetYGet(systemeStellaires[i], planete) - 120);
-    starSystem_PlanetNameSet(systemeStellaires[i], planete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+    starSystem_PlanetNameSet(systemeStellaires[i], planete, planetesName[randInt(0, (sizeof(planetesName)/sizeof(planetesName[0])) - 1 )]);
 
     starSystem_PlanetCityCreate(systemeStellaires[i], planete);
     starSystem_PlanetCityPopulationSet(systemeStellaires[i], planete, 27);
@@ -981,7 +791,7 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
     CalculateEmpirePower(joueur);
 
     #ifdef DEBUG_VERSION
-        dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, starSystem_GetX(systemeStellaires[i]), starSystem_GetY(systemeStellaires[i]), GetEmpireColor(joueur), planete, EmpireFleetGetArray(joueur), GetCameraX(camera), GetCameraY(camera));
+        dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, starSystem_GetX(systemeStellaires[i]), starSystem_GetY(systemeStellaires[i]), GetEmpireColor(joueur), planete, empire_FleetListGet(joueur), GetCameraX(camera), GetCameraY(camera));
     #endif
     
     for(j = 1; j < settings_EmpireNumberGet(parametres); j++){
@@ -993,8 +803,8 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
             if(((starSystem_GetX(systemeStellaires[i]) >= 160) && (starSystem_GetY(systemeStellaires[i]) >= 120)) && ((starSystem_StarTypeGet(systemeStellaires[i]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(systemeStellaires[i]) == -1)))
                 fin = 0;
         }
-        empire = EmpireAjouter(empireListe);
-        EmpireFlotteCreer(empire);
+        empire = empire_Add(empireListe);
+        empire_FleetCreate(empire);
         EmpireGenerateRandomName(empire);
         SetEmpireSpecies(empire, randInt(0, 3));
         SetEmpireClothes(empire, randInt(0, 2));
@@ -1017,15 +827,15 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
         starSystem_StationModuleSet(systemeStellaires[i], 0, CHANTIER_SPATIAL);
         starSystem_StationModuleSet(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
 
-        EmpireFlotteNouvelle(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-        EmpireFlotteNouvelle(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-        EmpireFlotteNouvelle(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+        empire_FleetAdd(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+        empire_FleetAdd(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+        empire_FleetAdd(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 
         planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i]) - 1);
 
         starSystem_PlanetHabitabilitySet(systemeStellaires[i], planete, true);
         starSystem_PlanetTypeSet(systemeStellaires[i], planete, HABITABLE_CONTINENTAL);
-        starSystem_PlanetNameSet(systemeStellaires[i], planete, nomPlanetes[randInt(0, (sizeof(nomPlanetes)/sizeof(nomPlanetes[0])) - 1 )]);
+        starSystem_PlanetNameSet(systemeStellaires[i], planete, planetesName[randInt(0, (sizeof(planetesName)/sizeof(planetesName[0])) - 1 )]);
 
         starSystem_PlanetCityCreate(systemeStellaires[i], planete);
         starSystem_PlanetCityPopulationSet(systemeStellaires[i], planete, 27);

@@ -1,6 +1,12 @@
 #ifndef H_TIME
 #define H_TIME
 
+#define TIMER_FREQ      32768 /* Frequency of timer in Hz */
+#define ONE_SECOND      (TIMER_FREQ / 1)
+#define HALF_SECOND     (TIMER_FREQ / 2)
+#define QUARTER_SECOND  (TIMER_FREQ / 4)
+#define CHANGE_TIME     (TIMER_FREQ / 1) * 1
+
 typedef enum {  TIME_SPEED_VERY_SLOW = -2,
                 TIME_SPEED_SLOW,
                 TIME_SPEED_PAUSE,
@@ -14,10 +20,10 @@ typedef struct DateStruct Time;
 
 /* entry points ======================================================== */
 
-Time *AllocDate();
+Time *time_Alloc();
 
-void SetTime(Time *date, char d, char m, int y);
-void SetTimeSpeed(Time *date, gameSpeed speed, gameSpeed savedSpeed);
+void time_DateSet(Time *date, char d, char m, int y);
+void time_SpeedSet(Time *date, gameSpeed speed, gameSpeed savedSpeed);
 void SetTimeSpeedOnly(Time *date, gameSpeed speed);
 int GetTimeSpeed(Time *date);
 void PauseGame(Time *date);
@@ -39,6 +45,8 @@ void UnincrementTimeSpeed(Time *date);
 
 void UpdateClock(Time *date);
 
+void time_FPSSet(Time *time, long fps);
+long time_FPSGet(Time *time);
 
 
 #endif

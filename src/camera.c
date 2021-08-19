@@ -165,10 +165,10 @@ void SetCameraSystem(Camera *camera, int system){
 void SetCameraSystemViewStatus(Camera *camera, int status){
 	switch (status) {
 	case true:
-		camera->mapType = SYSTEME;
+		camera->mapType = VUE_SYSTEM;
 		break;
 	case false:
-		camera->mapType = NORMAL;
+		camera->mapType = VUE_GALACTIC;
 		break;
 	}
 	camera->systemeSelectione = camera->systeme;

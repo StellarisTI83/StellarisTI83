@@ -1,6 +1,7 @@
 #ifndef H_SYSTEMES
 #define H_SYSTEMES
 
+#include <stdbool.h>
 #include "planetes.h"
 #include "stations.h"
 
@@ -136,7 +137,7 @@ void hyperlane_XYSet(StarSystem *starSystem, int numeroHyperlane, int x, int y);
 int hyperlane_XGet(StarSystem *starSystem, int numeroHyperlane);
 int hyperlane_YGet(StarSystem *starSystem, int numeroHyperlane);
 
-void starSystem_PlanetCreate(StarSystem *starSystem, int position);
+void starSystem_PlanetAlloc(StarSystem *starSystem);
 Planete *starSystem_PlanetGet(StarSystem *starSystem, int position);
 
 void starSystem_PlanetHabitabilitySet(StarSystem *starSystem, int number, int habitability);

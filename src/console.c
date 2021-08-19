@@ -292,9 +292,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Time *date, Se
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " cash");
-			AddEmpireCredit(EmpireNumero(empireListe, 0), nombre);
+			AddEmpireCredit(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d cash to empire %d (%p)\n", nombre, 0, EmpireNumero(empireListe, 0));
+				dbg_sprintf(dbgout, "Added %d cash to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
@@ -317,9 +317,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Time *date, Se
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " minerals");
-			AddEmpireMinerals(EmpireNumero(empireListe, 0), nombre);
+			AddEmpireMinerals(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d minerals to empire %d (%p)\n", nombre, 0, EmpireNumero(empireListe, 0));
+				dbg_sprintf(dbgout, "Added %d minerals to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
@@ -342,9 +342,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Time *date, Se
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " alloys");
-			AddEmpireAlloys(EmpireNumero(empireListe, 0), nombre);
+			AddEmpireAlloys(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d alloys to empire %d (%p)\n", nombre, 0, EmpireNumero(empireListe, 0));
+				dbg_sprintf(dbgout, "Added %d alloys to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
@@ -367,9 +367,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Time *date, Se
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " food");
-			AddEmpireFood(EmpireNumero(empireListe, 0), nombre);
+			AddEmpireFood(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d food to empire %d (%p)\n", nombre, 0, EmpireNumero(empireListe, 0));
+				dbg_sprintf(dbgout, "Added %d food to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
@@ -392,7 +392,7 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Time *date, Se
 			if((&(commande[15]) == fin) || !((annee > 2200) && (annee <= 2500))){
 				goto syntax_err;
 			}
-			SetTime(date, jour, mois, annee);
+			time_DateSet(date, jour, mois, annee);
 			strcpy(console.reponse, "time sat");
 			return;
 		}

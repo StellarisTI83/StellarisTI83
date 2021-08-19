@@ -95,14 +95,14 @@ char * empireNamePrefix[] = {
 /**
  * Crée une liste d'empires
  */
-EmpireListe* EmpireListeCreer() {
+EmpireListe* empire_ListCreate() {
 	return (EmpireListe*)GenericList_Create();
 }
 
 /**
  * Supprime une liste d'empire
  */
-void EmpireListeSupprimer(EmpireListe* empireListe) {
+void empire_ListFree(EmpireListe* empireListe) {
 	Empire *empire = NULL;
 	int i = 0;
 	if(!empireListe)
@@ -124,21 +124,21 @@ void EmpireListeSupprimer(EmpireListe* empireListe) {
 /**
  * Renvoi nombre d'empires
  */
-int EmpireArraySize(EmpireListe* empireListe){
+int empire_ArraySize(EmpireListe* empireListe){
 	return GenericList_ArraySize((GenericList*)empireListe);
 }
 
 /**
  * Renvoi un pointeur vers l'empire numero x
  */
-Empire* EmpireNumero(EmpireListe* empireListe, int numero) {
+Empire* empire_Get(EmpireListe* empireListe, int numero) {
 	return (Empire*)GenericCell_Get((GenericList*)empireListe, numero);
 }
 
 /**
  * Rajoute un empire à la liste des empire
  */
-Empire* EmpireAjouter(EmpireListe* empireListe) {
+Empire* empire_Add(EmpireListe* empireListe) {
 	Empire *pointeur = NULL;
 	pointeur = calloc(1, sizeof(Empire));
 	GenericCell_Add((GenericList*)empireListe, pointeur);
@@ -148,7 +148,7 @@ Empire* EmpireAjouter(EmpireListe* empireListe) {
 /**
  *Supprime l'empire numero x à la liste des empires
  */
-void EmpireSupprimer(EmpireListe* empireListe, int numero) {
+void empire_Free(EmpireListe* empireListe, int numero) {
 	Empire *empire = GenericCell_Get((GenericList*)empireListe, numero);
 	#ifdef DEBUG_VERSION
 	dbg_sprintf(dbgout, "Free empire %d", numero);
@@ -161,16 +161,16 @@ void EmpireSupprimer(EmpireListe* empireListe, int numero) {
 /**
  * Crèe une liste de flotte d'empire
  */
-void EmpireFlotteCreer(Empire *empire){
+void empire_FleetCreate(Empire *empire){
 	empire->flotte = CreerFlotteListe();
 	if(empire->flotte == NULL){
 		exit(EXIT_FAILURE);
 	}
 }
-void EmpireFlotteNouvelle(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
+void empire_FleetAdd(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
 	NouvelleFlotte(empire->flotte, systeme, type, nombreDeCorvettes, nombreDeDestroyers, nombreDeCroiseurs, nombreDeCuirasses);
 }
-FlotteListe *EmpireFleetGetArray(Empire *empire){
+FlotteListe *empire_FleetListGet(Empire *empire){
 	return empire->flotte;
 }
 
@@ -483,7 +483,7 @@ RelationsListe* RelationListeCreer() {
 void RelationAllListeUpdate(EmpireListe* empireListe) {
 	Empire* empire;
 	int index = 0;
-	empire = EmpireNumero(empireListe, index);
+	empire = empire_Get(empireListe, index);
 	while(empire != NULL) {
 		empire->relationsListe = RelationListeCreer();
 		RelationListeUpdate(empire->relationsListe, empireListe);
@@ -491,7 +491,7 @@ void RelationAllListeUpdate(EmpireListe* empireListe) {
 			dbg_sprintf(dbgout, "Empire liste %d updated : %p \n", index, empire->relationsListe);
 		#endif
 		index++;
-		empire = EmpireNumero(empireListe, index);
+		empire = empire_Get(empireListe, index);
 	}
 }
 
@@ -502,13 +502,13 @@ void RelationListeUpdate(RelationsListe* relationsListe, EmpireListe* empireList
 	Empire* empire;
 	Relations* relations;
 	int index = 0;
-	empire = EmpireNumero(empireListe, 0);
+	empire = empire_Get(empireListe, 0);
 	while(empire != NULL) {
 		relations = RelationAjouter(relationsListe);
 		relations->empire = empire;
 		relations->opinion = 0;
 		index++;
-		empire = EmpireNumero(empireListe, index);
+		empire = empire_Get(empireListe, index);
 	}
 }
 
@@ -593,7 +593,7 @@ static void PlanetaryAI(EmpireListe *empireListe, StarSystem **systemeStellaires
 	while(systemeNumero < GALAXY_WIDTH * GALAXY_WIDTH){
 		if(starSystem_EmpireGet(systemeStellaires[systemeNumero]) != 0){
 			planeteNumero = 0;
-			empire = EmpireNumero(empireListe, starSystem_EmpireGet(systemeStellaires[systemeNumero]));
+			empire = empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[systemeNumero]));
 			taille = GetSystemPlanetNumber(systemeStellaires[systemeNumero]);
 			while(planeteNumero < taille){
 				if(GetPlanetCityStatus(starSystem_PlanetGet(systemeStellaires[systemeNumero], planeteNumero))){
@@ -658,7 +658,7 @@ static void EmpireAIMilitaryFleet(Empire *empire, EmpireListe *empireListe, Flot
 }
 
 static void EmpireAIFleetManager(Empire *empire, EmpireListe *empireListe, StarSystem **systemeStellaires){
-	FlotteListe *flotteListe = EmpireFleetGetArray(empire);
+	FlotteListe *flotteListe = empire_FleetListGet(empire);
 	int tailleFlotte = FleetArraySize(flotteListe);
 	if(tailleFlotte > 0){
 		int compteurFlotte = 0;
@@ -684,9 +684,9 @@ void EmpireAI(EmpireListe *empireListe, StarSystem **systemeStellaires, Time *da
 
 	PlanetaryAI(empireListe, systemeStellaires);
 
-	empireTotalNumber = EmpireArraySize(empireListe);
+	empireTotalNumber = empire_ArraySize(empireListe);
 	while(empireCounter < empireTotalNumber){
-		empire = EmpireNumero(empireListe, empireCounter);
+		empire = empire_Get(empireListe, empireCounter);
 
 		EmpireAIEconomy(empireCounter, empire, empireListe, systemeStellaires, date);
 

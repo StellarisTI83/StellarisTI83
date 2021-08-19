@@ -5,17 +5,35 @@
 #include "planetes.h"
 #include "time.h"
 
+
+
+#define SYSTEM_MIDDLE_X 480
+#define SYSTEM_MIDDLE_Y 360
+
+#define SYSTEM_VIEW_RADIUS 160
+
 /* types =============================================================== */
 
-typedef enum {  CARTE, 
-                NORMAL, 
-                SYSTEME} VueType;
+/**
+ * @brief Differents view types
+ * 
+ */
+typedef enum {  VUE_MAP, 
+                VUE_GALACTIC, 
+                VUE_SYSTEM} VueType;
 
+/**
+ * @brief Differents zoom levels
+ * 
+ */
 typedef enum {  ZOOM_MIN = 0, 
                 ZOOM_NORMAL, 
                 ZOOM_MAX} ZoomLevel;
 
-
+/**
+ * @brief Class of menus
+ * 
+ */
 typedef enum {  MENU_QUITTER = -1, 
                 MENU_AUCUN, 
                 MENU_SYSTEME, 
@@ -26,20 +44,23 @@ typedef enum {  MENU_QUITTER = -1,
                 MENU_CONTACTS_DETAILS, 
                 MENU_CONTACTS_EFFECTUER_ACTION} ClassMenu;
 
-
+/**
+ * @brief Subclass for the system menus
+ * 
+ */
 typedef enum {  MENU_SYSTEME_AUCUN, 
-                        MENU_SYSTEME_FLOTTES = 1, 
-                        MENU_SYSTEME_ETOILE, 
-                        MENU_SYSTEME_PLANETE_RESUME, 
-                        MENU_SYSTEME_PLANETE_DISTRICT, 
-                        MENU_SYSTEME_PLANETE_BATIMENT, 
-                        MENU_SYSTEME_PLANETE_BATIMENT_CHOIX, 
-                        MENU_SYSTEME_FLOTTE_DETAILS, 
-                        MENU_SYSTEME_STATION_RESUME, 
-                        MENU_SYSTEME_STATION_MODULES, 
-                        MENU_SYSTEME_STATION_MODULES_CHOIX, 
-                        MENU_SYSTEME_STATION_CHANTIER,
-                        MENU_SYSTEME_STATION_CHANTIER_CHOIX} MenuSystem;
+                MENU_SYSTEME_FLOTTES = 1, 
+                MENU_SYSTEME_ETOILE, 
+                MENU_SYSTEME_PLANETE_RESUME, 
+                MENU_SYSTEME_PLANETE_DISTRICT, 
+                MENU_SYSTEME_PLANETE_BATIMENT, 
+                MENU_SYSTEME_PLANETE_BATIMENT_CHOIX, 
+                MENU_SYSTEME_FLOTTE_DETAILS, 
+                MENU_SYSTEME_STATION_RESUME, 
+                MENU_SYSTEME_STATION_MODULES, 
+                MENU_SYSTEME_STATION_MODULES_CHOIX, 
+                MENU_SYSTEME_STATION_CHANTIER,
+                MENU_SYSTEME_STATION_CHANTIER_CHOIX} MenuSystem;
 
 
 /* structures ========================================================== */

@@ -168,8 +168,8 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 	memset(flotte, 0, sizeof(Flotte));
 
 	flotte->systeme = systeme;
-	flotte->x = X_CENTRE_SYSTEME - 10;
-	flotte->y = Y_CENTRE_SYSTEME + 10;
+	flotte->x = SYSTEM_MIDDLE_X - 10;
+	flotte->y = SYSTEM_MIDDLE_Y + 10;
 	memset(&flotte->vecteur, 0, sizeof(Vecteur));
 	flotte->action = FLOTTE_AUCUNE_ACTION;
 	flotte->avancementTrajet = 0;
@@ -366,8 +366,8 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 	Flotte* flotte;
 	int error;
 
-	empire = EmpireNumero(empireListe, numeroDeEmpire);
-	flotte = FlotteNumero(EmpireFleetGetArray(empire), numeroDeFlotte);
+	empire = empire_Get(empireListe, numeroDeEmpire);
+	flotte = FlotteNumero(empire_FleetListGet(empire), numeroDeFlotte);
 	if(flotte == NULL) {
 		#ifdef DEBUG_VERSION
 			dbg_sprintf(dbgerr, "Error fleet pointer NULL in function 'BougerFlotte'");
@@ -378,7 +378,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 	if(IsCameraMoveFleet(camera) == false){
 		SetCameraMoveFleet(camera, true);
 		SetCameraLock(camera, false);
-		SetCameraMapType(camera, NORMAL);
+		SetCameraMapType(camera, VUE_GALACTIC);
 		CloseMenu(fenetre, camera);
 		SetCameraEmpire(camera, numeroDeEmpire);
 		SetCameraFleet(camera, numeroDeFlotte);
@@ -392,7 +392,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 			SetCameraEmpire(camera, 0);
 			SetCameraFleet(camera, 0);
 
-			SetCameraMapType(camera, SYSTEME);
+			SetCameraMapType(camera, VUE_SYSTEM);
 			SetCameraX(camera, starSystem_GetX(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
 			SetCameraY(camera, starSystem_GetY(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
 			
@@ -445,12 +445,12 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, StarSystem **systemeStell
 	int fleetSize;
 	int fleetIndex;
 	int empireSize;
-	empire = EmpireNumero(empireListe, 0);
-	empireSize = EmpireArraySize(empireListe);
+	empire = empire_Get(empireListe, 0);
+	empireSize = empire_ArraySize(empireListe);
 	while(numeroEmpire < empireSize){
-		flotte = FlotteNumero(EmpireFleetGetArray(empire), 0);
+		flotte = FlotteNumero(empire_FleetListGet(empire), 0);
 		fleetIndex = 0;
-		fleetSize = FleetArraySize(EmpireFleetGetArray(empire));
+		fleetSize = FleetArraySize(empire_FleetListGet(empire));
 		while(fleetIndex < fleetSize){
 			
 			//bouger la flotte
@@ -459,9 +459,9 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, StarSystem **systemeStell
 				flotte->y += flotte->vecteur.yVecteur;
 
 				if(flotte->systeme == flotte->systemeArrive) {
-					flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, X_CENTRE_SYSTEME, Y_CENTRE_SYSTEME);
+					flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, SYSTEM_MIDDLE_X, SYSTEM_MIDDLE_Y);
 					flotte->avancement = 0;
-					if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) < pow((double)10, 2.0)) {
+					if(pow((double)(flotte->x - SYSTEM_MIDDLE_X), 2.0) + pow((double)(flotte->y - SYSTEM_MIDDLE_Y), 2.0) < pow((double)10, 2.0)) {
 						//arrivé au centre du systeme
 						if(flotte->action == FLOTTE_CONSTRUIRE_BASE) {
 							SetStationLevel(starSystem_StationGet(systemeStellaires[(int)flotte->systeme]), AVANT_POSTE);
@@ -472,7 +472,7 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, StarSystem **systemeStell
 				}
 
 				//calculer si la flotte sort du systeme
-				if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)) {
+				if(pow((double)(flotte->x - SYSTEM_MIDDLE_X), 2.0) + pow((double)(flotte->y - SYSTEM_MIDDLE_Y), 2.0) > pow((double)SYSTEM_VIEW_RADIUS, 2.0)) {
 					if(flotte->avancement >= 1){
 
 						index = 0;
@@ -498,10 +498,10 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, StarSystem **systemeStell
 				}
 			}
 			fleetIndex++;
-			flotte = FlotteNumero(EmpireFleetGetArray(empire), fleetIndex);
+			flotte = FlotteNumero(empire_FleetListGet(empire), fleetIndex);
 		}
 		numeroEmpire++;
-		empire = EmpireNumero(empireListe, numeroEmpire);
+		empire = empire_Get(empireListe, numeroEmpire);
 	}
 }
 

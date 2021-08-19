@@ -50,9 +50,9 @@ static void CalculerNiveauDeConnaissance(StarSystem **systemeStellaires, EmpireL
 		}
 		numeroSysteme++;
 	}
-	sizeFleet = FleetArraySize(EmpireFleetGetArray(EmpireNumero(empireListe, 0)));
+	sizeFleet = FleetArraySize(empire_FleetListGet(empire_Get(empireListe, 0)));
 	while(indexFleet <= sizeFleet){
-        starSystem_IntelLevelSet(systemeStellaires[GetFleetSystem(FlotteNumero(EmpireFleetGetArray(EmpireNumero(empireListe, 0)), indexFleet))], INTEL_HIGH);
+        starSystem_IntelLevelSet(systemeStellaires[GetFleetSystem(FlotteNumero(empire_FleetListGet(empire_Get(empireListe, 0)), indexFleet))], INTEL_HIGH);
 		indexFleet++;
 	}
 }
@@ -113,7 +113,7 @@ void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireListe* empir
 							nombreDeCuirasse = nombreDeVaisseaux;
 							break;
 					}
-					NouvelleFlotte(EmpireFleetGetArray(EmpireNumero(empireListe, numeroEmpire)), numero, (FlotteType)info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
+					NouvelleFlotte(empire_FleetListGet(empire_Get(empireListe, numeroEmpire)), numero, (FlotteType)info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
 					break;
 				default:
 					break;
@@ -204,7 +204,7 @@ static void UpdateWorld(EmpireListe *empireListe, StarSystem **systemeStellaires
 }
 
 static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, Settings *parametres){
-	if(GetCameraMapType(camera) == NORMAL){
+	if(GetCameraMapType(camera) == VUE_GALACTIC){
 		switch(*key){
 		case sk_Up:
 			if (GetCameraLockStatus(camera) != true)
@@ -234,7 +234,7 @@ static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeSte
 		case sk_Del:
 			if ((GetCameraZoom(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && ((starSystem_IntelLevelGet(systemeStellaires[GetCameraViewedSystem(camera)]) != INTEL_UNKNOWN) || settings_SeeAllGet(parametres))))) {
 				SetCameraLock(camera, false);
-				SetCameraMapType(camera, SYSTEME);
+				SetCameraMapType(camera, VUE_SYSTEM);
 				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
 					SetCameraXSystem(camera, 320);
 					SetCameraYSystem(camera, 240);
@@ -256,7 +256,7 @@ static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeSte
 		case sk_Enter:
 			if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (GetCameraViewedSystem(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (starSystem_IntelLevelGet(systemeStellaires[GetCameraViewedSystem(camera)]) != INTEL_UNKNOWN || settings_SeeAllGet(parametres)))){
 				SetCameraLock(camera, false);
-				SetCameraMapType(camera, SYSTEME);
+				SetCameraMapType(camera, VUE_SYSTEM);
 				if(GetCameraSystem(camera) != GetCameraViewedSystem(camera)) {
 					SetCameraXSystem(camera, 320);
 					SetCameraYSystem(camera, 240);
@@ -373,11 +373,11 @@ static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeSte
 static void UpdateEmpirePower(EmpireListe *empireListe) {
 	Empire *empire;
 	int empireNumero = 0;
-		empire = EmpireNumero(empireListe, empireNumero);
+		empire = empire_Get(empireListe, empireNumero);
 	while (empire != NULL) {
 		CalculateEmpirePower(empire);
 		empireNumero++;
-		empire = EmpireNumero(empireListe, empireNumero);
+		empire = empire_Get(empireListe, empireNumero);
 	}
 }
 
@@ -397,9 +397,9 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 	int planetaryBuildingIndex = 0;
 	
 	//retirer argent flottes
-	empireArraySize = EmpireArraySize(empireListe);
+	empireArraySize = empire_ArraySize(empireListe);
 	for(empireIndex = 0; empireIndex < empireArraySize; empireIndex++){
-		empire = EmpireNumero(empireListe, empireIndex);
+		empire = empire_Get(empireListe, empireIndex);
 
 		//reinitialise tout les changements
 		SetEmpireCreditChange(empire, 0);
@@ -408,7 +408,7 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 		SetEmpireMineralsChange(empire, 0);
 		SetEmpireConsumerGoodsChange(empire, 0);
 
-		flotteListe = EmpireFleetGetArray(empire);
+		flotteListe = empire_FleetListGet(empire);
 		flotteArraySize = FleetArraySize(flotteListe);
 		for(flotteIndex = 0; flotteIndex < flotteArraySize; flotteIndex++){
 			flotte = FlotteNumero(flotteListe, flotteIndex);
@@ -419,7 +419,7 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 	//retirer et ajouter argent systemes et planetes
 	for(systemIndex = 0; systemIndex < GALAXY_WIDTH * GALAXY_WIDTH; systemIndex++){
 		if(starSystem_EmpireGet(systemeStellaires[systemIndex]) != -1){
-			empire = EmpireNumero(empireListe, starSystem_EmpireGet(systemeStellaires[systemIndex]));
+			empire = empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[systemIndex]));
 			planetaryArraySize = GetSystemPlanetNumber(systemeStellaires[systemIndex]);
 
 			for(planetaryIndex = 0; planetaryIndex < planetaryArraySize; planetaryIndex++){
@@ -469,7 +469,7 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 	}
 	if(appliquer){
 		for(empireIndex = 0; empireIndex < empireArraySize; empireIndex++){
-			empire = EmpireNumero(empireListe, empireIndex);
+			empire = empire_Get(empireListe, empireIndex);
 
 			if(GetEmpireAlloys(empire) + GetEmpireAlloysChange(empire) <= 0){
 				SetEmpireAlloys(empire, 0);
@@ -497,7 +497,7 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 		}
 
 		//teste si il n'y a plus beaucoup de ressources
-		empire = EmpireNumero(empireListe, 0);
+		empire = empire_Get(empireListe, 0);
 
 		if((GetEmpireAlloys(empire) + (GetEmpireAlloysChange(empire) / 12)) <= 0) {
 			NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);

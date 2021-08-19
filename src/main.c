@@ -166,7 +166,7 @@ static int mainMenu_Draw(){
         // Print the title of the game
         mainMenu_PrintSized("Stellaris", 30, 3, COLOR_WHITE, -30);
         gfx_SetTextXY(5, 220);
-        gfx_PrintString(VERSION_LOGICIEL);
+        gfx_PrintString(VERSION_GAME);
         #ifdef DEBUG_VERSION
         gfx_PrintString(" Debug");
         #endif
@@ -274,7 +274,7 @@ static int mainMenu_Settings(){
         // Print the version of the game
         mainMenu_PrintSized(_(lc_settings), 30, 2, COLOR_WHITE, 0);
         gfx_SetTextXY(5, 220);
-        gfx_PrintString(VERSION_LOGICIEL);
+        gfx_PrintString(VERSION_GAME);
         #ifdef DEBUG_VERSION
         gfx_PrintString(" Debug");
         #endif
@@ -504,7 +504,7 @@ int main(void){
     #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "\n*********************");
         dbg_sprintf(dbgout, "\n* Started Stellaris");
-        dbg_sprintf(dbgout, "\n* %s", VERSION_LOGICIEL);
+        dbg_sprintf(dbgout, "\n* %s", VERSION_GAME);
         dbg_sprintf(dbgout, "\n* Debug activated");
         dbg_sprintf(dbgout, "\n*********************\n\n");
     #endif

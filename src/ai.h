@@ -54,17 +54,17 @@ typedef struct RelationsStruct Relations;
 
 #include "fleet.h"
 
-EmpireListe* EmpireListeCreer();
-void EmpireListeSupprimer(EmpireListe*);
-int EmpireArraySize(EmpireListe* empireListe);
-Empire* EmpireNumero(EmpireListe*, int numero);
-Empire* EmpireAjouter(EmpireListe*);
-void EmpireSupprimer(EmpireListe*, int numero);
+EmpireListe* empire_ListCreate();
+void empire_ListFree(EmpireListe*);
+int empire_ArraySize(EmpireListe* empireListe);
+Empire* empire_Get(EmpireListe*, int numero);
+Empire* empire_Add(EmpireListe*);
+void empire_Free(EmpireListe*, int numero);
 
 
-void EmpireFlotteCreer(Empire *empire);
-void EmpireFlotteNouvelle(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
-FlotteListe *EmpireFleetGetArray(Empire *empire);
+void empire_FleetCreate(Empire *empire);
+void empire_FleetAdd(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
+FlotteListe *empire_FleetListGet(Empire *empire);
 
 void EmpireCreerRelations(Empire *empire);
 void EmpireRelationNouvelle(Empire *empire);

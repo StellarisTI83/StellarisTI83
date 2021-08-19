@@ -132,13 +132,13 @@ static void hud_DrawSpeedIcon(Time *date){
  * @brief Print the text of the HUD
  * 
  * @param player 
- * @param date 
+ * @param time 
  * @param camera 
  * @param settings 
  * @param systemeStellaires 
  */
 static void hud_PrintInfos( Empire *player, 
-                            Time *date, 
+                            Time *time, 
                             Camera *camera,
                             Settings *settings,
                             StarSystem **systemeStellaires){
@@ -213,17 +213,17 @@ static void hud_PrintInfos( Empire *player,
     // bottom bar
 
     // date
-    if (GetTimeDay(date) < 10) {
-        sprintf(dayString, "0%d.", GetTimeDay(date));
+    if (GetTimeDay(time) < 10) {
+        sprintf(dayString, "0%d.", GetTimeDay(time));
     } else {
-        sprintf(dayString, "%d.", GetTimeDay(date));
+        sprintf(dayString, "%d.", GetTimeDay(time));
     }
-    if (GetTimeMonth(date) < 10) {
-        sprintf(monthString, "0%d.", GetTimeMonth(date));
+    if (GetTimeMonth(time) < 10) {
+        sprintf(monthString, "0%d.", GetTimeMonth(time));
     } else {
-        sprintf(monthString, "%d.", GetTimeMonth(date));
+        sprintf(monthString, "%d.", GetTimeMonth(time));
     }
-    sprintf(yearString, "%d", GetTimeYear(date));
+    sprintf(yearString, "%d", GetTimeYear(time));
 
     strcat(monthString, yearString);
     strcat(dayString, monthString);
@@ -241,8 +241,8 @@ static void hud_PrintInfos( Empire *player,
     }
 
     // name of the system
-    if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
-        if (GetCameraMapType(camera) == NORMAL) {
+    if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
+        if (GetCameraMapType(camera) == VUE_GALACTIC) {
             system = GetCameraViewedSystem(camera);
         } else {
             system = GetCameraSystem(camera);
@@ -258,7 +258,10 @@ static void hud_PrintInfos( Empire *player,
         }
     }
 
-    hud_DrawSpeedIcon(date);
+    gfx_SetTextXY(LCD_WIDTH - 2 * TEXT_HEIGHT, 1);
+    gfx_PrintUInt(time_FPSGet(time), 2);
+
+    hud_DrawSpeedIcon(time);
 }
 
 
@@ -271,7 +274,7 @@ static void hud_PrintInfos( Empire *player,
  */
 static void hud_DrawPointer(Camera *camera) {
     //pointeur
-    if (GetCameraMapType(camera) == CARTE) {
+    if (GetCameraMapType(camera) == VUE_MAP) {
         gfx_Line_NoClip(GetCameraX(camera) / 2.5 + 5, GetCameraY(camera) / 2.5 - 30, GetCameraX(camera) / 2.5 + 15, GetCameraY(camera) / 2.5 - 30);
         gfx_Line_NoClip(GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 25, GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 35);
         gfx_Circle_NoClip(GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 30, 3);
@@ -326,7 +329,7 @@ static void hud_DrawShapes( Time *date,
                         LCD_HEIGHT);                                // y down left
     
     //name above the bottom bar
-    if((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
+    if((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
         gfx_FillRectangle(  HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x
                             LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y
                             HUD_TIME_BAR_WIDTH - 2 * HUD_NAME_BAR_HEIGHT,           // width
@@ -376,7 +379,7 @@ static void hud_DrawShapes( Time *date,
                         LCD_HEIGHT);                                // y up   right
     
     //name above the bottom bar
-    if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == SYSTEME)) {
+    if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
         gfx_HorizLine_NoClip(   HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x
                                 LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y
                                 HUD_TIME_BAR_WIDTH - 2 * HUD_NAME_BAR_HEIGHT);          // width
@@ -420,7 +423,7 @@ int hud_Draw(   EmpireListe *empireListe,
                 Settings *settings, 
                 NotificationList *notificationList)
 {
-    Empire *player = EmpireNumero(empireListe, 0);
+    Empire *player = empire_Get(empireListe, 0);
     
     hud_DrawShapes(date, camera);
 

@@ -90,7 +90,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Settings *parametres){
 	char key = 0, fin = 1;
 	int choix = 0;
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(empireListe, 0);
+	joueur = empire_Get(empireListe, 0);
 	while(fin) {
 		choix = GetEmpireSpecies(joueur);
 		do {
@@ -166,7 +166,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Settings *parametres){
 int NouvellePartieGouvernement(EmpireListe *empireListe, Settings *parametres){
 	char key = 0, choix = 0, fin = 1;
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(empireListe, 0);
+	joueur = empire_Get(empireListe, 0);
 	while(fin) {
 		choix = 0;
 		do {
@@ -694,7 +694,7 @@ int NouvellePartiePrincipes(EmpireListe *empireListe, Settings *parametres) {
 int NouvellePartieNom(EmpireListe *empireListe, Settings *parametres) {
 	char key = 0, fin = 1, lettre = 0, majuscule = 1, curseur = 0, finBoucle = 0, erreur = 0;
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(empireListe, 0);
+	joueur = empire_Get(empireListe, 0);
 	while(fin) {
 		finBoucle = 0;
 		do {
@@ -951,7 +951,7 @@ int NouvellePartieParametres(EmpireListe *empireListe, Settings *parametres)
 	char key = 0, choix = 0, fin = 1, nombresEmpires = 4;
 	char nombreEmpiresChar[3] = "";
 	Empire *joueur = NULL;
-	joueur = EmpireNumero(empireListe, 0);
+	joueur = empire_Get(empireListe, 0);
 
 	while(fin) {
 		do {
@@ -1018,11 +1018,10 @@ int NouvellePartieParametres(EmpireListe *empireListe, Settings *parametres)
  */
 static int InitializeNewGame(EmpireListe **empireListe, Time **date, Camera **camera, Window **fenetre, Market **marche, Settings **parametres, ti_var_t *sauvegarde){
 	Empire *joueur = NULL;
-	ti_CloseAll();
 
-	*empireListe = EmpireListeCreer();
-	EmpireAjouter(*empireListe);
-	EmpireFlotteCreer(EmpireNumero(*empireListe, 0));
+	*empireListe = empire_ListCreate();
+	empire_Add(*empireListe);
+	empire_FleetCreate(empire_Get(*empireListe, 0));
 
 	*sauvegarde = ti_Open("sauv", "w");
 
@@ -1030,9 +1029,9 @@ static int InitializeNewGame(EmpireListe **empireListe, Time **date, Camera **ca
 
 	settings_SeeAllSet(*parametres, false);
 
-	*date = AllocDate();
-	SetTime(*date, 1, 1, 2200);
-	SetTimeSpeed(*date, 0, 1);
+	*date = time_Alloc();
+	time_DateSet(*date, 1, 1, 2200);
+	time_SpeedSet(*date, 0, 1);
 	AddTimeClock(*date);
 
 	*camera = AllocCamera();
@@ -1044,7 +1043,7 @@ static int InitializeNewGame(EmpireListe **empireListe, Time **date, Camera **ca
 	SetCameraYVector(*camera, 0);
 
 	SetCameraZoom(*camera, 2);
-	SetCameraMapType(*camera, SYSTEME);
+	SetCameraMapType(*camera, VUE_SYSTEM);
 	
 	*fenetre = AllocFenetre();
 	CloseMenu(*fenetre, *camera);
