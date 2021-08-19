@@ -1,0 +1,39 @@
+name: Make
+
+on:
+  push:
+    branches:
+    - main
+    - release/*
+  pull_request:
+    branches:
+    - main
+  workflow_dispatch:
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Toolchain To Workspace
+      id: download
+      uses: carlosperate/download-file-action@v1.0.3
+      with:
+        file-url: https://github.com/CE-Programming/toolchain/releases/download/v9.1/linux_CEdev.zip
+    
+    - name: Unzip Toolchain
+      uses: DuckSoft/extract-7z-action@v1.0
+      with:
+        pathSource: ${{steps.download.outputs.file-path}}
+        pathTarget: ${{github.workspace}}/CEDev
+        
+    - run: chmod u+x ${{github.workspace}}/CEDev/bin/*
+  
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        path: ${{github.workspace}}/StellarisTI83
+    
+    - name: make
+      run: export CEDEV=${{github.workspace}}/CEDev; export PATH=$CEDEV/bin:$PATH; make -C ${{github.workspace}}/StellarisTI83
