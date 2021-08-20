@@ -36,4 +36,4 @@ jobs:
         path: ${{github.workspace}}/StellarisTI83
     
     - name: make
-      run: export CEDEV=${{github.workspace}}/CEDev; export PATH=$CEDEV/bin:$PATH; make gfx; make -C ${{github.workspace}}/StellarisTI83
+      run: export CEDEV=${{github.workspace}}/CEDev; export PATH=$CEDEV/bin:$PATH; make -C ${{github.workspace}}/StellarisTI83 gfx; make -C ${{github.workspace}}/StellarisTI83
