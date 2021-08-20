@@ -23,7 +23,7 @@
 #define HUD_SIDE_BAR_UP 50
 #define HUD_SIDE_BAR_GAP 20
 
-int hud_Draw(   EmpireListe *empireListe, 
+int hud_Draw(   EmpireList *empireListe, 
                 Time *date, 
                 char *key, 
                 Camera *camera, 

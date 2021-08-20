@@ -8,7 +8,7 @@
 
 /* entry points ======================================================== */
 
-void AfficherConsole(char *, Window *, EmpireListe *, Camera *, Time *, Settings *);
+void AfficherConsole(char *, Window *, EmpireList *, Camera *, Time *, Settings *);
 
 void EcrireConsoleChar(char *);
 void EcrireConsoleInt(int );

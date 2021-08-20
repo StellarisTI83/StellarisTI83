@@ -361,7 +361,7 @@ int GetFleetArriveSystem(Flotte *flotte){
 /**
  *Donne l'ordre de faire bouger la flotte numero x
  */
-void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *fenetre, Camera *camera, EmpireListe *empireListe, StarSystem **systemeStellaires){
+void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *fenetre, Camera *camera, EmpireList *empireListe, StarSystem **systemeStellaires){
 	Empire* empire;
 	Flotte* flotte;
 	int error;
@@ -438,7 +438,7 @@ int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires){
 /**
  * Fait effectuer les action des flottes
  */
-void EffectuerActionsFlottes(EmpireListe* empireListe, StarSystem **systemeStellaires){
+void EffectuerActionsFlottes(EmpireList* empireListe, StarSystem **systemeStellaires){
 	Empire* empire = NULL; 
 	Flotte* flotte = NULL;
 	int index = 0, numeroEmpire = 0;

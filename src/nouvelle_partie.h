@@ -8,7 +8,7 @@
 #define GALAXY_WIDTH 11
 
 /* entry points ======================================================== */
-int NouvellePartieAvertissement(EmpireListe *empireListe, Settings *parametres);
+int NouvellePartieAvertissement(EmpireList *empireListe, Settings *parametres);
 void PrintText(const char *str, int x, int y, int taille, int color);
 
 void ChargementNouvellePartie();

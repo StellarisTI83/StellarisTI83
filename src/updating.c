@@ -33,7 +33,7 @@
 /**
  * calcule le niveau de connaissance (intel level) du systeme
  */
-static void CalculerNiveauDeConnaissance(StarSystem **systemeStellaires, EmpireListe *empireListe){
+static void CalculerNiveauDeConnaissance(StarSystem **systemeStellaires, EmpireList *empireListe){
 	int sizeFleet = 0;
 	int indexFleet = 0;
 	int numeroSysteme = 0;
@@ -60,7 +60,7 @@ static void CalculerNiveauDeConnaissance(StarSystem **systemeStellaires, EmpireL
 /**
  * Effectue les actions de station
  */
-void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireListe* empireListe){
+void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireList* empireListe){
 	int numero = 0, nombreDeVaisseaux = 0;
 	int nombreDeCorvette = 0, nombreDeDestroyer = 0, nombreDeCroiseur = 0, nombreDeCuirasse = 0;
 	OrdreStation ordre = AUCUN_ORDRE_STATION;
@@ -158,7 +158,7 @@ void EffectuerActionsPlanetes(StarSystem **systemeStellaires){
 								AddSystemPlanetCityAgricultureDistrict(systemeStellaires[i], j, 1); 
 								break;
 							case CONSTRUIRE_BATIMENT:
-								SetSystemPlanetCityBuilding(systemeStellaires[i], j, GetCityOrderInfo1(villes), (Batiment)GetCityOrderInfo2(villes), 1 );
+								SetSystemPlanetCityBuilding(systemeStellaires[i], j, GetCityOrderInfo1(villes), (Building)GetCityOrderInfo2(villes), 1 );
 								break;
 							default:
 								break;
@@ -196,14 +196,14 @@ static void UpdateTime(Time *date, char *key, Window *fenetre){
 	UpdateClock(date);
 }
 
-static void UpdateWorld(EmpireListe *empireListe, StarSystem **systemeStellaires){
+static void UpdateWorld(EmpireList *empireListe, StarSystem **systemeStellaires){
     EffectuerActionsFlottes(empireListe, systemeStellaires);
     EffectuerActionsStations(systemeStellaires, empireListe);
     EffectuerActionsPlanetes(systemeStellaires);
     CalculerNiveauDeConnaissance(systemeStellaires, empireListe);
 }
 
-static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, Settings *parametres){
+static void TestKey(char *key, EmpireList *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, Settings *parametres){
 	if(GetCameraMapType(camera) == VUE_GALACTIC){
 		switch(*key){
 		case sk_Up:
@@ -370,7 +370,7 @@ static void TestKey(char *key, EmpireListe *empireListe, StarSystem **systemeSte
 
 
 
-static void UpdateEmpirePower(EmpireListe *empireListe) {
+static void UpdateEmpirePower(EmpireList *empireListe) {
 	Empire *empire;
 	int empireNumero = 0;
 		empire = empire_Get(empireListe, empireNumero);
@@ -382,11 +382,11 @@ static void UpdateEmpirePower(EmpireListe *empireListe) {
 }
 
 /* entry points ======================================================== */
-void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **systemeStellaires, NotificationList *notificationList){
+void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **systemeStellaires, NotificationList *notificationList){
 	Empire *empire = NULL;
 	Flotte *flotte = NULL;
 	FlotteListe *flotteListe = NULL;
-	Planete *planete = NULL;
+	Planet *planete = NULL;
 	int empireIndex = 0;
 	int empireArraySize = 0;
 	int flotteIndex = 0;
@@ -426,7 +426,7 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 				planete = GetPlanet(systemeStellaires[systemIndex], planetaryIndex);
 				
 				//si la planete est habitée
-				if(GetPlanetCityStatus(planete)){
+				if(planet_CityGet(planete)){
 
 					AddEmpireCreditChange(empire, -GetPlanetCityAgricultureDistrictNumber(planete));
 					AddEmpireFoodChange(empire, GetPlanetCityAgricultureDistrictNumber(planete) * 3);
@@ -440,23 +440,23 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 					
 					for(planetaryBuildingIndex = 1; planetaryBuildingIndex <= 6; planetaryBuildingIndex++){
 						switch(GetPlanetCityBuildingNumber(planete, planetaryBuildingIndex)){
-							case CAPITALE:
+							case BUILDING_CAPITAL:
 								AddEmpireCreditChange(empire, -2);
 								break;
-							case FONDERIE:
-								AddEmpireCreditChange(empire, -2);
-								AddEmpireMineralsChange(empire, -6);
-								AddEmpireAlloysChange(empire, 6);
-								break;
-							case LABORATOIRE:
-								AddEmpireCreditChange(empire, -2);
-								break;
-							case USINE_CIVILE:
+							case BUILDING_FOUNDRIES:
 								AddEmpireCreditChange(empire, -2);
 								AddEmpireMineralsChange(empire, -6);
 								AddEmpireAlloysChange(empire, 6);
 								break;
-							case THEATRE:
+							case BUILDING_RESEARCH:
+								AddEmpireCreditChange(empire, -2);
+								break;
+							case BUILDING_CIVILIAN_INDUSTRIES:
+								AddEmpireCreditChange(empire, -2);
+								AddEmpireMineralsChange(empire, -6);
+								AddEmpireAlloysChange(empire, 6);
+								break;
+							case BUILDING_THEATRE:
 								AddEmpireCreditChange(empire, -2);
 								break;
 							default:
@@ -514,7 +514,7 @@ void UpdatePlayersData(char appliquer, EmpireListe *empireListe, StarSystem **sy
 	}
 }
 
-int UpdateGame(char *key, EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, NotificationList *notificationList, Settings *parametres){
+int UpdateGame(char *key, EmpireList *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, NotificationList *notificationList, Settings *parametres){
     if(!GetCommandPromptStatus(fenetre))
 		TestKey(key, empireListe, systemeStellaires, date, camera, fenetre, parametres);
 

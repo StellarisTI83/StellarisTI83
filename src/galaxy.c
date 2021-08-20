@@ -132,80 +132,6 @@ char * nameStars[] = {
     "Koiploc"
 };
 
-
-char * planetesName[] = {
-    "Egnepra",
-    "Aceonerth",
-    "Tochade",
-    "Pemapus",
-    "Ruliv",
-    "Chuturn",
-    "Gidetera",
-    "Gneputani",
-    "Nora",
-    "Gao",
-    "Vunubos",
-    "Zolveiril",
-    "Ostriea",
-    "Hibbillon",
-    "Cheruta",
-    "Puthea",
-    "Cuinia",
-    "Gachuruta",
-    "Gone",
-    "Thade",
-    "Bevotov",
-    "Chavivis",
-    "Yuvore",
-    "Biseron",
-    "Zauter",
-    "Sony",
-    "Michethea",
-    "Gravutis",
-    "Lille",
-    "Strade",
-    "Kidririli",
-    "Bonvanus",
-    "Icharvis",
-    "Zilminda",
-    "Yutune",
-    "Thaelia",
-    "Luchazuno",
-    "Truutis",
-    "Lleshan",
-    "Cyke",
-    "Themeanov",
-    "Miccoiria",
-    "Gichurn",
-    "Nibronoe",
-    "Nieliv",
-    "Roirus",
-    "Bamipra",
-    "Cregocaro",
-    "Brypso",
-    "Deron",
-    "Kindounus",
-    "Danniula",
-    "Ondosie",
-    "Yangomia",
-    "Hephus",
-    "Haiturn",
-    "Crumuturn",
-    "Loxistea",
-    "Brade",
-    "Tryria",
-    "Yovoanide",
-    "Ellaclite",
-    "Naccone",
-    "Relnoth",
-    "Beuliv",
-    "Thauyama",
-    "Chayolara",
-    "Phugemia",
-    "Larth",
-    "Griri"
-};
-
 /* private functions =================================================== */
 
 /**
@@ -335,9 +261,10 @@ static void galaxy_PlanetInitialize(StarSystem *starSystem, int planetIndex){
     int x = 0;
     int y = 0;
     bool habitable = 0;
+    Planet *planet;
 
-    starSystem_PlanetAlloc(starSystem);
-
+    planet = starSystem_PlanetAlloc(starSystem);
+    
     // Choice of the type of the planet
     type = randInt(1, 100);
     switch(planetIndex){
@@ -453,7 +380,7 @@ static void galaxy_PlanetInitialize(StarSystem *starSystem, int planetIndex){
             }
             break;
     }
-    starSystem_PlanetTypeSet(starSystem, planetIndex, type);
+    planet_TypeSet(planet, type);
 
     // Choice of the size of the planet
     size = randInt(1, 100);
@@ -521,8 +448,8 @@ static void galaxy_PlanetInitialize(StarSystem *starSystem, int planetIndex){
             }
             break;
     }
-    starSystem_PlanetRadiusOrbitSet(starSystem, planetIndex, orbitRadius);
-    starSystem_PlanetRadiusSet(starSystem, planetIndex, size);
+    planet_OrbitRadiusSet(planet, orbitRadius);
+    planet_SizeSet(planet, size);
 
     // Set the x position
     x = randInt(SYSTEM_MIDDLE_X - orbitRadius, 
@@ -533,16 +460,13 @@ static void galaxy_PlanetInitialize(StarSystem *starSystem, int planetIndex){
     if(randInt(0, 1) == 1) {
         y = SYSTEM_MIDDLE_Y - (y - SYSTEM_MIDDLE_Y);
     }
-    starSystem_PlanetXYSet( starSystem, 
-                            planetIndex, 
-                            x, 
-                            y);
+    planet_PositionSet( planet,
+                        x, 
+                        y);
 
     //Set the name of the planet
     if(habitable)
-        starSystem_PlanetNameSet(   starSystem, 
-                                    planetIndex, 
-                                    planetesName[randInt(0, (sizeof(planetesName)/sizeof(planetesName[0])) - 1 )]);
+        planet_NameGenerate(planet);
 }
 
 /**
@@ -617,7 +541,8 @@ static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition, int starI
         planetIndex++;
     }	
 
-
+    if(starIndex > 110)
+        starIndex -= randInt(0, 100);
     starSystem_NameSet(starSystem, nameStars[starIndex]);
 
     hyperlane_DestinationSet(starSystem, 0, 255);
@@ -717,36 +642,32 @@ static void RecreateHyperlanes(StarSystem **systemeStellaires, int k){
 
 /* entry points ======================================================== */
 
-// TODO Refactor the function
-/**
- * Creer Empires
- */
-void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **systemeStellaires, Camera *camera){
-    int i = 0, fin = 1, j = 0;
+void galaxy_StartEmpiresInitialize(Settings *parametres, EmpireList *empireListe, StarSystem **starSystem, Camera *camera){
+    int systemIndex = 0, fin = 1, empireIndex = 0;
     int k = GALAXY_WIDTH * GALAXY_WIDTH;
     int planete = 0;
     Empire *joueur = empire_Get(empireListe, 0);
     //creation joueur
     while(fin == 1) { // choix du systeme
-        i = randInt(0, k - 1);
+        systemIndex = randInt(0, k - 1);
         gfx_SetTextXY(50, 70);
         #ifdef DEBUG_VERSION
-            dbg_sprintf(dbgout, "%d %d %d\n", starSystem_GetX(systemeStellaires[i]), starSystem_GetY(systemeStellaires[i]), starSystem_StarTypeGet(systemeStellaires[i]));
+            dbg_sprintf(dbgout, "%d %d %d\n", starSystem_GetX(starSystem[systemIndex]), starSystem_GetY(starSystem[systemIndex]), starSystem_StarTypeGet(starSystem[systemIndex]));
         #endif
-        if(((starSystem_GetX(systemeStellaires[i]) >= 160) && (starSystem_GetY(systemeStellaires[i]) >= 120)) && (starSystem_StarTypeGet(systemeStellaires[i]) != STAR_TYPE_BLACKHOLE))
+        if(((starSystem_GetX(starSystem[systemIndex]) >= 160) && (starSystem_GetY(starSystem[systemIndex]) >= 120)) && (starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE))
             fin = 0;
     }
     #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "\nCreate empires\n");
     #endif
-    SetEmpireColor(joueur, 9);
-    SetEmpireSystemCapital(joueur, i);
+    empire_ColorSet(joueur, 9);
+    empire_CapitalSystemSet(joueur, systemIndex);
 
-    starSystem_StarTypeSet(systemeStellaires[i], STAR_TYPE_K);
-    SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
-    SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);
-    starSystem_EmpireSet(systemeStellaires[i], 0);
-    starSystem_IntelLevelSet(systemeStellaires[i], INTEL_FULL);
+    starSystem_StarTypeSet(starSystem[systemIndex], STAR_TYPE_K);
+    SetSystemPlanetHabitableNumber(starSystem[systemIndex], 1);
+    SetSystemPlanetInhabitedNumber(starSystem[systemIndex], 1);
+    starSystem_EmpireSet(starSystem[systemIndex], 0);
+    starSystem_IntelLevelSet(starSystem[systemIndex], INTEL_FULL);
 
     SetEmpireCredit(joueur, 100);
     SetEmpireMinerals(joueur, 100);
@@ -754,106 +675,59 @@ void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **s
     SetEmpireAlloys(joueur, 100);
     SetEmpireConsumerGoods(joueur, 100);
 
-    starSystem_StationLevelSet(systemeStellaires[i], PORT_STELLAIRE);
-    starSystem_StationModuleSet(systemeStellaires[i], 0, CHANTIER_SPATIAL);
-    starSystem_StationModuleSet(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
+    starSystem_StationLevelSet(starSystem[systemIndex], PORT_STELLAIRE);
+    starSystem_StationModuleSet(starSystem[systemIndex], 0, CHANTIER_SPATIAL);
+    starSystem_StationModuleSet(starSystem[systemIndex], 1, CARREFOUR_COMMERCIAL);
     
 
-    empire_FleetAdd(joueur, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+    empire_FleetAdd(joueur, systemIndex, FLOTTE_MILITAIRE, 3, 0, 0, 0);
 
-    empire_FleetAdd(joueur, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+    empire_FleetAdd(joueur, systemIndex, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
 
-    empire_FleetAdd(joueur, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+    empire_FleetAdd(joueur, systemIndex, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
     
-    SetCameraX(camera, starSystem_GetX(systemeStellaires[i])*2); // centre la vue sur le systeme
-    SetCameraY(camera, starSystem_GetY(systemeStellaires[i])*2);
-    SetCameraSystem(camera, i);
+    SetCameraX(camera, starSystem_GetX(starSystem[systemIndex])*2); // centre la vue sur le systeme
+    SetCameraY(camera, starSystem_GetY(starSystem[systemIndex])*2);
+    SetCameraSystem(camera, systemIndex);
 
-    planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i]) - 1);
+    planete = randInt(0, GetSystemPlanetNumber(starSystem[systemIndex]) - 1);
 
-    starSystem_PlanetHabitabilitySet(systemeStellaires[i], planete, true);
-    starSystem_PlanetTypeSet(systemeStellaires[i], planete, HABITABLE_CONTINENTAL);
+    starSystem_PlanetHabitabilitySet(starSystem[systemIndex], planete, true);
+    starSystem_PlanetTypeSet(starSystem[systemIndex], planete, HABITABLE_CONTINENTAL);
 
-    SetCameraXSystem(camera, starSystem_PlanetXGet(systemeStellaires[i], planete) - 160);
-    SetCameraYSystem(camera, starSystem_PlanetYGet(systemeStellaires[i], planete) - 120);
-    starSystem_PlanetNameSet(systemeStellaires[i], planete, planetesName[randInt(0, (sizeof(planetesName)/sizeof(planetesName[0])) - 1 )]);
+    SetCameraXSystem(camera, starSystem_PlanetXGet(starSystem[systemIndex], planete) - 160);
+    SetCameraYSystem(camera, starSystem_PlanetYGet(starSystem[systemIndex], planete) - 120);
+    // starSystem_PlanetNameSet(systemeStellaires[i], planete, planetesName[randInt(0, (sizeof(planetesName)/sizeof(planetesName[0])) - 1 )]);
 
-    starSystem_PlanetCityCreate(systemeStellaires[i], planete);
-    starSystem_PlanetCityPopulationSet(systemeStellaires[i], planete, 27);
-    starSystem_PlanetCityDistrictSet(systemeStellaires[i], planete, 4, 3, 3, 3);
+    starSystem_PlanetCityCreate(starSystem[systemIndex], planete);
+    starSystem_PlanetCityPopulationSet(starSystem[systemIndex], planete, 27);
+    starSystem_PlanetCityDistrictSet(starSystem[systemIndex], planete, 4, 3, 3, 3);
 
-    CalculateSystemPlanetCityJob(systemeStellaires[i], planete);
+    CalculateSystemPlanetCityJob(starSystem[systemIndex], planete);
 
-    SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 1, CAPITALE, 3);
-    SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 2, USINE_CIVILE, 1);
-    SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 3, FONDERIE, 1);
+    SetSystemPlanetCityBuilding(starSystem[systemIndex], planete, 1, BUILDING_CAPITAL, 3);
+    SetSystemPlanetCityBuilding(starSystem[systemIndex], planete, 2, BUILDING_CIVILIAN_INDUSTRIES, 1);
+    SetSystemPlanetCityBuilding(starSystem[systemIndex], planete, 3, BUILDING_FOUNDRIES, 1);
 
     CalculateEmpirePower(joueur);
 
     #ifdef DEBUG_VERSION
-        dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, i, starSystem_GetX(systemeStellaires[i]), starSystem_GetY(systemeStellaires[i]), GetEmpireColor(joueur), planete, empire_FleetListGet(joueur), GetCameraX(camera), GetCameraY(camera));
+        dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, systemIndex, starSystem_GetX(starSystem[systemIndex]), starSystem_GetY(starSystem[systemIndex]), GetEmpireColor(joueur), planete, empire_FleetListGet(joueur), GetCameraX(camera), GetCameraY(camera));
     #endif
     
-    for(j = 1; j < settings_EmpireNumberGet(parametres); j++){
+    for(empireIndex = 1; empireIndex < settings_EmpireNumberGet(parametres); empireIndex++){
         Empire *empire = NULL;
         fin = 1;
-        i = 0;
+        systemIndex = 0;
         while(fin == 1) { // choix du systeme
-            i = randInt(0, k - 1);
-            if(((starSystem_GetX(systemeStellaires[i]) >= 160) && (starSystem_GetY(systemeStellaires[i]) >= 120)) && ((starSystem_StarTypeGet(systemeStellaires[i]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(systemeStellaires[i]) == -1)))
+            systemIndex = randInt(0, k - 1);
+            if(((starSystem_GetX(starSystem[systemIndex]) >= 160) && (starSystem_GetY(starSystem[systemIndex]) >= 120)) && ((starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(starSystem[systemIndex]) == -1)))
                 fin = 0;
         }
         empire = empire_Add(empireListe);
-        empire_FleetCreate(empire);
-        EmpireGenerateRandomName(empire);
-        SetEmpireSpecies(empire, randInt(0, 3));
-        SetEmpireClothes(empire, randInt(0, 2));
-
-        SetEmpireColor(empire, randInt(20, 29));
-        SetEmpireSystemCapital(empire, i);
-        starSystem_StarTypeSet(systemeStellaires[i], STAR_TYPE_K);
-        SetSystemPlanetHabitableNumber(systemeStellaires[i], 1);
-        SetSystemPlanetInhabitedNumber(systemeStellaires[i], 1);
-        starSystem_EmpireSet(systemeStellaires[i], j);
-        starSystem_IntelLevelSet(systemeStellaires[i], INTEL_UNKNOWN);
-
-        SetEmpireCredit(empire, 100);
-        SetEmpireMinerals(empire, 100);
-        SetEmpireFood(empire, 200);
-        SetEmpireAlloys(empire, 100);
-        SetEmpireConsumerGoods(empire, 100);
-        
-        starSystem_StationLevelSet(systemeStellaires[i], PORT_STELLAIRE);
-        starSystem_StationModuleSet(systemeStellaires[i], 0, CHANTIER_SPATIAL);
-        starSystem_StationModuleSet(systemeStellaires[i], 1, CARREFOUR_COMMERCIAL);
-
-        empire_FleetAdd(empire, i, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-        empire_FleetAdd(empire, i, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-        empire_FleetAdd(empire, i, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
-
-        planete = randInt(0, GetSystemPlanetNumber(systemeStellaires[i]) - 1);
-
-        starSystem_PlanetHabitabilitySet(systemeStellaires[i], planete, true);
-        starSystem_PlanetTypeSet(systemeStellaires[i], planete, HABITABLE_CONTINENTAL);
-        starSystem_PlanetNameSet(systemeStellaires[i], planete, planetesName[randInt(0, (sizeof(planetesName)/sizeof(planetesName[0])) - 1 )]);
-
-        starSystem_PlanetCityCreate(systemeStellaires[i], planete);
-        starSystem_PlanetCityPopulationSet(systemeStellaires[i], planete, 27);
-        starSystem_PlanetCityDistrictSet(systemeStellaires[i], planete, 4, 3, 3, 3);
-
-        CalculateSystemPlanetCityJob(systemeStellaires[i], planete);
-
-        SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 1, CAPITALE, 3);
-        SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 2, USINE_CIVILE, 1);
-        SetSystemPlanetCityBuilding(systemeStellaires[i], planete, 3, FONDERIE, 1);
-        
-        CalculateEmpirePower(empire);
-
-        #ifdef DEBUG_VERSION
-            dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d\n -Color: %d\n -Planet: %d\n", j, empire,i, GetEmpireColor(empire), planete);
-        #endif
+        empire_Generate(empire, empireIndex, starSystem[systemIndex], systemIndex, randInt(20, 29));
     }
-    RelationAllListeUpdate(empireListe);
+    ai_RelationsUpdate(empireListe);
 }
 
 

@@ -9,7 +9,7 @@
 #include "loop.h"
 
 /* entry points ======================================================== */
-int game_MainLoop(	EmpireListe *empireListe, 
+int game_MainLoop(	EmpireList *empireListe, 
 					Settings *settings, 
 					Time *time, 
 					StarSystem **starSystems, 

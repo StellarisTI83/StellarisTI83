@@ -14,6 +14,6 @@
 
 /* entry points ======================================================== */
 
-void DrawMap(EmpireListe *empireListe, StarSystem **systemeStellaires, Camera *camera, char *key, Time *date, Window *fenetre, Settings *parametres);
+void DrawMap(EmpireList *empireListe, StarSystem **systemeStellaires, Camera *camera, char *key, Time *date, Window *fenetre, Settings *parametres);
 
 #endif

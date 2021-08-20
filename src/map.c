@@ -68,7 +68,7 @@ static void DessinerPlanetesHabitables(StarSystem **systemeStellaires, Settings 
 /**
  *dessine les flottes sur la map
  */
-static void DessinerFlottesMap(EmpireListe* empireListe, Empire* joueur, StarSystem **systemeStellaires, Camera* camera, Settings *parametres){
+static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSystem **systemeStellaires, Camera* camera, Settings *parametres){
 	Flotte* flotte;
 	Empire *empire;
 	int system, xFlotte, yFlotte;
@@ -199,7 +199,7 @@ static void DessinerHyperlane(int8_t niveauDeConnaissance1, int8_t niveauDeConna
 /**
  *dessiner la map en vision normale et galactique
  */
-static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, EmpireListe *empireListe, Settings *parametres){
+static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, EmpireList *empireListe, Settings *parametres){
 	int i = 0, x = 0, y = 0, xLn, yLn, hyperLane1 = 0, hyperLane2 = 0, hyperLane3 = 0, hyperLane4 = 0, systeme = 0;
 	//dessiner carte
 	gfx_SetTextConfig(gfx_text_clip);
@@ -512,27 +512,27 @@ void CouleurPlanete(char type){
 /**
  *Dessine une planète pour le menu systeme de la fonction StellarisHUD
  */
-static void DessinerPlanete(StarSystem* systeme, Planete* planete, Camera* camera, Window *fenetre, int numero, char* key){
+static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera, Window *fenetre, int numero, char* key){
 	int x, y;
 	char nomNumero[10], decalage = 0;
-	x = GetPlanetX(planete) - GetCameraXSystem(camera);
-	y = GetPlanetY(planete) - GetCameraYSystem(camera);
+	x = planet_GetX(planete) - GetCameraXSystem(camera);
+	y = planet_GetY(planete) - GetCameraYSystem(camera);
 	gfx_SetColor(11);
-	gfx_Circle(SYSTEM_MIDDLE_X - GetCameraXSystem(camera), SYSTEM_MIDDLE_Y - GetCameraYSystem(camera), GetPlanetOrbitRadius(planete));
+	gfx_Circle(SYSTEM_MIDDLE_X - GetCameraXSystem(camera), SYSTEM_MIDDLE_Y - GetCameraYSystem(camera), planet_OrbitRadiusGet(planete));
 	CouleurPlanete(GetPlanetType(planete));
-	gfx_FillCircle(x, y, GetPlanetRadius(planete));
+	gfx_FillCircle(x, y, planet_SizeGet(planete));
 	gfx_SetTextFGColor(1);
 	if(((50 < x) && (x < 310)) && ((10 < y) && (y < 220))){
-		if(GetPlanetHabitability(planete)){
+		if(planet_HabitabilityGet(planete)){
 			if(GetPlanetCityPopulation(planete) > 0){
 				gfx_SetColor(6);
-				gfx_FillRectangle(x - strlen(GetPlanetName(planete)) * 4 - 2, y + 8, strlen(GetPlanetName(planete)) * 8 + 4, 10);
+				gfx_FillRectangle(x - strlen(planet_NameGet(planete)) * 4 - 2, y + 8, strlen(planet_NameGet(planete)) * 8 + 4, 10);
 				gfx_SetColor(7);
-				gfx_Rectangle(x - strlen(GetPlanetName(planete)) * 4 - 2, y + 8, strlen(GetPlanetName(planete)) * 8 + 4, 10);
+				gfx_Rectangle(x - strlen(planet_NameGet(planete)) * 4 - 2, y + 8, strlen(planet_NameGet(planete)) * 8 + 4, 10);
 			} else {
-				gfx_TransparentSprite(highHabitablePlanet, x - (strlen(GetPlanetName(planete)) * 4) - 9, y + 9);
+				gfx_TransparentSprite(highHabitablePlanet, x - (strlen(planet_NameGet(planete)) * 4) - 9, y + 9);
 			}
-			gfx_PrintStringXY(GetPlanetName(planete), x - (strlen(GetPlanetName(planete)) * 4), y + 9);
+			gfx_PrintStringXY(planet_NameGet(planete), x - (strlen(planet_NameGet(planete)) * 4), y + 9);
 		} else {
 			switch(numero){
 				case 0:
@@ -639,7 +639,7 @@ void DessinerBase(StarSystem *systeme, Camera* camera, Window* fenetre, char* ke
 /**
  *Dessine les flottes du systeme
  */
-static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Window *fenetre, char* key){
+static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Window *fenetre, char* key){
 	Empire* empire = NULL;
 	Flotte* flotte = NULL;
 	int empireIndex = 0, fleetIndex = 0;
@@ -766,7 +766,7 @@ static void DessinerFlottesSysteme(EmpireListe *empireListe, Camera *camera, Win
 /**
  *dessine le systeme en vue systeme
  */
-static void DessinerVueSysteme(StarSystem **systemeStellaires, Camera* camera, Window *fenetre, EmpireListe* empireListe, char *key){
+static void DessinerVueSysteme(StarSystem **systemeStellaires, Camera* camera, Window *fenetre, EmpireList* empireListe, char *key){
 	StarSystem* systeme;
 	int j = 0;
 
@@ -788,7 +788,7 @@ static void DessinerVueSysteme(StarSystem **systemeStellaires, Camera* camera, W
  *
  *contient aussi la gestion des évenements
  */
-void DrawMap(EmpireListe *empireListe, StarSystem **systemeStellaires, Camera *camera, char *key, Time *date, Window *fenetre, Settings *parametres){
+void DrawMap(EmpireList *empireListe, StarSystem **systemeStellaires, Camera *camera, char *key, Time *date, Window *fenetre, Settings *parametres){
 	Empire *joueur = empire_Get(empireListe, 0);
 	gfx_SetColor(1);
 	if(GetCameraMapType(camera) == VUE_GALACTIC) {

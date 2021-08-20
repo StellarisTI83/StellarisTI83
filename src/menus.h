@@ -11,6 +11,6 @@
 #include "settings.h"
 #include "systemes.h"
 
-int DrawMenu(EmpireListe *empireListe, Time *date, char *key, Camera *camera, StarSystem **systemeStellaires, Window *fenetre, Settings *parametres, Market *marche);
+int DrawMenu(EmpireList *empireListe, Time *date, char *key, Camera *camera, StarSystem **systemeStellaires, Window *fenetre, Settings *parametres, Market *marche);
 
 #endif

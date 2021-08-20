@@ -404,7 +404,7 @@ static void hud_DrawShapes( Time *date,
 /**
  * @brief Function to draw the HUD on the screen
  * 
- * @param empireListe EmpireListe*
+ * @param empireListe EmpireList*
  * @param date Date*
  * @param key char*
  * @param camera Camera*
@@ -414,7 +414,7 @@ static void hud_DrawShapes( Time *date,
  * @param notificationList NotificationList*
  * @return int 
  */
-int hud_Draw(   EmpireListe *empireListe, 
+int hud_Draw(   EmpireList *empireListe, 
                 Time *date, 
                 char *key, 
                 Camera *camera, 

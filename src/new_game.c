@@ -25,14 +25,14 @@
  * @param camera 
  * @param window 
  */
-static void newGame_Initialize( EmpireListe **empireListe, 
+static void newGame_Initialize( EmpireList **empireListe, 
                                 Settings **settings, 
                                 Time **time,
                                 Camera **camera,
                                 Window **window){
     *empireListe = empire_ListCreate();
     empire_Add(*empireListe);
-    empire_FleetCreate(empire_Get(*empireListe, 0));
+    empire_FleetListCreate(empire_Get(*empireListe, 0));
 
     
     *settings = setting_Malloc();
@@ -62,7 +62,7 @@ static void newGame_Initialize( EmpireListe **empireListe,
 /* entry points ======================================================== */
 
 void newGame_Start(){
-    EmpireListe *empireListe = NULL;
+    EmpireList *empireListe = NULL;
     StarSystem *starSystem[GALAXY_WIDTH * GALAXY_WIDTH];
     Window *window = NULL;
     Settings *settings = NULL;
@@ -80,7 +80,7 @@ void newGame_Start(){
     galaxy_CreateNew(starSystem);
 	settings_EmpireNumberSet(settings, 4);
 
-	CreerEmpires(settings, empireListe, starSystem, camera);
+	galaxy_StartEmpiresInitialize(settings, empireListe, starSystem, camera);
 	UpdatePlayersData(false, empireListe, starSystem, notificationList);
 
 	gfx_SetDrawBuffer();
@@ -103,7 +103,7 @@ void newGame_Start(){
                 notificationList);
 }
 
-void game_Close(EmpireListe *empireListe, 
+void game_Close(EmpireList *empireListe, 
                 StarSystem **starSystem,
                 Settings *settings, 
                 Time *time,

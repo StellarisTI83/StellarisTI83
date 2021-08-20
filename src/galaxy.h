@@ -34,11 +34,23 @@
 #define RADIUS_PLANET4 110
 #define RADIUS_PLANET5 130
 
-void CreerEmpires(Settings *parametres, EmpireListe *empireListe, StarSystem **systemeStellaires, Camera *camera);
+/**
+ * @brief Function to create all empires
+ * 
+ * @param parametres 
+ * @param empireListe 
+ * @param starSystem 
+ * @param camera 
+ */
+void galaxy_StartEmpiresInitialize( Settings *parametres, 
+                                    EmpireList *empireListe, 
+                                    StarSystem **starSystem, 
+                                    Camera *camera);
+
 /**
  * @brief Create a new galaxy in the sent aray
  * 
- * @param systemeStellaires 
+ * @param starSystem 
  */
 void galaxy_CreateNew(StarSystem **starSystem);
 

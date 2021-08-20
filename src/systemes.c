@@ -37,7 +37,7 @@ struct StarSystemStruct{
 
     IntelLevel  intelLevel;
 
-    Planete     *planets[5];
+    Planet     *planets[5];
     Station     *station;
 };
 
@@ -157,62 +157,59 @@ int hyperlane_YGet(StarSystem *starSystem, int numeroHyperlane){
 }
 
 // planets
-void starSystem_PlanetAlloc(StarSystem *starSystem){
-    starSystem->planets[starSystem->planetNumber] = AllocPlanet();
+Planet *starSystem_PlanetAlloc(StarSystem *starSystem){
+    starSystem->planets[starSystem->planetNumber] = planet_Alloc();
     starSystem->planetNumber++;
+    return starSystem->planets[starSystem->planetNumber - 1];
 }
-Planete *starSystem_PlanetGet(StarSystem *starSystem, int position){
+Planet *starSystem_PlanetGet(StarSystem *starSystem, int position){
     return starSystem->planets[position];
 }
 
 void starSystem_PlanetHabitabilitySet(StarSystem *starSystem, int number, int habitability){
-    SetPlanetHabitability(starSystem->planets[number], habitability);
+    planet_HabitabilitySet(starSystem->planets[number], habitability);
     starSystem->habitablePlanetNumber++;
 }
 int starSystem_PlanetHabitabilityGet(StarSystem *starSystem, int number){
-    return GetPlanetHabitability(starSystem->planets[number]);
+    return planet_HabitabilityGet(starSystem->planets[number]);
 }
 
 void starSystem_PlanetRadiusOrbitSet(StarSystem *starSystem, int number, int orbitRadius){
-    SetPlanetOrbitRadius(starSystem->planets[number], orbitRadius);
+    planet_OrbitRadiusSet(starSystem->planets[number], orbitRadius);
 }
 int starSystem_PlanetRadiusOrbitGet(StarSystem *starSystem, int number){
-    return GetPlanetOrbitRadius(starSystem->planets[number]);
+    return planet_OrbitRadiusGet(starSystem->planets[number]);
 }
 
 void starSystem_PlanetXYSet(StarSystem *starSystem, int number, int x, int y){
-    SetPlanetXY(starSystem->planets[number], x, y);
+    planet_PositionSet(starSystem->planets[number], x, y);
 }
 int starSystem_PlanetXGet(StarSystem *starSystem, int number){
-    return GetPlanetX(starSystem->planets[number]);
+    return planet_GetX(starSystem->planets[number]);
 }
 int starSystem_PlanetYGet(StarSystem *starSystem, int number){
-    return GetPlanetY(starSystem->planets[number]);
+    return planet_GetY(starSystem->planets[number]);
 }
 
 void starSystem_PlanetTypeSet(StarSystem *starSystem, int number, PlanetType type){
-    SetPlanetType(starSystem->planets[number], type);
+    planet_TypeSet(starSystem->planets[number], type);
 }
 PlanetType starSystem_PlanetTypeGet(StarSystem *starSystem, int number){
     return GetPlanetType(starSystem->planets[number]);
 }
 
 void starSystem_PlanetRadiusSet(StarSystem *starSystem, int number, int radius){
-    SetPlanetRadius(starSystem->planets[number], radius);
+    planet_SizeSet(starSystem->planets[number], radius);
 }
 int starSystem_PlanetRadiusGet(StarSystem *starSystem, int number){
-    return GetPlanetRadius(starSystem->planets[number]);
-}
-
-void starSystem_PlanetNameSet(StarSystem *starSystem, int number, char* string){
-    SetPlanetName(starSystem->planets[number], string);
+    return planet_SizeGet(starSystem->planets[number]);
 }
 char* starSystem_PlanetNameGet(StarSystem *starSystem, int number){
-    return GetPlanetName(starSystem->planets[number]);
+    return planet_NameGet(starSystem->planets[number]);
 }
 
 void starSystem_PlanetCityCreate(StarSystem *starSystem, int number){
-    CreatePlanetCity(starSystem->planets[number]);
+    planet_CityCreate(starSystem->planets[number]);
 }
 
 
@@ -255,10 +252,10 @@ int GetSystemPlanetCityAgricultureDistrict(StarSystem *starSystem, int number){
     return GetPlanetCityAgricultureDistrictNumber(starSystem->planets[number]);
 }
 
-void SetSystemPlanetCityBuilding(StarSystem *starSystem, int number, int buildingNumber, Batiment batiment, int level){
+void SetSystemPlanetCityBuilding(StarSystem *starSystem, int number, int buildingNumber, Building batiment, int level){
     SetPlanetCityBuilding(starSystem->planets[number], buildingNumber, batiment, level);
 }
-Batiment GetSystemPlanetCityBuildingNumber(StarSystem *starSystem, int number, int buildingNumber){
+Building GetSystemPlanetCityBuildingNumber(StarSystem *starSystem, int number, int buildingNumber){
     return GetPlanetCityBuildingNumber(starSystem->planets[number], buildingNumber);
 }
 int GetSystemPlanetCityBuildingLevel(StarSystem *starSystem, int number, int buildingNumber){
@@ -272,7 +269,7 @@ int GetSystemPlanetCityJob(StarSystem *starSystem, int number){
     return GetPlanetCityJob(starSystem->planets[number]);
 }
 
-Planete *GetPlanet(StarSystem *starSystem, int number){
+Planet *GetPlanet(StarSystem *starSystem, int number){
     return starSystem->planets[number];
 }
 
@@ -298,5 +295,5 @@ int GetSystemPlanetInhabitedNumber(StarSystem *starSystem){
 }
 
 City *GetSystemPlanetCity(StarSystem *starSystem, int number){
-    return GetPlanetCity(starSystem->planets[number]);
+    return planet_CityGet(starSystem->planets[number]);
 }

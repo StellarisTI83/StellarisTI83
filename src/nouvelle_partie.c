@@ -33,11 +33,11 @@
 
 /* private functions =================================================== */
 static int QuitterNouvellePartieAvertissement();
-static int NouvellePartieEspece(EmpireListe *empireListe, Settings *parametres);
-static int NouvellePartieGouvernement(EmpireListe *empireListe, Settings *parametres);
-static int NouvellePartiePrincipes(EmpireListe *empireListe, Settings *parametres);
-static int NouvellePartieNom(EmpireListe *empireListe, Settings *parametres);
-static int NouvellePartieParametres(EmpireListe *empireListe, Settings *parametres);
+static int NouvellePartieEspece(EmpireList *empireListe, Settings *parametres);
+static int NouvellePartieGouvernement(EmpireList *empireListe, Settings *parametres);
+static int NouvellePartiePrincipes(EmpireList *empireListe, Settings *parametres);
+static int NouvellePartieNom(EmpireList *empireListe, Settings *parametres);
+static int NouvellePartieParametres(EmpireList *empireListe, Settings *parametres);
 
 /**
  * avertissement lorsqu'on veut quitter la creation d'une nouvelle partie
@@ -86,7 +86,7 @@ int QuitterNouvellePartieAvertissement(){
 /**
  * choix de l'espece
  */
-int NouvellePartieEspece(EmpireListe *empireListe, Settings *parametres){
+int NouvellePartieEspece(EmpireList *empireListe, Settings *parametres){
 	char key = 0, fin = 1;
 	int choix = 0;
 	Empire *joueur = NULL;
@@ -152,7 +152,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Settings *parametres){
 				return 1;
 				break;
 			default:
-				SetEmpireSpecies(joueur, choix);
+				empire_SpeciesSet(joueur, choix);
 				fin = NouvellePartieGouvernement(empireListe, parametres);
 				break;
 		}
@@ -163,7 +163,7 @@ int NouvellePartieEspece(EmpireListe *empireListe, Settings *parametres){
 /**
  * Choix du gouvernement
  */
-int NouvellePartieGouvernement(EmpireListe *empireListe, Settings *parametres){
+int NouvellePartieGouvernement(EmpireList *empireListe, Settings *parametres){
 	char key = 0, choix = 0, fin = 1;
 	Empire *joueur = NULL;
 	joueur = empire_Get(empireListe, 0);
@@ -242,7 +242,7 @@ int NouvellePartieGouvernement(EmpireListe *empireListe, Settings *parametres){
 }
 
 /*nouvelle partie principes*/
-int NouvellePartiePrincipes(EmpireListe *empireListe, Settings *parametres) {
+int NouvellePartiePrincipes(EmpireList *empireListe, Settings *parametres) {
 	char key = 0, fin = 1, selection = 2;
 	char principe1 = -1, principe2 = -1, principe3 = -1, principe4 = -1;
 	while(fin) {
@@ -691,7 +691,7 @@ int NouvellePartiePrincipes(EmpireListe *empireListe, Settings *parametres) {
 /**
  * Choix du nom de l'empire
  */
-int NouvellePartieNom(EmpireListe *empireListe, Settings *parametres) {
+int NouvellePartieNom(EmpireList *empireListe, Settings *parametres) {
 	char key = 0, fin = 1, lettre = 0, majuscule = 1, curseur = 0, finBoucle = 0, erreur = 0;
 	Empire *joueur = NULL;
 	joueur = empire_Get(empireListe, 0);
@@ -946,7 +946,7 @@ int NouvellePartieNom(EmpireListe *empireListe, Settings *parametres) {
 	return 0;
 }
 
-int NouvellePartieParametres(EmpireListe *empireListe, Settings *parametres)
+int NouvellePartieParametres(EmpireList *empireListe, Settings *parametres)
 {
 	char key = 0, choix = 0, fin = 1, nombresEmpires = 4;
 	char nombreEmpiresChar[3] = "";
@@ -1016,12 +1016,12 @@ int NouvellePartieParametres(EmpireListe *empireListe, Settings *parametres)
 /**
  * Initialize all for a new game
  */
-static int InitializeNewGame(EmpireListe **empireListe, Time **date, Camera **camera, Window **fenetre, Market **marche, Settings **parametres, ti_var_t *sauvegarde){
+static int InitializeNewGame(EmpireList **empireListe, Time **date, Camera **camera, Window **fenetre, Market **marche, Settings **parametres, ti_var_t *sauvegarde){
 	Empire *joueur = NULL;
 
 	*empireListe = empire_ListCreate();
 	empire_Add(*empireListe);
-	empire_FleetCreate(empire_Get(*empireListe, 0));
+	empire_FleetListCreate(empire_Get(*empireListe, 0));
 
 	*sauvegarde = ti_Open("sauv", "w");
 
@@ -1059,7 +1059,7 @@ static int InitializeNewGame(EmpireListe **empireListe, Time **date, Camera **ca
  * Message d'avertissement avant une nouvelle partie. 
  * Cela supprimera toute sauvegarde
  */
-int NouvellePartieAvertissement(EmpireListe *empireListe, Settings *parametres){
+int NouvellePartieAvertissement(EmpireList *empireListe, Settings *parametres){
 	char key = 0, choix = 1, fin = 1, nouvellePartie = 1;
 	gfx_FillScreen(0);
 	gfx_SwapDraw();
@@ -1130,7 +1130,7 @@ void ChargementNouvellePartie(){
 	Market *marche = NULL;
 	StarSystem *systemeStellaires[GALAXY_WIDTH * GALAXY_WIDTH];
 	NotificationList *notificationList = CreateNotificationList();
-	EmpireListe *empireListe = NULL;
+	EmpireList *empireListe = NULL;
 	Settings *parametres = NULL;
 	
 	InitializeNewGame(&empireListe, &date, &camera, &fenetre, &marche, &parametres, &sauvegarde);
@@ -1138,7 +1138,7 @@ void ChargementNouvellePartie(){
 	galaxy_CreateNew(systemeStellaires);
 	
 	settings_EmpireNumberSet(parametres, 4);
-	CreerEmpires(parametres, empireListe, systemeStellaires, camera);
+	galaxy_StartEmpiresInitialize(parametres, empireListe, systemeStellaires, camera);
 	UpdatePlayersData(false, empireListe, systemeStellaires, notificationList);
 
 	PauseGame(date);

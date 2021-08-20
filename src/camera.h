@@ -2,7 +2,7 @@
 #define H_CAMERA
 
 #include "main.h"
-#include "planetes.h"
+#include "planet.h"
 #include "time.h"
 
 

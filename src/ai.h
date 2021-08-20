@@ -29,7 +29,7 @@ typedef enum {ATTITUDE_HOSTILE = -2, ATTITUDE_SUSPICIOUS, ATTITUDE_NEUTRAL, ATTI
  */
 typedef enum {PACTE_NON_AGRESSION = 1, PACTE_RECHERCHE = 2, PACTE_COMMERCIAL = 4} Pacte;
 
-typedef GenericList EmpireListe;
+typedef GenericList EmpireList;
 
 /**
  * Opinions
@@ -54,15 +54,15 @@ typedef struct RelationsStruct Relations;
 
 #include "fleet.h"
 
-EmpireListe* empire_ListCreate();
-void empire_ListFree(EmpireListe*);
-int empire_ArraySize(EmpireListe* empireListe);
-Empire* empire_Get(EmpireListe*, int numero);
-Empire* empire_Add(EmpireListe*);
-void empire_Free(EmpireListe*, int numero);
+EmpireList* empire_ListCreate();
+void empire_ListFree(EmpireList*);
+int empire_ArraySize(EmpireList* empireListe);
+Empire* empire_Get(EmpireList*, int numero);
+Empire* empire_Add(EmpireList*);
+void empire_Free(EmpireList*, int numero);
 
 
-void empire_FleetCreate(Empire *empire);
+void empire_FleetListCreate(Empire *empire);
 void empire_FleetAdd(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
 FlotteListe *empire_FleetListGet(Empire *empire);
 
@@ -73,19 +73,19 @@ RelationsListe *EmpireRelationGetArray(Empire *empire);
 void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement);
 Gouvernement GetEmpireGouvernement(Empire *empire);
 
-void SetEmpireSystemCapital(Empire *empire, int system);
+void empire_CapitalSystemSet(Empire *empire, int system);
 int GetEmpireSystemCapital(Empire *empire);
 
-void SetEmpireColor(Empire *empire, Gouvernement couleur);
+void empire_ColorSet(Empire *empire, Gouvernement couleur);
 int GetEmpireColor(Empire *empire);
 
 void SetEmpirePrincipes(Empire *empire, Principe principe1, Principe principe2, Principe principe3);
 Principe GetEmpirePrincipes(Empire *empire, int numero);
 
-void SetEmpireSpecies(Empire *empire, int espece);
+void empire_SpeciesSet(Empire *empire, int espece);
 int GetEmpireSpecies(Empire *empire);
 
-void SetEmpireClothes(Empire *empire, int clothes);
+void empire_SpeciesClothesSet(Empire *empire, int clothes);
 int GetEmpireClothes(Empire *empire);
 
 void SetEmpireName(Empire *empire, int curseur, char lettre);
@@ -127,7 +127,7 @@ void SetEmpireConsumerGoodsChange(Empire *empire, int change);
 void AddEmpireConsumerGoodsChange(Empire *empire, int change);
 int GetEmpireConsumerGoodsChange(Empire *empire);
 
-void EmpireGenerateRandomName(Empire *empire);
+void empire_NameGenerate(Empire *empire);
 
 void CalculateEmpirePower(Empire *empire);
 int GetEmpirePowerMilitary(Empire *empire);
@@ -135,8 +135,8 @@ int GetEmpirePowerScientific(Empire *empire);
 int GetEmpirePowerEconomic(Empire *empire);
 
 RelationsListe* RelationListeCreer();
-void RelationAllListeUpdate(EmpireListe* empireListe);
-void RelationListeUpdate(RelationsListe* relationsListe, EmpireListe* empireListe);
+void ai_RelationsUpdate(EmpireList* empireListe);
+void RelationListeUpdate(RelationsListe* relationsListe, EmpireList* empireListe);
 void RelationListeSupprimer(RelationsListe* relationsListe);
 int RelationArraySize(RelationsListe* relationsListe);
 Relations* RelationNumero(RelationsListe* relationsListe, int numero);
@@ -153,6 +153,21 @@ void RelationInsulter(Relations* relations);
 void RelationSetPacte(Relations* relations, Pacte pacte);
 Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte);
 
-void EmpireAI(EmpireListe *empireListe, StarSystem **systemeStellaires, Time *date);
+void EmpireAI(EmpireList *empireListe, StarSystem **systemeStellaires, Time *date);
+
+/**
+ * @brief Generate the structure and the system of an empire
+ * 
+ * @param empire 
+ * @param empireIndex 
+ * @param empireStarSystem 
+ * @param systemIndex 
+ * @param color 
+ */
+void empire_Generate(   Empire *empire, 
+                        int empireIndex,
+                        StarSystem *empireStarSystem, 
+                        int systemIndex,
+                        int color);
 
 #endif

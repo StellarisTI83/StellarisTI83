@@ -2,7 +2,7 @@
 #define H_SYSTEMES
 
 #include <stdbool.h>
-#include "planetes.h"
+#include "planet.h"
 #include "stations.h"
 
 /* types =============================================================== */
@@ -137,8 +137,8 @@ void hyperlane_XYSet(StarSystem *starSystem, int numeroHyperlane, int x, int y);
 int hyperlane_XGet(StarSystem *starSystem, int numeroHyperlane);
 int hyperlane_YGet(StarSystem *starSystem, int numeroHyperlane);
 
-void starSystem_PlanetAlloc(StarSystem *starSystem);
-Planete *starSystem_PlanetGet(StarSystem *starSystem, int position);
+Planet *starSystem_PlanetAlloc(StarSystem *starSystem);
+Planet *starSystem_PlanetGet(StarSystem *starSystem, int position);
 
 void starSystem_PlanetHabitabilitySet(StarSystem *starSystem, int number, int habitability);
 int starSystem_PlanetHabitabilityGet(StarSystem *starSystem, int number);
@@ -156,7 +156,6 @@ PlanetType starSystem_PlanetTypeGet(StarSystem *starSystem, int number);
 void starSystem_PlanetRadiusSet(StarSystem *starSystem, int number, int radius);
 int starSystem_PlanetRadiusGet(StarSystem *starSystem, int number);
 
-void starSystem_PlanetNameSet(StarSystem *starSystem, int number, char* string);
 char* starSystem_PlanetNameGet(StarSystem *starSystem, int number);
 
 void starSystem_PlanetCityCreate(StarSystem *starSystem, int number);
@@ -178,14 +177,14 @@ int GetSystemPlanetCityMiningDistrict(StarSystem *starSystem, int number);
 void AddSystemPlanetCityAgricultureDistrict(StarSystem *starSystem, int number, int agriculture);
 int GetSystemPlanetCityAgricultureDistrict(StarSystem *starSystem, int number);
 
-void SetSystemPlanetCityBuilding(StarSystem *starSystem, int number, int buildingNumber, Batiment batiment, int level);
-Batiment GetSystemPlanetCityBuildingNumber(StarSystem *starSystem, int number, int buildingNumber);
+void SetSystemPlanetCityBuilding(StarSystem *starSystem, int number, int buildingNumber, Building batiment, int level);
+Building GetSystemPlanetCityBuildingNumber(StarSystem *starSystem, int number, int buildingNumber);
 int GetSystemPlanetCityBuildingLevel(StarSystem *starSystem, int number, int buildingNumber);
 
 int CalculateSystemPlanetCityJob(StarSystem *starSystem, int number);
 int GetSystemPlanetCityJob(StarSystem *starSystem, int number);
 
-Planete *GetPlanet(StarSystem *starSystem, int number);
+Planet *GetPlanet(StarSystem *starSystem, int number);
 
 void SetSystemPlanetNumber(StarSystem *starSystem, int number);
 int GetSystemPlanetNumber(StarSystem *starSystem);

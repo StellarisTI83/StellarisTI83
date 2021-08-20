@@ -30,7 +30,7 @@ void newGame_Start();
  * @param market 
  * @param notificationList 
  */
-void game_Close(EmpireListe *empireListe, 
+void game_Close(EmpireList *empireListe, 
                 StarSystem **starSystem,
                 Settings *settings, 
                 Time *time,
