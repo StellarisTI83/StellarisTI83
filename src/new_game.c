@@ -43,11 +43,11 @@ static void newGame_Initialize( EmpireList **empireListe,
     time_SpeedSet(*time, 0, 1);
     AddTimeClock(*time);
 
-    *camera = AllocCamera();
-    SetCameraXVector(*camera, 0);
-    SetCameraYVector(*camera, 0);
+    *camera = camera_Alloc();
+    camera_XVectorSet(*camera, 0);
+    camera_YVectorSet(*camera, 0);
     
-    SetCameraZoom(*camera, ZOOM_MAX);
+    camera_ZoomSet(*camera, ZOOM_MAX);
     SetCameraMapType(*camera, VUE_SYSTEM);
 
     *window = AllocFenetre();

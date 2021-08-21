@@ -1,3 +1,13 @@
+/**
+ * @file hud.c
+ * @author Cocheril Dimitri (cocheril.dimitri@gmail.com)
+ * @brief The hud drawing routines
+ * @version 0.1
+ * @date 2021-08-21
+ * 
+ * @copyright GNU General Public License v3.0
+ * 
+ */
 #include <stdbool.h>
 #include <tice.h>
 
@@ -93,32 +103,32 @@ static void hud_DrawFlag(){
 static void hud_DrawSpeedIcon(Time *date){
     //pause / avance
     switch (GetTimeSpeed(date)){
-        case -2:
+        case TIME_SPEED_VERY_SLOW:
             gfx_SetColor(COLOR_WHITE);
             gfx_FillRectangle_NoClip(100, 225, 3, 9);
             gfx_FillTriangle_NoClip(109, 225, 109, 233, 105, 229);
             gfx_FillTriangle_NoClip(114, 225, 114, 233, 110, 229);
             break;
-        case -1:
+        case TIME_SPEED_SLOW:
             gfx_SetColor(COLOR_WHITE);
             gfx_FillRectangle_NoClip(100, 225, 3, 9);
             gfx_FillTriangle_NoClip(109, 225, 109, 233, 105, 229);
             break;
-        case 0:
+        case TIME_SPEED_PAUSE:
             gfx_SetColor(COLOR_HUD_PAUSE_OUTLINES);
             gfx_FillRectangle_NoClip(105, 225, 3, 9);
             gfx_FillRectangle_NoClip(110, 225, 3, 9);
             break;
-        case 1:
+        case TIME_SPEED_NORMAL:
             gfx_SetColor(COLOR_WHITE);
             gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
             break;	
-        case 2:
+        case TIME_SPEED_FAST:
             gfx_SetColor(COLOR_WHITE);
             gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
             gfx_FillTriangle_NoClip(110, 225, 110, 233, 114, 229);
             break;
-        case 3:
+        case TIME_SPEED_VERY_FAST:
             gfx_SetColor(1);
             gfx_FillTriangle_NoClip(105, 225, 105, 233, 109, 229);
             gfx_FillTriangle_NoClip(110, 225, 110, 233, 114, 229);
@@ -241,11 +251,11 @@ static void hud_PrintInfos( Empire *player,
     }
 
     // name of the system
-    if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
+    if ((camera_SystemActualGet(camera) != NO_SYSTEM) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
         if (GetCameraMapType(camera) == VUE_GALACTIC) {
-            system = GetCameraViewedSystem(camera);
+            system = camera_SystemActualGet(camera);
         } else {
-            system = GetCameraSystem(camera);
+            system = camera_SystemAimedGet(camera);
         }
         if ((starSystem_IntelLevelGet(systemeStellaires[system]) == INTEL_UNKNOWN) && (!settings_SeeAllGet(settings))) {
             gfx_PrintStringXY(  "Inconnu", 
@@ -275,9 +285,9 @@ static void hud_PrintInfos( Empire *player,
 static void hud_DrawPointer(Camera *camera) {
     //pointeur
     if (GetCameraMapType(camera) == VUE_MAP) {
-        gfx_Line_NoClip(GetCameraX(camera) / 2.5 + 5, GetCameraY(camera) / 2.5 - 30, GetCameraX(camera) / 2.5 + 15, GetCameraY(camera) / 2.5 - 30);
-        gfx_Line_NoClip(GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 25, GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 35);
-        gfx_Circle_NoClip(GetCameraX(camera) / 2.5 + 10, GetCameraY(camera) / 2.5 - 30, 3);
+        gfx_Line_NoClip(camera_XGet(camera) / 2.5 + 5, camera_YGet(camera) / 2.5 - 30, camera_XGet(camera) / 2.5 + 15, camera_YGet(camera) / 2.5 - 30);
+        gfx_Line_NoClip(camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 25, camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 35);
+        gfx_Circle_NoClip(camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 30, 3);
     } else {
         gfx_Line_NoClip(150, 120, 170, 120);
         gfx_Line_NoClip(160, 110, 160, 130);
@@ -328,8 +338,8 @@ static void hud_DrawShapes( Time *date,
                         LCD_WIDTH - HUD_TIME_BAR_OFFSET,            // x down left
                         LCD_HEIGHT);                                // y down left
     
-    //name above the bottom bar
-    if((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
+    // name above the bottom bar
+    if((camera_SystemActualGet(camera) != NO_SYSTEM) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
         gfx_FillRectangle(  HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x
                             LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y
                             HUD_TIME_BAR_WIDTH - 2 * HUD_NAME_BAR_HEIGHT,           // width
@@ -379,7 +389,7 @@ static void hud_DrawShapes( Time *date,
                         LCD_HEIGHT);                                // y up   right
     
     //name above the bottom bar
-    if ((GetCameraViewedSystem(camera) != -1) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
+    if ((camera_SystemActualGet(camera) != NO_SYSTEM) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
         gfx_HorizLine_NoClip(   HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x
                                 LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y
                                 HUD_TIME_BAR_WIDTH - 2 * HUD_NAME_BAR_HEIGHT);          // width

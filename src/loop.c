@@ -22,14 +22,16 @@ int game_MainLoop(	EmpireList *empireListe,
 	long fps;
 	
 	while (loop) {
+		// Get the pressed keys
 		key = os_GetCSC();
 		
 		// mettre a jour les informations
-		loop = UpdateGame(&key, empireListe, starSystems, time, camera, window, notificationList, settings);
+		loop = game_Update(&key, empireListe, starSystems, time, camera, window, notificationList, settings);
 
 		//dessiner l'écran
 		loop = DrawScreen(&key, empireListe, starSystems, time, camera, window, settings, marche, notificationList);
 		
+		// Get the number of fps
 		fps = TIMER_FREQ/timer_Get(1);
     	timer_Set(1, 0);
 		if(fps > 0)

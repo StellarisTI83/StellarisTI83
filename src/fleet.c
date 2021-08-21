@@ -13,7 +13,7 @@
 
 #include "main.h"
 
-#include "nouvelle_partie.h"
+#include "ai.h"
 #include "fleet.h"
 #include "pathfinding.h"
 
@@ -393,8 +393,8 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 			SetCameraFleet(camera, 0);
 
 			SetCameraMapType(camera, VUE_SYSTEM);
-			SetCameraX(camera, starSystem_GetX(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
-			SetCameraY(camera, starSystem_GetY(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
+			camera_XSet(camera, starSystem_GetX(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
+			camera_YSet(camera, starSystem_GetY(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
 			
 			error = MoveFleet(flotte, systeme, systemeStellaires);
 			
@@ -416,7 +416,7 @@ int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires){
 	int error = 0;
 	int index = 0;
 
-	if(flotte == NULL){
+	if(!flotte){
 		#ifdef DEBUG_VERSION
 			dbg_sprintf(dbgerr, "Error fleet pointer NULL in function 'MoveFleet'");
 		#endif

@@ -1,3 +1,13 @@
+/**
+ * @file main.c
+ * @author Cocheril Dimitri (cocheril.dimitri@gmail.com)
+ * @brief The entry point of the game and the main menus
+ * @version 0.1
+ * @date 2021-08-21
+ * 
+ * @copyright GNU General Public License v3.0
+ * 
+ */
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -36,6 +46,11 @@
 
 /* structures ========================================================== */
 
+/**
+ * @brief The structure used for positioning and moving the station on the 
+ *        main menu screen
+ * 
+ */
 typedef struct {
     int x;
     int y;

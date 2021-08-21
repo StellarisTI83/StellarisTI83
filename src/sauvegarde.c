@@ -25,8 +25,6 @@
 
 #include "main.h"
 #include "loop.h"
-#include "map.h"
-#include "nouvelle_partie.h"
 #include "sauvegarde.h"
 #include "fleet.h"
 #include "console.h"

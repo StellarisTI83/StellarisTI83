@@ -1,11 +1,11 @@
 #ifndef _FLOTTES_INCLUDE
 #define _FLOTTES_INCLUDE
 
+#include "generic_lists.h"
+
 #include "ai.h"
 #include "camera.h"
 #include "systemes.h"
-
-#include "generic_lists.h"
 
 /* constants =========================================================== */
 

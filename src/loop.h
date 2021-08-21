@@ -7,7 +7,6 @@
 #include "fleet.h"
 #include "map.h"
 #include "menus.h"
-#include "nouvelle_partie.h"
 #include "notifications.h"
 #include "sauvegarde.h"
 #include "screen.h"

@@ -61,39 +61,39 @@ struct FenetreStruct{
 };
 
 /* entry points ======================================================== */
-Camera *AllocCamera(){
+Camera *camera_Alloc(){
 	return calloc(1, sizeof(Camera));
 }
 
-void SetCameraX(Camera *camera, int x){
+void camera_XSet(Camera *camera, int x){
 	camera->x = x;
 	
 	// #ifdef DEBUG_VERSION
 	// 	dbg_sprintf(dbgout, "Set camera x position: %d\n", x);
 	// #endif
 }
-void AddCameraX(Camera *camera, int x){
+void camera_XAdd(Camera *camera, int x){
 	camera->x += x;
 	// #ifdef DEBUG_VERSION
 	// 	dbg_sprintf(dbgout, "Add camera x position: %d\n", x);
 	// #endif
 }
-int GetCameraX(Camera *camera){
+int camera_XGet(Camera *camera){
 	return camera->x;
 }
-void SetCameraY(Camera *camera, int y){
+void camera_YSet(Camera *camera, int y){
 	camera->y = y;
 	// #ifdef DEBUG_VERSION
 	// 	dbg_sprintf(dbgout, "Set camera y position: %d\n", y);
 	// #endif
 }
-void AddCameraY(Camera *camera, int y){
+void camera_YAdd(Camera *camera, int y){
 	camera->y += y;
 	// #ifdef DEBUG_VERSION
 	// 	dbg_sprintf(dbgout, "Add camera y position: %d\n", y);
 	// #endif
 }
-int GetCameraY(Camera *camera){
+int camera_YGet(Camera *camera){
 	return camera->y;
 }
 
@@ -116,29 +116,41 @@ int GetCameraYSystem(Camera *camera){
 	return camera->ySysteme;
 }
 
-void SetCameraXVector(Camera *camera, int x){
+void camera_XVectorSet(Camera *camera, int x){
 	camera->xVector = x;
 }
-void AddCameraXVector(Camera *camera, int x){
+void camera_XVectorAdd(Camera *camera, int x){
 	camera->xVector += x;
 }
-int GetCameraXVector(Camera *camera){
+int camera_XVectorGet(Camera *camera){
 	return camera->xVector;
 }
-void SetCameraYVector(Camera *camera, int y){
+void camera_YVectorSet(Camera *camera, int y){
 	camera->yVector = y;
 }
-void AddCameraYVector(Camera *camera, int y){
+void camera_YVectorAdd(Camera *camera, int y){
 	camera->yVector += y;
 }
-int GetCameraYVector(Camera *camera){
+int camera_YVectorGet(Camera *camera){
 	return camera->yVector;
 }
 
-void SetCameraZoom(Camera *camera, int zoom){
+void camera_ZoomSet(Camera *camera, int zoom){
+	if(zoom > 3)
+		return;
+	if(zoom < 0)
+		return;
+
+	if(zoom < camera->zoom){
+		camera_XSet(camera, camera_XGet(camera) * 0.5);
+		camera_YSet(camera, camera_YGet(camera) * 0.5);
+	} else {
+		camera_XSet(camera, camera_XGet(camera) * 2);
+		camera_YSet(camera, camera_YGet(camera) * 2);
+	}
 	camera->zoom = zoom;
 }
-int GetCameraZoom(Camera *camera){
+int camera_ZoomGet(Camera *camera){
 	return camera->zoom;
 }
 
@@ -173,10 +185,10 @@ void SetCameraSystemViewStatus(Camera *camera, int status){
 	}
 	camera->systemeSelectione = camera->systeme;
 }
-int GetCameraViewedSystem(Camera *camera){
+int camera_SystemActualGet(Camera *camera){
 	return camera->systemeSelectione;
 }
-int GetCameraSystem(Camera *camera){
+int camera_SystemAimedGet(Camera *camera){
 	return camera->systeme;
 }
 

@@ -82,8 +82,8 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 	size = FleetArraySize(empire_FleetListGet(joueur));
 	while(fleetIndex <= size) {
 		system = GetFleetSystem(flotte);
-		xFlotte = starSystem_GetX(systemeStellaires[system]) * GetCameraZoom(camera) - GetCameraX(camera) + 165;
-		yFlotte = starSystem_GetY(systemeStellaires[system]) * GetCameraZoom(camera) - GetCameraY(camera) + 110;
+		xFlotte = starSystem_GetX(systemeStellaires[system]) * camera_ZoomGet(camera) - camera_XGet(camera) + 165;
+		yFlotte = starSystem_GetY(systemeStellaires[system]) * camera_ZoomGet(camera) - camera_YGet(camera) + 110;
 		if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240))){
 			while(gfx_GetPixel(xFlotte + 4, yFlotte + 1) != 0){
 				xFlotte += 11;
@@ -113,10 +113,10 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 		index = GetFleetPathProgress(flotte) - 1;
 		gfx_SetColor(13);
 		while((GetFleetPath(flotte, index) != 0) && (GetFleetPath(flotte, index + 1) != 0)){
-			x1 = starSystem_GetX(systemeStellaires[GetFleetPath(flotte, index)]) * GetCameraZoom(camera) - GetCameraX(camera) + 160;
-			y1 = starSystem_GetY(systemeStellaires[GetFleetPath(flotte, index)]) * GetCameraZoom(camera) - GetCameraY(camera) + 120;
-			x2 = starSystem_GetX(systemeStellaires[GetFleetPath(flotte, index + 1)]) * GetCameraZoom(camera) - GetCameraX(camera) + 160;
-			y2 = starSystem_GetY(systemeStellaires[GetFleetPath(flotte, index + 1)]) * GetCameraZoom(camera) - GetCameraY(camera) + 120;
+			x1 = starSystem_GetX(systemeStellaires[GetFleetPath(flotte, index)]) * camera_ZoomGet(camera) - camera_XGet(camera) + 160;
+			y1 = starSystem_GetY(systemeStellaires[GetFleetPath(flotte, index)]) * camera_ZoomGet(camera) - camera_YGet(camera) + 120;
+			x2 = starSystem_GetX(systemeStellaires[GetFleetPath(flotte, index + 1)]) * camera_ZoomGet(camera) - camera_XGet(camera) + 160;
+			y2 = starSystem_GetY(systemeStellaires[GetFleetPath(flotte, index + 1)]) * camera_ZoomGet(camera) - camera_YGet(camera) + 120;
 			if((((x1 > 0) && (x1 < 320)) && ((0 < y1) && (y1 < 240))) && (((x2 > 0) && (x2 < 320)) && ((0 < y2) && (y2 < 240)))){
 				gfx_Line_NoClip(x1, y1, x2, y2);
 			}
@@ -135,8 +135,8 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 		while(fleetIndex <= size) {
 			system = GetFleetSystem(flotte);
 			if((starSystem_IntelLevelGet(systemeStellaires[system]) >= INTEL_MEDIUM) || settings_SeeAllGet(parametres)){
-				xFlotte = starSystem_GetX(systemeStellaires[system]) * GetCameraZoom(camera) - GetCameraX(camera) + 165;
-				yFlotte = starSystem_GetY(systemeStellaires[system]) * GetCameraZoom(camera) - GetCameraY(camera) + 110;
+				xFlotte = starSystem_GetX(systemeStellaires[system]) * camera_ZoomGet(camera) - camera_XGet(camera) + 165;
+				yFlotte = starSystem_GetY(systemeStellaires[system]) * camera_ZoomGet(camera) - camera_YGet(camera) + 110;
 				if(((xFlotte > 0) && (xFlotte < 320)) && ((0 < yFlotte) && (yFlotte < 240))){
 					while(gfx_GetPixel(xFlotte + 4, yFlotte + 1) != 0){
 						xFlotte += 11;
@@ -182,8 +182,8 @@ static void DessinerHyperlane(int8_t niveauDeConnaissance1, int8_t niveauDeConna
 	
 	if(GetCameraMapType(camera) == VUE_GALACTIC)
 	{
-		xLn = xLn * GetCameraZoom(camera) - GetCameraX(camera) + 160;
-		yLn = yLn * GetCameraZoom(camera) - GetCameraY(camera) + 120;
+		xLn = xLn * camera_ZoomGet(camera) - camera_XGet(camera) + 160;
+		yLn = yLn * camera_ZoomGet(camera) - camera_YGet(camera) + 120;
 	}
 	else 
 	{
@@ -213,8 +213,8 @@ static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, Empir
 		xLn = 0;
 		yLn = 0;
 		if(GetCameraMapType(camera) == VUE_GALACTIC){
-			x = starSystem_GetX(systemeStellaires[i]) * GetCameraZoom(camera) - GetCameraX(camera) + 160;
-			y = starSystem_GetY(systemeStellaires[i]) * GetCameraZoom(camera) - GetCameraY(camera) + 120;
+			x = starSystem_GetX(systemeStellaires[i]) * camera_ZoomGet(camera) - camera_XGet(camera) + 160;
+			y = starSystem_GetY(systemeStellaires[i]) * camera_ZoomGet(camera) - camera_YGet(camera) + 120;
 		} else if(GetCameraMapType(camera) == VUE_MAP) {
 			x = starSystem_GetX(systemeStellaires[i]) / 2.5 + 10;
 			y = starSystem_GetY(systemeStellaires[i]) / 2.5 - 30;
@@ -224,8 +224,8 @@ static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, Empir
 				if(starSystem_EmpireGet(systemeStellaires[i]) != -1){
 					gfx_SetColor(GetEmpireColor(empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[i]))));
 					if(GetCameraMapType(camera) == VUE_GALACTIC){
-						gfx_Circle(x, y, 20 * GetCameraZoom(camera));
-						gfx_Circle(x, y, (19 * GetCameraZoom(camera)) + 1);
+						gfx_Circle(x, y, 20 * camera_ZoomGet(camera));
+						gfx_Circle(x, y, (19 * camera_ZoomGet(camera)) + 1);
 					} else {
 						gfx_Circle(x, y, 10);
 						gfx_Circle(x, y, 9);
@@ -270,35 +270,35 @@ static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, Empir
 				CouleurEtoile(starSystem_StarTypeGet(systemeStellaires[i]));
 				switch(starSystem_StarTypeGet(systemeStellaires[i])){
 					case STAR_TYPE_B: //B
-						gfx_FillCircle(x, y, 1 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 1 * camera_ZoomGet(camera));
 						break;
 					case STAR_TYPE_A: //A
-						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 2 * camera_ZoomGet(camera));
 						break;
 					case STAR_TYPE_F: //F
-						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 2 * camera_ZoomGet(camera));
 						break;
 					case STAR_TYPE_G: //G
-						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 2 * camera_ZoomGet(camera));
 						break;
 					case STAR_TYPE_K: //K
-						gfx_FillCircle(x, y, 1 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 1 * camera_ZoomGet(camera));
 						break;
 					case STAR_TYPE_M: //M
-						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 2 * camera_ZoomGet(camera));
 						break;
 					case STAR_TYPE_BLACKHOLE: //trou noir
-						gfx_Circle(x, y, 2 * GetCameraZoom(camera));
+						gfx_Circle(x, y, 2 * camera_ZoomGet(camera));
 						break;
 					case STAR_TYPE_PULSAR: //pulsar
-						gfx_FillCircle(x, y, 1 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 1 * camera_ZoomGet(camera));
 						break;
 					case STAR_TYPE_NEUTRON: ///toile a neutrons
-						gfx_FillCircle(x, y, 1 * GetCameraZoom(camera));
-						gfx_Circle(x, y, 3 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 1 * camera_ZoomGet(camera));
+						gfx_Circle(x, y, 3 * camera_ZoomGet(camera));
 						break;
 					default:
-						gfx_FillCircle(x, y, 2 * GetCameraZoom(camera));
+						gfx_FillCircle(x, y, 2 * camera_ZoomGet(camera));
 						break;
 				}
 			} else {
@@ -329,7 +329,7 @@ static void DessinerHyperlanesSysteme(StarSystem **systemeStellaires, Camera *ca
 	char angleChar[10];
 	int index;
 
-	systeme = systemeStellaires[GetCameraSystem(camera)];
+	systeme = systemeStellaires[camera_SystemAimedGet(camera)];
 	
 	gfx_SetColor(COLOR_HYPERLANES_UNKNOWN);
 	index = 0;
@@ -652,7 +652,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 	flotte = FlotteNumero(empire_FleetListGet(empire), 0);
 	sizeFleet = FleetArraySize(empire_FleetListGet(empire));
 	while(fleetIndex <= sizeFleet){
-		if(GetFleetSystem(flotte) == GetCameraSystem(camera)){
+		if(GetFleetSystem(flotte) == camera_SystemAimedGet(camera)){
 			x = GetFleetX(flotte) - GetCameraXSystem(camera) - 3;
 			y = GetFleetY(flotte) - GetCameraYSystem(camera) - 3;
 			while(gfx_GetPixel(x + 4, y + 1) != 0){
@@ -709,7 +709,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 		flotte = FlotteNumero(empire_FleetListGet(empire), 0);
 		sizeFleet = FleetArraySize(empire_FleetListGet(empire));
 		while(fleetIndex <= sizeFleet){
-			if(GetFleetSystem(flotte) == GetCameraSystem(camera)){
+			if(GetFleetSystem(flotte) == camera_SystemAimedGet(camera)){
 				x = GetFleetX(flotte) - GetCameraXSystem(camera) - 3;
 				y = GetFleetY(flotte) - GetCameraYSystem(camera) - 3;
 				while(gfx_GetPixel(x + 4, y + 1) != 0){
@@ -770,7 +770,7 @@ static void DessinerVueSysteme(StarSystem **systemeStellaires, Camera* camera, W
 	StarSystem* systeme;
 	int j = 0;
 
-	systeme = systemeStellaires[GetCameraSystem(camera)];
+	systeme = systemeStellaires[camera_SystemAimedGet(camera)];
 	DessinerEtoile(systeme, camera, fenetre, key);
 	DessinerBase(systeme, camera, fenetre, key);
 	DessinerFlottesSysteme(empireListe, camera, fenetre, key);
@@ -797,105 +797,77 @@ void DrawMap(EmpireList *empireListe, StarSystem **systemeStellaires, Camera *ca
 			// KeyActionNormalMap(empireListe, systemeStellaires, camera, key, date, fenetre, joueur);
 		}
 
-		if (GetCameraZoom(camera) < 1) {
-			SetCameraZoom(camera, 1);
+		if (camera_ZoomGet(camera) < 1) {
+			camera_ZoomSet(camera, 1);
 			SetCameraMapType(camera, VUE_MAP);
-		} else if (GetCameraZoom(camera) > 2) {
-			SetCameraZoom(camera, 2);
+		} else if (camera_ZoomGet(camera) > 2) {
+			camera_ZoomSet(camera, 2);
 		}
 		
-		if(GetCameraXVector(camera) != 0) {
-			AddCameraX(camera, GetCameraXVector(camera));
-			if(GetCameraXVector(camera) > 0) {
-				AddCameraXVector(camera, -1);
-			} else if(GetCameraXVector(camera) < 0) {
-				AddCameraXVector(camera, +1);
+		if(camera_XVectorGet(camera) != 0) {
+			camera_XAdd(camera, camera_XVectorGet(camera));
+			if(camera_XVectorGet(camera) > 0) {
+				camera_XVectorAdd(camera, -1);
+			} else if(camera_XVectorGet(camera) < 0) {
+				camera_XVectorAdd(camera, +1);
 			}
 		}
-		if(GetCameraYVector(camera) != 0) {
-			AddCameraY(camera, GetCameraYVector(camera));
-			if(GetCameraYVector(camera) > 0) {
-				AddCameraYVector(camera, -1);
-			} else if(GetCameraYVector(camera) < 0) {
-				AddCameraYVector(camera, +1);
+		if(camera_YVectorGet(camera) != 0) {
+			camera_YAdd(camera, camera_YVectorGet(camera));
+			if(camera_YVectorGet(camera) > 0) {
+				camera_YVectorAdd(camera, -1);
+			} else if(camera_YVectorGet(camera) < 0) {
+				camera_YVectorAdd(camera, +1);
 			}
 		}
 
 		//fait en sorte que la camera sorte pas des limites		
-		if (GetCameraX(camera) < 160) {
-			SetCameraX(camera, 160);
-			SetCameraXVector(camera, 0);
-		} else if ((GALAXY_WIDTH + 1) * 50  * GetCameraZoom(camera) < GetCameraX(camera)) {
-			SetCameraX(camera, (GALAXY_WIDTH + 1) * 50 * GetCameraZoom(camera));
-			SetCameraXVector(camera, 0);
+		if (camera_XGet(camera) < 160) {
+			camera_XSet(camera, 160);
+			camera_XVectorSet(camera, 0);
+		} else if ((GALAXY_WIDTH + 1) * 50  * camera_ZoomGet(camera) < camera_XGet(camera)) {
+			camera_XSet(camera, (GALAXY_WIDTH + 1) * 50 * camera_ZoomGet(camera));
+			camera_XVectorSet(camera, 0);
 		}
-		if (GetCameraY(camera) < 120) {
-			SetCameraY(camera, 120);
-			SetCameraYVector(camera, 0);
-		} else if((GALAXY_WIDTH + 1) * 50  * GetCameraZoom(camera) < GetCameraY(camera)) {
-			SetCameraY(camera, (GALAXY_WIDTH + 1) * 50  * GetCameraZoom(camera));
-			SetCameraYVector(camera, 0);
+		if (camera_YGet(camera) < 120) {
+			camera_YSet(camera, 120);
+			camera_YVectorSet(camera, 0);
+		} else if((GALAXY_WIDTH + 1) * 50  * camera_ZoomGet(camera) < camera_YGet(camera)) {
+			camera_YSet(camera, (GALAXY_WIDTH + 1) * 50  * camera_ZoomGet(camera));
+			camera_YVectorSet(camera, 0);
 		}
 		DessinerVueMap(systemeStellaires, camera, empireListe, parametres);
 		DessinerFlottesMap(empireListe, joueur, systemeStellaires, camera, parametres);
 	}
 	else if(GetCameraMapType(camera) == VUE_MAP){
-		switch(*key){
-			case sk_Del:
-				SetCameraMapType(camera, VUE_GALACTIC); //dezoomer
-				*key = 0;
-				break;
-		}
 		DessinerVueMap(systemeStellaires, camera, empireListe, parametres);
 	}
 	else if(GetCameraMapType(camera) == VUE_SYSTEM){
-		if(GetCameraLockStatus(camera) == false){
-			switch(*key){
-				case sk_Mode:
-					SetCameraMapType(camera, VUE_GALACTIC); //dezoomer
-					SetCameraXVector(camera, 0);
-					SetCameraYVector(camera, 0);
-					break;
-				case sk_Up:
-					AddCameraYVector(camera, -4); 
-					break;
-				case sk_Down:
-					AddCameraYVector(camera, +4);
-					break;
-				case sk_Left:
-					AddCameraXVector(camera, -4);
-					break;
-				case sk_Right:
-					AddCameraXVector(camera, +4);
-					break;
+		if(camera_XVectorGet(camera)) {
+			AddCameraXSystem(camera, camera_XVectorGet(camera));
+			if(camera_XVectorGet(camera) > 0) {
+				camera_XVectorAdd(camera, -1);
+			} else if(camera_XVectorGet(camera) < 0) {
+				camera_XVectorAdd(camera, +1);
 			}
 		}
-
-		if(GetCameraXVector(camera) != 0) {
-			AddCameraXSystem(camera, GetCameraXVector(camera));
-			if(GetCameraXVector(camera) > 0) {
-				AddCameraXVector(camera, -1);
-			} else if(GetCameraXVector(camera) < 0) {
-				AddCameraXVector(camera, +1);
+		if(camera_YVectorGet(camera)) {
+			AddCameraYSystem(camera, camera_YVectorGet(camera));
+			if(camera_YVectorGet(camera) > 0) {
+				camera_YVectorAdd(camera, -1);
+			} else if(camera_YVectorGet(camera) < 0) {
+				camera_YVectorAdd(camera, +1);
 			}
 		}
-		if(GetCameraYVector(camera) != 0) {
-			AddCameraYSystem(camera, GetCameraYVector(camera));
-			if(GetCameraYVector(camera) > 0) {
-				AddCameraYVector(camera, -1);
-			} else if(GetCameraYVector(camera) < 0) {
-				AddCameraYVector(camera, +1);
-			}
-		}
-		if(GetCommandPromptStatus(fenetre) == false) {
+		if(!GetCommandPromptStatus(fenetre)) {
 			// KeyActionNormal(empireListe, systemeStellaires, camera, key, date, fenetre, joueur);
 		}
 
 
 		//fait en sorte que la camera sorte pas des limites
 		while(pow((double)(GetCameraXSystem(camera) - 320), 2.0) + pow((double)(GetCameraYSystem(camera) - 240), 2.0) > pow((double)SYSTEM_VIEW_RADIUS, 2.0)){
-			SetCameraXVector(camera, 0);
-			SetCameraYVector(camera, 0);
+			camera_XVectorSet(camera, 0);
+			camera_YVectorSet(camera, 0);
 			if(GetCameraXSystem(camera) - 320 > 0){
 				AddCameraXSystem(camera, -1);
 			}

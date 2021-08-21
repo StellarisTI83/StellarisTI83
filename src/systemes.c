@@ -1,4 +1,13 @@
-
+/**
+ * @file systemes.c
+ * @author Cocheril Dimitri
+ * @brief File containing all system functions
+ * @version 0.1
+ * @date 2021-08-20
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #include <stdint.h>
 #include <tice.h>
 
@@ -16,6 +25,7 @@
 #include "stations.h"
 
 /* structures ========================================================== */
+
 struct HyperlaneStruct{
     int         destination;
     int         x;

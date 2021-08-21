@@ -24,7 +24,6 @@
 #include "loop.h"
 #include "console.h"
 #include "map.h"
-#include "nouvelle_partie.h"
 #include "sauvegarde.h"
 #include "updating.h"
 
@@ -213,7 +212,7 @@ static void MenuSystemeFlotte(char* key, EmpireList* empireListe, StarSystem **s
 	fleetIndex = 1;
 	sizeFleet = FleetArraySize(empire_FleetListGet(joueur));
 	while(fleetIndex < sizeFleet){
-		if(GetFleetSystem(flotte) == GetCameraSystem(camera)) {
+		if(GetFleetSystem(flotte) == camera_SystemAimedGet(camera)) {
 			flotteDuSysteme[compteur] = flotte;
 			compteur++;
 		}
@@ -285,10 +284,10 @@ static void MenuSystemeEtoile(char *key, StarSystem **systemeStellaires, Camera 
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Proxima ");
-	gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]));
+	gfx_PrintString(starSystem_NameGet(systemeStellaires[camera_SystemAimedGet(camera)]));
 	gfx_SetTextXY(160, 62);
 	gfx_PrintString("Classe : ");
-	switch(starSystem_StarTypeGet(systemeStellaires[GetCameraSystem(camera)])) {
+	switch(starSystem_StarTypeGet(systemeStellaires[camera_SystemAimedGet(camera)])) {
 		case STAR_TYPE_B:
 			gfx_PrintString("B");
 			gfx_SetColor(1);
@@ -418,8 +417,8 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
 	int decalage = 0;
 	int niveau = 0;
 	Planet* planete = NULL;
-	planete = GetPlanet(systemeStellaires[GetCameraSystem(camera)], GetWindowPlanet(fenetre));
-	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[GetCameraSystem(camera)]);
+	planete = GetPlanet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
+	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
 
 	//dessiner fenetre
 	DrawMenuBase(GetPlanetCityPopulation(planete), 0, fenetre);
@@ -438,7 +437,7 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
 		}
 	}
 	else{
-		gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]));
+		gfx_PrintString(starSystem_NameGet(systemeStellaires[camera_SystemAimedGet(camera)]));
 		gfx_PrintString(nomPlanete);
 		gfx_SetTextFGColor(3);
 		gfx_PrintStringXY("Non-habitable", 150, 62);
@@ -568,8 +567,8 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
 	int niveau = 0;
 	Planet* planete = NULL;
 	Ordre *ordre = NULL;
-	planete = GetPlanet(systemeStellaires[GetCameraSystem(camera)], GetWindowPlanet(fenetre));
-	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[GetCameraSystem(camera)]);
+	planete = GetPlanet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
+	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
 
 	ordre = GetCityOrderElement(planet_CityGet(planete));	
 
@@ -670,7 +669,7 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
 		}
 	}
 
-	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[GetCameraSystem(camera)]) != -1){
+	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[camera_SystemAimedGet(camera)]) != -1){
 		if(GetWindowSelection(fenetre) == 5){
 			AddEmpireMinerals(empire_Get(empireListe, 0), GetOrderPrice(GetCityOrderQueue(planet_CityGet(planete))));
 			FinirOrdre(GetCityOrderQueue(planet_CityGet(planete)));
@@ -889,7 +888,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	mainMenu_PrintInt(400);
 	niveau += 15;
 
-	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[GetCameraSystem(camera)]) != -1){
+	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[camera_SystemAimedGet(camera)]) != -1){
 		OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_PLANETE_BATIMENT);
 		if(GetWindowSelection(fenetre) != 0){
 			IncrementWindowSelection(fenetre);
@@ -922,8 +921,8 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
 	int niveau = 0;
 	Planet* planete = NULL;
 	Ordre *ordre = NULL;
-	planete = GetPlanet(systemeStellaires[GetCameraSystem(camera)], GetWindowPlanet(fenetre));
-	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[GetCameraSystem(camera)]);
+	planete = GetPlanet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
+	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
 
 	ordre = GetCityOrderElement(planet_CityGet(planete));	
 
@@ -1044,7 +1043,7 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
 		gfx_Line_NoClip(265, niveau + 12, 275, niveau + 2);
 	}
 	
-	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[GetCameraSystem(camera)]) != -1){
+	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[camera_SystemAimedGet(camera)]) != -1){
 		if(GetWindowSelection(fenetre) == 5){
 			AddEmpireMinerals(empire_Get(empireListe, 0), GetOrderPrice(GetCityOrderQueue(planet_CityGet(planete))));
 			FinirOrdre(GetCityOrderQueue(planet_CityGet(planete)));
@@ -1074,7 +1073,7 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
 		}
 		*key = 0;
 	}
-	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[GetCameraSystem(camera)]) != -1){
+	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[camera_SystemAimedGet(camera)]) != -1){
 		if((supprimer == 1) && (GetWindowSelection(fenetre) == 7)){
 			AddEmpireMinerals(empire_Get(empireListe, 0), GetOrderPrice(GetCityOrderQueue(planet_CityGet(planete))));
 			FinirOrdre(GetCityOrderQueue(planet_CityGet(planete)));
@@ -1500,7 +1499,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 	char ordreStation[50];
 	int prixAmelioration = 0, tempsAmelioration = 0;
 	int maximum = 2;
-	Station *station = starSystem_StationGet(systemeStellaires[GetCameraSystem(camera)]);
+	Station *station = starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)]);
 	Ordre *ordre = RecupererOrdre(GetStationOrderQueue(station));
 	int niveau = 120;
 	if(ordre != NULL){
@@ -1566,7 +1565,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Station de ");
-	gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]));
+	gfx_PrintString(starSystem_NameGet(systemeStellaires[camera_SystemAimedGet(camera)]));
 	gfx_SetTextXY(150, 62);
 	switch(GetStationLevel(station)){
 		case AVANT_POSTE:
@@ -1823,7 +1822,7 @@ static void EcrireModule(Module module, int selection, int numero, int *niveau){
  *Dessine le menu des modules de la station du systeme
  */
 static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *fenetre){
-	Station *station = starSystem_StationGet(systemeStellaires[GetCameraSystem(camera)]);
+	Station *station = starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)]);
 	OrdreFile *ordreQueue = GetStationOrderQueue(station);
 	int niveau = 120;
 	char ordreStation[50];
@@ -1880,7 +1879,7 @@ static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **sy
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Station de ");
-	gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]) );
+	gfx_PrintString(starSystem_NameGet(systemeStellaires[camera_SystemAimedGet(camera)]) );
 	gfx_SetTextXY(150, 62);
 
 	switch(GetStationLevel(station)){
@@ -2154,7 +2153,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 	char ordreStation[50];
 	int niveau = 55, nombreDeChantiers = 0, travail = 0, prix = 0;
 	int i = 0;
-	Station *station = starSystem_StationGet(systemeStellaires[GetCameraSystem(camera)]);
+	Station *station = starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)]);
 	OrdreFile *ordreQueue = GetStationOrderQueue(station);
 	switch(*key){
 		default:
@@ -2212,7 +2211,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 
 	gfx_SetTextXY(45, 42);
 	gfx_PrintString("Station de ");
-	gfx_PrintString(starSystem_NameGet(systemeStellaires[GetCameraSystem(camera)]));
+	gfx_PrintString(starSystem_NameGet(systemeStellaires[camera_SystemAimedGet(camera)]));
 	i = 0;
 	while(i < 6){
 		if(GetStationModule(station, i) == CHANTIER_SPATIAL){
@@ -2490,7 +2489,7 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSyste
 	if(*key == sk_Enter){
 		if(GetEmpireAlloys(joueur) >= prix * GetWindowFleetSize(fenetre)){
 			AddEmpireAlloys(joueur, -(prix * GetWindowFleetSize(fenetre)));
-			NouvelOrdre(GetStationOrderQueue(starSystem_StationGet(systemeStellaires[GetCameraSystem(camera)])),
+			NouvelOrdre(GetStationOrderQueue(starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)])),
 				CONSTRUIRE_VAISSEAU,
 				1, 
 				travail * GetWindowFleetSize(fenetre),
@@ -3167,7 +3166,7 @@ int DrawMenu(EmpireList *empireListe, Time *date, char *key, Camera *camera, Sta
 	int8_t fin = 1;
 
 	switch(GetOpenedMenuClass(fenetre)){
-		case MENU_QUITTER:
+		case MENU_EXIT:
 			fin = MenuQuitter(key, empireListe, parametres, date, systemeStellaires, camera, marche, fenetre);
 
 			if (!fin){

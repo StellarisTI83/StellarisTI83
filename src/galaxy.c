@@ -495,7 +495,7 @@ static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition, int starI
     starSystem_EmpireSet(starSystem, NO_EMPIRE);
     
     // Set the intel level
-    starSystem_IntelLevelSet(starSystem, INTEL_UNKNOWN);
+    starSystem_IntelLevelSet(starSystem, INTEL_FULL);
 
     // Randomize the star
     star = randInt(1, STAR_TOTAL_PROBABILITY);
@@ -590,139 +590,82 @@ static int galaxy_AllSystemGenerate(int *galaxyMatrix,
     return starIndex;
 }
 
-// TODO Refactor the function
 /**
- * Function to recreate the hyperlanes
+ * @brief Function to create the hyperlanes
+ * 
+ * @param starSystem 
+ * @param starNumber 
  */
-static void RecreateHyperlanes(StarSystem **systemeStellaires, int k){
-    int i = 0;
-    int j = 0;
+static void galaxy_HyperlanesCreate(StarSystem **starSystem, 
+                                    int starNumber){
+    int starIndex = 0;
+    int hyperlaneNumber = 0;
+    int firstHyperlane = 0;
+    StarSystem *actualSystem;
     #ifdef DEBUG_VERSION
-        dbg_sprintf(dbgout, "Recreate hyperlanes\n");
+        dbg_sprintf(dbgout, "Create hyperlanes\n");
     #endif
-    //recreation des hyperlanes
-    while(i < k) {
-        StarSystem *systeme;
-        systeme = systemeStellaires[i];
-        if(hyperlane_DestinationGet(systeme, 0) != 255) {
-            hyperlane_DestinationSet(systemeStellaires[hyperlane_DestinationGet(systeme, 0)], 2, i);
-        }
-        if(hyperlane_DestinationGet(systeme, 1) != 255) {
-            hyperlane_DestinationSet(systemeStellaires[hyperlane_DestinationGet(systeme, 1)], 3, i);
-        }
-        i++;
-    }
+    while(starIndex < starNumber) {
+        actualSystem = starSystem[starIndex];
+        // Randomize number of generated hyperlanes
+        hyperlaneNumber = randInt(1, 2);
+        // First hyperlane is above or at left
+        firstHyperlane = randInt(0, 1);
 
-    i = 0;
-    j = 0;
-    while(i < k){
-        StarSystem *systeme;
-        int x = 0, y = 0;
-        systeme = systemeStellaires[i];
-        //calcul des positions de sortie
-        j = 0;
-        while(j < 4){
-            if(hyperlane_DestinationGet(systeme, j) != 255){
-                if((starSystem_GetX(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) != 0) && (starSystem_GetY(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) != 0)){
-                    double angle = 0;
-
-                    angle = atan2(starSystem_GetY(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) - starSystem_GetY(systeme), starSystem_GetX(systemeStellaires[hyperlane_DestinationGet(systeme, j)]) - starSystem_GetX(systeme));
-                    
-                    x = SYSTEM_MIDDLE_X + ((SYSTEM_VIEW_RADIUS + 5) * cos(angle));
-
-                    y = SYSTEM_MIDDLE_Y + ((SYSTEM_VIEW_RADIUS + 5) * sin(angle));
-                    hyperlane_XYSet(systeme, j, x, y);
-                }
+        // We only generate the above and left hyperlane, and the under and 
+        // right hyperlanes are generated if the under and right star want it
+        if((starIndex - 1 > 0) && (starIndex - 1 < starNumber)){
+            if(starSystem_GetX(starSystem[starIndex - 1])){
+                hyperlane_DestinationSet(actualSystem, firstHyperlane, starIndex - 1);
+                hyperlane_DestinationSet(starSystem[starIndex - 1], 2, starIndex);
             }
-            j++;
         }
-        i++;
+        if(hyperlaneNumber > 1 && ((starIndex - GALAXY_WIDTH > 0) && (starIndex - GALAXY_WIDTH < starNumber))){
+            if(starSystem_GetX(starSystem[starIndex - GALAXY_WIDTH])){
+                hyperlane_DestinationSet(actualSystem, !firstHyperlane, starIndex - GALAXY_WIDTH);
+                hyperlane_DestinationSet(starSystem[starIndex - GALAXY_WIDTH], 4, starIndex);
+            }
+        }
+        starIndex++;
     }
 }
 
 /* entry points ======================================================== */
 
-void galaxy_StartEmpiresInitialize(Settings *parametres, EmpireList *empireListe, StarSystem **starSystem, Camera *camera){
-    int systemIndex = 0, fin = 1, empireIndex = 0;
-    int k = GALAXY_WIDTH * GALAXY_WIDTH;
-    int planete = 0;
+void galaxy_StartEmpiresInitialize( Settings *parametres, 
+                                    EmpireList *empireListe, 
+                                    StarSystem **starSystem, 
+                                    Camera *camera){
+    int systemIndex = 0, loop = 1, empireIndex = 0;
+    int galaxySize = GALAXY_WIDTH * GALAXY_WIDTH;
     Empire *joueur = empire_Get(empireListe, 0);
-    //creation joueur
-    while(fin == 1) { // choix du systeme
-        systemIndex = randInt(0, k - 1);
-        gfx_SetTextXY(50, 70);
-        #ifdef DEBUG_VERSION
-            dbg_sprintf(dbgout, "%d %d %d\n", starSystem_GetX(starSystem[systemIndex]), starSystem_GetY(starSystem[systemIndex]), starSystem_StarTypeGet(starSystem[systemIndex]));
-        #endif
-        if(((starSystem_GetX(starSystem[systemIndex]) >= 160) && (starSystem_GetY(starSystem[systemIndex]) >= 120)) && (starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE))
-            fin = 0;
-    }
+
     #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "\nCreate empires\n");
     #endif
-    empire_ColorSet(joueur, 9);
-    empire_CapitalSystemSet(joueur, systemIndex);
 
-    starSystem_StarTypeSet(starSystem[systemIndex], STAR_TYPE_K);
-    SetSystemPlanetHabitableNumber(starSystem[systemIndex], 1);
-    SetSystemPlanetInhabitedNumber(starSystem[systemIndex], 1);
-    starSystem_EmpireSet(starSystem[systemIndex], 0);
-    starSystem_IntelLevelSet(starSystem[systemIndex], INTEL_FULL);
+    // Create player
+    while(loop) {
+        systemIndex = randInt(0, galaxySize - 1);
+        gfx_SetTextXY(50, 70);
+        if(((starSystem_GetX(starSystem[systemIndex]) >= 160) && (starSystem_GetY(starSystem[systemIndex]) >= 120)) && (starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE))
+            loop = 0;
+    }
+    empire_Generate(joueur, 0, starSystem[systemIndex], systemIndex, 9);
 
-    SetEmpireCredit(joueur, 100);
-    SetEmpireMinerals(joueur, 100);
-    SetEmpireFood(joueur, 200);
-    SetEmpireAlloys(joueur, 100);
-    SetEmpireConsumerGoods(joueur, 100);
-
-    starSystem_StationLevelSet(starSystem[systemIndex], PORT_STELLAIRE);
-    starSystem_StationModuleSet(starSystem[systemIndex], 0, CHANTIER_SPATIAL);
-    starSystem_StationModuleSet(starSystem[systemIndex], 1, CARREFOUR_COMMERCIAL);
-    
-
-    empire_FleetAdd(joueur, systemIndex, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-
-    empire_FleetAdd(joueur, systemIndex, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-
-    empire_FleetAdd(joueur, systemIndex, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
-    
-    SetCameraX(camera, starSystem_GetX(starSystem[systemIndex])*2); // centre la vue sur le systeme
-    SetCameraY(camera, starSystem_GetY(starSystem[systemIndex])*2);
+    camera_XSet(camera, starSystem_GetX(starSystem[systemIndex])*2);
+    camera_YSet(camera, starSystem_GetY(starSystem[systemIndex])*2);
     SetCameraSystem(camera, systemIndex);
 
-    planete = randInt(0, GetSystemPlanetNumber(starSystem[systemIndex]) - 1);
-
-    starSystem_PlanetHabitabilitySet(starSystem[systemIndex], planete, true);
-    starSystem_PlanetTypeSet(starSystem[systemIndex], planete, HABITABLE_CONTINENTAL);
-
-    SetCameraXSystem(camera, starSystem_PlanetXGet(starSystem[systemIndex], planete) - 160);
-    SetCameraYSystem(camera, starSystem_PlanetYGet(starSystem[systemIndex], planete) - 120);
-    // starSystem_PlanetNameSet(systemeStellaires[i], planete, planetesName[randInt(0, (sizeof(planetesName)/sizeof(planetesName[0])) - 1 )]);
-
-    starSystem_PlanetCityCreate(starSystem[systemIndex], planete);
-    starSystem_PlanetCityPopulationSet(starSystem[systemIndex], planete, 27);
-    starSystem_PlanetCityDistrictSet(starSystem[systemIndex], planete, 4, 3, 3, 3);
-
-    CalculateSystemPlanetCityJob(starSystem[systemIndex], planete);
-
-    SetSystemPlanetCityBuilding(starSystem[systemIndex], planete, 1, BUILDING_CAPITAL, 3);
-    SetSystemPlanetCityBuilding(starSystem[systemIndex], planete, 2, BUILDING_CIVILIAN_INDUSTRIES, 1);
-    SetSystemPlanetCityBuilding(starSystem[systemIndex], planete, 3, BUILDING_FOUNDRIES, 1);
-
-    CalculateEmpirePower(joueur);
-
-    #ifdef DEBUG_VERSION
-        dbg_sprintf(dbgout, "Empire: %d (%p)\n -System: %d (%d, %d)\n -Color: %d\n -Planet: %d\n -Fleet: %p\nCamera: %d %d\n", 1, joueur, systemIndex, starSystem_GetX(starSystem[systemIndex]), starSystem_GetY(starSystem[systemIndex]), GetEmpireColor(joueur), planete, empire_FleetListGet(joueur), GetCameraX(camera), GetCameraY(camera));
-    #endif
-    
     for(empireIndex = 1; empireIndex < settings_EmpireNumberGet(parametres); empireIndex++){
         Empire *empire = NULL;
-        fin = 1;
+        loop = 1;
         systemIndex = 0;
-        while(fin == 1) { // choix du systeme
-            systemIndex = randInt(0, k - 1);
-            if(((starSystem_GetX(starSystem[systemIndex]) >= 160) && (starSystem_GetY(starSystem[systemIndex]) >= 120)) && ((starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(starSystem[systemIndex]) == -1)))
-                fin = 0;
+        while(loop) {
+            systemIndex = randInt(0, galaxySize - 1);
+            if(((starSystem_GetX(starSystem[systemIndex]) >= 160) && (starSystem_GetY(starSystem[systemIndex]) >= 120)) && 
+            ((starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(starSystem[systemIndex]) == NO_EMPIRE)))
+                loop = 0;
         }
         empire = empire_Add(empireListe);
         empire_Generate(empire, empireIndex, starSystem[systemIndex], systemIndex, randInt(20, 29));
@@ -758,9 +701,11 @@ void galaxy_CreateNew(StarSystem **starSystem){
 
     starNumber = galaxy_AllSystemGenerate(galaxyMatrix, starSystem, &loading);
 
+    galaxy_HyperlanesCreate(starSystem, starNumber);
+
     free(galaxyMatrix);
-    // RecreateHyperlanes(starSystem, starNumber);
+
     #ifdef DEBUG_VERSION
-        dbg_sprintf(dbgout, "End of galaxy\n");
+        dbg_sprintf(dbgout, "End of galaxy creation\n");
     #endif
 }

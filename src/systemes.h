@@ -5,6 +5,8 @@
 #include "planet.h"
 #include "stations.h"
 
+#define NO_SYSTEM -1
+
 /* types =============================================================== */
 /**
  * @brief The different intel levels

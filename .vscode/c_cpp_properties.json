@@ -1,10 +1,10 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "CEdev",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/CEDev/**"
+                "C:/CEdev/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -13,7 +13,7 @@
             ],
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "windows-msvc-x64"
+            "intelliSenseMode": "clang-x64"
         }
     ],
     "version": 4

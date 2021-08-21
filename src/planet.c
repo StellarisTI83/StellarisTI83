@@ -1,3 +1,13 @@
+/**
+ * @file planet.c
+ * @author Cocheril Dimitri
+ * @brief The functions about the planets
+ * @version 0.1
+ * @date 2021-08-20
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #include <stdbool.h>
 
 #include <stdlib.h>

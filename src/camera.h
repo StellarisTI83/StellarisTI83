@@ -34,7 +34,7 @@ typedef enum {  ZOOM_MIN = 0,
  * @brief Class of menus
  * 
  */
-typedef enum {  MENU_QUITTER = -1, 
+typedef enum {  MENU_EXIT = -1, 
                 MENU_AUCUN, 
                 MENU_SYSTEME, 
                 MENU_MARCHE, 
@@ -71,14 +71,14 @@ typedef struct FenetreStruct Window;
 
 /* entry points ======================================================== */
 
-Camera *AllocCamera();
+Camera *camera_Alloc();
 
-void SetCameraX(Camera *camera, int x);
-void AddCameraX(Camera *camera, int x);
-int GetCameraX(Camera *camera);
-void SetCameraY(Camera *camera, int y);
-void AddCameraY(Camera *camera, int y);
-int GetCameraY(Camera *camera);
+void camera_XSet(Camera *camera, int x);
+void camera_XAdd(Camera *camera, int x);
+int camera_XGet(Camera *camera);
+void camera_YSet(Camera *camera, int y);
+void camera_YAdd(Camera *camera, int y);
+int camera_YGet(Camera *camera);
 
 void SetCameraXSystem(Camera *camera, int x);
 void AddCameraXSystem(Camera *camera, int x);
@@ -87,15 +87,15 @@ void SetCameraYSystem(Camera *camera, int y);
 void AddCameraYSystem(Camera *camera, int y);
 int GetCameraYSystem(Camera *camera);
 
-void SetCameraXVector(Camera *camera, int x);
-void AddCameraXVector(Camera *camera, int x);
-int GetCameraXVector(Camera *camera);
-void SetCameraYVector(Camera *camera, int y);
-void AddCameraYVector(Camera *camera, int y);
-int GetCameraYVector(Camera *camera);
+void camera_XVectorSet(Camera *camera, int x);
+void camera_XVectorAdd(Camera *camera, int x);
+int camera_XVectorGet(Camera *camera);
+void camera_YVectorSet(Camera *camera, int y);
+void camera_YVectorAdd(Camera *camera, int y);
+int camera_YVectorGet(Camera *camera);
 
-void SetCameraZoom(Camera *camera, int zoom);
-int GetCameraZoom(Camera *camera);
+void camera_ZoomSet(Camera *camera, int zoom);
+int camera_ZoomGet(Camera *camera);
 
 void SetCameraMapType(Camera *camera, VueType MapType);
 VueType GetCameraMapType(Camera *camera);
@@ -106,8 +106,8 @@ int GetCameraLockStatus(Camera *camera);
 void SetCameraViewedSystem(Camera *camera, int system);
 void SetCameraSystem(Camera *camera, int system);
 void SetCameraSystemViewStatus(Camera *camera, int status);
-int GetCameraViewedSystem(Camera *camera);
-int GetCameraSystem(Camera *camera);
+int camera_SystemActualGet(Camera *camera);
+int camera_SystemAimedGet(Camera *camera);
 
 int IsCameraMoveFleet(Camera *camera);
 void SetCameraMoveFleet(Camera *camera, int status);
