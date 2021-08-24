@@ -14,6 +14,7 @@
 #include "fleet.h"
 #include "settings.h"
 #include "systemes.h"
+#include "updating.h"
 
 #include "locale/locale.h"
 
@@ -452,13 +453,13 @@ static void galaxy_PlanetInitialize(StarSystem *starSystem, int planetIndex){
     planet_SizeSet(planet, size);
 
     // Set the x position
-    x = randInt(SYSTEM_MIDDLE_X - orbitRadius, 
-                SYSTEM_MIDDLE_X + orbitRadius);
+    x = randInt(SYSTEM_SPECIAL_X - orbitRadius, 
+                SYSTEM_SPECIAL_X + orbitRadius);
     
     // Set the y position
-    y = sqrt(pow((double)orbitRadius, 2.0) - pow((double)(x - SYSTEM_MIDDLE_X), 2.0)) + SYSTEM_MIDDLE_Y;
+    y = sqrt(pow((double)orbitRadius, 2.0) - pow((double)(x - SYSTEM_SPECIAL_X), 2.0)) + SYSTEM_SPECIAL_Y;
     if(randInt(0, 1) == 1) {
-        y = SYSTEM_MIDDLE_Y - (y - SYSTEM_MIDDLE_Y);
+        y = SYSTEM_SPECIAL_Y - (y - SYSTEM_SPECIAL_Y);
     }
     planet_PositionSet( planet,
                         x, 
@@ -495,7 +496,7 @@ static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition, int starI
     starSystem_EmpireSet(starSystem, NO_EMPIRE);
     
     // Set the intel level
-    starSystem_IntelLevelSet(starSystem, INTEL_FULL);
+    starSystem_IntelLevelSet(starSystem, INTEL_UNKNOWN);
 
     // Randomize the star
     star = randInt(1, STAR_TOTAL_PROBABILITY);
@@ -615,13 +616,13 @@ static void galaxy_HyperlanesCreate(StarSystem **starSystem,
         // We only generate the above and left hyperlane, and the under and 
         // right hyperlanes are generated if the under and right star want it
         if((starIndex - 1 > 0) && (starIndex - 1 < starNumber)){
-            if(starSystem_GetX(starSystem[starIndex - 1])){
+            if(starSystem_XGet(starSystem[starIndex - 1])){
                 hyperlane_DestinationSet(actualSystem, firstHyperlane, starIndex - 1);
                 hyperlane_DestinationSet(starSystem[starIndex - 1], 2, starIndex);
             }
         }
         if(hyperlaneNumber > 1 && ((starIndex - GALAXY_WIDTH > 0) && (starIndex - GALAXY_WIDTH < starNumber))){
-            if(starSystem_GetX(starSystem[starIndex - GALAXY_WIDTH])){
+            if(starSystem_XGet(starSystem[starIndex - GALAXY_WIDTH])){
                 hyperlane_DestinationSet(actualSystem, !firstHyperlane, starIndex - GALAXY_WIDTH);
                 hyperlane_DestinationSet(starSystem[starIndex - GALAXY_WIDTH], 4, starIndex);
             }
@@ -648,13 +649,14 @@ void galaxy_StartEmpiresInitialize( Settings *parametres,
     while(loop) {
         systemIndex = randInt(0, galaxySize - 1);
         gfx_SetTextXY(50, 70);
-        if(((starSystem_GetX(starSystem[systemIndex]) >= 160) && (starSystem_GetY(starSystem[systemIndex]) >= 120)) && (starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE))
+        if(((starSystem_XGet(starSystem[systemIndex]) >= 160) && (starSystem_YGet(starSystem[systemIndex]) >= 120)) && (starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE))
             loop = 0;
     }
     empire_Generate(joueur, 0, starSystem[systemIndex], systemIndex, 9);
 
-    camera_XSet(camera, starSystem_GetX(starSystem[systemIndex])*2);
-    camera_YSet(camera, starSystem_GetY(starSystem[systemIndex])*2);
+    camera_XSet(camera, starSystem_XGet(starSystem[systemIndex])*2);
+    camera_YSet(camera, starSystem_YGet(starSystem[systemIndex])*2);
+    
     SetCameraSystem(camera, systemIndex);
 
     for(empireIndex = 1; empireIndex < settings_EmpireNumberGet(parametres); empireIndex++){
@@ -663,13 +665,14 @@ void galaxy_StartEmpiresInitialize( Settings *parametres,
         systemIndex = 0;
         while(loop) {
             systemIndex = randInt(0, galaxySize - 1);
-            if(((starSystem_GetX(starSystem[systemIndex]) >= 160) && (starSystem_GetY(starSystem[systemIndex]) >= 120)) && 
+            if(((starSystem_XGet(starSystem[systemIndex]) >= 160) && (starSystem_YGet(starSystem[systemIndex]) >= 120)) && 
             ((starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(starSystem[systemIndex]) == NO_EMPIRE)))
                 loop = 0;
         }
         empire = empire_Add(empireListe);
         empire_Generate(empire, empireIndex, starSystem[systemIndex], systemIndex, randInt(20, 29));
     }
+    update_IntelLevel(starSystem, empireListe);
     ai_RelationsUpdate(empireListe);
 }
 

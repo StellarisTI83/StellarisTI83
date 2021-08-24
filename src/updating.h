@@ -1,6 +1,14 @@
 #ifndef H_UPDATING
 #define H_UPDATING
 
+#include "loop.h"
+#include "fleet.h"
+#include "map.h"
+#include "galaxy.h"
+#include "sauvegarde.h"
+#include "settings.h"
+#include "time.h"
+
 /* entry points ======================================================== */
 void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **systemeStellaires, NotificationList *notificationList);
 
@@ -25,4 +33,12 @@ int game_Update( char *key,
                 Window *window, 
                 NotificationList *notificationList, 
                 Settings *settings);
+
+/**
+ * @brief Update all the intel levels
+ * 
+ * @param starSystem the galaxy
+ * @param empireList 
+ */
+void update_IntelLevel(StarSystem **starSystem, EmpireList *empireList);
 #endif

@@ -148,8 +148,8 @@ int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int tailleP
     int enfant[4], parent;
 
 
-    depart->x = starSystem_GetX(galaxie[debut]);
-    depart->y = starSystem_GetY(galaxie[debut]);
+    depart->x = starSystem_XGet(galaxie[debut]);
+    depart->y = starSystem_YGet(galaxie[debut]);
     depart->g = 0;
     depart->h = 0;
     depart->f = 0;
@@ -157,8 +157,8 @@ int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int tailleP
     depart->suivant = NULL;
     depart->parent = 0;
 
-    arrivee->x = starSystem_GetX(galaxie[fin]);
-    arrivee->y = starSystem_GetY(galaxie[fin]);
+    arrivee->x = starSystem_XGet(galaxie[fin]);
+    arrivee->y = starSystem_YGet(galaxie[fin]);
     arrivee->g = 0;
     arrivee->h = 0;
     arrivee->f = 0;
@@ -223,8 +223,8 @@ int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int tailleP
             if(index != 255){
                 children = CreateNode(listeEnfants);
                 children->numero = index;
-                children->x = starSystem_GetX(galaxie[index]);
-                children->y = starSystem_GetY(galaxie[index]);
+                children->x = starSystem_XGet(galaxie[index]);
+                children->y = starSystem_YGet(galaxie[index]);
                 children->parent = current_node->numero;
             }
             children_index++;

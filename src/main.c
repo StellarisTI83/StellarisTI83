@@ -1,6 +1,6 @@
 /**
  * @file main.c
- * @author Cocheril Dimitri (cocheril.dimitri@gmail.com)
+ * @author Cocheril Dimitri (cochgit.dimitri@gmail.com)
  * @brief The entry point of the game and the main menus
  * @version 0.1
  * @date 2021-08-21
@@ -180,6 +180,7 @@ static int mainMenu_Draw(){
         
         // Print the title of the game
         mainMenu_PrintSized("Stellaris", 30, 3, COLOR_WHITE, -30);
+        gfx_PrintStringXY("8-bit fan made", 150, 60);
         gfx_SetTextXY(5, 220);
         gfx_PrintString(VERSION_GAME);
         #ifdef DEBUG_VERSION

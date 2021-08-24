@@ -172,10 +172,10 @@ void planet_PositionSet(Planet *planet, int x, int y){
     planet->x = x;
     planet->y = y;
 }
-int planet_GetX(Planet *planet){
+int planet_XGet(Planet *planet){
     return planet->x;
 }
-int planet_GetY(Planet *planet){
+int planet_YGet(Planet *planet){
     return planet->y;
 }
 

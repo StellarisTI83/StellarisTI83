@@ -1,3 +1,13 @@
+/**
+ * @file updating.c
+ * @author Cocheril Dimitri (cochgit.dimitri@gmail.com)
+ * @brief The updating 
+ * @version 0.1
+ * @date 2021-08-22
+ * 
+ * @copyright GNU General Public License v3.0
+ * 
+ */
 #include <debug.h>
 
 #include "main.h"
@@ -12,9 +22,18 @@
 #include "updating.h"
 
 /* private functions =================================================== */
-
+/**
+ * @brief Test the keys
+ * 
+ * @param key 
+ * @param empireList 
+ * @param starSystem 
+ * @param time 
+ * @param camera 
+ * @param window 
+ * @param settings 
+ */
 static void update_KeysTest(char *key, 
-                            EmpireList *empireList, 
                             StarSystem **starSystem, 
                             Time *time, 
                             Camera *camera, 
@@ -23,6 +42,7 @@ static void update_KeysTest(char *key,
     // Camera keys binding
     if (GetCameraLockStatus(camera) != true){
         switch(*key){
+            // Moving the camera up down left and right
             case sk_Up:
                 camera_YVectorAdd(camera, -5);
                 break;
@@ -35,49 +55,70 @@ static void update_KeysTest(char *key,
             case sk_Right:
                 camera_XVectorAdd(camera, +5);
                 break;
-            case sk_Clear:
-                OpenMenu(window, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
-                *key = 0;
-                break;
+            // Zoom out
             case sk_Mode:
-                switch(GetCameraMapType(camera)){
+                switch(camera_MapTypeGet(camera)){
                     case VUE_GALACTIC:
                         camera_ZoomSet(camera, camera_ZoomGet(camera) - 1);
                         break;
                     case VUE_SYSTEM:
-                        SetCameraMapType(camera, VUE_GALACTIC);
+                        camera_MapTypeSet(camera, VUE_GALACTIC);
                         break;
                     default:
                         break;
                 }
                 *key = 0;
                 break;
+            // Zoom in
             case sk_Del:
-                switch(GetCameraMapType(camera)){
+                switch(camera_MapTypeGet(camera)){
                     case VUE_GALACTIC:
                         if((starSystem_IntelLevelGet(starSystem[camera_SystemActualGet(camera)]) 
-                            || settings_SeeAllGet(settings))
-                            && camera_SystemActualGet(camera) != NO_SYSTEM
-                            && camera_ZoomGet(camera) == 2){
-                            SetCameraMapType(camera, VUE_SYSTEM);
+                        || settings_SeeAllGet(settings))
+                        && camera_SystemActualGet(camera) != NO_SYSTEM
+                        && camera_ZoomGet(camera) == ZOOM_MAX){
+                            camera_MapTypeSet(camera, VUE_SYSTEM);
+                            SetCameraSystem(camera, camera_SystemActualGet(camera));
                         }
-
                         camera_ZoomSet(camera, camera_ZoomGet(camera) + 1);
                         break;
                     case VUE_MAP:
-                        SetCameraMapType(camera, VUE_GALACTIC);
+                        camera_MapTypeSet(camera, VUE_GALACTIC);
                         break;
                     default:
                         break;
                 }
                 *key = 0;
+                break;
+            // Open the system
+            case sk_Enter:
+                if((starSystem_IntelLevelGet(starSystem[camera_SystemActualGet(camera)]) 
+                || settings_SeeAllGet(settings))
+                && camera_SystemActualGet(camera) != NO_SYSTEM){
+                    camera_MapTypeSet(camera, VUE_SYSTEM);
+                    SetCameraSystem(camera, camera_SystemActualGet(camera));
+                }
+                *key = 0;
+                break;
+            // Pause and unpause
+            case sk_0:
+                speed_TimeGet(time) ? time_Pause(time) : time_Unpause(time);
+                break;
+            // Change game speed
+            case sk_Add:
+                time_SpeedIncrement(time);
+                break;
+            case sk_Sub:
+                time_SpeedUnincrement(time);
                 break;
 
             default:
                 break;
         }
     }
+    // Other keys
     switch(*key){
+        // Open the command prompt
         case sk_2nd:
             if(!GetCommandPromptStatus(window))
                 OpenCommandPrompt(window, camera, time);
@@ -85,38 +126,72 @@ static void update_KeysTest(char *key,
                 CloseCommandPrompt(window, camera, time);
             *key = 0;
             break;
+        // Open the exit menu
+        case sk_Clear:
+            if(GetOpenedMenuClass(window) == MENU_EXIT)
+                CloseMenu(window, camera);
+            else
+                OpenMenu(window, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
+            *key = 0;
+            break;
+        // Open the market menus
+        // The top buttons for the top hud
+        case sk_Yequ:
+            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, MENU_MARKET_CASH);
+            break;
+        case sk_Window:
+            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, MENU_MARKET_MINERAL);
+            break;
+        case sk_Zoom:
+            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, MENU_MARKET_FOOD);
+            break;
+        case sk_Trace:
+            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, MENU_MARKET_ALLOY);
+            break;
+        case sk_Graph:
+            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, MENU_MARKET_OTHER);
+            break;
+        // The left buttons for the left hud
+        case sk_Recip:
+            if(GetOpenedMenuClass(window) == MENU_MARKET)
+                CloseMenu(window, camera);
+            else
+                OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, 0);
+            break;
+        case sk_Math:
+            if(GetOpenedMenuClass(window) == MENU_CONTACTS)
+                CloseMenu(window, camera);
+            else
+                OpenMenu(window, camera, MENU_CONTACTS, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, 0);
+            break;
+        case sk_Square:
+            if(GetOpenedMenuClass(window) == MENU_SCIENCE)
+                CloseMenu(window, camera);
+            else
+                OpenMenu(window, camera, MENU_SCIENCE, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, 0);
+            break;
+        case sk_Log:
+            if(GetOpenedMenuClass(window) == MENU_FLEET)
+                CloseMenu(window, camera);
+            else
+                OpenMenu(window, camera, MENU_FLEET, MENU_SYSTEME_AUCUN);
+            SetWindowSelection(window, 0);
+            break;
+
         default:
             break;
     }
     
 }
 
-/**
- * calcule le niveau de connaissance (intel level) du systeme
- */
-static void CalculerNiveauDeConnaissance(StarSystem **systemeStellaires, EmpireList *empireListe){
-    int sizeFleet = 0;
-    int indexFleet = 0;
-    int numeroSysteme = 0;
-
-    while(numeroSysteme < GALAXY_WIDTH * GALAXY_WIDTH) {
-        if(starSystem_IntelLevelGet(systemeStellaires[numeroSysteme])  >= INTEL_MEDIUM) {
-            starSystem_IntelLevelSet(systemeStellaires[numeroSysteme], INTEL_MEDIUM);
-        }
-        else {
-            starSystem_IntelLevelSet(systemeStellaires[numeroSysteme], INTEL_UNKNOWN);
-        }
-        if((starSystem_StationLevelGet(systemeStellaires[numeroSysteme]) > INTEL_UNKNOWN) && (starSystem_EmpireGet(systemeStellaires[numeroSysteme]) == -1)) {
-            starSystem_IntelLevelSet(systemeStellaires[numeroSysteme], INTEL_FULL);
-        }
-        numeroSysteme++;
-    }
-    sizeFleet = FleetArraySize(empire_FleetListGet(empire_Get(empireListe, 0)));
-    while(indexFleet <= sizeFleet){
-        starSystem_IntelLevelSet(systemeStellaires[GetFleetSystem(FlotteNumero(empire_FleetListGet(empire_Get(empireListe, 0)), indexFleet))], INTEL_HIGH);
-        indexFleet++;
-    }
-}
 
 /**
  * Effectue les actions de station
@@ -196,7 +271,7 @@ void EffectuerActionsPlanetes(StarSystem **systemeStellaires){
     // Batiment *batiment = NULL;
     OrdreConstruction ordre;
     for(i = 0; i < GALAXY_WIDTH * GALAXY_WIDTH; i++){
-        for(j = 0; j < GetSystemPlanetNumber(systemeStellaires[i]); j++){
+        for(j = 0; j < starSystem_NumberOfPlanetGet(systemeStellaires[i]); j++){
             villes = GetSystemPlanetCity(systemeStellaires[i], j);
             if(villes != NULL){
                 ordre = GetCityOrder(villes);
@@ -232,201 +307,11 @@ void EffectuerActionsPlanetes(StarSystem **systemeStellaires){
     }
 }
 
-/**
- * Update time
- */
-static void UpdateTime(Time *date, char *key, Window *fenetre){
-    //différentes actions des touches
-    if(!GetCommandPromptStatus(fenetre)){
-        switch(*key){
-            case sk_0://pause / dépause
-                if(GetTimeSpeed(date) == 0){
-                    UnpauseGame(date); 
-                } else {
-                    PauseGame(date);
-                }
-                break;
-            case sk_Add:
-                IncrementTimeSpeed(date);
-                break;
-            case sk_Sub:
-                UnincrementTimeSpeed(date);
-                break;
-        }
-    }
-    UpdateClock(date);
-}
-
 static void UpdateWorld(EmpireList *empireListe, StarSystem **systemeStellaires){
     EffectuerActionsFlottes(empireListe, systemeStellaires);
     EffectuerActionsStations(systemeStellaires, empireListe);
     EffectuerActionsPlanetes(systemeStellaires);
-    CalculerNiveauDeConnaissance(systemeStellaires, empireListe);
-}
-
-static void TestKey(char *key, EmpireList *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, Settings *parametres){
-    if(GetCameraMapType(camera) == VUE_GALACTIC){
-        switch(*key){
-        case sk_Up:
-            if (GetCameraLockStatus(camera) != true)
-                camera_YVectorAdd(camera, -5);
-            break;
-        case sk_Down:
-            if (GetCameraLockStatus(camera) != true)
-                camera_YVectorAdd(camera, +5);
-            break;
-        case sk_Left:
-            if (GetCameraLockStatus(camera) != true)
-                camera_XVectorAdd(camera, -5);
-            break;
-        case sk_Right:
-            if (GetCameraLockStatus(camera) != true)
-                camera_XVectorAdd(camera, +5);
-            break;
-        case sk_Mode:
-            if (GetCameraLockStatus(camera) != true) {
-                camera_ZoomSet(camera, camera_ZoomGet(camera) - 1);
-                if(camera_ZoomGet(camera) >= 1) {
-                    camera_XSet(camera, camera_XGet(camera) * 0.5);
-                    camera_YSet(camera, camera_YGet(camera) * 0.5);
-                }
-            }
-            break;
-        case sk_Del:
-            if ((camera_ZoomGet(camera) == 2) && (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (camera_SystemActualGet(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && ((starSystem_IntelLevelGet(systemeStellaires[camera_SystemActualGet(camera)]) != INTEL_UNKNOWN) || settings_SeeAllGet(parametres))))) {
-                SetCameraLock(camera, false);
-                SetCameraMapType(camera, VUE_SYSTEM);
-                if(camera_SystemAimedGet(camera) != camera_SystemActualGet(camera)) {
-                    SetCameraXSystem(camera, 320);
-                    SetCameraYSystem(camera, 240);
-                }
-                SetCameraSystem(camera, camera_SystemActualGet(camera));
-                #ifdef DEBUG_VERSION
-                    dbg_sprintf((char*)dbgout, "open system %d\n", camera_SystemActualGet(camera));
-                #endif
-                *key = 0;
-            }
-            if (GetCameraLockStatus(camera) != true) {
-                camera_ZoomSet(camera, camera_ZoomGet(camera) + 1);
-                if (camera_ZoomGet(camera) < 3 && camera_ZoomGet(camera) >= 0) {
-                    camera_XSet(camera, camera_XGet(camera) * 2);
-                    camera_YSet(camera, camera_YGet(camera) * 2);
-                }
-            }
-            break;
-        case sk_Enter:
-            if (((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (camera_SystemActualGet(camera) != -1)) && ((IsCameraMoveFleet(camera) == false) && (starSystem_IntelLevelGet(systemeStellaires[camera_SystemActualGet(camera)]) != INTEL_UNKNOWN || settings_SeeAllGet(parametres)))){
-                SetCameraLock(camera, false);
-                SetCameraMapType(camera, VUE_SYSTEM);
-                if(camera_SystemAimedGet(camera) != camera_SystemActualGet(camera)) {
-                    SetCameraXSystem(camera, 320);
-                    SetCameraYSystem(camera, 240);
-                }
-                SetCameraSystem(camera, camera_SystemActualGet(camera));
-                #ifdef DEBUG_VERSION
-                    dbg_sprintf((char*)dbgout, "open system %d\n", camera_SystemActualGet(camera));
-                #endif
-                *key = 0;
-            } else if(((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (camera_SystemActualGet(camera) != -1)) && (IsCameraMoveFleet(camera) == true)) {
-                BougerFlotte(GetCameraFleet(camera), GetCameraEmpire(camera), camera_SystemActualGet(camera), fenetre, camera, empireListe, systemeStellaires);
-                *key = 0;
-            }
-            break;
-        }
-    }
-
-    //touches generales
-
-    switch(*key){
-    case sk_Clear:
-        if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) && (IsCameraMoveFleet(camera) == false)) {
-            OpenMenu(fenetre, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
-            PauseGame(date);
-            *key = 0;
-        } else if(IsCameraMoveFleet(camera) == true) {
-            SetCameraMoveFleet(camera, false);
-            *key = 0;
-        }
-        break;
-    case sk_Yequ :
-        if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 1)) {
-            OpenMenu(fenetre, camera, MENU_MARCHE, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(fenetre, 1);
-        } else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 1)) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_Window :
-        if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 2)) {
-            OpenMenu(fenetre, camera, MENU_MARCHE, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(fenetre, 2);
-        } else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 2)) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_Zoom :
-        if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 3)) {
-            OpenMenu(fenetre, camera, MENU_MARCHE, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(fenetre, 3);
-        } else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 3)) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_Trace :
-        if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 4)) {
-            OpenMenu(fenetre, camera, MENU_MARCHE, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(fenetre, 4);
-        } else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 4)) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_Graph :
-        if ((GetOpenedMenuClass(fenetre) == MENU_AUCUN) || (GetWindowSelection(fenetre) != 5)) {
-            OpenMenu(fenetre, camera, MENU_MARCHE, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(fenetre, 5);
-        } else if ((GetOpenedMenuClass(fenetre) == MENU_MARCHE) && (GetWindowSelection(fenetre) != 5)) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_Recip:
-        if ((GetOpenedMenuClass(fenetre) != MENU_MARCHE) && (GetOpenedMenuClass(fenetre) != MENU_EXIT)) {
-            OpenMenu(fenetre, camera, MENU_MARCHE, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(fenetre, 2);
-        } else if (GetOpenedMenuClass(fenetre) == MENU_MARCHE) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_Math:
-        if ((GetOpenedMenuClass(fenetre) != MENU_CONTACTS) && (GetOpenedMenuClass(fenetre) != MENU_EXIT)) {
-            OpenMenu(fenetre, camera, MENU_CONTACTS, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(fenetre, 1);
-        } else if (GetOpenedMenuClass(fenetre) == MENU_CONTACTS) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_Square:
-        if ((GetOpenedMenuClass(fenetre) != MENU_RECHERCHE) && (GetOpenedMenuClass(fenetre) != MENU_EXIT)) {
-            OpenMenu(fenetre, camera, MENU_RECHERCHE, MENU_SYSTEME_AUCUN);
-        } else if (GetOpenedMenuClass(fenetre) == MENU_RECHERCHE) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_Log:
-        if ((GetOpenedMenuClass(fenetre) != MENU_FLOTTE) && (GetOpenedMenuClass(fenetre) != MENU_EXIT)) {
-            OpenMenu(fenetre, camera, MENU_FLOTTE, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(fenetre, 0);
-        } else if (GetOpenedMenuClass(fenetre) == MENU_FLOTTE) {
-            CloseMenu(fenetre, camera);
-        }
-        break;
-    case sk_2nd:
-        if(!GetCommandPromptStatus(fenetre))
-            OpenCommandPrompt(fenetre, camera, date);
-        else
-            CloseCommandPrompt(fenetre, camera, date);
-        *key = 0;
-        break;
-    }
+    update_IntelLevel(systemeStellaires, empireListe);
 }
 
 
@@ -456,7 +341,8 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
     int systemIndex = 0;
     int planetaryIndex = 0;
     int planetaryArraySize = 0;
-    int planetaryBuildingIndex = 0;
+    int buildingIndex = 0;
+    City *city;
     
     //retirer argent flottes
     empireArraySize = empire_ArraySize(empireListe);
@@ -482,26 +368,26 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
     for(systemIndex = 0; systemIndex < GALAXY_WIDTH * GALAXY_WIDTH; systemIndex++){
         if(starSystem_EmpireGet(systemeStellaires[systemIndex]) != -1){
             empire = empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[systemIndex]));
-            planetaryArraySize = GetSystemPlanetNumber(systemeStellaires[systemIndex]);
+            planetaryArraySize = starSystem_NumberOfPlanetGet(systemeStellaires[systemIndex]);
 
             for(planetaryIndex = 0; planetaryIndex < planetaryArraySize; planetaryIndex++){
-                planete = GetPlanet(systemeStellaires[systemIndex], planetaryIndex);
+                planete = starSystem_PlanetGet(systemeStellaires[systemIndex], planetaryIndex);
                 
                 //si la planete est habitée
-                if(planet_CityGet(planete)){
+                if((city = planet_CityGet(planete))){
 
-                    AddEmpireCreditChange(empire, -GetPlanetCityAgricultureDistrictNumber(planete));
-                    AddEmpireFoodChange(empire, GetPlanetCityAgricultureDistrictNumber(planete) * 3);
+                    AddEmpireCreditChange(empire, -city_AgricultureDistrictGet(city));
+                    AddEmpireFoodChange(empire, city_AgricultureDistrictGet(city) * 3);
 
-                    AddEmpireCreditChange(empire, -GetPlanetCityMiningDistrictNumber(planete));
-                    AddEmpireMineralsChange(empire, 6 * GetPlanetCityMiningDistrictNumber(planete));
+                    AddEmpireCreditChange(empire, -city_MiningDistrictGet(city));
+                    AddEmpireMineralsChange(empire, 6 * city_MiningDistrictGet(city));
                     
-                    AddEmpireCreditChange(empire, -2 * GetPlanetCityUrbanDistrictNumber(planete));
+                    AddEmpireCreditChange(empire, -2 * city_UrbanDistrictGet(city));
                     
-                    AddEmpireCreditChange(empire, 8 * GetPlanetCityGeneratorDistrictNumber(planete));
+                    AddEmpireCreditChange(empire, 8 * city_GeneratorDistrictGet(city));
                     
-                    for(planetaryBuildingIndex = 1; planetaryBuildingIndex <= 6; planetaryBuildingIndex++){
-                        switch(GetPlanetCityBuildingNumber(planete, planetaryBuildingIndex)){
+                    for(buildingIndex = 1; buildingIndex <= 6; buildingIndex++){
+                        switch(city_BuildingGet(city, buildingIndex)){
                             case BUILDING_CAPITAL:
                                 AddEmpireCreditChange(empire, -2);
                                 break;
@@ -542,7 +428,7 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
             if(GetEmpireCredit(empire) + GetEmpireCreditChange(empire) <= 0){
                 SetEmpireCredit(empire, 0);
             }
-            else
+            else 
                 AddEmpireCredit(empire, GetEmpireCreditChange(empire));
             
             if(GetEmpireFood(empire) + GetEmpireFoodChange(empire) <= 0){
@@ -586,14 +472,14 @@ int game_Update( char *key,
                 Settings *settings){
     // We test the keys
 	update_KeysTest(key, 
-                    empireList, 
                     starSystem, 
                     time, 
                     camera, 
                     window, 
                     settings);
 
-    UpdateTime(time, key, window);
+    time_Update(time);
+
     if(GetTimeClock(time) == 0){
         if(((GetTimeDay(time) == 10) || (GetTimeDay(time) == 20)) || (GetTimeDay(time) == 30)){
             UpdateWorld(empireList, starSystem);
@@ -607,4 +493,29 @@ int game_Update( char *key,
         
     }
     return 1;
+}
+
+void update_IntelLevel(StarSystem **starSystem, EmpireList *empireList){
+    int sizeFleet = 0;
+    int indexFleet = 0;
+    int systemIndex = 0;
+
+    while(systemIndex < GALAXY_WIDTH * GALAXY_WIDTH) {
+        if(starSystem_IntelLevelGet(starSystem[systemIndex])  >= INTEL_MEDIUM) {
+            starSystem_IntelLevelSet(starSystem[systemIndex], INTEL_MEDIUM);
+        }
+        else {
+            starSystem_IntelLevelSet(starSystem[systemIndex], INTEL_UNKNOWN);
+        }
+        if((starSystem_StationLevelGet(starSystem[systemIndex]) > INTEL_UNKNOWN) && (starSystem_EmpireGet(starSystem[systemIndex]) == NO_EMPIRE)) {
+            starSystem_IntelLevelSet(starSystem[systemIndex], INTEL_FULL);
+        }
+        systemIndex++;
+    }
+    sizeFleet = FleetArraySize(empire_FleetListGet(empire_Get(empireList, 0)));
+    dbg_sprintf(dbgout, "sizeFleet : %d\n", sizeFleet);
+    while(indexFleet < sizeFleet){
+        starSystem_IntelLevelSet(starSystem[GetFleetSystem(FlotteNumero(empire_FleetListGet(empire_Get(empireList, 0)), indexFleet))], INTEL_HIGH);
+        indexFleet++;
+    }
 }

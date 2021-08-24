@@ -66,8 +66,8 @@ void    planet_OrbitRadiusSet(Planet *planete, int orbitRadius);
 int     planet_OrbitRadiusGet(Planet *planete);
 
 void    planet_PositionSet(Planet *planete, int x, int y);
-int     planet_GetX(Planet *planete);
-int     planet_GetY(Planet *planete);
+int     planet_XGet(Planet *planete);
+int     planet_YGet(Planet *planete);
 
 void    planet_TypeSet(Planet *planete, PlanetType type);
 PlanetType  GetPlanetType(Planet *planete);

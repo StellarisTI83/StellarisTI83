@@ -1,14 +1,13 @@
 #ifndef H_CAMERA
 #define H_CAMERA
 
-#include "main.h"
-#include "planet.h"
-#include "time.h"
+/* macros ============================================================== */
 
+#define SYSTEM_SPECIAL_X 480
+#define SYSTEM_SPECIAL_Y 360
 
-
-#define SYSTEM_MIDDLE_X 480
-#define SYSTEM_MIDDLE_Y 360
+#define SYSTEM_MIDDLE_X 320
+#define SYSTEM_MIDDLE_Y 240
 
 #define SYSTEM_VIEW_RADIUS 160
 
@@ -30,37 +29,6 @@ typedef enum {  ZOOM_MIN = 0,
                 ZOOM_NORMAL, 
                 ZOOM_MAX} ZoomLevel;
 
-/**
- * @brief Class of menus
- * 
- */
-typedef enum {  MENU_EXIT = -1, 
-                MENU_AUCUN, 
-                MENU_SYSTEME, 
-                MENU_MARCHE, 
-                MENU_FLOTTE, 
-                MENU_RECHERCHE, 
-                MENU_CONTACTS, 
-                MENU_CONTACTS_DETAILS, 
-                MENU_CONTACTS_EFFECTUER_ACTION} ClassMenu;
-
-/**
- * @brief Subclass for the system menus
- * 
- */
-typedef enum {  MENU_SYSTEME_AUCUN, 
-                MENU_SYSTEME_FLOTTES = 1, 
-                MENU_SYSTEME_ETOILE, 
-                MENU_SYSTEME_PLANETE_RESUME, 
-                MENU_SYSTEME_PLANETE_DISTRICT, 
-                MENU_SYSTEME_PLANETE_BATIMENT, 
-                MENU_SYSTEME_PLANETE_BATIMENT_CHOIX, 
-                MENU_SYSTEME_FLOTTE_DETAILS, 
-                MENU_SYSTEME_STATION_RESUME, 
-                MENU_SYSTEME_STATION_MODULES, 
-                MENU_SYSTEME_STATION_MODULES_CHOIX, 
-                MENU_SYSTEME_STATION_CHANTIER,
-                MENU_SYSTEME_STATION_CHANTIER_CHOIX} MenuSystem;
 
 
 /* structures ========================================================== */
@@ -69,9 +37,19 @@ typedef struct CameraStruct Camera;
 
 typedef struct FenetreStruct Window;
 
+#include "main.h"
+#include "planet.h"
+#include "menus.h"
+#include "time.h"
+
 /* entry points ======================================================== */
 
-Camera *camera_Alloc();
+/**
+ * @brief Create a new camera
+ * 
+ * @return Camera* 
+ */
+Camera *camera_Create();
 
 void camera_XSet(Camera *camera, int x);
 void camera_XAdd(Camera *camera, int x);
@@ -80,12 +58,12 @@ void camera_YSet(Camera *camera, int y);
 void camera_YAdd(Camera *camera, int y);
 int camera_YGet(Camera *camera);
 
-void SetCameraXSystem(Camera *camera, int x);
-void AddCameraXSystem(Camera *camera, int x);
-int GetCameraXSystem(Camera *camera);
-void SetCameraYSystem(Camera *camera, int y);
-void AddCameraYSystem(Camera *camera, int y);
-int GetCameraYSystem(Camera *camera);
+void camera_XSystemSet(Camera *camera, int x);
+void camera_XSystemAdd(Camera *camera, int x);
+int camera_XSystemGet(Camera *camera);
+void camera_YsystemSet(Camera *camera, int y);
+void camera_YSystemAdd(Camera *camera, int y);
+int camera_YSystemGet(Camera *camera);
 
 void camera_XVectorSet(Camera *camera, int x);
 void camera_XVectorAdd(Camera *camera, int x);
@@ -97,8 +75,8 @@ int camera_YVectorGet(Camera *camera);
 void camera_ZoomSet(Camera *camera, int zoom);
 int camera_ZoomGet(Camera *camera);
 
-void SetCameraMapType(Camera *camera, VueType MapType);
-VueType GetCameraMapType(Camera *camera);
+void camera_MapTypeSet(Camera *camera, VueType MapType);
+VueType camera_MapTypeGet(Camera *camera);
 
 void SetCameraLock(Camera *camera, int lock);
 int GetCameraLockStatus(Camera *camera);

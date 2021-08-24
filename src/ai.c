@@ -594,7 +594,7 @@ static void PlanetaryAI(EmpireList *empireListe, StarSystem **systemeStellaires)
         if(starSystem_EmpireGet(systemeStellaires[systemeNumero]) != 0){
             planeteNumero = 0;
             empire = empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[systemeNumero]));
-            taille = GetSystemPlanetNumber(systemeStellaires[systemeNumero]);
+            taille = starSystem_NumberOfPlanetGet(systemeStellaires[systemeNumero]);
             while(planeteNumero < taille){
                 if(planet_CityGet(starSystem_PlanetGet(systemeStellaires[systemeNumero], planeteNumero))){
                     planete = starSystem_PlanetGet(systemeStellaires[systemeNumero], planeteNumero);
@@ -701,8 +701,8 @@ void empire_Generate(   Empire *empire,
                         StarSystem *empireStarSystem, 
                         int systemIndex,
                         int color){
-    int planetIndex = randInt(0, GetSystemPlanetNumber(empireStarSystem) - 1);
-    Planet *planet = GetPlanet( empireStarSystem, 
+    int planetIndex = randInt(0, starSystem_NumberOfPlanetGet(empireStarSystem) - 1);
+    Planet *planet = starSystem_PlanetGet( empireStarSystem, 
                                 planetIndex);
     City *city = planet_CityCreate(planet);
 

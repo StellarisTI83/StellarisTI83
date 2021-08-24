@@ -12,8 +12,6 @@
 #include <errno.h>
 
 #include <graphx.h>
-#include <fileioc.h>
-#include <fontlibc.h>
 
 #include "gfx/gfx.h"
 
@@ -101,7 +99,7 @@ static int8_t MenuQuitter(char* key, EmpireList* empireListe, Settings* parametr
 			break;
 		case sk_Clear:
 			CloseMenu(fenetre, camera);
-			UnpauseGame(date);
+			time_Unpause(date);
 			break;
 	}
 	if (GetWindowSelection(fenetre) > 5) {
@@ -378,32 +376,32 @@ static void NumeroPlanete(int numero, int *decalage, Planet *planete, char *nomP
 	switch(numero){
 	case 0:
 		*decalage = 186;
-		planete = GetPlanet(systeme, 0);
+		planete = starSystem_PlanetGet(systeme, 0);
 		strcpy(nomPlanete, " I");
 		break;
 	case 1:
 		*decalage = 182;
-		planete = GetPlanet(systeme, 1);
+		planete = starSystem_PlanetGet(systeme, 1);
 		strcpy(nomPlanete, " II");
 		break;
 	case 2:
 		*decalage = 178;
-		planete = GetPlanet(systeme, 2);
+		planete = starSystem_PlanetGet(systeme, 2);
 		strcpy(nomPlanete, " III");
 		break;
 	case 3:
 		*decalage = 182;
-		planete = GetPlanet(systeme, 3);
+		planete = starSystem_PlanetGet(systeme, 3);
 		strcpy(nomPlanete, " IV");
 		break;
 	case 4:
 		*decalage = 186;
-		planete = GetPlanet(systeme, 4);
+		planete = starSystem_PlanetGet(systeme, 4);
 		strcpy(nomPlanete, " V");
 		break;
 	default:
 		*decalage = 178;
-		planete = GetPlanet(systeme, 0);
+		planete = starSystem_PlanetGet(systeme, 0);
 		strcpy(nomPlanete, " ERR");
 		break;
 	}
@@ -417,7 +415,7 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
 	int decalage = 0;
 	int niveau = 0;
 	Planet* planete = NULL;
-	planete = GetPlanet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
+	planete = starSystem_PlanetGet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
 	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
 
 	//dessiner fenetre
@@ -567,7 +565,7 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
 	int niveau = 0;
 	Planet* planete = NULL;
 	Ordre *ordre = NULL;
-	planete = GetPlanet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
+	planete = starSystem_PlanetGet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
 	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
 
 	ordre = GetCityOrderElement(planet_CityGet(planete));	
@@ -921,7 +919,7 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
 	int niveau = 0;
 	Planet* planete = NULL;
 	Ordre *ordre = NULL;
-	planete = GetPlanet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
+	planete = starSystem_PlanetGet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(fenetre));
 	NumeroPlanete(GetWindowPlanet(fenetre), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
 
 	ordre = GetCityOrderElement(planet_CityGet(planete));	
@@ -1136,7 +1134,7 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
 					CloseMenu(fenetre, camera);
 					break;
 				case 2:
-					OpenMenu(fenetre, camera, MENU_FLOTTE, 0);
+					OpenMenu(fenetre, camera, MENU_FLEET, 0);
 					SetWindowSelection(fenetre, GetWindowSelectedFleet(fenetre));
 					break;
 				default:
@@ -2576,12 +2574,12 @@ static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetr
 	gfx_SetColor(1);
 	switch(GetWindowSelection(fenetre))
 	{
-		case 1:
+		case MENU_MARKET_CASH:
 			gfx_PrintStringXY("Argent", 45, 42);
 			gfx_PrintStringXY("Non /changeable", 100, 100);
 			break;
 			
-		case 2:
+		case MENU_MARKET_MINERAL:
 			gfx_PrintStringXY("Minerai", 45, 42);
 			gfx_TransparentSprite_NoClip(credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
@@ -2600,7 +2598,7 @@ static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetr
 			gfx_TransparentSprite_NoClip(minerai, 130, 60);
 			break;
 
-		case 3:
+		case MENU_MARKET_FOOD:
 			gfx_PrintStringXY("Nourriture", 45, 42);
 			gfx_TransparentSprite_NoClip(credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
@@ -2619,7 +2617,7 @@ static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetr
 			gfx_TransparentSprite_NoClip(food, 130, 60);
 			break;
 
-		case 4:
+		case MENU_MARKET_ALLOY:
 			gfx_PrintStringXY("Fer", 45, 42);
 			gfx_TransparentSprite_NoClip(credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
@@ -2638,7 +2636,7 @@ static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetr
 			gfx_TransparentSprite_NoClip(fer, 130, 60);
 			break;
 			break;
-		case 5:
+		case MENU_MARKET_OTHER:
 			gfx_PrintStringXY("Autre", 45, 42);
 			break;
 	}
@@ -3176,13 +3174,13 @@ int DrawMenu(EmpireList *empireListe, Time *date, char *key, Camera *camera, Sta
 		case MENU_SYSTEME:
 			MenuSysteme(key, empireListe, parametres, date, systemeStellaires, camera, fenetre);
 			break;
-		case MENU_FLOTTE:
+		case MENU_FLEET:
 			MenuListeFLottes(key, empireListe, camera, fenetre);
 			break;
-		case MENU_MARCHE:
+		case MENU_MARKET:
 			MenuMarche(key ,marche, camera, fenetre);
 			break;
-		case MENU_RECHERCHE:
+		case MENU_SCIENCE:
 			MenuRecherche(key, camera, fenetre);
 			break;
 		case MENU_CONTACTS:

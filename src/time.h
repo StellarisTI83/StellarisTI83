@@ -25,12 +25,12 @@ Time *time_Alloc();
 void time_DateSet(Time *date, char d, char m, int y);
 void time_SpeedSet(Time *date, gameSpeed speed, gameSpeed savedSpeed);
 void SetTimeSpeedOnly(Time *date, gameSpeed speed);
-int GetTimeSpeed(Time *date);
-void PauseGame(Time *date);
-void UnpauseGame(Time *date);
+int speed_TimeGet(Time *date);
+void time_Pause(Time *date);
+void time_Unpause(Time *date);
 
-void IncrementTimeSpeed(Time *date);
-void UnincrementTimeSpeed(Time *date);
+void time_SpeedIncrement(Time *date);
+void time_SpeedUnincrement(Time *date);
 
 void AddTimeClock(Time *date);
 int GetTimeClock(Time *date);
@@ -40,10 +40,10 @@ int GetTimeYear(Time *date);
 
 void IncrementTime(Time *date);
 
-void IncrementTimeSpeed(Time *date);
-void UnincrementTimeSpeed(Time *date);
+void time_SpeedIncrement(Time *date);
+void time_SpeedUnincrement(Time *date);
 
-void UpdateClock(Time *date);
+void time_Update(Time *date);
 
 void time_FPSSet(Time *time, long fps);
 long time_FPSGet(Time *time);

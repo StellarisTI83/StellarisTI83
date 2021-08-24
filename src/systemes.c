@@ -61,10 +61,10 @@ void starSystem_SetXY(StarSystem *starSystem, int x, int y){
     starSystem->x = x;
     starSystem->y = y;
 }
-int starSystem_GetX(StarSystem *starSystem){
+int starSystem_XGet(StarSystem *starSystem){
     return starSystem->x;
 }
-int starSystem_GetY(StarSystem *starSystem){
+int starSystem_YGet(StarSystem *starSystem){
     return starSystem->y;
 }
 
@@ -80,8 +80,8 @@ Module starSystem_StationModuleGet(StarSystem *starSystem, int moduleNumber){
     return GetStationModule(starSystem->station, moduleNumber);
 }
 
-void starSystem_IntelLevelSet(StarSystem *starSystem, IntelLevel niveau){
-    starSystem->intelLevel = niveau;
+void starSystem_IntelLevelSet(StarSystem *starSystem, IntelLevel intelLevel){
+    starSystem->intelLevel = intelLevel;
 }
 IntelLevel starSystem_IntelLevelGet(StarSystem *starSystem){
     return starSystem->intelLevel;
@@ -195,10 +195,10 @@ void starSystem_PlanetXYSet(StarSystem *starSystem, int number, int x, int y){
     planet_PositionSet(starSystem->planets[number], x, y);
 }
 int starSystem_PlanetXGet(StarSystem *starSystem, int number){
-    return planet_GetX(starSystem->planets[number]);
+    return planet_XGet(starSystem->planets[number]);
 }
 int starSystem_PlanetYGet(StarSystem *starSystem, int number){
-    return planet_GetY(starSystem->planets[number]);
+    return planet_YGet(starSystem->planets[number]);
 }
 
 void starSystem_PlanetTypeSet(StarSystem *starSystem, int number, PlanetType type){
@@ -279,14 +279,10 @@ int GetSystemPlanetCityJob(StarSystem *starSystem, int number){
     return GetPlanetCityJob(starSystem->planets[number]);
 }
 
-Planet *GetPlanet(StarSystem *starSystem, int number){
-    return starSystem->planets[number];
-}
-
 void SetSystemPlanetNumber(StarSystem *starSystem, int number){
     starSystem->planetNumber = number;
 }
-int GetSystemPlanetNumber(StarSystem *starSystem){
+int starSystem_NumberOfPlanetGet(StarSystem *starSystem){
     return starSystem->planetNumber;
 }
 

@@ -168,8 +168,8 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 	memset(flotte, 0, sizeof(Flotte));
 
 	flotte->systeme = systeme;
-	flotte->x = SYSTEM_MIDDLE_X - 10;
-	flotte->y = SYSTEM_MIDDLE_Y + 10;
+	flotte->x = SYSTEM_SPECIAL_X - 10;
+	flotte->y = SYSTEM_SPECIAL_Y + 10;
 	memset(&flotte->vecteur, 0, sizeof(Vecteur));
 	flotte->action = FLOTTE_AUCUNE_ACTION;
 	flotte->avancementTrajet = 0;
@@ -378,7 +378,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 	if(IsCameraMoveFleet(camera) == false){
 		SetCameraMoveFleet(camera, true);
 		SetCameraLock(camera, false);
-		SetCameraMapType(camera, VUE_GALACTIC);
+		camera_MapTypeSet(camera, VUE_GALACTIC);
 		CloseMenu(fenetre, camera);
 		SetCameraEmpire(camera, numeroDeEmpire);
 		SetCameraFleet(camera, numeroDeFlotte);
@@ -392,9 +392,9 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 			SetCameraEmpire(camera, 0);
 			SetCameraFleet(camera, 0);
 
-			SetCameraMapType(camera, VUE_SYSTEM);
-			camera_XSet(camera, starSystem_GetX(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
-			camera_YSet(camera, starSystem_GetY(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
+			camera_MapTypeSet(camera, VUE_SYSTEM);
+			camera_XSet(camera, starSystem_XGet(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
+			camera_YSet(camera, starSystem_YGet(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
 			
 			error = MoveFleet(flotte, systeme, systemeStellaires);
 			
@@ -459,9 +459,9 @@ void EffectuerActionsFlottes(EmpireList* empireListe, StarSystem **systemeStella
 				flotte->y += flotte->vecteur.yVecteur;
 
 				if(flotte->systeme == flotte->systemeArrive) {
-					flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, SYSTEM_MIDDLE_X, SYSTEM_MIDDLE_Y);
+					flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, SYSTEM_SPECIAL_X, SYSTEM_SPECIAL_Y);
 					flotte->avancement = 0;
-					if(pow((double)(flotte->x - SYSTEM_MIDDLE_X), 2.0) + pow((double)(flotte->y - SYSTEM_MIDDLE_Y), 2.0) < pow((double)10, 2.0)) {
+					if(pow((double)(flotte->x - SYSTEM_SPECIAL_X), 2.0) + pow((double)(flotte->y - SYSTEM_SPECIAL_Y), 2.0) < pow((double)10, 2.0)) {
 						//arrivé au centre du systeme
 						if(flotte->action == FLOTTE_CONSTRUIRE_BASE) {
 							SetStationLevel(starSystem_StationGet(systemeStellaires[(int)flotte->systeme]), AVANT_POSTE);
@@ -472,7 +472,7 @@ void EffectuerActionsFlottes(EmpireList* empireListe, StarSystem **systemeStella
 				}
 
 				//calculer si la flotte sort du systeme
-				if(pow((double)(flotte->x - SYSTEM_MIDDLE_X), 2.0) + pow((double)(flotte->y - SYSTEM_MIDDLE_Y), 2.0) > pow((double)SYSTEM_VIEW_RADIUS, 2.0)) {
+				if(pow((double)(flotte->x - SYSTEM_SPECIAL_X), 2.0) + pow((double)(flotte->y - SYSTEM_SPECIAL_Y), 2.0) > pow((double)SYSTEM_VIEW_RADIUS, 2.0)) {
 					if(flotte->avancement >= 1){
 
 						index = 0;

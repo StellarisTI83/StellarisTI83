@@ -64,7 +64,7 @@ void starSystem_SetXY(StarSystem *starSystem, int x, int y);
  * @param starSystem 
  * @return int 
  */
-int starSystem_GetX(StarSystem *starSystem);
+int starSystem_XGet(StarSystem *starSystem);
 
 /**
  * @brief To get the Y position of a star system
@@ -72,7 +72,7 @@ int starSystem_GetX(StarSystem *starSystem);
  * @param starSystem 
  * @return int 
  */
-int starSystem_GetY(StarSystem *starSystem);
+int starSystem_YGet(StarSystem *starSystem);
 
 
 /**
@@ -186,10 +186,8 @@ int GetSystemPlanetCityBuildingLevel(StarSystem *starSystem, int number, int bui
 int CalculateSystemPlanetCityJob(StarSystem *starSystem, int number);
 int GetSystemPlanetCityJob(StarSystem *starSystem, int number);
 
-Planet *GetPlanet(StarSystem *starSystem, int number);
-
 void SetSystemPlanetNumber(StarSystem *starSystem, int number);
-int GetSystemPlanetNumber(StarSystem *starSystem);
+int starSystem_NumberOfPlanetGet(StarSystem *starSystem);
 
 void SetSystemPlanetHabitableNumber(StarSystem *starSystem, int number);
 int GetSystemPlanetHabitableNumber(StarSystem *starSystem);

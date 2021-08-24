@@ -61,7 +61,7 @@ struct FenetreStruct{
 };
 
 /* entry points ======================================================== */
-Camera *camera_Alloc(){
+Camera *camera_Create(){
 	return calloc(1, sizeof(Camera));
 }
 
@@ -97,22 +97,22 @@ int camera_YGet(Camera *camera){
 	return camera->y;
 }
 
-void SetCameraXSystem(Camera *camera, int x){
+void camera_XSystemSet(Camera *camera, int x){
 	camera->xSysteme = x;
 }
-void AddCameraXSystem(Camera *camera, int x){
+void camera_XSystemAdd(Camera *camera, int x){
 	camera->xSysteme += x;
 }
-int GetCameraXSystem(Camera *camera){
+int camera_XSystemGet(Camera *camera){
 	return camera->xSysteme;
 }
-void SetCameraYSystem(Camera *camera, int y){
+void camera_YsystemSet(Camera *camera, int y){
 	camera->ySysteme = y;
 }
-void AddCameraYSystem(Camera *camera, int y){
+void camera_YSystemAdd(Camera *camera, int y){
 	camera->ySysteme += y;
 }
-int GetCameraYSystem(Camera *camera){
+int camera_YSystemGet(Camera *camera){
 	return camera->ySysteme;
 }
 
@@ -136,9 +136,9 @@ int camera_YVectorGet(Camera *camera){
 }
 
 void camera_ZoomSet(Camera *camera, int zoom){
-	if(zoom > 3)
+	if(zoom > ZOOM_MAX)
 		return;
-	if(zoom < 0)
+	if(zoom < ZOOM_MIN)
 		return;
 
 	if(zoom < camera->zoom){
@@ -161,10 +161,10 @@ int GetCameraLockStatus(Camera *camera){
 	return camera->lock;
 }
 
-void SetCameraMapType(Camera *camera, VueType mapType){
+void camera_MapTypeSet(Camera *camera, VueType mapType){
 	camera->mapType = mapType;
 }
-VueType GetCameraMapType(Camera *camera){
+VueType camera_MapTypeGet(Camera *camera){
 	return camera->mapType;
 }
 
@@ -173,6 +173,10 @@ void SetCameraViewedSystem(Camera *camera, int system){
 }
 void SetCameraSystem(Camera *camera, int system){
 	camera->systeme = system;
+	if(camera_SystemAimedGet(camera) != camera_SystemActualGet(camera)){
+		camera_XSystemSet(camera, SYSTEM_MIDDLE_X);
+		camera_YsystemSet(camera, SYSTEM_MIDDLE_Y);
+	}   
 }
 void SetCameraSystemViewStatus(Camera *camera, int status){
 	switch (status) {
@@ -232,7 +236,7 @@ void OpenMenu(Window *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem m
 	camera->lock = true;
 }
 void CloseMenu(Window *fenetre, Camera *camera){
-	fenetre->menu = MENU_AUCUN;
+	fenetre->menu = MENU_NONE;
 	fenetre->menuDetails = MENU_SYSTEME_AUCUN;
 	camera->lock = false;
 }
@@ -246,12 +250,12 @@ MenuSystem GetOpenedMenuDetails(Window *fenetre){
 void OpenCommandPrompt(Window *fenetre, Camera *camera, Time *date){
 	fenetre->commandPrompt = true;
 	camera->lock = true;
-	PauseGame(date);
+	time_Pause(date);
 }
 void CloseCommandPrompt(Window *fenetre, Camera *camera, Time *date){
 	fenetre->commandPrompt = false;
 	camera->lock = false;
-	UnpauseGame(date);
+	time_Unpause(date);
 }
 int GetCommandPromptStatus(Window *fenetre){
 	return fenetre->commandPrompt;

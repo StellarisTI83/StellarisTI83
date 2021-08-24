@@ -1,6 +1,6 @@
 /**
  * @file hud.c
- * @author Cocheril Dimitri (cocheril.dimitri@gmail.com)
+ * @author Cocheril Dimitri (cochgit.dimitri@gmail.com)
  * @brief The hud drawing routines
  * @version 0.1
  * @date 2021-08-21
@@ -102,7 +102,7 @@ static void hud_DrawFlag(){
  */
 static void hud_DrawSpeedIcon(Time *date){
     //pause / avance
-    switch (GetTimeSpeed(date)){
+    switch (speed_TimeGet(date)){
         case TIME_SPEED_VERY_SLOW:
             gfx_SetColor(COLOR_WHITE);
             gfx_FillRectangle_NoClip(100, 225, 3, 9);
@@ -251,8 +251,8 @@ static void hud_PrintInfos( Empire *player,
     }
 
     // name of the system
-    if ((camera_SystemActualGet(camera) != NO_SYSTEM) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
-        if (GetCameraMapType(camera) == VUE_GALACTIC) {
+    if ((camera_SystemActualGet(camera) != NO_SYSTEM) || (camera_MapTypeGet(camera) == VUE_SYSTEM)) {
+        if (camera_MapTypeGet(camera) == VUE_GALACTIC) {
             system = camera_SystemActualGet(camera);
         } else {
             system = camera_SystemAimedGet(camera);
@@ -268,8 +268,13 @@ static void hud_PrintInfos( Empire *player,
         }
     }
 
+    // print fps
     gfx_SetTextXY(LCD_WIDTH - 2 * TEXT_HEIGHT, 1);
     gfx_PrintUInt(time_FPSGet(time), 2);
+    gfx_SetTextXY(LCD_WIDTH - 8 * TEXT_HEIGHT, TEXT_HEIGHT + 2);
+    gfx_PrintUInt(camera_XSystemGet(camera), 3);
+    gfx_PrintString(" ");
+    gfx_PrintUInt(camera_YSystemGet(camera), 3);
 
     hud_DrawSpeedIcon(time);
 }
@@ -284,7 +289,7 @@ static void hud_PrintInfos( Empire *player,
  */
 static void hud_DrawPointer(Camera *camera) {
     //pointeur
-    if (GetCameraMapType(camera) == VUE_MAP) {
+    if (camera_MapTypeGet(camera) == VUE_MAP) {
         gfx_Line_NoClip(camera_XGet(camera) / 2.5 + 5, camera_YGet(camera) / 2.5 - 30, camera_XGet(camera) / 2.5 + 15, camera_YGet(camera) / 2.5 - 30);
         gfx_Line_NoClip(camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 25, camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 35);
         gfx_Circle_NoClip(camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 30, 3);
@@ -315,7 +320,7 @@ static void hud_DrawShapes( Time *date,
     gfx_FillTriangle(0, HUD_HEIGHT, HUD_WIDTH, HUD_HEIGHT, 0, HUD_HEIGHT + HUD_WIDTH);
     
     //bottom bar (date)
-    if (GetTimeSpeed(date) == 0) {
+    if (speed_TimeGet(date) == 0) {
         gfx_SetColor(COLOR_HUD_PAUSE_BACKGROUND);
     }
     
@@ -339,7 +344,7 @@ static void hud_DrawShapes( Time *date,
                         LCD_HEIGHT);                                // y down left
     
     // name above the bottom bar
-    if((camera_SystemActualGet(camera) != NO_SYSTEM) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
+    if((camera_SystemActualGet(camera) != NO_SYSTEM) || (camera_MapTypeGet(camera) == VUE_SYSTEM)) {
         gfx_FillRectangle(  HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x
                             LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y
                             HUD_TIME_BAR_WIDTH - 2 * HUD_NAME_BAR_HEIGHT,           // width
@@ -371,7 +376,7 @@ static void hud_DrawShapes( Time *date,
 
 
     //down bar
-    if (GetTimeSpeed(date) == 0) {
+    if (speed_TimeGet(date) == 0) {
         gfx_SetColor(COLOR_HUD_PAUSE_OUTLINES);
     }
     gfx_HorizLine_NoClip((  LCD_WIDTH - HUD_TIME_BAR_WIDTH)/2,      // x
@@ -389,7 +394,7 @@ static void hud_DrawShapes( Time *date,
                         LCD_HEIGHT);                                // y up   right
     
     //name above the bottom bar
-    if ((camera_SystemActualGet(camera) != NO_SYSTEM) || (GetCameraMapType(camera) == VUE_SYSTEM)) {
+    if ((camera_SystemActualGet(camera) != NO_SYSTEM) || (camera_MapTypeGet(camera) == VUE_SYSTEM)) {
         gfx_HorizLine_NoClip(   HUD_TIME_BAR_OFFSET + HUD_NAME_BAR_HEIGHT,              // x
                                 LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT, // y
                                 HUD_TIME_BAR_WIDTH - 2 * HUD_NAME_BAR_HEIGHT);          // width

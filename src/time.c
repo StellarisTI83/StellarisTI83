@@ -44,7 +44,7 @@ void time_DateSet(Time *time, char d, char m, int y){
     time->month = m;
     time->year = y;
 }
-int GetTimeSpeed(Time *time){
+int speed_TimeGet(Time *time){
     return time->speed;
 }
 void time_SpeedSet(Time *time, gameSpeed speed, int savedSpeed){
@@ -55,11 +55,11 @@ void SetTimeSpeedOnly(Time *time, gameSpeed speed){
     time->speed = speed;
 }
 
-void PauseGame(Time *time){
+void time_Pause(Time *time){
     time->previousSpeed = time->speed;
     time->speed = 0;
 }
-void UnpauseGame(Time *time){
+void time_Unpause(Time *time){
     time->speed = time->previousSpeed;
 }
 
@@ -91,18 +91,18 @@ void IncrementTime(Time *time){
     }
 }
 
-void IncrementTimeSpeed(Time *time) {
+void time_SpeedIncrement(Time *time) {
     time->speed++;
     if(time->speed > TIME_SPEED_VERY_FAST)
         time->speed = TIME_SPEED_VERY_FAST;
 }
-void UnincrementTimeSpeed(Time *time) {
+void time_SpeedUnincrement(Time *time) {
     time->speed--;
     if(time->speed < TIME_SPEED_VERY_SLOW)
         time->speed = TIME_SPEED_VERY_SLOW;
 }
 
-void UpdateClock(Time *time) {
+void time_Update(Time *time) {
 	switch (time->speed) {
 		case TIME_SPEED_VERY_SLOW:
 			time->tick ++;
