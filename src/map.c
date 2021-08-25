@@ -204,7 +204,7 @@ static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, Empir
 	//dessiner carte
 	gfx_SetTextConfig(gfx_text_clip);
 	SetCameraViewedSystem(camera, -1);
-	while (i < (GALAXY_WIDTH * GALAXY_WIDTH) - 1) {
+	while (i < (GALAXY_WIDTH * GALAXY_WIDTH)) {
 		hyperLane1 = 255;
 		hyperLane2 = 255;
 		hyperLane3 = 255;
@@ -519,7 +519,7 @@ static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera
 	y = planet_YGet(planete) - camera_YSystemGet(camera);
 	gfx_SetColor(11);
 	gfx_Circle(SYSTEM_SPECIAL_X - camera_XSystemGet(camera), SYSTEM_SPECIAL_Y - camera_YSystemGet(camera), planet_OrbitRadiusGet(planete));
-	CouleurPlanete(GetPlanetType(planete));
+	CouleurPlanete(planet_TypeGet(planete));
 	gfx_FillCircle(x, y, planet_SizeGet(planete));
 	gfx_SetTextFGColor(1);
 	if(((50 < x) && (x < 310)) && ((10 < y) && (y < 220))){

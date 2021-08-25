@@ -45,7 +45,7 @@ void GenericList_Free(GenericList *list) {
     free(list);
 }
 
-int GenericList_ArraySize(GenericList *list) {
+int GenericList_ArraySize(const GenericList *list) {
     GenericListElement *cell;
     int size = 0;
     if(!list)
@@ -88,7 +88,7 @@ void GenericCell_Add(GenericList *list, void *info) {
     }
 }
 
-void *GenericCell_Get(GenericList *list, int index) {
+void *GenericCell_Get(const GenericList *list, const int index) {
     GenericListElement *cell = list->firstElement;
     int  actualCell = 0;
     while(cell != NULL){
@@ -133,7 +133,7 @@ void GenericCell_Free(GenericList *list, int index) {
     }
 }
 
-int GenericCell_GetNumber(GenericList *list, void *info) {
+int GenericCell_GetNumber(const GenericList *list, const void *info) {
     GenericListElement *temporaryCell;
     int  actualCell = 0;
     

@@ -30,7 +30,7 @@ void GenericList_Free(GenericList *list);
  * @param list  The generic list to size
  * @return int 
  */
-int GenericList_ArraySize(GenericList *list);
+int GenericList_ArraySize(const GenericList *list);
 
 
 
@@ -49,7 +49,7 @@ void GenericCell_Add(GenericList *list, void *info);
  * @param index 
  * @return void* GenericCell content
  */
-void *GenericCell_Get(GenericList *list, int index);
+void *GenericCell_Get(const GenericList *list, const int index);
 
 /**
  * @brief Free the generic cell. Don't free the content
@@ -65,6 +65,6 @@ void GenericCell_Free(GenericList *list, int index);
  * @param list  The generic list
  * @param index The index of the cell
  */
-int GenericCell_GetNumber(GenericList *list, void *info);
+int GenericCell_GetNumber(const GenericList *list, const void *info);
 
 #endif

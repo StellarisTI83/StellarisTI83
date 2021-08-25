@@ -41,13 +41,13 @@ static void newGame_Initialize( EmpireList **empireListe,
     *time = time_Alloc();
     time_DateSet(*time, NEW_GAME_START_DAY, NEW_GAME_START_MONTH, NEW_GAME_START_YEAR);
     time_SpeedSet(*time, 0, 1);
-    AddTimeClock(*time);
+    time_TickIncrement(*time);
 
     *camera = camera_Create();
     camera_XVectorSet(*camera, 0);
     camera_YVectorSet(*camera, 0);
-    camera_XSystemSet(camera, SYSTEM_MIDDLE_X);
-    camera_YsystemSet(camera, SYSTEM_MIDDLE_Y);
+    camera_XSystemSet(*camera, SYSTEM_MIDDLE_X);
+    camera_YsystemSet(*camera, SYSTEM_MIDDLE_Y);
     
     camera_ZoomSet(*camera, ZOOM_MAX);
     camera_MapTypeSet(*camera, VUE_SYSTEM);
@@ -65,7 +65,7 @@ static void newGame_Initialize( EmpireList **empireListe,
 
 void newGame_Start(){
     EmpireList *empireListe = NULL;
-    StarSystem *starSystem[GALAXY_WIDTH * GALAXY_WIDTH];
+    StarSystem *galaxy[GALAXY_WIDTH * GALAXY_WIDTH];
     Window *window = NULL;
     Settings *settings = NULL;
     Camera *camera = NULL;
@@ -79,24 +79,24 @@ void newGame_Start(){
 
     newGame_Initialize(&empireListe, &settings, &time, &camera, &window);
     
-    galaxy_CreateNew(starSystem);
+    galaxy_CreateNew(galaxy);
 	settings_EmpireNumberSet(settings, 4);
 
-	galaxy_StartEmpiresInitialize(settings, empireListe, starSystem, camera);
-	UpdatePlayersData(false, empireListe, starSystem, notificationList);
+	galaxy_StartEmpiresInitialize(settings, empireListe, galaxy, camera);
+	UpdatePlayersData(false, empireListe, galaxy, notificationList);
 
 	gfx_SetDrawBuffer();
     game_MainLoop(  empireListe, 
                     settings, 
                     time, 
-                    starSystem, 
+                    galaxy, 
                     camera, 
                     window, 
                     market, 
                     notificationList);
 
     game_Close( empireListe, 
-                starSystem, 
+                galaxy, 
                 settings, 
                 time, 
                 camera, 
@@ -106,7 +106,7 @@ void newGame_Start(){
 }
 
 void game_Close(EmpireList *empireListe, 
-                StarSystem **starSystem,
+                StarSystem **galaxy,
                 Settings *settings, 
                 Time *time,
                 Camera *camera,
@@ -117,11 +117,11 @@ void game_Close(EmpireList *empireListe,
     if(empireListe)
         empire_ListFree(empireListe);
 
-    if(starSystem){
+    if(galaxy){
         index = 0;
         while(index < GALAXY_WIDTH * GALAXY_WIDTH){
-            if(starSystem[index])
-                free(starSystem[index]);
+            if(galaxy[index])
+                free(galaxy[index]);
             index++;
         }
         #ifdef DEBUG_VERSION

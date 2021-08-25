@@ -43,9 +43,9 @@ typedef struct VecteurStruct Vecteur;
 
 FlotteListe* CreerFlotteListe();
 void SupprimerFlotteListe(FlotteListe* flotteliste);
-int FleetArraySize(FlotteListe* flotteListe);
-Flotte* FlotteNumero(FlotteListe* flotteliste, int numero);
-int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte);
+int FleetArraySize(const FlotteListe* flotteListe);
+Flotte* FlotteNumero(const FlotteListe* flotteliste, const int numero);
+int RecupererFlotteNumero(const FlotteListe* flotteliste, const Flotte* flotte);
 Flotte* AjouterFlotte(FlotteListe* flotteliste);
 void SupprimerFlotte(FlotteListe* flotteliste, int numero);
 
@@ -84,7 +84,7 @@ int GetFleetArriveSystem(Flotte *flotte);
 
 void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *fenetre, Camera *camera, EmpireList *empireListe, StarSystem **systemeStellaires);
 int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires);
-void EffectuerActionsFlottes(EmpireList* empireListe, StarSystem **systemeStellaires);
+void fleet_ActionsUpdate(EmpireList* empireListe, StarSystem **systemeStellaires);
 
 FleetTemplateListe* fleet_TemplateListCreate();
 void fleet_TemplateListFree(FleetTemplateListe* flotteliste);

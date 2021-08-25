@@ -114,21 +114,21 @@ void SupprimerFlotteListe(FlotteListe* flotteliste) {
 /**
  * Renvoi nombre de flottes
  */
-int FleetArraySize(FlotteListe* flotteListe){
+int FleetArraySize(const FlotteListe* flotteListe){
 	return GenericList_ArraySize((GenericList*)flotteListe);
 }
 
 /**
  *Renvoi un pointeur vers la flotte numero x, commence à 1
  */
-Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
+Flotte* FlotteNumero(const FlotteListe* flotteliste, const int numero) {
 	return GenericCell_Get((GenericList*)flotteliste, numero);
 }
 
 /**
  *Renvoi le numéro de la flotte suivant son pointeur
  */
-int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte) {
+int RecupererFlotteNumero(const FlotteListe* flotteliste, const Flotte* flotte) {
 	return GenericCell_GetNumber((GenericList*)flotteliste, flotte);
 }
 
@@ -438,7 +438,7 @@ int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires){
 /**
  * Fait effectuer les action des flottes
  */
-void EffectuerActionsFlottes(EmpireList* empireListe, StarSystem **systemeStellaires){
+void fleet_ActionsUpdate(EmpireList* empireListe, StarSystem **systemeStellaires){
 	Empire* empire = NULL; 
 	Flotte* flotte = NULL;
 	int index = 0, numeroEmpire = 0;

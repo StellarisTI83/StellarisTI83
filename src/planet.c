@@ -154,7 +154,7 @@ void planet_HabitabilitySet(Planet *planet, int habitability){
     else
         planet->flags = (planet->flags | !F_HABITABLE);
 }
-int planet_HabitabilityGet(Planet *planet){
+int planet_HabitabilityGet(const Planet *planet){
     if((planet->flags & F_HABITABLE) != 0)
         return true;
     else
@@ -164,7 +164,7 @@ int planet_HabitabilityGet(Planet *planet){
 void planet_OrbitRadiusSet(Planet *planet, int orbitRadius){
     planet->orbitRadius = orbitRadius;
 }
-int planet_OrbitRadiusGet(Planet *planet){
+int planet_OrbitRadiusGet(const Planet *planet){
     return planet->orbitRadius;
 }
 
@@ -172,24 +172,24 @@ void planet_PositionSet(Planet *planet, int x, int y){
     planet->x = x;
     planet->y = y;
 }
-int planet_XGet(Planet *planet){
+int planet_XGet(const Planet *planet){
     return planet->x;
 }
-int planet_YGet(Planet *planet){
+int planet_YGet(const Planet *planet){
     return planet->y;
 }
 
 void planet_TypeSet(Planet *planet, PlanetType type){
     planet->planetType = type;
 }
-PlanetType GetPlanetType(Planet *planet){
+PlanetType planet_TypeGet(const Planet *planet){
     return planet->planetType;
 }
 
 void planet_SizeSet(Planet *planet, int radius){
     planet->size = radius;
 }
-int planet_SizeGet(Planet *planet){
+int planet_SizeGet(const Planet *planet){
     return planet->size;
 }
 
@@ -365,7 +365,7 @@ int GetPlanetCityJob(Planet *planet){
         return 0;
 }
 
-int planet_CriminalityGet(Planet *planet){
+int planet_CriminalityGet(const Planet *planet){
     if(planet->city)
         return planet->city->criminatlitee;
     else 
@@ -378,7 +378,7 @@ int GetPlanetCityAmienties(Planet *planet){
     else 
         return 0;
 }
-
+ 
 
 
 // City functions
@@ -391,7 +391,7 @@ City *planet_CityCreate(Planet *planet){
         return NULL;
 }
 
-City *planet_CityGet(Planet *planet){
+City *planet_CityGet(const Planet *planet){
     if(planet)
         return planet->city;
     else
@@ -402,7 +402,7 @@ void city_PopulationSet(City *city, int population){
     if(city)
         city->population = population;
 }
-int city_PopulationGet(City *city){
+int city_PopulationGet(const City *city){
     if(city)
         return city->population;
     else
@@ -422,7 +422,7 @@ void city_UrbanDistrictAdd(City *city, int urban){
     if(city)
         city->districtUrban += urban;
 }
-int city_UrbanDistrictGet(City *city){
+int city_UrbanDistrictGet(const City *city){
     if(city)
         return city->districtUrban;
     else
@@ -433,7 +433,7 @@ void city_GeneratorDistrictAdd(City *city, int generator){
     if(city)
         city->districtGenerator += generator;
 }
-int city_GeneratorDistrictGet(City *city){
+int city_GeneratorDistrictGet(const City *city){
     if(city)
         return city->districtGenerator;
     else
@@ -444,7 +444,7 @@ void city_MiningDistrictAdd(City *city, int mining){
     if(city)
         city->districtMining += mining;
 }
-int city_MiningDistrictGet(City *city){
+int city_MiningDistrictGet(const City *city){
     if(city)
         return city->districtMining;
     else
@@ -455,7 +455,7 @@ void city_AgricultureDistrictAdd(City *city, int agriculture){
     if(city)
         city->districtAgriculture += agriculture;
 }
-int city_AgricultureDistrictGet(City *city){
+int city_AgricultureDistrictGet(const City *city){
     if(city)
         return city->districtAgriculture;
     else
@@ -491,7 +491,7 @@ void city_BuildingSet(City *city, Building building, int index, int level){
                 break;
         }
 }
-Building city_BuildingGet(City *city, int index){
+Building city_BuildingGet(const City *city, int index){
     if(city)
         switch(index){
             case 0:
@@ -519,7 +519,7 @@ Building city_BuildingGet(City *city, int index){
     else
         return 0;
 }
-int city_BuildingLevelGet(City *city, int index){
+int city_BuildingLevelGet(const City *city, int index){
     if(city)
         switch(index){
             case 0:
@@ -575,19 +575,19 @@ int city_JobUpdate(City *city){
     else 
         return 0;
 }
-int city_JobGet(City *city){
+int city_JobGet(const City *city){
     if(city)
         return city->job;
     else 
         return 0;
 }
-int city_CriminalityGet(City *city){
+int city_CriminalityGet(const City *city){
     if(city)
         return city->criminatlitee;
     else
         return 0;
 }
-int city_AmentiesGet(City *city){
+int city_AmentiesGet(const City *city){
     if(city)
         return city->amienties;
     else

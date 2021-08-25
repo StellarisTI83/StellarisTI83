@@ -63,10 +63,10 @@ void time_Unpause(Time *time){
     time->speed = time->previousSpeed;
 }
 
-void AddTimeClock(Time *time){
+void time_TickIncrement(Time *time){
     time->tick++;
 }
-int GetTimeClock(Time *time){
+int time_TickGet(Time *time){
     return time->tick;
 }
 int GetTimeDay(Time *time){

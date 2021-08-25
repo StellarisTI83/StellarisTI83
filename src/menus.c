@@ -2930,10 +2930,10 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_Rectangle_NoClip(45, 151, 120, 13);
 	gfx_TransparentSprite_NoClip(attitude_icon, 48, 152);
 	gfx_SetTextXY(58, 154);
-	if(RelationGetAttitude(relations) < ATTITUDE_NEUTRAL){
+	if(RelationGetAttitude(relations) < BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(3);
 	}
-	else if(RelationGetAttitude(relations) > ATTITUDE_NEUTRAL){
+	else if(RelationGetAttitude(relations) > BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(19);
 	}
 	else{
@@ -2943,22 +2943,22 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 		default:
 			gfx_PrintString("Erreur_inconnu");
 			break;
-		case ATTITUDE_HOSTILE:
+		case BEHAVIOR_HOSTILE:
 			gfx_PrintString("Hostile");
 			break;
-		case ATTITUDE_SUSPICIOUS:
+		case BEHAVIOR_SUSPICIOUS:
 			gfx_PrintString("Suspicious");
 			break;
-		case ATTITUDE_NEUTRAL:
+		case BEHAVIOR_NEUTRAL:
 			gfx_PrintString("Neutral");
 			break;
-		case ATTITUDE_CORDIAL:
+		case BEHAVIOR_CORDIAL:
 			gfx_PrintString("Cordial");
 			break;
-		case ATTITUDE_FRIENDLY:
+		case BEHAVIOR_FRIENDLY:
 			gfx_PrintString("Friendly");
 			break;
-		case ATTITUDE_PROTECTIVE:
+		case BEHAVIOR_PROTECTIVE:
 			gfx_PrintString("Protective");
 			break;
 	}
@@ -2967,21 +2967,21 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(45, 167, 120, 13);
 	gfx_TransparentSprite_NoClip(pact_icon, 48, 169);
-	if(RelationGetAttitude(relations) < ATTITUDE_NEUTRAL){
+	if(RelationGetAttitude(relations) < BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(3);
 	}
-	else if(RelationGetAttitude(relations) > ATTITUDE_NEUTRAL){
+	else if(RelationGetAttitude(relations) > BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(19);
 	}
 	else{
 		gfx_SetTextFGColor(13);
 	}
 	niveauX = 58;
-	if(RelationGetPacteStatus(relations, PACTE_NON_AGRESSION)){
+	if(RelationGetPacteStatus(relations, AGREEMENT_NON_AGRESSION)){
 		gfx_TransparentSprite_NoClip(attitude_icon, niveauX, 168);
 		niveauX += 13;
 	}
-	if(RelationGetPacteStatus(relations, PACTE_RECHERCHE)){
+	if(RelationGetPacteStatus(relations, AGREEMENT_RESEARCH)){
 		gfx_TransparentSprite_NoClip(science, niveauX, 168);
 		niveauX += 13;
 	}
@@ -3062,10 +3062,10 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 					*key = 0;
 					break;
 				case 5:
-					RelationSetPacte(relations, PACTE_NON_AGRESSION);
+					RelationSetPacte(relations, AGREEMENT_NON_AGRESSION);
 					break;
 				case 6:
-					RelationSetPacte(relations, PACTE_RECHERCHE);
+					RelationSetPacte(relations, AGREEMENT_RESEARCH);
 					break;
 				default:
 					break;

@@ -27,11 +27,11 @@ struct EmpireStruct {
     char couleur; //couleur sur la map
     int espece;
     int vetements;
-    Gouvernement gouvernement;
+    Governement gouvernement;
 
-    Principe principe1;
-    Principe principe2;
-    Principe principe3;
+    Ethic principe1;
+    Ethic principe2;
+    Ethic principe3;
 
     int credits;
     int creditsChange;
@@ -50,7 +50,7 @@ struct EmpireStruct {
 
     int systemeCapitale;
 
-    FlotteListe* flotte;
+    FlotteListe* fleet;
     RelationsListe* relationsListe;
 };
 
@@ -58,7 +58,7 @@ struct RelationsStruct {
     Empire* empire;
     int opinion;
     char opinionChange;
-    Attitude attitude;
+    Behavior attitude;
     char accords;
 };
 
@@ -92,86 +92,130 @@ char * empireNamePrefix[] = {
 
 /* entry points ======================================================== */
 
-/**
- * Crée une liste d'empires
- */
 EmpireList* empire_ListCreate() {
     return (EmpireList*)GenericList_Create();
 }
 
-/**
- * Supprime une liste d'empire
- */
-void empire_ListFree(EmpireList* empireListe) {
+void empire_ListFree(EmpireList* empireList) {
     Empire *empire = NULL;
-    int i = 0;
-    if(!empireListe)
-        return;
-    empire = GenericCell_Get((GenericList*)empireListe, i);
-    while(empire != NULL) {
+    int index = 0;
+    if(empireList)
+        empire = GenericCell_Get((GenericList*)empireList, index);
+    else{
         #ifdef DEBUG_VERSION
-        dbg_sprintf(dbgout, "Free empire %d", i);
+        dbg_sprintf(dbgerr, "Error trying free empire list : no empireList\n");
         #endif
-        if(empire->flotte)
-            SupprimerFlotteListe(empire->flotte);
-        free(empire);
-        i++;
-        empire = GenericCell_Get((GenericList*)empireListe, i);
+        return;
     }
-    GenericList_Free((GenericList*)empireListe);
+
+    while(empire) {
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Free empire %d", index);
+        #endif
+
+        if(empire->fleet)
+            SupprimerFlotteListe(empire->fleet);
+        
+        if(empire->relationsListe)
+            RelationListeSupprimer(empire->relationsListe);
+
+        free(empire);
+        index++;
+        empire = GenericCell_Get((GenericList*)empireList, index);
+    }
+    GenericList_Free((GenericList*)empireList);
 }
 
-/**
- * Renvoi nombre d'empires
- */
-int empire_ArraySize(EmpireList* empireListe){
-    return GenericList_ArraySize((GenericList*)empireListe);
+int empire_ArraySize(const EmpireList* empireList){
+    if(empireList)
+        return GenericList_ArraySize((GenericList*)empireList);
+    else {
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying array size empire list : no empireList\n");
+        #endif
+        return 0;
+    }
 }
 
-/**
- * Renvoi un pointeur vers l'empire numero x
- */
-Empire* empire_Get(EmpireList* empireListe, int numero) {
-    return (Empire*)GenericCell_Get((GenericList*)empireListe, numero);
+Empire* empire_Get(const EmpireList* empireList, const int numero) {
+    if(empireList)
+        return (Empire*)GenericCell_Get((GenericList*)empireList, numero);
+    else {
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying get empire in empire list : no empireList\n");
+        #endif
+        return NULL;
+    }
 }
 
-/**
- * Rajoute un empire à la liste des empire
- */
-Empire* empire_Add(EmpireList* empireListe) {
-    Empire *pointeur = NULL;
-    pointeur = calloc(1, sizeof(Empire));
-    GenericCell_Add((GenericList*)empireListe, pointeur);
-    return pointeur;
+Empire* empire_Add(EmpireList* empireList) {
+    Empire *empire;
+    if(!empireList){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying add empire in empire list : no empireList\n");
+        #endif
+        return NULL;
+    }
+    empire = calloc(1, sizeof(Empire));
+    if(!empire){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Cannot malloc\n");
+        #endif
+        exit(EXIT_FAILURE);
+    }
+    GenericCell_Add((GenericList*)empireList, empire);
+    return empire;
 }
 
-/**
- *Supprime l'empire numero x à la liste des empires
- */
-void empire_Free(EmpireList* empireListe, int numero) {
-    Empire *empire = GenericCell_Get((GenericList*)empireListe, numero);
+void empire_Free(EmpireList* empireList, int numero) {
+    Empire *empire;
+
+    if(empireList)
+        empire = GenericCell_Get((GenericList*)empireList, numero);
+    else{
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying free empire : no empireList\n");
+        #endif
+        return;
+    }
+
+    if(!empire){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying free empire : no empire number %d\n", numero);
+        #endif
+        return;
+    }
+
     #ifdef DEBUG_VERSION
     dbg_sprintf(dbgout, "Free empire %d", numero);
     #endif
-    SupprimerFlotteListe(empire->flotte);
+
+    if(empire->fleet)
+        SupprimerFlotteListe(empire->fleet);
+
+    if(empire->relationsListe)
+        RelationListeSupprimer(empire->relationsListe);
+
     free(empire);
-    GenericCell_Free((GenericList*)empireListe, numero);
+    GenericCell_Free((GenericList*)empireList, numero);
 }
 
-/**
- * Crèe une liste de flotte d'empire
- */
 void empire_FleetListCreate(Empire *empire){
-    empire->flotte = CreerFlotteListe();
-    if(empire->flotte == NULL){
-        exit(EXIT_FAILURE);
+    if(!empire){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying create empire fleet : empire NULL\n");
+        #endif
+        return;
     }
+    empire->fleet = CreerFlotteListe();
+    if(!empire->fleet)
+        exit(EXIT_FAILURE);
 }
 void empire_FleetAdd(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
-    NouvelleFlotte(empire->flotte, systeme, type, nombreDeCorvettes, nombreDeDestroyers, nombreDeCroiseurs, nombreDeCuirasses);
+    NouvelleFlotte(empire->fleet, systeme, type, nombreDeCorvettes, nombreDeDestroyers, nombreDeCroiseurs, nombreDeCuirasses);
 }
 FlotteListe *empire_FleetListGet(Empire *empire){
-    return empire->flotte;
+    return empire->fleet;
 }
 
 /**
@@ -193,13 +237,13 @@ RelationsListe *EmpireRelationGetArray(Empire *empire){
 /**
  * Change le gouvernement
  */
-void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement){
+void SetEmpireGouvernement(Empire *empire, Governement gouvernement){
     empire->gouvernement = gouvernement;
 }
 /**
  * Recuperer l'espèce
  */
-Gouvernement GetEmpireGouvernement(Empire *empire){
+Governement GetEmpireGouvernement(Empire *empire){
     return empire->gouvernement;
 }
 
@@ -213,7 +257,7 @@ int GetEmpireSystemCapital(Empire *empire){
 /**
  * Change la couleur
  */
-void empire_ColorSet(Empire *empire, Gouvernement couleur){
+void empire_ColorSet(Empire *empire, Governement couleur){
     empire->couleur = couleur;
 }
 /**
@@ -226,7 +270,7 @@ int GetEmpireColor(Empire *empire){
 /**
  * Changer les principes
  */
-void SetEmpirePrincipes(Empire *empire, Principe principe1, Principe principe2, Principe principe3){
+void SetEmpirePrincipes(Empire *empire, Ethic principe1, Ethic principe2, Ethic principe3){
     empire->principe1 = principe1;
     empire->principe2 = principe2;
     empire->principe3 = principe3;
@@ -234,7 +278,7 @@ void SetEmpirePrincipes(Empire *empire, Principe principe1, Principe principe2, 
 /**
  * Recuperer l'espèce
  */
-Principe GetEmpirePrincipes(Empire *empire, int numero){
+Ethic GetEmpirePrincipes(Empire *empire, int numero){
     switch(numero){
     case 1:
         return empire->principe1;
@@ -433,15 +477,15 @@ void empire_NameGenerate(Empire *empire){
     nomInt = randInt(0, (sizeof(empireNamePrefix)/sizeof(empireNamePrefix[0])) - 1);
     strcpy(name, empireNamePrefix[nomInt]);
     switch(empire->gouvernement){
-        case DEMOCRATIE:
+        case GOVENEMENT_DEMOCRATIC:
             nomInt = randInt(0, (sizeof(empireNamePostFixDemocratic)/sizeof(empireNamePostFixDemocratic[0])) - 1);
             strcat(name, empireNamePostFixDemocratic[nomInt]);
             break;
-        case OLIGARCHIE:
+        case GOVERNEMENT_OLIGARCHIC:
             nomInt = randInt(0, (sizeof(empireNamePostFixOligarchic)/sizeof(empireNamePostFixOligarchic[0])) - 1);
             strcat(name, empireNamePostFixOligarchic[nomInt]);
             break;
-        case DICTATORIALE:
+        case GOVERNEMENT_DICTATORIAL:
             nomInt = randInt(0, (sizeof(empireNamePostFixDictatorial)/sizeof(empireNamePostFixDictatorial[0])) - 1);
             strcat(name, empireNamePostFixDictatorial[nomInt]);
             break;
@@ -454,7 +498,7 @@ void empire_NameGenerate(Empire *empire){
 }
 
 void CalculateEmpirePower(Empire *empire){
-    empire->PuissanceMilitaire = CalculateFleetPower(empire->flotte);
+    empire->PuissanceMilitaire = CalculateFleetPower(empire->fleet);
     empire->PuissanceScientifique = 0;
     empire->PuissanceEconomique = empire->credits + empire->creditsChange * 3 + empire->minerais  + empire->mineraisChange * 3 + empire->acier + empire->acierChange * 3;
 }
@@ -480,35 +524,35 @@ RelationsListe* RelationListeCreer() {
 /**
  * Met à jour toutes les listes de relations
  */
-void ai_RelationsUpdate(EmpireList* empireListe) {
+void ai_RelationsUpdate(EmpireList* empireList) {
     Empire* empire;
     int index = 0;
-    empire = empire_Get(empireListe, index);
+    empire = empire_Get(empireList, index);
     while(empire != NULL) {
         empire->relationsListe = RelationListeCreer();
-        RelationListeUpdate(empire->relationsListe, empireListe);
+        RelationListeUpdate(empire->relationsListe, empireList);
         #ifdef DEBUG_VERSION
             dbg_sprintf(dbgout, "Empire list %d updated : %p \n", index, empire->relationsListe);
         #endif
         index++;
-        empire = empire_Get(empireListe, index);
+        empire = empire_Get(empireList, index);
     }
 }
 
 /**
  * Met à jour une liste de relations
  */
-void RelationListeUpdate(RelationsListe* relationsListe, EmpireList* empireListe) {
+void RelationListeUpdate(RelationsListe* relationsListe, EmpireList* empireList) {
     Empire* empire;
     Relations* relations;
     int index = 0;
-    empire = empire_Get(empireListe, 0);
+    empire = empire_Get(empireList, 0);
     while(empire != NULL) {
         relations = RelationAjouter(relationsListe);
         relations->empire = empire;
         relations->opinion = 0;
         index++;
-        empire = empire_Get(empireListe, index);
+        empire = empire_Get(empireList, index);
     }
 }
 
@@ -551,7 +595,7 @@ void RelationSupprimer(RelationsListe* relationsListe, int numero) {
 int RelationGetOpinion(Relations* relations) {
     return relations->opinion;
 }
-Attitude RelationGetAttitude(Relations* relations) {
+Behavior RelationGetAttitude(Relations* relations) {
     return relations->attitude;
 }
 
@@ -567,10 +611,10 @@ void RelationGuerreDeclarer(Relations* relations) {
 void RelationInsulter(Relations* relations) {
     relations->opinion -= 200;
 }
-void RelationSetPacte(Relations* relations, Pacte pacte) {
+void RelationSetPacte(Relations* relations, Agreements pacte) {
     relations->accords = (relations->accords | pacte);
 }
-Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte) {
+Agreements RelationGetPacteStatus(Relations* relations, Agreements pacte) {
     if(relations->accords & pacte) {
         return true;
     }
@@ -584,7 +628,7 @@ Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte) {
 
 /*Empires AI*/
 
-static void PlanetaryAI(EmpireList *empireListe, StarSystem **systemeStellaires){
+static void PlanetaryAI(EmpireList *empireList, StarSystem **systemeStellaires){
     int systemeNumero = 0;
     int planeteNumero = 0;
     int taille = 0;
@@ -593,7 +637,7 @@ static void PlanetaryAI(EmpireList *empireListe, StarSystem **systemeStellaires)
     while(systemeNumero < GALAXY_WIDTH * GALAXY_WIDTH){
         if(starSystem_EmpireGet(systemeStellaires[systemeNumero]) != 0){
             planeteNumero = 0;
-            empire = empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[systemeNumero]));
+            empire = empire_Get(empireList, starSystem_EmpireGet(systemeStellaires[systemeNumero]));
             taille = starSystem_NumberOfPlanetGet(systemeStellaires[systemeNumero]);
             while(planeteNumero < taille){
                 if(planet_CityGet(starSystem_PlanetGet(systemeStellaires[systemeNumero], planeteNumero))){
@@ -608,7 +652,7 @@ static void PlanetaryAI(EmpireList *empireListe, StarSystem **systemeStellaires)
     }
 }
 
-static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireList *empireListe, StarSystem **systemeStellaires, Time *date){
+static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireList *empireList, StarSystem **systemeStellaires, Time *date){
     if(GetTimeYear(date) < 2300){
         //constuire flotte scientifique
         if(GetEmpireAlloys(empire) >= 100){
@@ -631,7 +675,7 @@ static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireList *empire
     }
 }
 
-static void EmpireAICivilianFleet(Empire *empire, EmpireList *empireListe, Flotte *flotte, StarSystem **systemeStellaires){
+static void EmpireAICivilianFleet(Empire *empire, EmpireList *empireList, Flotte *flotte, StarSystem **systemeStellaires){
     if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
         // int systeme = GetFleetSystem(flotte);
         if(GetFleetType(flotte) == FLOTTE_SCIENTIFIQUE){
@@ -653,11 +697,11 @@ static void EmpireAICivilianFleet(Empire *empire, EmpireList *empireListe, Flott
     }
 }
 
-static void EmpireAIMilitaryFleet(Empire *empire, EmpireList *empireListe, Flotte *flotte, StarSystem **systemeStellaires){
+static void EmpireAIMilitaryFleet(Empire *empire, EmpireList *empireList, Flotte *flotte, StarSystem **systemeStellaires){
 
 }
 
-static void EmpireAIFleetManager(Empire *empire, EmpireList *empireListe, StarSystem **systemeStellaires){
+static void EmpireAIFleetManager(Empire *empire, EmpireList *empireList, StarSystem **systemeStellaires){
     FlotteListe *flotteListe = empire_FleetListGet(empire);
     int tailleFlotte = FleetArraySize(flotteListe);
     if(tailleFlotte > 0){
@@ -667,30 +711,30 @@ static void EmpireAIFleetManager(Empire *empire, EmpireList *empireListe, StarSy
         while(compteurFlotte < tailleFlotte){
             flotte = FlotteNumero(flotteListe, compteurFlotte);
             if(GetFleetType(flotte) == FLOTTE_MILITAIRE)
-                EmpireAIMilitaryFleet(empire, empireListe, flotte, systemeStellaires);
+                EmpireAIMilitaryFleet(empire, empireList, flotte, systemeStellaires);
             
             else
-                EmpireAICivilianFleet(empire, empireListe, flotte, systemeStellaires);
+                EmpireAICivilianFleet(empire, empireList, flotte, systemeStellaires);
 
             compteurFlotte++;
         }
     }
 }
 
-void EmpireAI(EmpireList *empireListe, StarSystem **systemeStellaires, Time *date){
+void EmpireAI(EmpireList *empireList, StarSystem **systemeStellaires, Time *date){
     Empire *empire = NULL;
     int empireCounter = 1;
     int empireTotalNumber = 0;
 
-    PlanetaryAI(empireListe, systemeStellaires);
+    PlanetaryAI(empireList, systemeStellaires);
 
-    empireTotalNumber = empire_ArraySize(empireListe);
+    empireTotalNumber = empire_ArraySize(empireList);
     while(empireCounter < empireTotalNumber){
-        empire = empire_Get(empireListe, empireCounter);
+        empire = empire_Get(empireList, empireCounter);
 
-        EmpireAIEconomy(empireCounter, empire, empireListe, systemeStellaires, date);
+        EmpireAIEconomy(empireCounter, empire, empireList, systemeStellaires, date);
 
-        EmpireAIFleetManager(empire, empireListe, systemeStellaires);
+        EmpireAIFleetManager(empire, empireList, systemeStellaires);
 
         empireCounter++;
     }
@@ -738,9 +782,9 @@ void empire_Generate(   Empire *empire,
     city_BuildingSet(city, BUILDING_FOUNDRIES, 3, 1);
 
     empire_FleetListCreate(empire);
-    empire_FleetAdd(empire, systemIndex, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-    empire_FleetAdd(empire, systemIndex, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-    empire_FleetAdd(empire, systemIndex, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+    NouvelleFlotte(empire->fleet, systemIndex, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+    NouvelleFlotte(empire->fleet, systemIndex, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+    NouvelleFlotte(empire->fleet, systemIndex, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 
     CalculateEmpirePower(empire);
     #ifdef DEBUG_VERSION

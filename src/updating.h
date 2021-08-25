@@ -17,7 +17,7 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
  * 
  * @param key 
  * @param empireList 
- * @param starSystem 
+ * @param galaxy 
  * @param time 
  * @param camera 
  * @param window 
@@ -27,7 +27,7 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
  */
 int game_Update( char *key, 
                 EmpireList *empireList, 
-                StarSystem **starSystem, 
+                StarSystem **galaxy, 
                 Time *time, 
                 Camera *camera, 
                 Window *window, 
@@ -37,8 +37,10 @@ int game_Update( char *key,
 /**
  * @brief Update all the intel levels
  * 
- * @param starSystem the galaxy
+ * @param galaxy the galaxy
  * @param empireList 
  */
-void update_IntelLevel(StarSystem **starSystem, EmpireList *empireList);
+void update_IntelLevel( StarSystem **galaxy, 
+                        const EmpireList *empireList);
+                        
 #endif

@@ -60,26 +60,26 @@ typedef struct PlanetStruct Planet;
 Planet* planet_Alloc();
 
 void    planet_HabitabilitySet(Planet *planete, int habitability);
-int     planet_HabitabilityGet(Planet *planete);
+int     planet_HabitabilityGet(const Planet *planete);
 
 void    planet_OrbitRadiusSet(Planet *planete, int orbitRadius);
-int     planet_OrbitRadiusGet(Planet *planete);
+int     planet_OrbitRadiusGet(const Planet *planete);
 
 void    planet_PositionSet(Planet *planete, int x, int y);
-int     planet_XGet(Planet *planete);
-int     planet_YGet(Planet *planete);
+int     planet_XGet(const Planet *planete);
+int     planet_YGet(const Planet *planete);
 
 void    planet_TypeSet(Planet *planete, PlanetType type);
-PlanetType  GetPlanetType(Planet *planete);
+PlanetType  planet_TypeGet(const Planet *planete);
 
 void    planet_SizeSet(Planet *planete, int radius);
-int     planet_SizeGet(Planet *planete);
+int     planet_SizeGet(const Planet *planete);
 
 void    planet_NameGenerate(Planet *planete);
 char*   planet_NameGet(Planet *planete);
 
 City*   planet_CityCreate(Planet *planete);
-City*   planet_CityGet(Planet *planete);
+City*   planet_CityGet(const Planet *planete);
 
 void    SetPlanetCityPopulation(Planet *planete, int population)    __attribute__((deprecated("use planet_CityGet")));
 int     GetPlanetCityPopulation(Planet *planete)                    __attribute__((deprecated("use planet_CityGet")));
@@ -104,7 +104,7 @@ int     GetPlanetCityBuildingLevel(Planet *planete, int buildingNumber) __attrib
 
 int     CalculatePlanetCityJob(Planet *planete)                         __attribute__((deprecated("use planet_CityGet")));
 int     GetPlanetCityJob(Planet *planete)                               __attribute__((deprecated("use planet_CityGet")));
-int     planet_CriminalityGet(Planet *planete)                        __attribute__((deprecated("use planet_CityGet")));
+int     planet_CriminalityGet(const Planet *planete)                        __attribute__((deprecated("use planet_CityGet")));
 int     GetPlanetCityAmienties(Planet *planete)                         __attribute__((deprecated("use planet_CityGet")));
 
 
@@ -122,7 +122,7 @@ City*   planet_CityCreate(Planet *planet);
  * @param planet 
  * @return City* 
  */
-City*   planet_CityGet(Planet *planet);
+City*   planet_CityGet(const Planet *planet);
 
 /**
  * @brief To set the population of a city
@@ -137,7 +137,7 @@ void    city_PopulationSet(City *city, int population);
  * @param city 
  * @return int
  */
-int     city_PopulationGet(City *city);
+int     city_PopulationGet(const City *city);
 
 /**
  * @brief To initialize all of the districts of a planet
@@ -163,7 +163,7 @@ void    city_UrbanDistrictAdd(City *city, int urban);
  * @param city 
  * @return int 
  */
-int     city_UrbanDistrictGet(City *city);
+int     city_UrbanDistrictGet(const City *city);
 
 /**
  * @brief To add a generator district
@@ -178,7 +178,7 @@ void    city_GeneratorDistrictAdd(City *city, int generator);
  * @param city 
  * @return int 
  */
-int     city_GeneratorDistrictGet(City *city);
+int     city_GeneratorDistrictGet(const City *city);
 
 /**
  * @brief To add a mining district
@@ -193,7 +193,7 @@ void    city_MiningDistrictAdd(City *city, int mining);
  * @param city 
  * @return int 
  */
-int     city_MiningDistrictGet(City *city);
+int     city_MiningDistrictGet(const City *city);
 
 /**
  * @brief To add an agriculture district
@@ -208,7 +208,7 @@ void    city_AgricultureDistrictAdd(City *city, int agriculture);
  * @param city 
  * @return int 
  */
-int     city_AgricultureDistrictGet(City *city);
+int     city_AgricultureDistrictGet(const City *city);
 
 /**
  * @brief Create a building in a city
@@ -226,7 +226,7 @@ void    city_BuildingSet(City *city, Building building, int index, int level);
  * @param index 
  * @return Building 
  */
-Building city_BuildingGet(City *city, int index);
+Building city_BuildingGet(const City *city, const int index);
 /**
  * @brief Get the level of a building in a city
  * 
@@ -234,7 +234,7 @@ Building city_BuildingGet(City *city, int index);
  * @param index 
  * @return int 
  */
-int     city_BuildingLevelGet(City *city, int index);
+int     city_BuildingLevelGet(const City *city, const int index);
 
 /**
  * @brief Update the number of jobs in a city and return it
@@ -249,21 +249,21 @@ int     city_JobUpdate(City *city);
  * @param city 
  * @return int 
  */
-int     city_JobGet(City *city);
+int     city_JobGet(const City *city);
 /**
  * @brief Get the criminality of a city
  * 
  * @param city 
  * @return int 
  */
-int     city_CriminalityGet(City *city);
+int     city_CriminalityGet(const City *city);
 /**
  * @brief Get the amienties of a city
  * 
  * @param city 
  * @return int 
  */
-int     city_AmentiesGet(City *city);
+int     city_AmentiesGet(const City *city);
 
 Ordre*  GetCityOrderElement(City *city);
 OrdreFile* GetCityOrderQueue(City *city);

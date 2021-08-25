@@ -22,7 +22,7 @@ void newGame_Start();
  * @brief Free every mallocs used by the game
  * 
  * @param empireListe 
- * @param starSystem 
+ * @param galaxy 
  * @param settings 
  * @param time 
  * @param camera 
@@ -31,7 +31,7 @@ void newGame_Start();
  * @param notificationList 
  */
 void game_Close(EmpireList *empireListe, 
-                StarSystem **starSystem,
+                StarSystem **galaxy,
                 Settings *settings, 
                 Time *time,
                 Camera *camera,

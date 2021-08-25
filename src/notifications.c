@@ -88,7 +88,7 @@ void DrawNotifications(NotificationList *notificationList, Time *date) {
 
             DrawNotificationLogo(x, y, notification->ID);
             x += 17;
-            if(GetTimeClock(date) == 0){
+            if(time_TickGet(date) == 0){
                 notification->length--;
             }
             if(notification->length <= 0) {
@@ -97,8 +97,8 @@ void DrawNotifications(NotificationList *notificationList, Time *date) {
             }
         }
     }
-    if(GetTimeClock(date) == 0)
-        AddTimeClock(date);
+    if(time_TickGet(date) == 0)
+        time_TickIncrement(date);
 }
 
 void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NotificationId ID, int length) {

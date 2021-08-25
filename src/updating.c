@@ -27,14 +27,14 @@
  * 
  * @param key 
  * @param empireList 
- * @param starSystem 
+ * @param galaxy 
  * @param time 
  * @param camera 
  * @param window 
  * @param settings 
  */
 static void update_KeysTest(char *key, 
-                            StarSystem **starSystem, 
+                            StarSystem **galaxy, 
                             Time *time, 
                             Camera *camera, 
                             Window *window, 
@@ -73,7 +73,7 @@ static void update_KeysTest(char *key,
             case sk_Del:
                 switch(camera_MapTypeGet(camera)){
                     case VUE_GALACTIC:
-                        if((starSystem_IntelLevelGet(starSystem[camera_SystemActualGet(camera)]) 
+                        if((starSystem_IntelLevelGet(galaxy[camera_SystemActualGet(camera)]) 
                         || settings_SeeAllGet(settings))
                         && camera_SystemActualGet(camera) != NO_SYSTEM
                         && camera_ZoomGet(camera) == ZOOM_MAX){
@@ -92,7 +92,7 @@ static void update_KeysTest(char *key,
                 break;
             // Open the system
             case sk_Enter:
-                if((starSystem_IntelLevelGet(starSystem[camera_SystemActualGet(camera)]) 
+                if((starSystem_IntelLevelGet(galaxy[camera_SystemActualGet(camera)]) 
                 || settings_SeeAllGet(settings))
                 && camera_SystemActualGet(camera) != NO_SYSTEM){
                     camera_MapTypeSet(camera, VUE_SYSTEM);
@@ -134,6 +134,7 @@ static void update_KeysTest(char *key,
                 OpenMenu(window, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
             *key = 0;
             break;
+
         // Open the market menus
         // The top buttons for the top hud
         case sk_Yequ:
@@ -156,6 +157,7 @@ static void update_KeysTest(char *key,
             OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, MENU_MARKET_OTHER);
             break;
+
         // The left buttons for the left hud
         case sk_Recip:
             if(GetOpenedMenuClass(window) == MENU_MARKET)
@@ -196,7 +198,7 @@ static void update_KeysTest(char *key,
 /**
  * Effectue les actions de station
  */
-void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireList* empireListe){
+void stations_ActionsUpdate(StarSystem **systemeStellaires, EmpireList* empireListe){
     int numero = 0, nombreDeVaisseaux = 0;
     int nombreDeCorvette = 0, nombreDeDestroyer = 0, nombreDeCroiseur = 0, nombreDeCuirasse = 0;
     OrdreStation ordre = AUCUN_ORDRE_STATION;
@@ -265,41 +267,42 @@ void EffectuerActionsStations(StarSystem **systemeStellaires, EmpireList* empire
 /**
  * Effectue les actions des planetes
  */
-void EffectuerActionsPlanetes(StarSystem **systemeStellaires){
-    int i = 0, j = 0;
-    City *villes = NULL;
-    // Batiment *batiment = NULL;
+void planets_ActionsUpdate(StarSystem **galaxy){
+    int systemindex = 0, planetIndex = 0;
+    City *city;
+    Planet *planet;
     OrdreConstruction ordre;
-    for(i = 0; i < GALAXY_WIDTH * GALAXY_WIDTH; i++){
-        for(j = 0; j < starSystem_NumberOfPlanetGet(systemeStellaires[i]); j++){
-            villes = GetSystemPlanetCity(systemeStellaires[i], j);
-            if(villes != NULL){
-                ordre = GetCityOrder(villes);
+    for(systemindex = 0; systemindex < GALAXY_WIDTH * GALAXY_WIDTH; systemindex++){
+        for(planetIndex = 0; planetIndex < starSystem_NumberOfPlanetGet(galaxy[systemindex]); planetIndex++){
+            planet = starSystem_PlanetGet(galaxy[systemindex], planetIndex);
+            city = planet_CityGet(planet);
+            if(city){
+                ordre = GetCityOrder(city);
                 if(ordre != 0){
-                    if(GetCityOrderProgress(villes) > 1){
-                        UnincrementCityOrderProgress(villes);
+                    if(GetCityOrderProgress(city) > 1){
+                        UnincrementCityOrderProgress(city);
                     }
-                    else if(GetCityOrderProgress(villes) == 1){
-                        switch(GetCityOrder(villes)){
+                    else if(GetCityOrderProgress(city) == 1){
+                        switch(GetCityOrder(city)){
                             case CONSTRUIRE_DISTRICT_URBAIN:
-                                AddSystemPlanetCityUrbanDistrict(systemeStellaires[i], j, 1);
+                                city_UrbanDistrictAdd(city, 1);
                                 break;
                             case CONSTRUIRE_DISTRICT_GENERATEUR:
-                                AddSystemPlanetCityGeneratorDistrict(systemeStellaires[i], j, 1);
+                                city_GeneratorDistrictAdd(city, 1);
                                 break;
                             case CONSTRUIRE_DISTRICT_MINIER:
-                                AddSystemPlanetCityMiningDistrict(systemeStellaires[i], j, 1); 
+                                city_MiningDistrictAdd(city, 1);
                                 break;
                             case CONSTRUIRE_DISTRICT_AGRICOLE:
-                                AddSystemPlanetCityAgricultureDistrict(systemeStellaires[i], j, 1); 
+                                city_AgricultureDistrictAdd(city, 1);
                                 break;
                             case CONSTRUIRE_BATIMENT:
-                                SetSystemPlanetCityBuilding(systemeStellaires[i], j, GetCityOrderInfo1(villes), (Building)GetCityOrderInfo2(villes), 1 );
+                                city_BuildingSet(city, (Building)GetCityOrderInfo2(city), GetCityOrderInfo1(city), 1);
                                 break;
                             default:
                                 break;
                         }
-                        EndCityOrder(villes);
+                        EndCityOrder(city);
                     }
                 }
             }
@@ -308,9 +311,9 @@ void EffectuerActionsPlanetes(StarSystem **systemeStellaires){
 }
 
 static void UpdateWorld(EmpireList *empireListe, StarSystem **systemeStellaires){
-    EffectuerActionsFlottes(empireListe, systemeStellaires);
-    EffectuerActionsStations(systemeStellaires, empireListe);
-    EffectuerActionsPlanetes(systemeStellaires);
+    fleet_ActionsUpdate(empireListe, systemeStellaires);
+    stations_ActionsUpdate(systemeStellaires, empireListe);
+    planets_ActionsUpdate(systemeStellaires);
     update_IntelLevel(systemeStellaires, empireListe);
 }
 
@@ -464,7 +467,7 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
 
 int game_Update( char *key, 
                 EmpireList *empireList, 
-                StarSystem **starSystem, 
+                StarSystem **galaxy, 
                 Time *time, 
                 Camera *camera, 
                 Window *window, 
@@ -472,7 +475,7 @@ int game_Update( char *key,
                 Settings *settings){
     // We test the keys
 	update_KeysTest(key, 
-                    starSystem, 
+                    galaxy, 
                     time, 
                     camera, 
                     window, 
@@ -480,42 +483,39 @@ int game_Update( char *key,
 
     time_Update(time);
 
-    if(GetTimeClock(time) == 0){
+    if(!time_TickGet(time)){
         if(((GetTimeDay(time) == 10) || (GetTimeDay(time) == 20)) || (GetTimeDay(time) == 30)){
-            UpdateWorld(empireList, starSystem);
+            UpdateWorld(empireList, galaxy);
             UpdateEmpirePower(empireList);
         }
         if(GetTimeDay(time) == 1){
-            UpdatePlayersData(true, empireList, starSystem, notificationList);
+            UpdatePlayersData(true, empireList, galaxy, notificationList);
         }
         
-        EmpireAI(empireList, starSystem, time);
+        EmpireAI(empireList, galaxy, time);
         
     }
     return 1;
 }
 
-void update_IntelLevel(StarSystem **starSystem, EmpireList *empireList){
+void update_IntelLevel(StarSystem **galaxy, const EmpireList *empireList){
     int sizeFleet = 0;
     int indexFleet = 0;
     int systemIndex = 0;
 
     while(systemIndex < GALAXY_WIDTH * GALAXY_WIDTH) {
-        if(starSystem_IntelLevelGet(starSystem[systemIndex])  >= INTEL_MEDIUM) {
-            starSystem_IntelLevelSet(starSystem[systemIndex], INTEL_MEDIUM);
+        if(starSystem_IntelLevelGet(galaxy[systemIndex])  >= INTEL_MEDIUM) {
+            starSystem_IntelLevelSet(galaxy[systemIndex], INTEL_MEDIUM);
         }
         else {
-            starSystem_IntelLevelSet(starSystem[systemIndex], INTEL_UNKNOWN);
-        }
-        if((starSystem_StationLevelGet(starSystem[systemIndex]) > INTEL_UNKNOWN) && (starSystem_EmpireGet(starSystem[systemIndex]) == NO_EMPIRE)) {
-            starSystem_IntelLevelSet(starSystem[systemIndex], INTEL_FULL);
+            starSystem_IntelLevelSet(galaxy[systemIndex], INTEL_UNKNOWN);
         }
         systemIndex++;
     }
     sizeFleet = FleetArraySize(empire_FleetListGet(empire_Get(empireList, 0)));
-    dbg_sprintf(dbgout, "sizeFleet : %d\n", sizeFleet);
     while(indexFleet < sizeFleet){
-        starSystem_IntelLevelSet(starSystem[GetFleetSystem(FlotteNumero(empire_FleetListGet(empire_Get(empireList, 0)), indexFleet))], INTEL_HIGH);
+        starSystem_IntelLevelSet(galaxy[GetFleetSystem(FlotteNumero(empire_FleetListGet(empire_Get(empireList, 0)), indexFleet))], INTEL_HIGH);
         indexFleet++;
     }
+    systemIndex = 0;
 }

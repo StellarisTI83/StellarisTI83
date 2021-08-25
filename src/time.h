@@ -32,8 +32,8 @@ void time_Unpause(Time *date);
 void time_SpeedIncrement(Time *date);
 void time_SpeedUnincrement(Time *date);
 
-void AddTimeClock(Time *date);
-int GetTimeClock(Time *date);
+void time_TickIncrement(Time *date);
+int time_TickGet(Time *date);
 int GetTimeDay(Time *date);
 int GetTimeMonth(Time *date);
 int GetTimeYear(Time *date);

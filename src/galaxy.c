@@ -253,7 +253,7 @@ static void galaxy_MatrixCrop(  int *galaxyMatrix,
 /**
  * @brief Function to generate a planet
  * 
- * @param starSystem 
+ * @param galaxy 
  * @param planetIndex 
  * @param habitable 
  */
@@ -558,12 +558,12 @@ static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition, int starI
  * @brief The function to generate every star system
  * 
  * @param galaxyMatrix 
- * @param starSystem 
+ * @param galaxy 
  * @param loading 
  * @return int 
  */
 static int galaxy_AllSystemGenerate(int *galaxyMatrix, 
-                                    StarSystem **starSystem,
+                                    StarSystem **galaxy,
                                     int *loading){
     int xIndex = 0, yIndex = 0, starIndex = 0;
     int xPosition = 0, yPosition = 0;
@@ -579,7 +579,7 @@ static int galaxy_AllSystemGenerate(int *galaxyMatrix,
             xPosition   =   galaxyMatrix[yIndex * GALAXY_WIDTH * 2 + xIndex];
             yPosition   =   galaxyMatrix[yIndex * GALAXY_WIDTH * 2 + xIndex + 1];
 
-            starSystem[starIndex] = galaxy_SystemGenerate(xPosition, yPosition, starIndex);
+            galaxy[starIndex] = galaxy_SystemGenerate(xPosition, yPosition, starIndex);
 
             starIndex++;
             xIndex += 2;
@@ -594,10 +594,10 @@ static int galaxy_AllSystemGenerate(int *galaxyMatrix,
 /**
  * @brief Function to create the hyperlanes
  * 
- * @param starSystem 
+ * @param galaxy 
  * @param starNumber 
  */
-static void galaxy_HyperlanesCreate(StarSystem **starSystem, 
+static void galaxy_HyperlanesCreate(StarSystem **galaxy, 
                                     int starNumber){
     int starIndex = 0;
     int hyperlaneNumber = 0;
@@ -607,7 +607,7 @@ static void galaxy_HyperlanesCreate(StarSystem **starSystem,
         dbg_sprintf(dbgout, "Create hyperlanes\n");
     #endif
     while(starIndex < starNumber) {
-        actualSystem = starSystem[starIndex];
+        actualSystem = galaxy[starIndex];
         // Randomize number of generated hyperlanes
         hyperlaneNumber = randInt(1, 2);
         // First hyperlane is above or at left
@@ -616,15 +616,15 @@ static void galaxy_HyperlanesCreate(StarSystem **starSystem,
         // We only generate the above and left hyperlane, and the under and 
         // right hyperlanes are generated if the under and right star want it
         if((starIndex - 1 > 0) && (starIndex - 1 < starNumber)){
-            if(starSystem_XGet(starSystem[starIndex - 1])){
+            if(starSystem_XGet(galaxy[starIndex - 1])){
                 hyperlane_DestinationSet(actualSystem, firstHyperlane, starIndex - 1);
-                hyperlane_DestinationSet(starSystem[starIndex - 1], 2, starIndex);
+                hyperlane_DestinationSet(galaxy[starIndex - 1], 2, starIndex);
             }
         }
         if(hyperlaneNumber > 1 && ((starIndex - GALAXY_WIDTH > 0) && (starIndex - GALAXY_WIDTH < starNumber))){
-            if(starSystem_XGet(starSystem[starIndex - GALAXY_WIDTH])){
+            if(starSystem_XGet(galaxy[starIndex - GALAXY_WIDTH])){
                 hyperlane_DestinationSet(actualSystem, !firstHyperlane, starIndex - GALAXY_WIDTH);
-                hyperlane_DestinationSet(starSystem[starIndex - GALAXY_WIDTH], 4, starIndex);
+                hyperlane_DestinationSet(galaxy[starIndex - GALAXY_WIDTH], 3, starIndex);
             }
         }
         starIndex++;
@@ -635,7 +635,7 @@ static void galaxy_HyperlanesCreate(StarSystem **starSystem,
 
 void galaxy_StartEmpiresInitialize( Settings *parametres, 
                                     EmpireList *empireListe, 
-                                    StarSystem **starSystem, 
+                                    StarSystem **galaxy, 
                                     Camera *camera){
     int systemIndex = 0, loop = 1, empireIndex = 0;
     int galaxySize = GALAXY_WIDTH * GALAXY_WIDTH;
@@ -649,13 +649,13 @@ void galaxy_StartEmpiresInitialize( Settings *parametres,
     while(loop) {
         systemIndex = randInt(0, galaxySize - 1);
         gfx_SetTextXY(50, 70);
-        if(((starSystem_XGet(starSystem[systemIndex]) >= 160) && (starSystem_YGet(starSystem[systemIndex]) >= 120)) && (starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE))
+        if(((starSystem_XGet(galaxy[systemIndex]) >= 160) && (starSystem_YGet(galaxy[systemIndex]) >= 120)) && (starSystem_StarTypeGet(galaxy[systemIndex]) != STAR_TYPE_BLACKHOLE))
             loop = 0;
     }
-    empire_Generate(joueur, 0, starSystem[systemIndex], systemIndex, 9);
+    empire_Generate(joueur, 0, galaxy[systemIndex], systemIndex, 9);
 
-    camera_XSet(camera, starSystem_XGet(starSystem[systemIndex])*2);
-    camera_YSet(camera, starSystem_YGet(starSystem[systemIndex])*2);
+    camera_XSet(camera, starSystem_XGet(galaxy[systemIndex])*2);
+    camera_YSet(camera, starSystem_YGet(galaxy[systemIndex])*2);
     
     SetCameraSystem(camera, systemIndex);
 
@@ -665,19 +665,19 @@ void galaxy_StartEmpiresInitialize( Settings *parametres,
         systemIndex = 0;
         while(loop) {
             systemIndex = randInt(0, galaxySize - 1);
-            if(((starSystem_XGet(starSystem[systemIndex]) >= 160) && (starSystem_YGet(starSystem[systemIndex]) >= 120)) && 
-            ((starSystem_StarTypeGet(starSystem[systemIndex]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(starSystem[systemIndex]) == NO_EMPIRE)))
+            if(((starSystem_XGet(galaxy[systemIndex]) >= 160) && (starSystem_YGet(galaxy[systemIndex]) >= 120)) && 
+            ((starSystem_StarTypeGet(galaxy[systemIndex]) != STAR_TYPE_BLACKHOLE) && (starSystem_EmpireGet(galaxy[systemIndex]) == NO_EMPIRE)))
                 loop = 0;
         }
         empire = empire_Add(empireListe);
-        empire_Generate(empire, empireIndex, starSystem[systemIndex], systemIndex, randInt(20, 29));
+        empire_Generate(empire, empireIndex, galaxy[systemIndex], systemIndex, randInt(20, 29));
     }
-    update_IntelLevel(starSystem, empireListe);
+    update_IntelLevel(galaxy, empireListe);
     ai_RelationsUpdate(empireListe);
 }
 
 
-void galaxy_CreateNew(StarSystem **starSystem){
+void galaxy_CreateNew(StarSystem **galaxy){
     int loading = 1;	// The advancement of the loading bar
     int radiusExtern = ((SPACE_BETWEEN_STARS * GALAXY_WIDTH) - SPACE_BETWEEN_STARS) / 2 - 25; 
     int radiusIntern = 50;
@@ -702,9 +702,9 @@ void galaxy_CreateNew(StarSystem **starSystem){
     
     galaxy_MatrixCrop(galaxyMatrix, radiusExtern, radiusIntern, &loading);
 
-    starNumber = galaxy_AllSystemGenerate(galaxyMatrix, starSystem, &loading);
+    starNumber = galaxy_AllSystemGenerate(galaxyMatrix, galaxy, &loading);
 
-    galaxy_HyperlanesCreate(starSystem, starNumber);
+    galaxy_HyperlanesCreate(galaxy, starNumber);
 
     free(galaxyMatrix);
 

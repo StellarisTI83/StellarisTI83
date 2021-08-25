@@ -39,19 +39,19 @@
  * 
  * @param parametres 
  * @param empireListe 
- * @param starSystem 
+ * @param galaxy 
  * @param camera 
  */
 void galaxy_StartEmpiresInitialize( Settings *parametres, 
                                     EmpireList *empireListe, 
-                                    StarSystem **starSystem, 
+                                    StarSystem **galaxy, 
                                     Camera *camera);
 
 /**
  * @brief Create a new galaxy in the sent aray
  * 
- * @param starSystem 
+ * @param galaxy 
  */
-void galaxy_CreateNew(StarSystem **starSystem);
+void galaxy_CreateNew(StarSystem **galaxy);
 
 #endif

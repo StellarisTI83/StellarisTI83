@@ -205,7 +205,7 @@ void starSystem_PlanetTypeSet(StarSystem *starSystem, int number, PlanetType typ
     planet_TypeSet(starSystem->planets[number], type);
 }
 PlanetType starSystem_PlanetTypeGet(StarSystem *starSystem, int number){
-    return GetPlanetType(starSystem->planets[number]);
+    return planet_TypeGet(starSystem->planets[number]);
 }
 
 void starSystem_PlanetRadiusSet(StarSystem *starSystem, int number, int radius){
