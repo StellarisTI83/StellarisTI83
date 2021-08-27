@@ -266,13 +266,13 @@ int     city_CriminalityGet(const City *city);
 int     city_AmentiesGet(const City *city);
 
 Ordre*  GetCityOrderElement(City *city);
-OrdreFile* GetCityOrderQueue(City *city);
-OrdreConstruction GetCityOrder(City *city);
-int     GetCityOrderProgress(City *city);
-void    UnincrementCityOrderProgress(City *city);
-void    EndCityOrder(City *city);
+OrdreFile* city_OrderQueueGet(City *city);
+OrdreConstruction city_OrderGet(City *city);
+int     city_OrderProgressGet(City *city);
+void    city_OrderProgressUnincrement(City *city);
+void    city_OrderEnd(City *city);
 
-int     GetCityOrderInfo1(City *city);
-int     GetCityOrderInfo2(City *city);
+int     city_OrderInfo1Get(City *city);
+int     city_OrderInfo2Get(City *city);
 
 #endif

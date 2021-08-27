@@ -1,6 +1,14 @@
 /**
- * To create an empire and make artificial intelligence
- * */
+ * @file ai.c
+ * @author Cocheril Dimitri (cochgit.dimitri@gmail.com)
+ * @brief All ai related files, like the creation of an empire or updating the
+ *        actions he takes
+ * @version 0.1
+ * @date 2021-08-26
+ * 
+ * @copyright GNU General Public License v3.0
+ * 
+ */
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -50,7 +58,7 @@ struct EmpireStruct {
 
     int systemeCapitale;
 
-    FlotteListe* fleet;
+    FleetList* fleet;
     RelationsListe* relationsListe;
 };
 
@@ -114,7 +122,7 @@ void empire_ListFree(EmpireList* empireList) {
         #endif
 
         if(empire->fleet)
-            SupprimerFlotteListe(empire->fleet);
+            fleet_ListFree(empire->fleet);
         
         if(empire->relationsListe)
             RelationListeSupprimer(empire->relationsListe);
@@ -191,7 +199,7 @@ void empire_Free(EmpireList* empireList, int numero) {
     #endif
 
     if(empire->fleet)
-        SupprimerFlotteListe(empire->fleet);
+        fleet_ListFree(empire->fleet);
 
     if(empire->relationsListe)
         RelationListeSupprimer(empire->relationsListe);
@@ -207,14 +215,14 @@ void empire_FleetListCreate(Empire *empire){
         #endif
         return;
     }
-    empire->fleet = CreerFlotteListe();
+    empire->fleet = fleet_ListCreate();
     if(!empire->fleet)
         exit(EXIT_FAILURE);
 }
 void empire_FleetAdd(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
-    NouvelleFlotte(empire->fleet, systeme, type, nombreDeCorvettes, nombreDeDestroyers, nombreDeCroiseurs, nombreDeCuirasses);
+    fleet_New(empire->fleet, systeme, type, nombreDeCorvettes, nombreDeDestroyers, nombreDeCroiseurs, nombreDeCuirasses);
 }
-FlotteListe *empire_FleetListGet(Empire *empire){
+FleetList *empire_FleetListGet(Empire *empire){
     return empire->fleet;
 }
 
@@ -652,20 +660,20 @@ static void PlanetaryAI(EmpireList *empireList, StarSystem **systemeStellaires){
     }
 }
 
-static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireList *empireList, StarSystem **systemeStellaires, Time *date){
-    if(GetTimeYear(date) < 2300){
+static void EmpireAIEconomy(int numeroEmpire, Empire *empire, StarSystem **systemeStellaires, Time *date){
+    if(time_YearGet(date) < 2300){
         //constuire flotte scientifique
         if(GetEmpireAlloys(empire) >= 100){
             OrdreFile *ordreQueue;
             Station *station;
             AddEmpireAlloys(empire, -100);
             station = starSystem_StationGet(systemeStellaires[GetEmpireSystemCapital(empire)]);
-            ordreQueue = GetStationOrderQueue(station);
+            ordreQueue = station_OrderQueueGet(station);
             #ifdef DEBUG_VERSION
                 dbg_sprintf(dbgout, "Empire %d create a science fleet in system %d\n", numeroEmpire, GetEmpireSystemCapital(empire));
             #endif
             NouvelOrdre(ordreQueue,
-                        CONSTRUIRE_VAISSEAU,
+                        STATION_ORDER_BUILD_SHIP,
                         numeroEmpire,
                         3,
                         FLOTTE_SCIENTIFIQUE,
@@ -675,7 +683,7 @@ static void EmpireAIEconomy(int numeroEmpire, Empire *empire, EmpireList *empire
     }
 }
 
-static void EmpireAICivilianFleet(Empire *empire, EmpireList *empireList, Flotte *flotte, StarSystem **systemeStellaires){
+static void EmpireAICivilianFleet(Empire *empire, Fleet *flotte, StarSystem **systemeStellaires){
     if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
         // int systeme = GetFleetSystem(flotte);
         if(GetFleetType(flotte) == FLOTTE_SCIENTIFIQUE){
@@ -697,24 +705,24 @@ static void EmpireAICivilianFleet(Empire *empire, EmpireList *empireList, Flotte
     }
 }
 
-static void EmpireAIMilitaryFleet(Empire *empire, EmpireList *empireList, Flotte *flotte, StarSystem **systemeStellaires){
+static void EmpireAIMilitaryFleet(){
 
 }
 
-static void EmpireAIFleetManager(Empire *empire, EmpireList *empireList, StarSystem **systemeStellaires){
-    FlotteListe *flotteListe = empire_FleetListGet(empire);
+static void EmpireAIFleetManager(Empire *empire, StarSystem **systemeStellaires){
+    FleetList *flotteListe = empire_FleetListGet(empire);
     int tailleFlotte = FleetArraySize(flotteListe);
     if(tailleFlotte > 0){
         int compteurFlotte = 0;
-        Flotte *flotte = NULL;
+        Fleet *flotte = NULL;
 
         while(compteurFlotte < tailleFlotte){
             flotte = FlotteNumero(flotteListe, compteurFlotte);
             if(GetFleetType(flotte) == FLOTTE_MILITAIRE)
-                EmpireAIMilitaryFleet(empire, empireList, flotte, systemeStellaires);
+                EmpireAIMilitaryFleet();
             
             else
-                EmpireAICivilianFleet(empire, empireList, flotte, systemeStellaires);
+                EmpireAICivilianFleet(empire, flotte, systemeStellaires);
 
             compteurFlotte++;
         }
@@ -732,9 +740,9 @@ void EmpireAI(EmpireList *empireList, StarSystem **systemeStellaires, Time *date
     while(empireCounter < empireTotalNumber){
         empire = empire_Get(empireList, empireCounter);
 
-        EmpireAIEconomy(empireCounter, empire, empireList, systemeStellaires, date);
+        EmpireAIEconomy(empireCounter, empire, systemeStellaires, date);
 
-        EmpireAIFleetManager(empire, empireList, systemeStellaires);
+        EmpireAIFleetManager(empire, systemeStellaires);
 
         empireCounter++;
     }
@@ -745,6 +753,7 @@ void empire_Generate(   Empire *empire,
                         StarSystem *empireStarSystem, 
                         int systemIndex,
                         int color){
+    Station *station = starSystem_StationGet(empireStarSystem);
     int planetIndex = randInt(0, starSystem_NumberOfPlanetGet(empireStarSystem) - 1);
     Planet *planet = starSystem_PlanetGet( empireStarSystem, 
                                 planetIndex);
@@ -765,9 +774,9 @@ void empire_Generate(   Empire *empire,
     starSystem_StarTypeSet(empireStarSystem, STAR_TYPE_K);
     starSystem_EmpireSet(empireStarSystem, empireIndex);
 
-    starSystem_StationLevelSet(empireStarSystem, PORT_STELLAIRE);
-    starSystem_StationModuleSet(empireStarSystem, 0, CHANTIER_SPATIAL);
-    starSystem_StationModuleSet(empireStarSystem, 1, CARREFOUR_COMMERCIAL);
+    station_LevelSet(station, STATION_STARPORT);
+    station_ModuleSet(station, 0, STATION_MODULE_SHIPYARD);
+    station_ModuleSet(station, 1, STATION_MODULE_TRADE_HUB);
 
     starSystem_PlanetHabitabilitySet(empireStarSystem, planetIndex, true);
     planet_TypeSet(planet, HABITABLE_CONTINENTAL);
@@ -782,9 +791,9 @@ void empire_Generate(   Empire *empire,
     city_BuildingSet(city, BUILDING_FOUNDRIES, 3, 1);
 
     empire_FleetListCreate(empire);
-    NouvelleFlotte(empire->fleet, systemIndex, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-    NouvelleFlotte(empire->fleet, systemIndex, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-    NouvelleFlotte(empire->fleet, systemIndex, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+    fleet_New(empire->fleet, systemIndex, FLOTTE_MILITAIRE, 3, 0, 0, 0);
+    fleet_New(empire->fleet, systemIndex, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
+    fleet_New(empire->fleet, systemIndex, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
 
     CalculateEmpirePower(empire);
     #ifdef DEBUG_VERSION

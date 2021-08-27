@@ -34,9 +34,9 @@ void time_SpeedUnincrement(Time *date);
 
 void time_TickIncrement(Time *date);
 int time_TickGet(Time *date);
-int GetTimeDay(Time *date);
-int GetTimeMonth(Time *date);
-int GetTimeYear(Time *date);
+int time_DayGet(Time *date);
+int time_MonthGet(Time *date);
+int time_YearGet(Time *date);
 
 void IncrementTime(Time *date);
 

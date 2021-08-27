@@ -69,13 +69,13 @@ void time_TickIncrement(Time *time){
 int time_TickGet(Time *time){
     return time->tick;
 }
-int GetTimeDay(Time *time){
+int time_DayGet(Time *time){
     return time->day;
 }
-int GetTimeMonth(Time *time){
+int time_MonthGet(Time *time){
     return time->month;
 }
-int GetTimeYear(Time *time){
+int time_YearGet(Time *time){
     return time->year;
 }
 

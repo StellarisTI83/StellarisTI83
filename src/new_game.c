@@ -83,7 +83,7 @@ void newGame_Start(){
 	settings_EmpireNumberSet(settings, 4);
 
 	galaxy_StartEmpiresInitialize(settings, empireListe, galaxy, camera);
-	UpdatePlayersData(false, empireListe, galaxy, notificationList);
+	update_PlayersData(false, empireListe, galaxy, notificationList);
 
 	gfx_SetDrawBuffer();
     game_MainLoop(  empireListe, 

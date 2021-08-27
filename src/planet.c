@@ -600,40 +600,41 @@ Ordre* GetCityOrderElement(City *city){
     else
         return NULL;
 }
-OrdreFile* GetCityOrderQueue(City *city){
+OrdreFile* city_OrderQueueGet(City *city){
     if(city)
         return city->ordreFile;
     else
         return NULL;
 }
-OrdreConstruction GetCityOrder(City *city){
+
+OrdreConstruction city_OrderGet(City *city){
     if(city)
         return GetOrder(city->ordreFile);
     else
         return 0;
 }
-int GetCityOrderProgress(City *city){
+int city_OrderProgressGet(City *city){
     if(city)
         return GetOrderProgress(city->ordreFile);
     else
         return 0;
 }
-void UnincrementCityOrderProgress(City *city){
+void city_OrderProgressUnincrement(City *city){
     if(city)
         UnincrementOrderProgress(city->ordreFile);
 }
-void EndCityOrder(City *city){
+void city_OrderEnd(City *city){
     if(city)
         FinirOrdre(city->ordreFile);
 }
 
-int GetCityOrderInfo1(City *city){
+int city_OrderInfo1Get(City *city){
     if(city)
         return GetOrderInfo1(city->ordreFile);
     else
         return 0;
 }
-int GetCityOrderInfo2(City *city){
+int city_OrderInfo2Get(City *city){
     if(city)
         return GetOrderInfo2(city->ordreFile);
     else

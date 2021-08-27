@@ -145,7 +145,7 @@ void empire_Free(EmpireList* empireList, int numero);
 
 void empire_FleetListCreate(Empire *empire);
 void empire_FleetAdd(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses) __attribute__((deprecated("use empire_FleetListGet")));
-FlotteListe *empire_FleetListGet(Empire *empire);
+FleetList *empire_FleetListGet(Empire *empire);
 
 void EmpireCreerRelations(Empire *empire);
 void EmpireRelationNouvelle(Empire *empire);

@@ -10,7 +10,19 @@
 #include "time.h"
 
 /* entry points ======================================================== */
-void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **systemeStellaires, NotificationList *notificationList);
+/**
+ * @brief Update the player ressources
+ * 
+ * @param update    If true, the update is applicated to player ressources, 
+ *                  if false only the variation is calculated
+ * @param empireList 
+ * @param systemeStellaires 
+ * @param notificationList 
+ */
+void update_PlayersData(char update, 
+                        EmpireList *empireList, 
+                        StarSystem **systemeStellaires, 
+                        NotificationList *notificationList);
 
 /**
  * @brief Entry point to update all the datas
@@ -25,7 +37,7 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
  * @param settings 
  * @return int 
  */
-int game_Update( char *key, 
+int game_Update(char *key, 
                 EmpireList *empireList, 
                 StarSystem **galaxy, 
                 Time *time, 

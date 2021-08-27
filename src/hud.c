@@ -223,17 +223,17 @@ static void hud_PrintInfos( Empire *player,
     // bottom bar
 
     // date
-    if (GetTimeDay(time) < 10) {
-        sprintf(dayString, "0%d.", GetTimeDay(time));
+    if (time_DayGet(time) < 10) {
+        sprintf(dayString, "0%d.", time_DayGet(time));
     } else {
-        sprintf(dayString, "%d.", GetTimeDay(time));
+        sprintf(dayString, "%d.", time_DayGet(time));
     }
-    if (GetTimeMonth(time) < 10) {
-        sprintf(monthString, "0%d.", GetTimeMonth(time));
+    if (time_MonthGet(time) < 10) {
+        sprintf(monthString, "0%d.", time_MonthGet(time));
     } else {
-        sprintf(monthString, "%d.", GetTimeMonth(time));
+        sprintf(monthString, "%d.", time_MonthGet(time));
     }
-    sprintf(yearString, "%d", GetTimeYear(time));
+    sprintf(yearString, "%d", time_YearGet(time));
 
     strcat(monthString, yearString);
     strcat(dayString, monthString);

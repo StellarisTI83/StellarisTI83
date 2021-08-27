@@ -194,115 +194,135 @@ static void update_KeysTest(char *key,
     
 }
 
-
 /**
- * Effectue les actions de station
+ * @brief Update the starbases and do their actions
+ * 
+ * @param galaxy 
+ * @param empireList 
  */
-void stations_ActionsUpdate(StarSystem **systemeStellaires, EmpireList* empireListe){
-    int numero = 0, nombreDeVaisseaux = 0;
-    int nombreDeCorvette = 0, nombreDeDestroyer = 0, nombreDeCroiseur = 0, nombreDeCuirasse = 0;
-    OrdreStation ordre = AUCUN_ORDRE_STATION;
-    int info1 = 0;
-    int info2 = 0;
-    int numeroEmpire = 0;
-    // Empire *joueur = EmpireNumero(empireListe, 0);
-    while(numero < (GALAXY_WIDTH * GALAXY_WIDTH) - 1){
-        ordre = starSystem_StationOrderGet(systemeStellaires[numero]);
-        if(ordre != AUCUN_ORDRE_STATION){
-            if(starSystem_StationOrderProgressGet(systemeStellaires[numero]) > 1){
-                starSystem_StationOrderProgressIncrement(systemeStellaires[numero]);
-            }
-            else{
-                info1 = starSystem_StationInfo1Get(systemeStellaires[numero]);
-                info2 = starSystem_StationInfo2Get(systemeStellaires[numero]);
-                numeroEmpire = starSystem_EmpireGet(systemeStellaires[numero]);
-                switch(ordre){
-                case AMELIORER_STATION:
-                    starSystem_StationLevelSet(systemeStellaires[numero], (Stationlevel)(starSystem_StationLevelGet(systemeStellaires[numero]) + 1));
-                    break;
-                case CONSTRUIRE_MODULE:
-                    starSystem_StationModuleSet(systemeStellaires[numero], info1 - 1, (Module)info2);
-                    break;
-                case CONSTRUIRE_VAISSEAU:
-                    nombreDeVaisseaux = info2;
-                    switch(info1){
-                        case 1:
-                            info1 = FLOTTE_SCIENTIFIQUE;
-                            nombreDeVaisseaux = 1;
+static void stations_ActionsUpdate(StarSystem **galaxy, EmpireList* empireList){
+    int systemindex = 0;
+    int corvetNumber, destroyerNumber, cruiserNumber, battleshipNumber;
+    StationOrder stationOrder;
+    int info1;
+    int info2;
+    int empireIndex;
+    Station *station;
+
+    // Check every station and check if a station has 
+    for(systemindex = 0; systemindex < (GALAXY_WIDTH * GALAXY_WIDTH); systemindex++){
+        if(starSystem_EmpireGet(galaxy[systemindex]) != NO_EMPIRE){
+            station = starSystem_StationGet(galaxy[systemindex]);
+            stationOrder = station_OrderGet(station);
+
+            if(stationOrder){
+                if(station_OrderProgressGet(station) > 0){ // If the order is not finished, we unincrement the progress
+                    station_OrderProgressUnincrement(station);
+                } else { // Else we do the order
+                    info1 = station_OrderInfo1Get(station);
+                    info2 = station_OrderInfo2Get(station);
+                    empireIndex = starSystem_EmpireGet(galaxy[systemindex]);
+
+                    switch(stationOrder){
+                        case STATION_ORDER_UPGRADE:
+                            station_LevelSet(station, (Stationlevel)(station_LevelGet(station) + 1));
                             break;
-                        case 2:
-                            info1 = FLOTTE_DE_CONSTRUCTION;
-                            nombreDeVaisseaux = 1;
+                        case STATION_ORDER_BUILD_MODULE:
+                            station_ModuleSet(station, info1 - 1, (StationModule)info2);
                             break;
-                        case 3:
-                            info1 = FLOTTE_MILITAIRE;
-                            nombreDeCorvette = nombreDeVaisseaux;
+                        case STATION_ORDER_BUILD_SHIP:
+                            corvetNumber = 0;
+                            destroyerNumber = 0;
+                            cruiserNumber = 0;
+                            battleshipNumber = 0;
+                            switch(info1){
+                                case 1:
+                                    info1 = FLOTTE_SCIENTIFIQUE;
+                                    break;
+                                case 2:
+                                    info1 = FLOTTE_DE_CONSTRUCTION;
+                                    break;
+                                case 3:
+                                    info1 = FLOTTE_MILITAIRE;
+                                    corvetNumber = info2;
+                                    break;
+                                case 4:
+                                    info1 = FLOTTE_MILITAIRE;
+                                    destroyerNumber = info2;
+                                    break;
+                                case 5:
+                                    info1 = FLOTTE_MILITAIRE;
+                                    cruiserNumber = info2;
+                                    break;
+                                case 6:
+                                    info1 = FLOTTE_MILITAIRE;
+                                    battleshipNumber = info2;
+                                    break;
+                            }
+                            fleet_New(  empire_FleetListGet(empire_Get(empireList, empireIndex)), 
+                                        systemindex, 
+                                        (FlotteType)info1, 
+                                        corvetNumber, 
+                                        destroyerNumber, 
+                                        cruiserNumber, 
+                                        battleshipNumber);
                             break;
-                        case 4:
-                            info1 = FLOTTE_MILITAIRE;
-                            nombreDeDestroyer = nombreDeVaisseaux;
-                            break;
-                        case 5:
-                            info1 = FLOTTE_MILITAIRE;
-                            nombreDeCroiseur = nombreDeVaisseaux;
-                            break;
-                        case 6:
-                            info1 = FLOTTE_MILITAIRE;
-                            nombreDeCuirasse = nombreDeVaisseaux;
+                        default:
                             break;
                     }
-                    NouvelleFlotte(empire_FleetListGet(empire_Get(empireListe, numeroEmpire)), numero, (FlotteType)info1, nombreDeCorvette, nombreDeDestroyer, nombreDeCroiseur, nombreDeCuirasse);
-                    break;
-                default:
-                    break;
+                    station_OrderEnd(station);
                 }
-                starSystem_StationOrderEnd(systemeStellaires[numero]);
             }
         }
-        numero++;
     }
 }
 
-
 /**
- * Effectue les actions des planetes
+ * @brief Update the actions of planets
+ * 
+ * @param galaxy 
  */
-void planets_ActionsUpdate(StarSystem **galaxy){
-    int systemindex = 0, planetIndex = 0;
+static void planets_ActionsUpdate(StarSystem **galaxy){
+    int systemindex, planetIndex;
     City *city;
     Planet *planet;
-    OrdreConstruction ordre;
+    OrdreConstruction order;
+    // We loop through every system and planet
     for(systemindex = 0; systemindex < GALAXY_WIDTH * GALAXY_WIDTH; systemindex++){
-        for(planetIndex = 0; planetIndex < starSystem_NumberOfPlanetGet(galaxy[systemindex]); planetIndex++){
-            planet = starSystem_PlanetGet(galaxy[systemindex], planetIndex);
-            city = planet_CityGet(planet);
-            if(city){
-                ordre = GetCityOrder(city);
-                if(ordre != 0){
-                    if(GetCityOrderProgress(city) > 1){
-                        UnincrementCityOrderProgress(city);
-                    }
-                    else if(GetCityOrderProgress(city) == 1){
-                        switch(GetCityOrder(city)){
-                            case CONSTRUIRE_DISTRICT_URBAIN:
-                                city_UrbanDistrictAdd(city, 1);
-                                break;
-                            case CONSTRUIRE_DISTRICT_GENERATEUR:
-                                city_GeneratorDistrictAdd(city, 1);
-                                break;
-                            case CONSTRUIRE_DISTRICT_MINIER:
-                                city_MiningDistrictAdd(city, 1);
-                                break;
-                            case CONSTRUIRE_DISTRICT_AGRICOLE:
-                                city_AgricultureDistrictAdd(city, 1);
-                                break;
-                            case CONSTRUIRE_BATIMENT:
-                                city_BuildingSet(city, (Building)GetCityOrderInfo2(city), GetCityOrderInfo1(city), 1);
-                                break;
-                            default:
-                                break;
+        if(starSystem_EmpireGet(galaxy[systemindex]) != NO_EMPIRE){
+            for(planetIndex = 0; planetIndex < starSystem_NumberOfPlanetGet(galaxy[systemindex]); planetIndex++){
+                planet = starSystem_PlanetGet(galaxy[systemindex], planetIndex);
+                city = planet_CityGet(planet);
+                if(city){
+                    order = city_OrderGet(city);
+                    if(order){
+                        if(city_OrderProgressGet(city) > 0){ // If the oder is not finished, we unincrement the progress
+                            city_OrderProgressUnincrement(city);
+                        } else if(city_OrderProgressGet(city)){ // Else the order is finished, so we take actions
+                            switch(city_OrderGet(city)){
+                                case CONSTRUIRE_DISTRICT_URBAIN:
+                                    city_UrbanDistrictAdd(city, 1);
+                                    break;
+                                case CONSTRUIRE_DISTRICT_GENERATEUR:
+                                    city_GeneratorDistrictAdd(city, 1);
+                                    break;
+                                case CONSTRUIRE_DISTRICT_MINIER:
+                                    city_MiningDistrictAdd(city, 1);
+                                    break;
+                                case CONSTRUIRE_DISTRICT_AGRICOLE:
+                                    city_AgricultureDistrictAdd(city, 1);
+                                    break;
+                                case CONSTRUIRE_BATIMENT:
+                                    city_BuildingSet(   city, 
+                                                        (Building)city_OrderInfo2Get(city), 
+                                                        city_OrderInfo1Get(city), 
+                                                        1);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            city_OrderEnd(city);
                         }
-                        EndCityOrder(city);
                     }
                 }
             }
@@ -310,47 +330,60 @@ void planets_ActionsUpdate(StarSystem **galaxy){
     }
 }
 
-static void UpdateWorld(EmpireList *empireListe, StarSystem **systemeStellaires){
-    fleet_ActionsUpdate(empireListe, systemeStellaires);
-    stations_ActionsUpdate(systemeStellaires, empireListe);
-    planets_ActionsUpdate(systemeStellaires);
-    update_IntelLevel(systemeStellaires, empireListe);
+/**
+ * @brief Update the actions of every units
+ * 
+ * @param empireList 
+ * @param galaxy 
+ */
+static void update_Word(EmpireList *empireList, StarSystem **galaxy){
+    fleet_ActionsUpdate(galaxy, empireList);
+    stations_ActionsUpdate(galaxy, empireList);
+    planets_ActionsUpdate(galaxy);
+    update_IntelLevel(galaxy, empireList);
 }
 
-
-
-static void UpdateEmpirePower(EmpireList *empireListe) {
-    Empire *empire;
-    int empireNumero = 0;
-        empire = empire_Get(empireListe, empireNumero);
-    while (empire != NULL) {
+/**
+ * @brief Update the power of each empire
+ * 
+ * @param empireList 
+ */
+static void update_EmpirePower(EmpireList *empireList) {
+    int empireIndex = 0;
+    Empire *empire = empire_Get(empireList, empireIndex);
+    while(empire) {
         CalculateEmpirePower(empire);
-        empireNumero++;
-        empire = empire_Get(empireListe, empireNumero);
+        empireIndex++;
+        empire = empire_Get(empireList, empireIndex);
     }
 }
 
 /* entry points ======================================================== */
 
-void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **systemeStellaires, NotificationList *notificationList){
-    Empire *empire = NULL;
-    Flotte *flotte = NULL;
-    FlotteListe *flotteListe = NULL;
-    Planet *planete = NULL;
-    int empireIndex = 0;
-    int empireArraySize = 0;
-    int flotteIndex = 0;
-    int flotteArraySize = 0;
-    int systemIndex = 0;
-    int planetaryIndex = 0;
-    int planetaryArraySize = 0;
-    int buildingIndex = 0;
-    City *city;
+void update_PlayersData(char update, 
+                        EmpireList *empireList, 
+                        StarSystem **galaxy, 
+                        NotificationList *notificationList){
+    Empire  *empire;
+    int     empireIndex;
+    int     empireArraySize;
+
+    Fleet  *fleet;
+    FleetList *fleetList;
+    int     fleetIndex;
+    int     fleetArraySize;
     
-    //retirer argent flottes
-    empireArraySize = empire_ArraySize(empireListe);
+    int     systemIndex;
+    Planet  *planet;
+    int     planetIndex;
+    int     planetArraySize;
+    City    *city;
+    int     buildingIndex;
+    
+    
+    empireArraySize = empire_ArraySize(empireList);
     for(empireIndex = 0; empireIndex < empireArraySize; empireIndex++){
-        empire = empire_Get(empireListe, empireIndex);
+        empire = empire_Get(empireList, empireIndex);
 
         //reinitialise tout les changements
         SetEmpireCreditChange(empire, 0);
@@ -359,25 +392,25 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
         SetEmpireMineralsChange(empire, 0);
         SetEmpireConsumerGoodsChange(empire, 0);
 
-        flotteListe = empire_FleetListGet(empire);
-        flotteArraySize = FleetArraySize(flotteListe);
-        for(flotteIndex = 0; flotteIndex < flotteArraySize; flotteIndex++){
-            flotte = FlotteNumero(flotteListe, flotteIndex);
+        fleetList = empire_FleetListGet(empire);
+        fleetArraySize = FleetArraySize(fleetList);
+        for(fleetIndex = 0; fleetIndex < fleetArraySize; fleetIndex++){
+            fleet = FlotteNumero(fleetList, fleetIndex);
             AddEmpireCreditChange(empire, -1);
         }
     }
 
     //retirer et ajouter argent systemes et planetes
     for(systemIndex = 0; systemIndex < GALAXY_WIDTH * GALAXY_WIDTH; systemIndex++){
-        if(starSystem_EmpireGet(systemeStellaires[systemIndex]) != -1){
-            empire = empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[systemIndex]));
-            planetaryArraySize = starSystem_NumberOfPlanetGet(systemeStellaires[systemIndex]);
+        if(starSystem_EmpireGet(galaxy[systemIndex]) != -1){
+            empire = empire_Get(empireList, starSystem_EmpireGet(galaxy[systemIndex]));
+            planetArraySize = starSystem_NumberOfPlanetGet(galaxy[systemIndex]);
 
-            for(planetaryIndex = 0; planetaryIndex < planetaryArraySize; planetaryIndex++){
-                planete = starSystem_PlanetGet(systemeStellaires[systemIndex], planetaryIndex);
+            for(planetIndex = 0; planetIndex < planetArraySize; planetIndex++){
+                planet = starSystem_PlanetGet(galaxy[systemIndex], planetIndex);
                 
                 //si la planete est habitée
-                if((city = planet_CityGet(planete))){
+                if((city = planet_CityGet(planet))){
 
                     AddEmpireCreditChange(empire, -city_AgricultureDistrictGet(city));
                     AddEmpireFoodChange(empire, city_AgricultureDistrictGet(city) * 3);
@@ -389,7 +422,7 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
                     
                     AddEmpireCreditChange(empire, 8 * city_GeneratorDistrictGet(city));
                     
-                    for(buildingIndex = 1; buildingIndex <= 6; buildingIndex++){
+                    for(buildingIndex = 0; buildingIndex < 6; buildingIndex++){
                         switch(city_BuildingGet(city, buildingIndex)){
                             case BUILDING_CAPITAL:
                                 AddEmpireCreditChange(empire, -2);
@@ -418,9 +451,9 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
             }
         }
     }
-    if(appliquer){
+    if(update){
         for(empireIndex = 0; empireIndex < empireArraySize; empireIndex++){
-            empire = empire_Get(empireListe, empireIndex);
+            empire = empire_Get(empireList, empireIndex);
 
             if(GetEmpireAlloys(empire) + GetEmpireAlloysChange(empire) <= 0){
                 SetEmpireAlloys(empire, 0);
@@ -448,7 +481,7 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
         }
 
         //teste si il n'y a plus beaucoup de ressources
-        empire = empire_Get(empireListe, 0);
+        empire = empire_Get(empireList, 0);
 
         if((GetEmpireAlloys(empire) + (GetEmpireAlloysChange(empire) / 12)) <= 0) {
             NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
@@ -463,6 +496,31 @@ void UpdatePlayersData(char appliquer, EmpireList *empireListe, StarSystem **sys
             NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
         }
     }
+}
+
+void update_IntelLevel( StarSystem **galaxy, 
+                        const EmpireList *empireList){
+    int sizeFleet = 0;
+    int indexFleet = 0;
+    int systemIndex = 0;
+
+    // Reinitialize every intel level
+    while(systemIndex < GALAXY_WIDTH * GALAXY_WIDTH) {
+        if(starSystem_IntelLevelGet(galaxy[systemIndex])  >= INTEL_MEDIUM) {
+            starSystem_IntelLevelSet(galaxy[systemIndex], INTEL_MEDIUM);
+        } else {
+            starSystem_IntelLevelSet(galaxy[systemIndex], INTEL_UNKNOWN);
+        }
+        systemIndex++;
+    }
+
+    // If a fleet is in the star system, we set the intel level to full
+    sizeFleet = FleetArraySize(empire_FleetListGet(empire_Get(empireList, 0)));
+    while(indexFleet < sizeFleet){
+        starSystem_IntelLevelSet(galaxy[GetFleetSystem(FlotteNumero(empire_FleetListGet(empire_Get(empireList, 0)), indexFleet))], INTEL_HIGH);
+        indexFleet++;
+    }
+    systemIndex = 0;
 }
 
 int game_Update( char *key, 
@@ -481,41 +539,20 @@ int game_Update( char *key,
                     window, 
                     settings);
 
+    // We update the time structure
     time_Update(time);
 
     if(!time_TickGet(time)){
-        if(((GetTimeDay(time) == 10) || (GetTimeDay(time) == 20)) || (GetTimeDay(time) == 30)){
-            UpdateWorld(empireList, galaxy);
-            UpdateEmpirePower(empireList);
+        if(((time_DayGet(time) == 10) || (time_DayGet(time) == 20)) || (time_DayGet(time) == 30)){
+            update_Word(empireList, galaxy);
+            update_EmpirePower(empireList);
         }
-        if(GetTimeDay(time) == 1){
-            UpdatePlayersData(true, empireList, galaxy, notificationList);
+        if(time_DayGet(time) == 1){
+            update_PlayersData(true, empireList, galaxy, notificationList);
         }
         
         EmpireAI(empireList, galaxy, time);
         
     }
     return 1;
-}
-
-void update_IntelLevel(StarSystem **galaxy, const EmpireList *empireList){
-    int sizeFleet = 0;
-    int indexFleet = 0;
-    int systemIndex = 0;
-
-    while(systemIndex < GALAXY_WIDTH * GALAXY_WIDTH) {
-        if(starSystem_IntelLevelGet(galaxy[systemIndex])  >= INTEL_MEDIUM) {
-            starSystem_IntelLevelSet(galaxy[systemIndex], INTEL_MEDIUM);
-        }
-        else {
-            starSystem_IntelLevelSet(galaxy[systemIndex], INTEL_UNKNOWN);
-        }
-        systemIndex++;
-    }
-    sizeFleet = FleetArraySize(empire_FleetListGet(empire_Get(empireList, 0)));
-    while(indexFleet < sizeFleet){
-        starSystem_IntelLevelSet(galaxy[GetFleetSystem(FlotteNumero(empire_FleetListGet(empire_Get(empireList, 0)), indexFleet))], INTEL_HIGH);
-        indexFleet++;
-    }
-    systemIndex = 0;
 }

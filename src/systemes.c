@@ -23,6 +23,7 @@
 
 #include "systemes.h"
 #include "stations.h"
+#include "ai.h"
 
 /* structures ========================================================== */
 
@@ -57,27 +58,76 @@ StarSystem* starSystem_Create(){
     return calloc(1, sizeof(StarSystem));
 }
 
-void starSystem_SetXY(StarSystem *starSystem, int x, int y){
+void starSystem_SetXY(StarSystem *starSystem, const int x, const int y){
+    if(!starSystem){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying set systemXY : no starSystem\n");
+        #endif
+        return;
+    }
     starSystem->x = x;
     starSystem->y = y;
 }
-int starSystem_XGet(StarSystem *starSystem){
+int starSystem_XGet(const StarSystem *starSystem){
+    if(!starSystem){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying get systemX : no starSystem\n");
+        #endif
+        return 0;
+    }
     return starSystem->x;
 }
-int starSystem_YGet(StarSystem *starSystem){
+int starSystem_YGet(const StarSystem *starSystem){
+    if(!starSystem){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying get systemY : no starSystem\n");
+        #endif
+        return 0;
+    }
     return starSystem->y;
 }
 
-//station
-void starSystem_StationCreate(StarSystem *starSystem){
-    starSystem->station = AllocStation();
+void starSystem_EmpireSet(StarSystem *starSystem, const int empire){
+    if(!starSystem){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying get empire system : no starSystem\n");
+        #endif
+        return;
+    }
+    starSystem->empire = empire;
+}
+int starSystem_EmpireGet(const StarSystem *starSystem){
+    if(!starSystem){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying get empire system : no starSystem\n");
+        #endif
+        return NO_EMPIRE;
+    }
+    return starSystem->empire;
 }
 
-void starSystem_StationModuleSet(StarSystem *starSystem, int moduleNumber, Module module){
-    SetStationModule(starSystem->station, moduleNumber, module);
+void starSystem_NameSet(StarSystem *starSystem, const char* string){
+    if(!starSystem){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying get empire system : no starSystem\n");
+        #endif
+        return;
+    }
+    if(strlen(string) <= 9)
+        strcpy(starSystem->name, string);
+    #ifdef DEBUG_VERSION
+    else
+        dbg_sprintf(dbgerr, "Name %s too long\n", string);
+    #endif
 }
-Module starSystem_StationModuleGet(StarSystem *starSystem, int moduleNumber){
-    return GetStationModule(starSystem->station, moduleNumber);
+char* starSystem_NameGet(StarSystem *starSystem){
+    if(!starSystem){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Error trying get empire system : no starSystem\n");
+        #endif
+        return NULL;
+    }
+    return starSystem->name;
 }
 
 void starSystem_IntelLevelSet(StarSystem *starSystem, IntelLevel intelLevel){
@@ -94,59 +144,13 @@ StarType starSystem_StarTypeGet(StarSystem *starSystem){
     return starSystem->starType;
 }
 
-//stations
+//station
+void starSystem_StationCreate(StarSystem *starSystem){
+    starSystem->station = station_Create();
+}
 Station *starSystem_StationGet(StarSystem *starSystem){
     return starSystem->station;
 }
-void starSystem_StationLevelSet(StarSystem *starSystem, Stationlevel level){
-    SetStationLevel(starSystem->station, level);
-}
-Stationlevel starSystem_StationLevelGet(StarSystem *starSystem){
-    return GetStationLevel(starSystem->station);
-}
-
-OrdreStation starSystem_StationOrderGet(StarSystem *starSystem){
-    return GetStationOrder(starSystem->station);
-}
-void starSystem_StationOrderEnd(StarSystem *starSystem){
-    EndStationOrder(starSystem->station);
-}
-
-int starSystem_StationOrderProgressGet(StarSystem *starSystem){
-    return GetStationOrderProgress(starSystem->station);
-}
-void starSystem_StationOrderProgressIncrement(StarSystem *starSystem){
-    UnincrementStationOrderProgress(starSystem->station);
-}
-
-int starSystem_StationInfo1Get(StarSystem *starSystem){
-    return GetStationOrderInfo1(starSystem->station);
-}
-int starSystem_StationInfo2Get(StarSystem *starSystem){
-    return GetStationOrderInfo2(starSystem->station);
-}
-
-void starSystem_EmpireSet(StarSystem *starSystem, int empire){
-    starSystem->empire = empire;
-}
-int starSystem_EmpireGet(StarSystem *starSystem){
-    return starSystem->empire;
-}
-
-void starSystem_NameSet(StarSystem *starSystem, char* string){
-    if(strlen(string) <= 9)
-        strcpy(starSystem->name, string);
-    #ifdef DEBUG_VERSION
-    else
-        dbg_sprintf(dbgerr, "Name %s too long\n", string);
-    #endif
-}
-char* starSystem_NameGet(StarSystem *starSystem){
-    return starSystem->name;
-}
-
-
-
 //hyperlanes
 void hyperlane_DestinationSet(StarSystem *starSystem, int numeroHyperlane, int destination){
     starSystem->hyperlane[numeroHyperlane].destination = destination;

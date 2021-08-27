@@ -43,6 +43,7 @@ typedef struct StarSystemStruct StarSystem;
 /* internal public functions =========================================== */
 /**
  * @brief To alloc a star system
+ *        use free() to free the star system
  * 
  * @return StarSystem* 
  */
@@ -56,7 +57,7 @@ StarSystem* starSystem_Create();
  * @param x 
  * @param y 
  */
-void starSystem_SetXY(StarSystem *starSystem, int x, int y);
+void starSystem_SetXY(StarSystem *starSystem, const int x, const int y);
 
 /**
  * @brief To get the X position of a star system
@@ -64,7 +65,7 @@ void starSystem_SetXY(StarSystem *starSystem, int x, int y);
  * @param galaxy 
  * @return int 
  */
-int starSystem_XGet(StarSystem *starSystem);
+int starSystem_XGet(const StarSystem *starSystem);
 
 /**
  * @brief To get the Y position of a star system
@@ -72,7 +73,7 @@ int starSystem_XGet(StarSystem *starSystem);
  * @param galaxy 
  * @return int 
  */
-int starSystem_YGet(StarSystem *starSystem);
+int starSystem_YGet(const StarSystem *starSystem);
 
 
 /**
@@ -81,7 +82,7 @@ int starSystem_YGet(StarSystem *starSystem);
  * @param galaxy 
  * @param number 
  */
-void starSystem_EmpireSet(StarSystem *starSystem, int number);
+void starSystem_EmpireSet(StarSystem *starSystem, const int number);
 
 /**
  * @brief Get the empire owning the star system
@@ -89,7 +90,7 @@ void starSystem_EmpireSet(StarSystem *starSystem, int number);
  * @param galaxy 
  * @return int 
  */
-int starSystem_EmpireGet(StarSystem *starSystem);
+int starSystem_EmpireGet(const StarSystem *starSystem);
 
 /**
  * @brief Set the name of the star system
@@ -97,7 +98,7 @@ int starSystem_EmpireGet(StarSystem *starSystem);
  * @param galaxy 
  * @param string 
  */
-void starSystem_NameSet(StarSystem *starSystem, char* string);
+void starSystem_NameSet(StarSystem *starSystem, const char* string);
 
 /**
  * @brief Get the name of a star system
@@ -107,30 +108,27 @@ void starSystem_NameSet(StarSystem *starSystem, char* string);
  */
 char* starSystem_NameGet(StarSystem *starSystem);
 
-void starSystem_IntelLevelSet(StarSystem *starSystem, IntelLevel niveau);
+/**
+ * @brief Set the intel level of a star system with the enum IntelLevel
+ * 
+ * @param starSystem 
+ * @param niveau 
+ */
+void starSystem_IntelLevelSet(StarSystem *starSystem, IntelLevel intelLevel);
+
+/**
+ * @brief 
+ * 
+ * @param starSystem 
+ * @return IntelLevel 
+ */
 IntelLevel starSystem_IntelLevelGet(StarSystem *starSystem);
 
 void starSystem_StarTypeSet(StarSystem *starSystem, StarType type);
 StarType starSystem_StarTypeGet(StarSystem *starSystem);
 
-Station *starSystem_StationGet(StarSystem *starSystem);
-
 void starSystem_StationCreate(StarSystem *starSystem);
-void starSystem_StationModuleSet(StarSystem *starSystem, int moduleNumber, Module module);
-Module starSystem_StationModuleGet(StarSystem *starSystem, int moduleNumber);
-
-void starSystem_StationLevelSet(StarSystem *starSystem, Stationlevel level);
-Stationlevel starSystem_StationLevelGet(StarSystem *starSystem);
-
-OrdreStation starSystem_StationOrderGet(StarSystem *starSystem);
-void starSystem_StationOrderEnd(StarSystem *starSystem);
-
-int starSystem_StationOrderProgressGet(StarSystem *starSystem);
-void starSystem_StationOrderProgressIncrement(StarSystem *starSystem);
-
-int starSystem_StationInfo1Get(StarSystem *starSystem);
-int starSystem_StationInfo2Get(StarSystem *starSystem);
-
+Station *starSystem_StationGet(StarSystem *starSystem);
 
 void hyperlane_DestinationSet(StarSystem *starSystem, int numeroHyperlane, int destination);
 int hyperlane_DestinationGet(StarSystem *starSystem, int numeroHyperlane);
@@ -142,7 +140,7 @@ int hyperlane_YGet(StarSystem *starSystem, int numeroHyperlane);
 Planet *starSystem_PlanetAlloc(StarSystem *starSystem);
 Planet *starSystem_PlanetGet(StarSystem *starSystem, int position);
 
-void starSystem_PlanetHabitabilitySet(StarSystem *starSystem, int number, int habitability) __attribute__((deprecated("use starSystem_PlanetGet")));
+void starSystem_PlanetHabitabilitySet(StarSystem *starSystem, int number, int habitability);
 int starSystem_PlanetHabitabilityGet(StarSystem *starSystem, int number) __attribute__((deprecated("use starSystem_PlanetGet")));
 
 void starSystem_PlanetRadiusOrbitSet(StarSystem *starSystem, int number, int) __attribute__((deprecated("use starSystem_PlanetGet")));

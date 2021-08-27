@@ -4,43 +4,75 @@
 #include "ordres.h"
 
 /* types =============================================================== */
+/**
+ * @brief Differents levels for a station, affecting the health and power of the
+ *        station
+ * 
+ */
+typedef enum {  STATION_NONE = 0, 
+                STATION_OUTPOST, 
+                STATION_STARPORT, 
+                STATION_STARHOLD, 
+                STATION_STARFORTRESS, 
+                STATION_CITADEL} Stationlevel;
 
-typedef enum {AUCUNE_STATION, AVANT_POSTE, PORT_STELLAIRE, REDOUTE_STELLAIRE, FORTERESSE_STELLAIRE, CITADELLE} Stationlevel;
+/**
+ * @brief Differents possibles modules in a starbase
+ * 
+ */
+typedef enum {  STATION_MODULE_NONE = 0, 
+                STATION_MODULE_SHIPYARD, 
+                STATION_MODULE_ANCHORAGE, 
+                STATION_MODULE_GUN, 
+                STATION_MODULE_MISSILES, 
+                STATION_MODULE_HANGAR, 
+                STATION_MODULE_TRADE_HUB, 
+                STATION_MODULE_SOLAR_PANEL} StationModule;
 
-typedef enum {AUCUN_MODULE, CHANTIER_SPATIAL, ANCRAGE, CANONS, MISSILES, HANGAR, CARREFOUR_COMMERCIAL, PANNEAUX_SOLAIRES} Module;
-
-typedef enum {AUCUN_ORDRE_STATION, AMELIORER_STATION, CONSTRUIRE_MODULE, CONSTRUIRE_PLATEFORME, CONSTRUIRE_VAISSEAU} OrdreStation;
+/**
+ * @brief Orders that a starbase can do
+ * 
+ */
+typedef enum {  STATION_ORDER_NONE = 0, 
+                STATION_ORDER_UPGRADE, 
+                STATION_ORDER_BUILD_MODULE, 
+                STATION_ORDER_BUILD_PLATFORM, 
+                STATION_ORDER_BUILD_SHIP} StationOrder;
 
 /* structures ========================================================== */
 
+/**
+ * @brief The struct of a starbase
+ * 
+ */
 typedef struct StationStruct Station;
 
 /* entry points ======================================================== */
 
-Station* AllocStation();
-void memsetStation(Station *station);
+Station* station_Create();
+void station_Reinitialize(Station *station);
 
-void SetStationLevel(Station *station, Stationlevel level);
-Stationlevel GetStationLevel(Station *station);
-void EndStationOrder(Station *station);
+void station_LevelSet(Station *station, Stationlevel level);
+Stationlevel station_LevelGet(Station *station);
 
-void SetStationModule(Station *station, int moduleNumber, Module module);
-Module GetStationModule(Station *station, int moduleNumber);
-Module *GetStationModulePointer(Station *station, int moduleNumber);
+void station_ModuleSet(Station *station, int moduleNumber, StationModule module);
+StationModule station_ModuleGet(Station *station, int moduleNumber);
 
-OrdreFile *GetStationOrderQueue(Station *station);
+OrdreFile *station_OrderQueueGet(Station *station);
 
-void NewStationOrdre(Station *station, OrdreStation ordre, int empire);
-OrdreStation GetStationOrder(Station *station);
+void station_NewOrder(Station *station, StationOrder ordre, int empire);
+void station_OrderEnd(Station *station);
+StationOrder station_OrderGet(Station *station);
 
-int GetStationOrderProgress(Station *station);
-void UnincrementStationOrderProgress(Station *station);
+int station_OrderProgressGet(Station *station);
+void station_OrderProgressUnincrement(Station *station);
 
-int GetStationOrderInfo1(Station *station);
-int GetStationOrderInfo2(Station *station);
+int station_OrderInfo1Get(Station *station);
+int station_OrderInfo2Get(Station *station);
 
-int GetStationHullPourcent(Station *station);
-int GetStationArmorPourcent(Station *station);
-int GetStationShieldPourcent(Station *station);
-int GetStationPower(Station *station);
+int station_HullGet(Station *station);
+int station_ArmorGet(Station *station);
+int station_ShieldGet(Station *station);
+int station_PowerGet(Station *station);
+
 #endif

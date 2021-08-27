@@ -86,15 +86,15 @@ struct FleetTemplateStruct {
 /**
  *Crée une liste de flottes
  */
-FlotteListe* CreerFlotteListe() {
-	return (FlotteListe*)GenericList_Create();
+FleetList* fleet_ListCreate() {
+	return (FleetList*)GenericList_Create();
 }
 
 /**
  *Supprime une liste des flottes
  */
-void SupprimerFlotteListe(FlotteListe* flotteliste) {
-    Flotte *flotte = NULL;
+void fleet_ListFree(FleetList* flotteliste) {
+    Fleet *flotte = NULL;
 	int i = 0;
     flotte = GenericCell_Get((GenericList*)flotteliste, i);
     while(flotte != NULL) {
@@ -114,30 +114,30 @@ void SupprimerFlotteListe(FlotteListe* flotteliste) {
 /**
  * Renvoi nombre de flottes
  */
-int FleetArraySize(const FlotteListe* flotteListe){
+int FleetArraySize(const FleetList* flotteListe){
 	return GenericList_ArraySize((GenericList*)flotteListe);
 }
 
 /**
  *Renvoi un pointeur vers la flotte numero x, commence à 1
  */
-Flotte* FlotteNumero(const FlotteListe* flotteliste, const int numero) {
+Fleet* FlotteNumero(const FleetList* flotteliste, const int numero) {
 	return GenericCell_Get((GenericList*)flotteliste, numero);
 }
 
 /**
  *Renvoi le numéro de la flotte suivant son pointeur
  */
-int RecupererFlotteNumero(const FlotteListe* flotteliste, const Flotte* flotte) {
+int RecupererFlotteNumero(const FleetList* flotteliste, const Fleet* flotte) {
 	return GenericCell_GetNumber((GenericList*)flotteliste, flotte);
 }
 
 /**
  *Rajoute une flotte à la liste des flotte envoyée
  */
-Flotte* AjouterFlotte(FlotteListe* flotteliste) {
-	Flotte *pointeur = NULL;
-	pointeur = calloc(1, sizeof(Flotte));
+Fleet* AjouterFlotte(FleetList* flotteliste) {
+	Fleet *pointeur = NULL;
+	pointeur = calloc(1, sizeof(Fleet));
 	if(!pointeur){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when creating fleet");
@@ -151,7 +151,7 @@ Flotte* AjouterFlotte(FlotteListe* flotteliste) {
 /**
  *Supprime la flotte numero x à la liste de flottes envoyée
  */
-void SupprimerFlotte(FlotteListe* flotteliste, int numero) {
+void SupprimerFlotte(FleetList* flotteliste, int numero) {
 	#ifdef DEBUG_VERSION
 	dbg_sprintf(dbgout, "Free fleet %d\n", numero);
 	#endif
@@ -162,10 +162,10 @@ void SupprimerFlotte(FlotteListe* flotteliste, int numero) {
 /**
  *Crée une nouvelle flotte
  */
-Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
-	Flotte* flotte = NULL;
+Fleet* fleet_New(FleetList *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
+	Fleet* flotte = NULL;
 	flotte = AjouterFlotte(flotteListe);
-	memset(flotte, 0, sizeof(Flotte));
+	memset(flotte, 0, sizeof(Fleet));
 
 	flotte->systeme = systeme;
 	flotte->x = SYSTEM_SPECIAL_X - 10;
@@ -245,8 +245,8 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 	return flotte;
 }
 
-int CalculateFleetPower(FlotteListe *flotteListe){
-	Flotte *flotte = NULL;
+int CalculateFleetPower(FleetList *flotteListe){
+	Fleet *flotte = NULL;
 	int compteur = 0;
 	int arraySize = FleetArraySize(flotteListe);
 	int puissance = 0;
@@ -261,14 +261,14 @@ int CalculateFleetPower(FlotteListe *flotteListe){
 /**
  * Get the system of the designated flotte
  */
-int GetFleetSystem(Flotte *flotte){
+int GetFleetSystem(Fleet *flotte){
 	return flotte->systeme;
 }
 
 /**
  * Get the path of the designated flotte
  */
-int GetFleetPath(Flotte *flotte, int index){
+int GetFleetPath(Fleet *flotte, int index){
 	if(index < 50)
 		return flotte->chemin[index];
 	else
@@ -278,83 +278,83 @@ int GetFleetPath(Flotte *flotte, int index){
 /**
  * Get the type of the designated flotte
  */
-FlotteType GetFleetType(Flotte *flotte){
+FlotteType GetFleetType(Fleet *flotte){
 	return flotte->type;
 }
 
 /**
  * Get the power of the designated flotte
  */
-int GetFleetPower(Flotte *flotte){
+int GetFleetPower(Fleet *flotte){
 	return flotte->puissance;
 }
 
 /**
  * Get the progress of the designated flotte
  */
-int GetFleetPathProgress(Flotte *flotte){
+int GetFleetPathProgress(Fleet *flotte){
 	return flotte->avancementTrajet;
 }
-void IncrementFleetPathProgress(Flotte *flotte){
+void IncrementFleetPathProgress(Fleet *flotte){
 	flotte->avancementTrajet++;
 }
-void SetFleetPathProgress(Flotte *flotte, int progress){
+void SetFleetPathProgress(Fleet *flotte, int progress){
 	flotte->avancementTrajet = progress;
 }
 
-int GetFleetProgress(Flotte *flotte){
+int GetFleetProgress(Fleet *flotte){
 	return flotte->avancement;
 }
-void IncrementFleetProgress(Flotte *flotte){
+void IncrementFleetProgress(Fleet *flotte){
 	flotte->avancement++;
 }
-void SetFleetProgress(Flotte *flotte, int progress){
+void SetFleetProgress(Fleet *flotte, int progress){
 	flotte->avancement = progress;
 }
 
-int GetFleetX(Flotte *flotte){
+int GetFleetX(Fleet *flotte){
 	return flotte->x;
 }
-int GetFleetY(Flotte *flotte){
+int GetFleetY(Fleet *flotte){
 	return flotte->y;
 }
-int GetFleetXVector(Flotte *flotte){
+int GetFleetXVector(Fleet *flotte){
 	return flotte->vecteur.xVecteur;
 }
-int GetFleetYVector(Flotte *flotte){
+int GetFleetYVector(Fleet *flotte){
 	return flotte->vecteur.yVecteur;
 }
 
-int GetFleetHullPourcent(Flotte *flotte){
+int GetFleetHullPourcent(Fleet *flotte){
 	return (flotte->coqueVie * 100) / flotte->coqueTotal;
 }
-int GetFleetArmorPourcent(Flotte *flotte){
+int GetFleetArmorPourcent(Fleet *flotte){
 	return (flotte->blindageVie * 100) / flotte->blindageTotal;
 }
-int GetFleetShieldPourcent(Flotte *flotte){
+int GetFleetShieldPourcent(Fleet *flotte){
 	return (flotte->bouclierVie * 100) / flotte->bouclierTotal;
 }
 
-int GetFleetCorvetteNumber(Flotte *flotte){
+int GetFleetCorvetteNumber(Fleet *flotte){
 	return flotte->nombreDeCorvette;
 }
-int GetFleetDestroyerNumber(Flotte *flotte){
+int GetFleetDestroyerNumber(Fleet *flotte){
 	return flotte->nombreDeDestroyer;
 }
-int GetFleetCruiserNumber(Flotte *flotte){
+int GetFleetCruiserNumber(Fleet *flotte){
 	return flotte->nombreDeCroiseur;
 }
-int GetFleetBattleshipNumber(Flotte *flotte){
+int GetFleetBattleshipNumber(Fleet *flotte){
 	return flotte->nombreDeCuirasse;
 }
 
-char GetFleetAction(Flotte *flotte){
+char GetFleetAction(Fleet *flotte){
 	return flotte->action;
 }
-void SetFleetAction(Flotte *flotte, char action){
+void SetFleetAction(Fleet *flotte, char action){
 	flotte->action = action;
 }
-int GetFleetArriveSystem(Flotte *flotte){
+int GetFleetArriveSystem(Fleet *flotte){
 	return flotte->systemeArrive;
 }
 
@@ -363,7 +363,7 @@ int GetFleetArriveSystem(Flotte *flotte){
  */
 void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *fenetre, Camera *camera, EmpireList *empireListe, StarSystem **systemeStellaires){
 	Empire* empire;
-	Flotte* flotte;
+	Fleet* flotte;
 	int error;
 
 	empire = empire_Get(empireListe, numeroDeEmpire);
@@ -412,7 +412,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 	}
 }
 
-int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires){
+int MoveFleet(Fleet *flotte, int systeme, StarSystem **systemeStellaires){
 	int error = 0;
 	int index = 0;
 
@@ -438,9 +438,9 @@ int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires){
 /**
  * Fait effectuer les action des flottes
  */
-void fleet_ActionsUpdate(EmpireList* empireListe, StarSystem **systemeStellaires){
+void fleet_ActionsUpdate(StarSystem **systemeStellaires, EmpireList* empireListe){
 	Empire* empire = NULL; 
-	Flotte* flotte = NULL;
+	Fleet* flotte = NULL;
 	int index = 0, numeroEmpire = 0;
 	int fleetSize;
 	int fleetIndex;
@@ -464,7 +464,7 @@ void fleet_ActionsUpdate(EmpireList* empireListe, StarSystem **systemeStellaires
 					if(pow((double)(flotte->x - SYSTEM_SPECIAL_X), 2.0) + pow((double)(flotte->y - SYSTEM_SPECIAL_Y), 2.0) < pow((double)10, 2.0)) {
 						//arrivé au centre du systeme
 						if(flotte->action == FLOTTE_CONSTRUIRE_BASE) {
-							SetStationLevel(starSystem_StationGet(systemeStellaires[(int)flotte->systeme]), AVANT_POSTE);
+							station_LevelSet(starSystem_StationGet(systemeStellaires[(int)flotte->systeme]), STATION_OUTPOST);
 							starSystem_EmpireSet(systemeStellaires[(int)flotte->systeme], numeroEmpire);
 						}
 						flotte->action = FLOTTE_AUCUNE_ACTION;
@@ -527,7 +527,7 @@ Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
  *Crée une liste de templates de flottes
  */
 FleetTemplateListe* fleet_TemplateListCreate() {
-	return (FlotteListe*)GenericList_Create();
+	return (FleetList*)GenericList_Create();
 }
 
 /**

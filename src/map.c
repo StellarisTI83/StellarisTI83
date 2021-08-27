@@ -69,7 +69,7 @@ static void DessinerPlanetesHabitables(StarSystem **systemeStellaires, Settings 
  *dessine les flottes sur la map
  */
 static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSystem **systemeStellaires, Camera* camera, Settings *parametres){
-	Flotte* flotte;
+	Fleet* flotte;
 	Empire *empire;
 	int system, xFlotte, yFlotte;
 	int index = 0, x1 = 0, y1 = 0, x2 = 0, y2 = 0;
@@ -583,32 +583,33 @@ static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera
  */
 void DessinerBase(StarSystem *systeme, Camera* camera, Window* fenetre, char* key){
 	int x, y;
-	if(starSystem_StationLevelGet(systeme) != AUCUNE_STATION){
+	Station *station = starSystem_StationGet(systeme);
+	if(station_LevelGet(station) != STATION_NONE){
 		gfx_SetColor(1);
 		x = 465 - camera_XSystemGet(camera);
 		y = 345 - camera_YSystemGet(camera);
 		
 		//verifie que la base soit dans l'écran
 		if(((0 < x) && (x < 315)) && ((0 < y) && (y < 235))){
-			switch(starSystem_StationLevelGet(systeme)){ //dessine la station
-				case AVANT_POSTE:
+			switch(station_LevelGet(station)){ //dessine la station
+				case STATION_OUTPOST:
 					gfx_SetPixel(x, y);
 					break;
-				case PORT_STELLAIRE:
+				case STATION_STARPORT:
 					gfx_Line_NoClip(x - 1, y - 1, x + 1, y + 1);
 					break;
-				case REDOUTE_STELLAIRE:
+				case STATION_STARHOLD:
 					gfx_Line_NoClip(x - 1, y - 1, x + 1, y + 1);
 					gfx_Line_NoClip(x - 1, y + 1, x + 1, y - 1);
 					break;
-				case FORTERESSE_STELLAIRE:
+				case STATION_STARFORTRESS:
 					gfx_Line_NoClip(x - 2, y, x, y - 2);
 					gfx_Line_NoClip(x - 2, y, x, y + 2);
 					gfx_Line_NoClip(x + 2, y, x, y - 2);
 					gfx_Line_NoClip(x + 2, y, x, y + 2);
 					gfx_SetPixel(x, y);
 					break;
-				case CITADELLE:
+				case STATION_CITADEL:
 					gfx_Line_NoClip(x - 2, y, x, y - 2);
 					gfx_Line_NoClip(x - 2, y, x, y + 2);
 					gfx_Line_NoClip(x + 2, y, x, y - 2);
@@ -641,7 +642,7 @@ void DessinerBase(StarSystem *systeme, Camera* camera, Window* fenetre, char* ke
  */
 static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Window *fenetre, char* key){
 	Empire* empire = NULL;
-	Flotte* flotte = NULL;
+	Fleet* flotte = NULL;
 	int empireIndex = 0, fleetIndex = 0;
 	int empireSize = 0;
 	int sizeFleet = 0;

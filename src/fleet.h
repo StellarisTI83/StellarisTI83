@@ -29,11 +29,11 @@ typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
 
 /* structures ========================================================== */
 
-typedef GenericList FlotteListe;
+typedef GenericList FleetList;
 
 typedef GenericList FleetTemplateListe;
 
-typedef struct FlotteStruct Flotte;
+typedef struct FlotteStruct Fleet;
 
 typedef struct FleetTemplateStruct FleetTemplate;
 
@@ -41,50 +41,50 @@ typedef struct VecteurStruct Vecteur;
 
 /* entry points ======================================================== */
 
-FlotteListe* CreerFlotteListe();
-void SupprimerFlotteListe(FlotteListe* flotteliste);
-int FleetArraySize(const FlotteListe* flotteListe);
-Flotte* FlotteNumero(const FlotteListe* flotteliste, const int numero);
-int RecupererFlotteNumero(const FlotteListe* flotteliste, const Flotte* flotte);
-Flotte* AjouterFlotte(FlotteListe* flotteliste);
-void SupprimerFlotte(FlotteListe* flotteliste, int numero);
+FleetList* fleet_ListCreate();
+void fleet_ListFree(FleetList* flotteliste);
+int FleetArraySize(const FleetList* flotteListe);
+Fleet* FlotteNumero(const FleetList* flotteliste, const int numero);
+int RecupererFlotteNumero(const FleetList* flotteliste, const Fleet* flotte);
+Fleet* AjouterFlotte(FleetList* flotteliste);
+void SupprimerFlotte(FleetList* flotteliste, int numero);
 
-Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
+Fleet* fleet_New(FleetList *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
 
-int CalculateFleetPower(FlotteListe *flotteListe);
-int GetFleetSystem(Flotte *flotte);
-int GetFleetPath(Flotte *flotte, int index);
-FlotteType GetFleetType(Flotte *flotte);
-int GetFleetPower(Flotte *flotte);
-int GetFleetPathProgress(Flotte *flotte);
-void IncrementFleetPathProgress(Flotte *flotte);
-void SetFleetPathProgress(Flotte *flotte, int progress);
+int CalculateFleetPower(FleetList *flotteListe);
+int GetFleetSystem(Fleet *flotte);
+int GetFleetPath(Fleet *flotte, int index);
+FlotteType GetFleetType(Fleet *flotte);
+int GetFleetPower(Fleet *flotte);
+int GetFleetPathProgress(Fleet *flotte);
+void IncrementFleetPathProgress(Fleet *flotte);
+void SetFleetPathProgress(Fleet *flotte, int progress);
 
-int GetFleetProgress(Flotte *flotte);
-void IncrementFleetProgress(Flotte *flotte);
-void SetFleetProgress(Flotte *flotte, int progress);
+int GetFleetProgress(Fleet *flotte);
+void IncrementFleetProgress(Fleet *flotte);
+void SetFleetProgress(Fleet *flotte, int progress);
 
-int GetFleetX(Flotte *flotte);
-int GetFleetY(Flotte *flotte);
-int GetFleetXVector(Flotte *flotte);
-int GetFleetYVector(Flotte *flotte);
+int GetFleetX(Fleet *flotte);
+int GetFleetY(Fleet *flotte);
+int GetFleetXVector(Fleet *flotte);
+int GetFleetYVector(Fleet *flotte);
 
-int GetFleetHullPourcent(Flotte *flotte);
-int GetFleetArmorPourcent(Flotte *flotte);
-int GetFleetShieldPourcent(Flotte *flotte);
+int GetFleetHullPourcent(Fleet *flotte);
+int GetFleetArmorPourcent(Fleet *flotte);
+int GetFleetShieldPourcent(Fleet *flotte);
 
-int GetFleetCorvetteNumber(Flotte *flotte);
-int GetFleetDestroyerNumber(Flotte *flotte);
-int GetFleetCruiserNumber(Flotte *flotte);
-int GetFleetBattleshipNumber(Flotte *flotte);
+int GetFleetCorvetteNumber(Fleet *flotte);
+int GetFleetDestroyerNumber(Fleet *flotte);
+int GetFleetCruiserNumber(Fleet *flotte);
+int GetFleetBattleshipNumber(Fleet *flotte);
 
-char GetFleetAction(Flotte *flotte);
-void SetFleetAction(Flotte *flotte, char action);
-int GetFleetArriveSystem(Flotte *flotte);
+char GetFleetAction(Fleet *flotte);
+void SetFleetAction(Fleet *flotte, char action);
+int GetFleetArriveSystem(Fleet *flotte);
 
 void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *fenetre, Camera *camera, EmpireList *empireListe, StarSystem **systemeStellaires);
-int MoveFleet(Flotte *flotte, int systeme, StarSystem **systemeStellaires);
-void fleet_ActionsUpdate(EmpireList* empireListe, StarSystem **systemeStellaires);
+int MoveFleet(Fleet *flotte, int systeme, StarSystem **systemeStellaires);
+void fleet_ActionsUpdate(StarSystem **systemeStellaires, EmpireList* empireListe);
 
 FleetTemplateListe* fleet_TemplateListCreate();
 void fleet_TemplateListFree(FleetTemplateListe* flotteliste);
