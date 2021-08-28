@@ -16,6 +16,10 @@
 
 #define DEBUG_VERSION
 
+#ifdef DEBUG_VERSION
+#define NDEBUG
+#endif
+
 
 /* constants =========================================================== */
 

@@ -164,8 +164,8 @@ static void hud_PrintInfos( Empire *player,
                                     HUD_UP_BAR_LEFT,
                                     HUD_UP_BAR_UP);
 
-    PrintHUD(   GetEmpireCredit(player), 
-                GetEmpireCreditChange(player), 
+    PrintHUD(   empire_CreditGet(player), 
+                empire_CreditVariationGet(player), 
                 HUD_UP_BAR_LEFT - 15, 
                 HUD_UP_BAR_TEXT_X);
 
@@ -174,8 +174,8 @@ static void hud_PrintInfos( Empire *player,
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP, 
                                     1);
 
-    PrintHUD(   GetEmpireMinerals(player), 
-                GetEmpireMineralsChange(player), 
+    PrintHUD(   empire_MineralsGet(player), 
+                empire_MineralsVariationGet(player), 
                 HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP - 15, 
                 HUD_UP_BAR_TEXT_X);
 
@@ -184,8 +184,8 @@ static void hud_PrintInfos( Empire *player,
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 2, 
                                     HUD_UP_BAR_UP);
 
-    PrintHUD(   GetEmpireFood(player), 
-                GetEmpireFoodChange(player), 
+    PrintHUD(   empire_FoodGet(player), 
+                empire_FoodVariationGet(player), 
                 HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 2 - 15, 
                 HUD_UP_BAR_TEXT_X);
 
@@ -194,8 +194,8 @@ static void hud_PrintInfos( Empire *player,
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 3, 
                                     HUD_UP_BAR_UP);
 
-    PrintHUD(   GetEmpireAlloys(player), 
-                GetEmpireAlloysChange(player), 
+    PrintHUD(   empire_AlloysGet(player), 
+                empire_AlloysVariationGet(player), 
                 HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 3 - 15, 
                 HUD_UP_BAR_TEXT_X);
     

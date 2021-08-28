@@ -291,7 +291,7 @@ void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Set
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " cash");
-			AddEmpireCredit(empire_Get(empireListe, 0), nombre);
+			empire_CreditAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
 				dbg_sprintf(dbgout, "Added %d cash to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
@@ -316,7 +316,7 @@ void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Set
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " minerals");
-			AddEmpireMinerals(empire_Get(empireListe, 0), nombre);
+			empire_MineralsAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
 				dbg_sprintf(dbgout, "Added %d minerals to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
@@ -341,7 +341,7 @@ void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Set
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " alloys");
-			AddEmpireAlloys(empire_Get(empireListe, 0), nombre);
+			empire_AlloysAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
 				dbg_sprintf(dbgout, "Added %d alloys to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
@@ -366,7 +366,7 @@ void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Set
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " food");
-			AddEmpireFood(empire_Get(empireListe, 0), nombre);
+			empire_FoodAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
 				dbg_sprintf(dbgout, "Added %d food to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif

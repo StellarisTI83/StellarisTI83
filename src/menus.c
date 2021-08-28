@@ -669,12 +669,12 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
 
 	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[camera_SystemAimedGet(camera)]) != -1){
 		if(GetWindowSelection(fenetre) == 5){
-			AddEmpireMinerals(empire_Get(empireListe, 0), GetOrderPrice(city_OrderQueueGet(planet_CityGet(planete))));
+			empire_MineralsAdd(empire_Get(empireListe, 0), GetOrderPrice(city_OrderQueueGet(planet_CityGet(planete))));
 			FinirOrdre(city_OrderQueueGet(planet_CityGet(planete)));
 		}
 		else{
-			if(GetEmpireMinerals(empire_Get(empireListe, 0)) >= 50){
-				AddEmpireMinerals(empire_Get(empireListe, 0), -50);
+			if(empire_MineralsGet(empire_Get(empireListe, 0)) >= 50){
+				empire_MineralsAdd(empire_Get(empireListe, 0), -50);
 				switch(GetWindowSelection(fenetre)){
 					case 1:
 						NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
@@ -835,7 +835,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	if(GetEmpireAlloys(joueur) < 400){
+	if(empire_AlloysGet(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(400);
@@ -850,7 +850,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	if(GetEmpireAlloys(joueur) < 400){
+	if(empire_AlloysGet(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(400);
@@ -865,7 +865,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	if(GetEmpireAlloys(joueur) < 400){
+	if(empire_AlloysGet(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(400);
@@ -880,7 +880,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	if(GetEmpireAlloys(joueur) < 400){
+	if(empire_AlloysGet(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(400);
@@ -891,8 +891,8 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 		if(GetWindowSelection(fenetre) != 0){
 			IncrementWindowSelection(fenetre);
 		}
-		if(GetEmpireAlloys(joueur) >= prix){
-			AddEmpireAlloys(joueur, -prix);
+		if(empire_AlloysGet(joueur) >= prix){
+			empire_AlloysAdd(joueur, -prix);
 			NouvelOrdre(city_OrderQueueGet(GetWindowCity(fenetre)),
 				CONSTRUIRE_BATIMENT,
 				1, 
@@ -1043,12 +1043,12 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
 	
 	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[camera_SystemAimedGet(camera)]) != -1){
 		if(GetWindowSelection(fenetre) == 5){
-			AddEmpireMinerals(empire_Get(empireListe, 0), GetOrderPrice(city_OrderQueueGet(planet_CityGet(planete))));
+			empire_MineralsAdd(empire_Get(empireListe, 0), GetOrderPrice(city_OrderQueueGet(planet_CityGet(planete))));
 			FinirOrdre(city_OrderQueueGet(planet_CityGet(planete)));
 		}
 		else{
-			if(GetEmpireMinerals(empire_Get(empireListe, 0)) >= 50){
-				AddEmpireMinerals(empire_Get(empireListe, 0), -50);
+			if(empire_MineralsGet(empire_Get(empireListe, 0)) >= 50){
+				empire_MineralsAdd(empire_Get(empireListe, 0), -50);
 				switch(GetWindowSelection(fenetre)){
 					case 1:
 						NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
@@ -1073,7 +1073,7 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
 	}
 	if(*key == sk_Enter && starSystem_EmpireGet(systemeStellaires[camera_SystemAimedGet(camera)]) != -1){
 		if((supprimer == 1) && (GetWindowSelection(fenetre) == 7)){
-			AddEmpireMinerals(empire_Get(empireListe, 0), GetOrderPrice(city_OrderQueueGet(planet_CityGet(planete))));
+			empire_MineralsAdd(empire_Get(empireListe, 0), GetOrderPrice(city_OrderQueueGet(planet_CityGet(planete))));
 			FinirOrdre(city_OrderQueueGet(planet_CityGet(planete)));
 		}
 		else if (GetWindowSelection(fenetre) != 1){
@@ -1658,7 +1658,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 		gfx_PrintString(evolution);
 		gfx_SetTextXY(227 - mainMenu_IntLen(prixAmelioration) * 4, 104);
 		gfx_TransparentSprite_NoClip(fer, 212 - mainMenu_IntLen(prixAmelioration) * 4, 103);
-		if(GetEmpireAlloys(joueur) < prixAmelioration){
+		if(empire_AlloysGet(joueur) < prixAmelioration){
 			gfx_SetTextFGColor(3);
 		}
 		mainMenu_PrintInt(prixAmelioration);
@@ -1723,8 +1723,8 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 	if(*key == sk_Enter){
 		switch(GetWindowSelection(fenetre)){
 			case 1:
-				if((GetEmpireAlloys(joueur) >= prixAmelioration) && (station_LevelGet(station) < STATION_CITADEL)){
-					AddEmpireAlloys(joueur, -prixAmelioration);
+				if((empire_AlloysGet(joueur) >= prixAmelioration) && (station_LevelGet(station) < STATION_CITADEL)){
+					empire_AlloysAdd(joueur, -prixAmelioration);
 					NouvelOrdre(station_OrderQueueGet(station),
 						STATION_ORDER_UPGRADE,
 						1, 
@@ -1759,7 +1759,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 				}
 				break;
 			case 3:
-				AddEmpireAlloys(joueur, GetOrderPrice(station_OrderQueueGet(station)));
+				empire_AlloysAdd(joueur, GetOrderPrice(station_OrderQueueGet(station)));
 				FinirOrdre(station_OrderQueueGet(station));
 				break;
 		}
@@ -1920,8 +1920,8 @@ static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **sy
 				station_ModuleSet(station, GetWindowSelection(fenetre), STATION_MODULE_NONE);
 			}
 			if(GetWindowPrevious(fenetre) != 0){
-				if(GetEmpireAlloys(joueur) >= 50){
-					AddEmpireAlloys(joueur, -50);
+				if(empire_AlloysGet(joueur) >= 50){
+					empire_AlloysAdd(joueur, -50);
 					NouvelOrdre(ordreQueue,
 						STATION_ORDER_BUILD_MODULE, 
 						1, 
@@ -1960,7 +1960,7 @@ static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **sy
 	
 	if(*key == sk_Enter){
 		if((supprimer == 1) && (GetWindowSelection(fenetre) == 7)) {
-			AddEmpireAlloys(joueur, GetOrderPrice(ordreQueue));
+			empire_AlloysAdd(joueur, GetOrderPrice(ordreQueue));
 			FinirOrdre(ordreQueue);
 		} else {
 			OpenMenu(fenetre, camera, MENU_SYSTEME, MENU_SYSTEME_STATION_MODULES_CHOIX);
@@ -2047,7 +2047,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
 		gfx_TransparentSprite_NoClip(fer, 45, niveau);
-		if(GetEmpireAlloys(joueur) < 50){
+		if(empire_AlloysGet(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
 		mainMenu_PrintInt(50);
@@ -2060,7 +2060,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	if(GetEmpireAlloys(joueur) < 50){
+	if(empire_AlloysGet(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(50);
@@ -2072,7 +2072,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	if(GetEmpireAlloys(joueur) < 50){
+	if(empire_AlloysGet(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(50);
@@ -2084,7 +2084,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	if(GetEmpireAlloys(joueur) < 50){
+	if(empire_AlloysGet(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(50);
@@ -2096,7 +2096,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
 	gfx_TransparentSprite_NoClip(fer, 45, niveau);
-	if(GetEmpireAlloys(joueur) < 50){
+	if(empire_AlloysGet(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(50);
@@ -2109,7 +2109,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
 		gfx_TransparentSprite_NoClip(fer, 45, niveau);
-		if(GetEmpireAlloys(joueur) < 50){
+		if(empire_AlloysGet(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
 		mainMenu_PrintInt(50);
@@ -2123,7 +2123,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
 		gfx_TransparentSprite_NoClip(fer, 45, niveau);
-		if(GetEmpireAlloys(joueur) < 50){
+		if(empire_AlloysGet(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
 		mainMenu_PrintInt(50);
@@ -2131,7 +2131,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	}
 
 	if(*key == sk_Enter){
-		if(GetEmpireAlloys(joueur) >= 50){
+		if(empire_AlloysGet(joueur) >= 50){
 			if(GetWindowSelection(fenetre) == 0){
 				SetWindowSelection(fenetre, 8);
 			}
@@ -2234,7 +2234,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		gfx_PrintString("Scientifique ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
-		if(GetEmpireAlloys(joueur) < 100){
+		if(empire_AlloysGet(joueur) < 100){
 			gfx_SetTextFGColor(3);
 		}
 		gfx_PrintString("100");
@@ -2250,7 +2250,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		gfx_PrintString("Construction ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
-		if(GetEmpireAlloys(joueur) < 100){
+		if(empire_AlloysGet(joueur) < 100){
 			gfx_SetTextFGColor(3);
 		}
 		gfx_PrintString("100");
@@ -2266,7 +2266,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		gfx_PrintString("Corvette ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
-		if(GetEmpireAlloys(joueur) < 100){
+		if(empire_AlloysGet(joueur) < 100){
 			gfx_SetTextFGColor(3);
 		}
 		gfx_PrintString("100");
@@ -2282,7 +2282,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		gfx_PrintString("Destroyer ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
-		if(GetEmpireAlloys(joueur) < 200){
+		if(empire_AlloysGet(joueur) < 200){
 			gfx_SetTextFGColor(3);
 		}
 		gfx_PrintString("200");
@@ -2298,7 +2298,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		gfx_PrintString("Croiseur ");
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
-		if(GetEmpireAlloys(joueur) < 500){
+		if(empire_AlloysGet(joueur) < 500){
 			gfx_SetTextFGColor(3);
 		}
 		gfx_PrintString("500");
@@ -2314,7 +2314,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		gfx_PrintString("Cuirass/ "); //battleship
 		gfx_TransparentSprite_NoClip(fer, 190, niveau);
     	gfx_SetTextXY(205, niveau);
-		if(GetEmpireAlloys(joueur) < 1000){
+		if(empire_AlloysGet(joueur) < 1000){
 			gfx_SetTextFGColor(3);
 		}
 		gfx_PrintString("1000");
@@ -2338,7 +2338,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 
 		if(*key == sk_Enter){
 			if(GetWindowSelection(fenetre) == 7){
-				AddEmpireAlloys(joueur, GetOrderPrice(ordreQueue));
+				empire_AlloysAdd(joueur, GetOrderPrice(ordreQueue));
 				FinirOrdre(ordreQueue);
 			}
 			else if(GetWindowSelection(fenetre) >= 3){
@@ -2346,8 +2346,8 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 				SetWindowFleetSize(fenetre, 1);
 			}
 			else{
-				if(GetEmpireAlloys(joueur) >= prix){
-					AddEmpireAlloys(joueur, -prix);
+				if(empire_AlloysGet(joueur) >= prix){
+					empire_AlloysAdd(joueur, -prix);
 					NouvelOrdre(ordreQueue,
 						STATION_ORDER_BUILD_SHIP,
 						1, 
@@ -2479,14 +2479,14 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSyste
 	mainMenu_PrintInt(GetWindowFleetSize(fenetre));
 	gfx_SetTextXY(60, 74);
 	gfx_TransparentSprite_NoClip(fer, 45, 74);
-	if(GetWindowFleetSize(fenetre) * prix > GetEmpireAlloys(joueur)){
+	if(GetWindowFleetSize(fenetre) * prix > empire_AlloysGet(joueur)){
 		gfx_SetTextFGColor(3);
 	}
 	mainMenu_PrintInt(GetWindowFleetSize(fenetre) * prix);
 
 	if(*key == sk_Enter){
-		if(GetEmpireAlloys(joueur) >= prix * GetWindowFleetSize(fenetre)){
-			AddEmpireAlloys(joueur, -(prix * GetWindowFleetSize(fenetre)));
+		if(empire_AlloysGet(joueur) >= prix * GetWindowFleetSize(fenetre)){
+			empire_AlloysAdd(joueur, -(prix * GetWindowFleetSize(fenetre)));
 			NouvelOrdre(station_OrderQueueGet(starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)])),
 				STATION_ORDER_BUILD_SHIP,
 				1, 
@@ -2752,7 +2752,7 @@ static void MenuContacts(char *key, EmpireList *empireListe, Camera *camera, Win
 		gfx_SetTextFGColor(1);
 		if(GetWindowSelection(fenetre) == empireSelectionne)
 			gfx_SetTextFGColor(13);
-		gfx_PrintStringXY(GetEmpireNameString(empire), 45, niveau);
+		gfx_PrintStringXY(empire_NameStringGet(empire), 45, niveau);
 		gfx_SetColor(7);
 		gfx_HorizLine_NoClip(50, niveau + 12, 220);
 		niveau += 18;
@@ -2788,7 +2788,7 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	int boutonY = 55;
 	int boutonIndex = 1;
 	int niveauX = 45;
-	Relations *relations = RelationNumero(EmpireRelationGetArray(empire), GetWindowPrevious(fenetre));
+	Diplomacy *relations = diplomacy_RelationsGet(empire_DiplomacyListGet(empire), GetWindowPrevious(fenetre));
 
 	if(GetWindowSelection(fenetre) > 6){
 		SetWindowSelection(fenetre, 1);
@@ -2802,9 +2802,9 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_SetColor(0);
 	gfx_FillRectangle_NoClip(45, 55, 120, 60); //fond rectangle du perso
 	gfx_SetColor(7);
-	gfx_PrintStringXY(GetEmpireNameString(empire), 45, 42);
+	gfx_PrintStringXY(empire_NameStringGet(empire), 45, 42);
 	
-	switch(GetEmpireSpecies(empire)){
+	switch(empire_SpeciesGet(empire)){
 		case 0:
 			gfx_ScaledTransparentSprite_NoClip(leader_head_human, 69, 67, 3, 3);
 			break;
@@ -2820,10 +2820,10 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 		default:
 			gfx_SetTextXY(66, 64);
 			gfx_PrintString("Sprite Error :");
-			mainMenu_PrintInt(GetEmpireSpecies(empire));
+			mainMenu_PrintInt(empire_SpeciesGet(empire));
 			break;
 	}
-	switch(GetEmpireClothes(empire)){
+	switch(empire_SpeciesClothesGet(empire)){
 		case 0:
 			gfx_ScaledTransparentSprite_NoClip(leader_clothes_1, 60, 88, 3, 3);
 			break;
@@ -2836,7 +2836,7 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 		default:
 			gfx_SetTextXY(57, 88);
 			gfx_PrintString("Sprite Error :");
-			mainMenu_PrintInt(GetEmpireClothes(empire));
+			mainMenu_PrintInt(empire_SpeciesClothesGet(empire));
 			break;
 	}
 	
@@ -2848,29 +2848,29 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_Rectangle_NoClip(45, 119, 120, 13); //rectangle
 	gfx_TransparentSprite_NoClip(opinion_icon, 48, 121);
 	gfx_SetTextXY(58, 122);
-	if(RelationGetOpinion(relations) < -750){
+	if(diplomacy_OpinionGet(relations) < -750){
 		gfx_SetTextFGColor(3);
-		mainMenu_PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(diplomacy_OpinionGet(relations));
 		gfx_PrintString(" Terribles");
 	}
-	else if(RelationGetOpinion(relations) < -300){
+	else if(diplomacy_OpinionGet(relations) < -300){
 		gfx_SetTextFGColor(9);
-		mainMenu_PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(diplomacy_OpinionGet(relations));
 		gfx_PrintString(" Tendues");
 	}
-	else if(RelationGetOpinion(relations) < 300){
+	else if(diplomacy_OpinionGet(relations) < 300){
 		gfx_SetTextFGColor(13);
-		mainMenu_PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(diplomacy_OpinionGet(relations));
 		gfx_PrintString(" Neutres");
 	}
-	else if(RelationGetOpinion(relations) < 750){
+	else if(diplomacy_OpinionGet(relations) < 750){
 		gfx_SetTextFGColor(19);
-		mainMenu_PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(diplomacy_OpinionGet(relations));
 		gfx_PrintString(" Positives");
 	}
 	else{
 		gfx_SetTextFGColor(17);
-		mainMenu_PrintInt(RelationGetOpinion(relations));
+		mainMenu_PrintInt(diplomacy_OpinionGet(relations));
 		gfx_PrintString(" Excellentes");
 	}
 	
@@ -2880,11 +2880,11 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_Rectangle_NoClip(45, 135, 38, 13);
 	gfx_TransparentSprite_NoClip(alliedFleet, 50, 139);
 	gfx_SetTextXY(73, 138);
-	if(GetEmpirePowerMilitary(empire) > GetEmpirePowerMilitary(joueur) + (GetEmpirePowerMilitary(joueur) / 10)){
+	if(empire_PowerMilitaryGet(empire) > empire_PowerMilitaryGet(joueur) + (empire_PowerMilitaryGet(joueur) / 10)){
 		gfx_SetTextFGColor(3);
 		gfx_PrintString(">");
 	}
-	else if(GetEmpirePowerMilitary(empire) < GetEmpirePowerMilitary(joueur) - (GetEmpirePowerMilitary(joueur) / 10)){
+	else if(empire_PowerMilitaryGet(empire) < empire_PowerMilitaryGet(joueur) - (empire_PowerMilitaryGet(joueur) / 10)){
 		gfx_SetTextFGColor(19);
 		gfx_PrintString("<");
 	}
@@ -2896,11 +2896,11 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_Rectangle_NoClip(86, 135, 38, 13);
 	gfx_TransparentSprite_NoClip(credit, 91, 136);
 	gfx_SetTextXY(114, 138);
-	if(GetEmpirePowerEconomic(empire) > GetEmpirePowerEconomic(joueur) + (GetEmpirePowerEconomic(joueur) / 10)){
+	if(empire_PowerEconomicGet(empire) > empire_PowerEconomicGet(joueur) + (empire_PowerEconomicGet(joueur) / 10)){
 		gfx_SetTextFGColor(3);
 		gfx_PrintString(">");
 	}
-	else if(GetEmpirePowerEconomic(empire) < GetEmpirePowerEconomic(joueur) - (GetEmpirePowerEconomic(joueur) / 10)){
+	else if(empire_PowerEconomicGet(empire) < empire_PowerEconomicGet(joueur) - (empire_PowerEconomicGet(joueur) / 10)){
 		gfx_SetTextFGColor(19);
 		gfx_PrintString("<");
 	}
@@ -2912,11 +2912,11 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_Rectangle_NoClip(127, 135, 38, 13);
 	gfx_TransparentSprite_NoClip(science, 131, 137);
 	gfx_SetTextXY(155, 138);
-	if(GetEmpirePowerScientific(empire) > GetEmpirePowerScientific(joueur) + (GetEmpirePowerScientific(joueur) / 10)){
+	if(empire_PowerScienceGet(empire) > empire_PowerScienceGet(joueur) + (empire_PowerScienceGet(joueur) / 10)){
 		gfx_SetTextFGColor(3);
 		gfx_PrintString(">");
 	}
-	else if(GetEmpirePowerScientific(empire) < GetEmpirePowerScientific(joueur) - (GetEmpirePowerScientific(joueur) / 10)){
+	else if(empire_PowerScienceGet(empire) < empire_PowerScienceGet(joueur) - (empire_PowerScienceGet(joueur) / 10)){
 		gfx_SetTextFGColor(19);
 		gfx_PrintString("<");
 	}
@@ -2930,16 +2930,16 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_Rectangle_NoClip(45, 151, 120, 13);
 	gfx_TransparentSprite_NoClip(attitude_icon, 48, 152);
 	gfx_SetTextXY(58, 154);
-	if(RelationGetAttitude(relations) < BEHAVIOR_NEUTRAL){
+	if(diplomacy_AttitudeGet(relations) < BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(3);
 	}
-	else if(RelationGetAttitude(relations) > BEHAVIOR_NEUTRAL){
+	else if(diplomacy_AttitudeGet(relations) > BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(19);
 	}
 	else{
 		gfx_SetTextFGColor(13);
 	}
-	switch(RelationGetAttitude(relations)) {
+	switch(diplomacy_AttitudeGet(relations)) {
 		default:
 			gfx_PrintString("Erreur_inconnu");
 			break;
@@ -2967,21 +2967,21 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(45, 167, 120, 13);
 	gfx_TransparentSprite_NoClip(pact_icon, 48, 169);
-	if(RelationGetAttitude(relations) < BEHAVIOR_NEUTRAL){
+	if(diplomacy_AttitudeGet(relations) < BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(3);
 	}
-	else if(RelationGetAttitude(relations) > BEHAVIOR_NEUTRAL){
+	else if(diplomacy_AttitudeGet(relations) > BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(19);
 	}
 	else{
 		gfx_SetTextFGColor(13);
 	}
 	niveauX = 58;
-	if(RelationGetPacteStatus(relations, AGREEMENT_NON_AGRESSION)){
+	if(diplomacy_AgreementStatus(relations, AGREEMENT_NON_AGRESSION)){
 		gfx_TransparentSprite_NoClip(attitude_icon, niveauX, 168);
 		niveauX += 13;
 	}
-	if(RelationGetPacteStatus(relations, AGREEMENT_RESEARCH)){
+	if(diplomacy_AgreementStatus(relations, AGREEMENT_RESEARCH)){
 		gfx_TransparentSprite_NoClip(science, niveauX, 168);
 		niveauX += 13;
 	}
@@ -3046,13 +3046,13 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 		case sk_Enter:
 			switch (GetWindowSelection(fenetre)) {
 				case 1:
-					RelationAmeliorer(relations);
+					diplomacy_RelationsUpgrade(relations);
 					break;
 				case 2:
-					RelationDegrader(relations);
+					diplomacy_RelationDowngrade(relations);
 					break;
 				case 3:
-					RelationGuerreDeclarer(relations);
+					diplomacy_WarDeclare(relations);
 					break;
 				case 4:
 					SetWindowEmpire(fenetre, GetWindowSelection(fenetre));
@@ -3062,10 +3062,10 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 					*key = 0;
 					break;
 				case 5:
-					RelationSetPacte(relations, AGREEMENT_NON_AGRESSION);
+					diplomacy_AgreementSign(relations, AGREEMENT_NON_AGRESSION);
 					break;
 				case 6:
-					RelationSetPacte(relations, AGREEMENT_RESEARCH);
+					diplomacy_AgreementSign(relations, AGREEMENT_RESEARCH);
 					break;
 				default:
 					break;
@@ -3077,16 +3077,16 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 static void MenuContactsEffectuerAction(char *key, EmpireList *empireListe, Camera *camera, Window *fenetre) {
 	Empire *empire = empire_Get(empireListe, GetWindowPrevious(fenetre));
 	int boutonIndex = 1;
-	Relations *relations = RelationNumero(EmpireRelationGetArray(empire), GetWindowPrevious(fenetre));
+	Diplomacy *relations = diplomacy_RelationsGet(empire_DiplomacyListGet(empire), GetWindowPrevious(fenetre));
 
 	//dessiner fenetre
 	DrawMenuBase(0, 0, fenetre);
 	gfx_SetColor(0);
 	gfx_FillRectangle_NoClip(45, 55, 120, 60); //fond rectangle du perso
 	gfx_SetColor(7);
-	gfx_PrintStringXY(GetEmpireNameString(empire), 45, 42);
+	gfx_PrintStringXY(empire_NameStringGet(empire), 45, 42);
 	
-	switch(GetEmpireSpecies(empire)){
+	switch(empire_SpeciesGet(empire)){
 		case 0:
 			gfx_ScaledTransparentSprite_NoClip(leader_head_human, 69, 67, 3, 3);
 			break;
@@ -3102,10 +3102,10 @@ static void MenuContactsEffectuerAction(char *key, EmpireList *empireListe, Came
 		default:
 			gfx_SetTextXY(66, 64);
 			gfx_PrintString("Sprite Error :");
-			mainMenu_PrintInt(GetEmpireSpecies(empire));
+			mainMenu_PrintInt(empire_SpeciesGet(empire));
 			break;
 	}
-	switch(GetEmpireClothes(empire)){
+	switch(empire_SpeciesClothesGet(empire)){
 		case 0:
 			gfx_ScaledTransparentSprite_NoClip(leader_clothes_1, 60, 88, 3, 3);
 			break;
@@ -3118,7 +3118,7 @@ static void MenuContactsEffectuerAction(char *key, EmpireList *empireListe, Came
 		default:
 			gfx_SetTextXY(57, 88);
 			gfx_PrintString("Sprite Error :");
-			mainMenu_PrintInt(GetEmpireClothes(empire));
+			mainMenu_PrintInt(empire_SpeciesClothesGet(empire));
 			break;
 	}
 	
@@ -3148,7 +3148,7 @@ static void MenuContactsEffectuerAction(char *key, EmpireList *empireListe, Came
 			boutonIndex = GetWindowSelection(fenetre);
 			OpenMenu(fenetre, camera, MENU_CONTACTS_DETAILS, 0);
 			SetWindowSelection(fenetre, boutonIndex);
-			RelationInsulter(relations);
+			diplomacy_Insult(relations);
 			*key = 0;
 			break;
 	}

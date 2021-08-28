@@ -222,7 +222,7 @@ static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, Empir
 		if ( (((0 <= x) && (x <= 320)) && ((0 <= y)&& (y <= 240))) && ((starSystem_XGet(systemeStellaires[i]) != 0) && (starSystem_YGet(systemeStellaires[i]) != 0)) ) {
 			if((starSystem_IntelLevelGet(systemeStellaires[i]) != INTEL_UNKNOWN) || settings_SeeAllGet(parametres)) {
 				if(starSystem_EmpireGet(systemeStellaires[i]) != -1){
-					gfx_SetColor(GetEmpireColor(empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[i]))));
+					gfx_SetColor(empire_ColorGet(empire_Get(empireListe, starSystem_EmpireGet(systemeStellaires[i]))));
 					if(camera_MapTypeGet(camera) == VUE_GALACTIC){
 						gfx_Circle(x, y, 20 * camera_ZoomGet(camera));
 						gfx_Circle(x, y, (19 * camera_ZoomGet(camera)) + 1);

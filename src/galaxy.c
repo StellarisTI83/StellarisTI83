@@ -673,7 +673,7 @@ void galaxy_StartEmpiresInitialize( Settings *parametres,
         empire_Generate(empire, empireIndex, galaxy[systemIndex], systemIndex, randInt(20, 29));
     }
     update_IntelLevel(galaxy, empireListe);
-    ai_RelationsUpdate(empireListe);
+    diplomacy_AllUpdate(empireListe);
 }
 
 

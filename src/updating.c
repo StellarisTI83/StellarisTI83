@@ -352,7 +352,7 @@ static void update_EmpirePower(EmpireList *empireList) {
     int empireIndex = 0;
     Empire *empire = empire_Get(empireList, empireIndex);
     while(empire) {
-        CalculateEmpirePower(empire);
+        empire_PowerUpdate(empire);
         empireIndex++;
         empire = empire_Get(empireList, empireIndex);
     }
@@ -385,18 +385,18 @@ void update_PlayersData(char update,
     for(empireIndex = 0; empireIndex < empireArraySize; empireIndex++){
         empire = empire_Get(empireList, empireIndex);
 
-        //reinitialise tout les changements
-        SetEmpireCreditChange(empire, 0);
-        SetEmpireFoodChange(empire, 0);
-        SetEmpireAlloysChange(empire, 0);
-        SetEmpireMineralsChange(empire, 0);
-        SetEmpireConsumerGoodsChange(empire, 0);
+        // Reinitialize the change
+        empire_CreditVariationSet(empire, 0);
+        empire_FoodVariationSet(empire, 0);
+        empire_AlloysVariationSet(empire, 0);
+        empire_MineralsVariationSet(empire, 0);
+        empire_ConsumerVariationSet(empire, 0);
 
         fleetList = empire_FleetListGet(empire);
         fleetArraySize = FleetArraySize(fleetList);
         for(fleetIndex = 0; fleetIndex < fleetArraySize; fleetIndex++){
             fleet = FlotteNumero(fleetList, fleetIndex);
-            AddEmpireCreditChange(empire, -1);
+            empire_CreditVariationAdd(empire, -1);
         }
     }
 
@@ -412,36 +412,36 @@ void update_PlayersData(char update,
                 //si la planete est habitée
                 if((city = planet_CityGet(planet))){
 
-                    AddEmpireCreditChange(empire, -city_AgricultureDistrictGet(city));
-                    AddEmpireFoodChange(empire, city_AgricultureDistrictGet(city) * 3);
+                    empire_CreditVariationAdd(empire, -city_AgricultureDistrictGet(city));
+                    empire_FoodVariationAdd(empire, city_AgricultureDistrictGet(city) * 3);
 
-                    AddEmpireCreditChange(empire, -city_MiningDistrictGet(city));
-                    AddEmpireMineralsChange(empire, 6 * city_MiningDistrictGet(city));
+                    empire_CreditVariationAdd(empire, -city_MiningDistrictGet(city));
+                    empire_MineralsVariationAdd(empire, 6 * city_MiningDistrictGet(city));
                     
-                    AddEmpireCreditChange(empire, -2 * city_UrbanDistrictGet(city));
+                    empire_CreditVariationAdd(empire, -2 * city_UrbanDistrictGet(city));
                     
-                    AddEmpireCreditChange(empire, 8 * city_GeneratorDistrictGet(city));
+                    empire_CreditVariationAdd(empire, 8 * city_GeneratorDistrictGet(city));
                     
                     for(buildingIndex = 0; buildingIndex < 6; buildingIndex++){
                         switch(city_BuildingGet(city, buildingIndex)){
                             case BUILDING_CAPITAL:
-                                AddEmpireCreditChange(empire, -2);
+                                empire_CreditVariationAdd(empire, -2);
                                 break;
                             case BUILDING_FOUNDRIES:
-                                AddEmpireCreditChange(empire, -2);
-                                AddEmpireMineralsChange(empire, -6);
-                                AddEmpireAlloysChange(empire, 6);
+                                empire_CreditVariationAdd(empire, -2);
+                                empire_MineralsVariationAdd(empire, -6);
+                                empire_AlloysVariationAdd(empire, 6);
                                 break;
                             case BUILDING_RESEARCH:
-                                AddEmpireCreditChange(empire, -2);
+                                empire_CreditVariationAdd(empire, -2);
                                 break;
                             case BUILDING_CIVILIAN_INDUSTRIES:
-                                AddEmpireCreditChange(empire, -2);
-                                AddEmpireMineralsChange(empire, -6);
-                                AddEmpireAlloysChange(empire, 6);
+                                empire_CreditVariationAdd(empire, -2);
+                                empire_MineralsVariationAdd(empire, -6);
+                                empire_AlloysVariationAdd(empire, 6);
                                 break;
                             case BUILDING_THEATRE:
-                                AddEmpireCreditChange(empire, -2);
+                                empire_CreditVariationAdd(empire, -2);
                                 break;
                             default:
                                 break;
@@ -455,44 +455,44 @@ void update_PlayersData(char update,
         for(empireIndex = 0; empireIndex < empireArraySize; empireIndex++){
             empire = empire_Get(empireList, empireIndex);
 
-            if(GetEmpireAlloys(empire) + GetEmpireAlloysChange(empire) <= 0){
-                SetEmpireAlloys(empire, 0);
+            if(empire_AlloysGet(empire) + empire_AlloysVariationGet(empire) <= 0){
+                empire_AlloysSet(empire, 0);
             }
             else
-                AddEmpireAlloys(empire, GetEmpireAlloysChange(empire));
+                empire_AlloysAdd(empire, empire_AlloysVariationGet(empire));
                 
-            if(GetEmpireCredit(empire) + GetEmpireCreditChange(empire) <= 0){
-                SetEmpireCredit(empire, 0);
+            if(empire_CreditGet(empire) + empire_CreditVariationGet(empire) <= 0){
+                empire_CreditSet(empire, 0);
             }
             else 
-                AddEmpireCredit(empire, GetEmpireCreditChange(empire));
+                empire_CreditAdd(empire, empire_CreditVariationGet(empire));
             
-            if(GetEmpireFood(empire) + GetEmpireFoodChange(empire) <= 0){
-                SetEmpireFood(empire, 0);
+            if(empire_FoodGet(empire) + empire_FoodVariationGet(empire) <= 0){
+                empire_FoodSet(empire, 0);
             }
             else
-                AddEmpireFood(empire, GetEmpireFoodChange(empire));
+                empire_FoodAdd(empire, empire_FoodVariationGet(empire));
             
-            if(GetEmpireMinerals(empire) + GetEmpireMineralsChange(empire) <= 0){
-                SetEmpireMinerals(empire, 0);
+            if(empire_MineralsGet(empire) + empire_MineralsVariationGet(empire) <= 0){
+                empire_MineralsSet(empire, 0);
             }
             else
-                AddEmpireMinerals(empire, GetEmpireMineralsChange(empire));
+                empire_MineralsAdd(empire, empire_MineralsVariationGet(empire));
         }
 
         //teste si il n'y a plus beaucoup de ressources
         empire = empire_Get(empireList, 0);
 
-        if((GetEmpireAlloys(empire) + (GetEmpireAlloysChange(empire) / 12)) <= 0) {
+        if((empire_AlloysGet(empire) + (empire_AlloysVariationGet(empire) / 12)) <= 0) {
             NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
         }
-        if((GetEmpireCredit(empire) + (GetEmpireCreditChange(empire) / 12)) <= 0) {
+        if((empire_CreditGet(empire) + (empire_CreditVariationGet(empire) / 12)) <= 0) {
             NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
         }
-        if((GetEmpireFood(empire) + (GetEmpireFoodChange(empire) / 12)) <= 0) {
+        if((empire_FoodGet(empire) + (empire_FoodVariationGet(empire) / 12)) <= 0) {
             NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
         }
-        if((GetEmpireMinerals(empire) + (GetEmpireMineralsChange(empire) * 12)) <= 0) {
+        if((empire_MineralsGet(empire) + (empire_MineralsVariationGet(empire) * 12)) <= 0) {
             NewNotification(notificationList, MED_PRIORITY, LOW_RESSOURCES, 31);
         }
     }
@@ -551,7 +551,7 @@ int game_Update( char *key,
             update_PlayersData(true, empireList, galaxy, notificationList);
         }
         
-        EmpireAI(empireList, galaxy, time);
+        ai_Empire(empireList, galaxy, time);
         
     }
     return 1;
