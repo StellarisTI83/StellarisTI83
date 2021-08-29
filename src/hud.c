@@ -160,7 +160,7 @@ static void hud_PrintInfos( Empire *player,
     // top bar
     
     // credit
-    gfx_TransparentSprite_NoClip(   credit, 
+    gfx_TransparentSprite_NoClip(   icon_credit, 
                                     HUD_UP_BAR_LEFT,
                                     HUD_UP_BAR_UP);
 
@@ -170,7 +170,7 @@ static void hud_PrintInfos( Empire *player,
                 HUD_UP_BAR_TEXT_X);
 
     // minerals
-    gfx_TransparentSprite_NoClip(   minerai, 
+    gfx_TransparentSprite_NoClip(   icon_mineral, 
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP, 
                                     1);
 
@@ -180,7 +180,7 @@ static void hud_PrintInfos( Empire *player,
                 HUD_UP_BAR_TEXT_X);
 
     // food
-    gfx_TransparentSprite_NoClip(   food, 
+    gfx_TransparentSprite_NoClip(   icon_food, 
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 2, 
                                     HUD_UP_BAR_UP);
 
@@ -190,7 +190,7 @@ static void hud_PrintInfos( Empire *player,
                 HUD_UP_BAR_TEXT_X);
 
     // alloy
-    gfx_TransparentSprite_NoClip(   fer, 
+    gfx_TransparentSprite_NoClip(   icon_alloy, 
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 3, 
                                     HUD_UP_BAR_UP);
 
@@ -202,20 +202,20 @@ static void hud_PrintInfos( Empire *player,
 
     
     // side bar
-    gfx_TransparentSprite_NoClip(   contact, 
-                                    (HUD_WIDTH - contact_width) / 2, 
+    gfx_TransparentSprite_NoClip(   icon_contact, 
+                                    (HUD_WIDTH - icon_contact_width) / 2, 
                                     HUD_SIDE_BAR_UP);
 
-    gfx_TransparentSprite_NoClip(   market_icon, 
-                                    (HUD_WIDTH - market_icon_width) / 2, 
+    gfx_TransparentSprite_NoClip(   icon_market, 
+                                    (HUD_WIDTH - icon_market_width) / 2, 
                                     HUD_SIDE_BAR_UP + HUD_SIDE_BAR_GAP);
 
-    gfx_TransparentSprite_NoClip(   science, 
-                                    (HUD_WIDTH - science_width) / 2, 
+    gfx_TransparentSprite_NoClip(   icon_science, 
+                                    (HUD_WIDTH - icon_science_width) / 2, 
                                     HUD_SIDE_BAR_UP + HUD_SIDE_BAR_GAP * 2);
 
-    gfx_TransparentSprite_NoClip(   alliedFleet, 
-                                    (HUD_WIDTH - alliedFleet_width) / 2, 
+    gfx_TransparentSprite_NoClip(   icon_fleet_allied, 
+                                    (HUD_WIDTH - icon_fleet_allied_width) / 2, 
                                     HUD_SIDE_BAR_UP + HUD_SIDE_BAR_GAP * 3);
     
 

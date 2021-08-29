@@ -364,20 +364,20 @@ void update_PlayersData(char update,
                         EmpireList *empireList, 
                         StarSystem **galaxy, 
                         NotificationList *notificationList){
-    Empire  *empire;
+    Empire *empire;
     int     empireIndex;
     int     empireArraySize;
 
-    Fleet  *fleet;
+    Fleet *fleet;
     FleetList *fleetList;
     int     fleetIndex;
     int     fleetArraySize;
     
     int     systemIndex;
-    Planet  *planet;
+    Planet *planet;
     int     planetIndex;
     int     planetArraySize;
-    City    *city;
+    City   *city;
     int     buildingIndex;
     
     

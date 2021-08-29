@@ -67,7 +67,7 @@ static void DrawNotificationMed(int x, int y) {
 static void DrawNotificationLogo(int x, int y, NotificationId ID) {
     switch(ID){
         default:
-            gfx_Sprite_NoClip(low_ressources_icon, x + 1, y + 7);
+            gfx_Sprite_NoClip(icon_low_ressources, x + 1, y + 7);
             break;
     }
 }

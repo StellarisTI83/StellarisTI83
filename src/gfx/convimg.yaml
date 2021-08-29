@@ -2,119 +2,124 @@
 palettes:
   - name: gfx_pal
     fixed-entries:
-      - color:  {index: 0, r: 0, g: 0, b: 0}  #black
-      - color:  {index: 1, r: 255, g: 255, b: 255} #white
-      - color:  {index: 2, r: 255, g: 0, b: 128} #transparent (purple)
-      - color:  {index: 3, r: 255, g: 0, b: 0} #red (ennemies)
-      - color:  {index: 4, r: 82, g: 137, b: 209} #blue
-      - color:  {index: 5, r: 175, g: 255, b: 233} #light green
-      - color:  {index: 6, r: 0, g: 29, b: 0 } #hud background green
-      - color:  {index: 7, r: 35, g: 49, b: 44 } #vert clair bords
-      - color:  {index: 8, r: 51, g: 91, b: 75 } #vert foncé
-      - color:  {index: 9, r: 191, g: 86, b: 10 } #orange
+      - color:  {index: 0, r: 0, g: 0, b: 0}        #black
+      - color:  {index: 1, r: 255, g: 255, b: 255}  #white
+      - color:  {index: 2, r: 255, g: 0, b: 128}    #transparent (purple)
+      - color:  {index: 3, r: 255, g: 0, b: 0}      #red (ennemies)
+      - color:  {index: 4, r: 82, g: 137, b: 209}   #blue hover
+      - color:  {index: 5, r: 175, g: 255, b: 233}  #light green
+      - color:  {index: 6, r: 0, g: 29, b: 0 }      #hud background green
+      - color:  {index: 7, r: 35, g: 49, b: 44 }    #hud outlines green
+      - color:  {index: 8, r: 51, g: 91, b: 75 }    #dark green
+      - color:  {index: 9, r: 191, g: 86, b: 10 }   #orange
 
-      - color:  {index: 10, r: 33, g: 24, b: 19 } #brown
+      - color:  {index: 10, r: 33, g: 24, b: 19 }   #brown
       - color:  {index: 11, r: 164, g: 173, b: 186} #gray-blue (unknown hyperlanes colors)
       - color:  {index: 12, r: 143, g: 219, b: 203} #gray-blue (known hyperlanes colors)
-      - color:  {index: 13, r: 243, g: 188, b: 24} #yellow (star)
+      - color:  {index: 13, r: 243, g: 188, b: 24}  #yellow (star)
       - color:  {index: 14, r: 212, g: 252, b: 255} #blue (star outline)
       - color:  {index: 15, r: 217, g: 200, b: 227} #purple (star outine)
-      - color:  {index: 16, r: 7, g: 87, b: 44} #green starship interior
-      - color:  {index: 17, r: 0, g: 188, b: 255} #blue allies
-      - color:  {index: 18, r: 230, g: 255, b: 13} #yellow neutral
-      - color:  {index: 19, r: 13, g: 181, b: 112} #green starship outlines
+      - color:  {index: 16, r: 7, g: 87, b: 44}     #green starship interior
+      - color:  {index: 17, r: 0, g: 188, b: 255}   #blue allies
+      - color:  {index: 18, r: 230, g: 255, b: 13}  #yellow neutral
+      - color:  {index: 19, r: 13, g: 181, b: 112}  #green starship outlines
 
-      - color:  {index: 20, r: 172, g: 124, b: 100} #couleur planete aride
-      - color:  {index: 21, r: 198, g: 152, b: 102} #couleur planete desert
-      - color:  {index: 22, r: 204, g: 182, b: 151} #couleur planete savane
-      - color:  {index: 23, r: 208, g: 205, b: 206} #couleur planete artique
-      - color:  {index: 24, r: 119, g: 133, b: 119} #couleur planete thundra
-      - color:  {index: 25, r: 180, g: 203, b: 190} #couleur planete continental
-      - color:  {index: 26, r: 51, g: 113, b: 120} #couleur planete ocean
-      - color:  {index: 27, r: 190, g: 92, b: 33} #couleur planete en fusion
-      - color:  {index: 28, r: 126, g: 138, b: 79} #couleur planete toxique
-      - color:  {index: 29, r: 132, g: 157, b: 173} #couleur planete geante gazeuse
+      - color:  {index: 20, r: 172, g: 124, b: 100} #planet arid
+      - color:  {index: 21, r: 198, g: 152, b: 102} #planet desert
+      - color:  {index: 22, r: 204, g: 182, b: 151} #planet savana
+      - color:  {index: 23, r: 208, g: 205, b: 206} #planet artic
+      - color:  {index: 24, r: 119, g: 133, b: 119} #planet thundra
+      - color:  {index: 25, r: 180, g: 203, b: 190} #planet continental
+      - color:  {index: 26, r: 51, g: 113, b: 120}  #planet ocean
+      - color:  {index: 27, r: 190, g: 92, b: 33}   #planet molten
+      - color:  {index: 28, r: 126, g: 138, b: 79}  #planet toxic
+      - color:  {index: 29, r: 132, g: 157, b: 173} #planet gaz giant
       
       
-      - color:  {index: 30, r: 253, g: 137, b: 64} #orange clair notifs
-      - color:  {index: 31, r: 33, g: 22, b: 16} #marron notifs
+      - color:  {index: 30, r: 253, g: 137, b: 64}  #notification background
+      - color:  {index: 31, r: 33, g: 22, b: 16}    #notification outlines
 
-      - color:  {index: 34, r: 0, g: 254, b: 49} #vert
+      - color:  {index: 34, r: 0, g: 254, b: 49}    #green positiv
     images: automatic
 
 converts:
   - name: gfx_sprites
     palette: gfx_pal
     images:
-    - ourFleet.png
-    - alliedFleet.png
-    - neutralFleet.png
-    - ennemyFleet.png
-    - highHabitablePlanet.png
-    - lowHabitablePlanet.png
-    - middleHabitablePlanet.png
-    - ethic_authoritarian.png
-    - ethic_egalitarian.png
-    - ethic_fanatic_authoritarian.png
-    - ethic_fanatic_egalitarian.png
-    - ethic_fanatic_militarist.png
-    - ethic_fanatic_materialist.png
-    - ethic_fanatic_pacifist.png
-    - ethic_fanatic_spiritualists.png
-    - ethic_fanatic_xenophile.png
-    - ethic_fanatic_xenophobe.png
-    - ethic_gestalt_consciousness.png
-    - ethic_materialist.png
-    - ethic_militarist.png
-    - ethic_pacifist.png
-    - ethic_choice.png
-    - ethic_selected.png
-    - ethic_spiritualists.png
-    - ethic_xenophile.png
-    - ethic_xenophobe.png
-    - credit.png
-    - minerai.png
-    - food.png
-    - fer.png
-    - force_our.png
-    - force_neutral.png
-    - force_ennemy.png
-    - force_allied.png
-    - contact.png
-    - science.png
-    - market_icon.png
-    - construction_ship_allied_icon.png
-    - construction_ship_our_icon.png
-    - construction_ship_neutral_icon.png
-    - construction_ship_ennemy_icon.png
-    - science_ship_allied_icon.png
-    - science_ship_our_icon.png
-    - science_ship_neutral_icon.png
-    - science_ship_ennemy_icon.png
-    - pop_icon.png
-    - free_job_icon.png
-    - criminality_pop_icon.png
-    - free_houses_icon.png
-    - amienties_icon.png
-    - unemployed_pop_icon.png
-    - opinion_icon.png
-    - leader_clothes_1.png
-    - leader_clothes_2.png
-    - leader_clothes_3.png
-    - leader_head_human.png
-    - leader_head_mammalian.png
-    - leader_head_molluscoid.png
-    - leader_head_reptilian.png
-    - blindage_icon.png
-    - bouclier_icon.png
-    - life_icon.png
-    - fleet_power_icon.png
-    - low_ressources_icon.png
-    - attitude_icon.png
-    - up_icon.png
-    - down_icon.png
-    - pact_icon.png
-    - insult_icon.png
+      - ethics/ethic_authoritarian.png
+      - ethics/ethic_choice.png
+      - ethics/ethic_egalitarian.png
+      - ethics/ethic_fanatic_authoritarian.png
+      - ethics/ethic_fanatic_egalitarian.png
+      - ethics/ethic_fanatic_materialist.png
+      - ethics/ethic_fanatic_militarist.png
+      - ethics/ethic_fanatic_pacifist.png
+      - ethics/ethic_fanatic_spiritualists.png
+      - ethics/ethic_fanatic_xenophile.png
+      - ethics/ethic_fanatic_xenophobe.png
+      - ethics/ethic_gestalt_consciousness.png
+      - ethics/ethic_materialist.png
+      - ethics/ethic_militarist.png
+      - ethics/ethic_pacifist.png
+      - ethics/ethic_selected.png
+      - ethics/ethic_spiritualists.png
+      - ethics/ethic_xenophile.png
+      - ethics/ethic_xenophobe.png
+      - icon/icon_agreement.png
+      - icon/icon_alloy.png
+      - icon/icon_amienties.png
+      - icon/icon_attitude.png
+      - icon/icon_contact.png
+      - icon/icon_credit.png
+      - icon/icon_down.png
+      - icon/icon_fleetPower.png
+      - icon/icon_fleet_allied.png
+      - icon/icon_fleet_ennemy.png
+      - icon/icon_fleet_neutral.png
+      - icon/icon_fleet_our.png
+      - icon/icon_food.png
+      - icon/icon_freeHouse.png
+      - icon/icon_freeJob.png
+      - icon/icon_hull.png
+      - icon/icon_insult.png
+      - icon/icon_life.png
+      - icon/icon_low_ressources.png
+      - icon/icon_market.png
+      - icon/icon_mineral.png
+      - icon/icon_notification.png
+      - icon/icon_opinion.png
+      - icon/icon_planet_capital.png
+      - icon/icon_planet_green.png
+      - icon/icon_planet_lab.png
+      - icon/icon_planet_red.png
+      - icon/icon_planet_yellow.png
+      - icon/icon_pop.png
+      - icon/icon_pop_criminal.png
+      - icon/icon_pop_unemployed.png
+      - icon/icon_science.png
+      - icon/icon_shield.png
+      - icon/icon_ship_construction_allied.png
+      - icon/icon_ship_construction_ennemy.png
+      - icon/icon_ship_construction_neutral.png
+      - icon/icon_ship_construction_our.png
+      - icon/icon_ship_military_allied.png
+      - icon/icon_ship_military_ennemy.png
+      - icon/icon_ship_military_neutral.png
+      - icon/icon_ship_military_our.png
+      - icon/icon_ship_science_allied.png
+      - icon/icon_ship_science_ennemy.png
+      - icon/icon_ship_science_neutral.png
+      - icon/icon_ship_science_our.png
+      - icon/icon_up.png
+      - leader/leader_clothes_1.png
+      - leader/leader_clothes_2.png
+      - leader/leader_clothes_3.png
+      - leader/leader_head_human.png
+      - leader/leader_head_mammalian.png
+      - leader/leader_head_molluscoid.png
+      - leader/leader_head_reptilian.png
+      - leader/leader_scourge.png
+
 
 
 palettes:
@@ -131,23 +136,23 @@ converts:
     palette: background_gfx_pal
     compress: zx7
     images:
-      - backgroundStation
+      - background/backgroundStation
     tilesets:
       tile-width: 80
       tile-height: 80
       images:
-        - background0
-        - background1
-        - background2
-        - background3
-        - background4
-        - background5
-        - background6
-        - background7
-        - background8
-        - background9
-        - background10
-        - background11
+        - background/background0
+        - background/background1
+        - background/background2
+        - background/background3
+        - background/background4
+        - background/background5
+        - background/background6
+        - background/background7
+        - background/background8
+        - background/background9
+        - background/background10
+        - background/background11
 
 
 outputs:

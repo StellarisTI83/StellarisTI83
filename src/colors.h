@@ -50,7 +50,7 @@
 #define COLOR_PLANET_THUNDRA        24
 #define COLOR_PLANET_CONTINENTAL    25
 #define COLOR_PLANET_OCEAN          26
-#define COLOR_PLANET_
+#define COLOR_PLANET_MOLTEN         27
 #define COLOR_PLANET_TOXIC          28
 #define COLOR_PLANET_GAZ_GIANT      29
 

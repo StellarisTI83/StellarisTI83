@@ -443,25 +443,25 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
 
 	gfx_SetTextFGColor(1);
 	gfx_SetTextXY(157, 74);
-	gfx_TransparentSprite_NoClip(pop_icon, 150, 74);
+	gfx_TransparentSprite_NoClip(icon_pop, 150, 74);
 	sprintf(populationChar, "%d", GetPlanetCityPopulation(planete));
 	gfx_PrintString(populationChar);
 	
 	if(GetPlanetCityPopulation(planete) > 0){
 		gfx_SetTextXY(157, 84);
-		gfx_TransparentSprite_NoClip(criminality_pop_icon, 150, 84);
+		gfx_TransparentSprite_NoClip(icon_pop_criminal, 150, 84);
 		mainMenu_PrintInt(planet_CriminalityGet(planete));
 		
 		gfx_SetTextXY(157, 94);
-		gfx_TransparentSprite_NoClip(free_houses_icon, 150, 94);
+		gfx_TransparentSprite_NoClip(icon_freeHouse, 150, 94);
 		mainMenu_PrintInt(GetPlanetCityUrbanDistrictNumber(planete));
 		
 		gfx_SetTextXY(157, 104);
-		gfx_TransparentSprite_NoClip(amienties_icon, 150, 104);
+		gfx_TransparentSprite_NoClip(icon_amienties, 150, 104);
 		mainMenu_PrintInt(GetPlanetCityAmienties(planete));
 
 		gfx_SetTextXY(157, 114);
-		gfx_TransparentSprite_NoClip(free_job_icon, 150, 114);
+		gfx_TransparentSprite_NoClip(icon_freeJob, 150, 114);
 		if(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete) > 0){
 			mainMenu_PrintInt(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete));
 		} else {
@@ -469,7 +469,7 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
 		}
 		
 		gfx_SetTextXY(157, 124);
-		gfx_TransparentSprite_NoClip(unemployed_pop_icon, 150, 124);
+		gfx_TransparentSprite_NoClip(icon_pop_unemployed, 150, 124);
 		if(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete) < 0) {
 			mainMenu_PrintInt(-(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete)));
 		} else {
@@ -822,7 +822,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	gfx_PrintStringXY("D/manteler", 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	mainMenu_PrintInt(0);
 	niveau += 15;
 
@@ -834,7 +834,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	gfx_PrintStringXY(PlaneteBatimentNom(BUILDING_FOUNDRIES, 1, nomDuBatiment), 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	if(empire_AlloysGet(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
@@ -849,7 +849,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	gfx_PrintStringXY(PlaneteBatimentNom(BUILDING_RESEARCH, 1, nomDuBatiment), 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	if(empire_AlloysGet(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
@@ -864,7 +864,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	gfx_PrintStringXY(PlaneteBatimentNom(BUILDING_CIVILIAN_INDUSTRIES, 1, nomDuBatiment), 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	if(empire_AlloysGet(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
@@ -879,7 +879,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
 	gfx_PrintStringXY(PlaneteBatimentNom(BUILDING_THEATRE, 1, nomDuBatiment), 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	if(empire_AlloysGet(joueur) < 400){
 		gfx_SetTextFGColor(3);
 	}
@@ -1223,22 +1223,22 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
 	}
 	gfx_SetTextFGColor(34);
 	gfx_SetTextXY(50, niveau);
-	gfx_TransparentSprite_NoClip(life_icon, 45, niveau + 1);
+	gfx_TransparentSprite_NoClip(icon_life, 45, niveau + 1);
 	mainMenu_PrintInt(GetFleetHullPourcent(flotte));
 	gfx_PrintString("%");
 	gfx_SetTextXY(170, niveau);
-	gfx_TransparentSprite_NoClip(blindage_icon, 45, niveau + 1);
+	gfx_TransparentSprite_NoClip(icon_hull, 45, niveau + 1);
 	mainMenu_PrintInt(GetFleetArmorPourcent(flotte));
 	gfx_PrintString("%");
 	niveau += 14;
 	gfx_SetTextXY(50, niveau);
-	gfx_TransparentSprite_NoClip(bouclier_icon, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_shield, 45, niveau);
 	mainMenu_PrintInt(GetFleetShieldPourcent(flotte));
 	gfx_PrintString("%");
 	if(GetFleetType(flotte) == FLOTTE_MILITAIRE){
 		gfx_SetTextFGColor(18);
 		gfx_SetTextXY(170, niveau);
-		gfx_TransparentSprite_NoClip(fleet_power_icon, 165, niveau + 2);
+		gfx_TransparentSprite_NoClip(icon_fleetPower, 165, niveau + 2);
 		mainMenu_PrintInt(GetFleetPower(flotte));
 	}
 	gfx_SetTextFGColor(1);
@@ -1657,7 +1657,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 		gfx_SetTextXY(212 - strlen(evolution) * 4, 92);
 		gfx_PrintString(evolution);
 		gfx_SetTextXY(227 - mainMenu_IntLen(prixAmelioration) * 4, 104);
-		gfx_TransparentSprite_NoClip(fer, 212 - mainMenu_IntLen(prixAmelioration) * 4, 103);
+		gfx_TransparentSprite_NoClip(icon_alloy, 212 - mainMenu_IntLen(prixAmelioration) * 4, 103);
 		if(empire_AlloysGet(joueur) < prixAmelioration){
 			gfx_SetTextFGColor(3);
 		}
@@ -1684,21 +1684,21 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
 	niveau = 160;
 	//ecrire les statistiques
 	gfx_SetTextXY(50, niveau);
-	gfx_TransparentSprite_NoClip(life_icon, 45, niveau + 1);
+	gfx_TransparentSprite_NoClip(icon_life, 45, niveau + 1);
 	mainMenu_PrintInt(station_HullGet(station));
 	gfx_PrintString("%");
 	gfx_SetTextXY(170, niveau);
-	gfx_TransparentSprite_NoClip(blindage_icon, 165, niveau + 1);
+	gfx_TransparentSprite_NoClip(icon_hull, 165, niveau + 1);
 	mainMenu_PrintInt(station_ArmorGet(station));
 	gfx_PrintString("%");
 	niveau += 9;
 	gfx_SetTextXY(50, niveau);
-	gfx_TransparentSprite_NoClip(bouclier_icon, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_shield, 45, niveau);
 	mainMenu_PrintInt(station_ShieldGet(station));
 	gfx_PrintString("%");
 	gfx_SetTextFGColor(18);
 	gfx_SetTextXY(170, niveau);
-	gfx_TransparentSprite_NoClip(fleet_power_icon, 165, niveau + 2);
+	gfx_TransparentSprite_NoClip(icon_fleetPower, 165, niveau + 2);
 	mainMenu_PrintInt(station_PowerGet(station));
 	
 	niveau = 181;
@@ -2035,7 +2035,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 		gfx_PrintStringXY("D/manteler", 45, niveau);
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
-		gfx_TransparentSprite_NoClip(fer, 45, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 		mainMenu_PrintInt(0);
 		niveau += 15;
 	}
@@ -2046,7 +2046,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 		gfx_PrintStringXY(ModuleNom(STATION_MODULE_SHIPYARD, nomDuModule), 45, niveau);
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
-		gfx_TransparentSprite_NoClip(fer, 45, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 		if(empire_AlloysGet(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
@@ -2059,7 +2059,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	gfx_PrintStringXY(ModuleNom(STATION_MODULE_ANCHORAGE, nomDuModule), 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	if(empire_AlloysGet(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
@@ -2071,7 +2071,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	gfx_PrintStringXY(ModuleNom(STATION_MODULE_GUN, nomDuModule), 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	if(empire_AlloysGet(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
@@ -2083,7 +2083,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	gfx_PrintStringXY(ModuleNom(STATION_MODULE_MISSILES, nomDuModule), 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	if(empire_AlloysGet(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
@@ -2095,7 +2095,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 	gfx_PrintStringXY(ModuleNom(STATION_MODULE_HANGAR, nomDuModule), 45, niveau);
 	niveau += 10;
 	gfx_SetTextXY(60, niveau);
-	gfx_TransparentSprite_NoClip(fer, 45, niveau);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 	if(empire_AlloysGet(joueur) < 50){
 		gfx_SetTextFGColor(3);
 	}
@@ -2108,7 +2108,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 		gfx_PrintStringXY(ModuleNom(STATION_MODULE_TRADE_HUB, nomDuModule), 45, niveau);
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
-		gfx_TransparentSprite_NoClip(fer, 45, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 		if(empire_AlloysGet(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
@@ -2122,7 +2122,7 @@ static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem
 		gfx_PrintStringXY(ModuleNom(STATION_MODULE_SOLAR_PANEL, nomDuModule), 45, niveau);
 		niveau += 10;
 		gfx_SetTextXY(60, niveau);
-		gfx_TransparentSprite_NoClip(fer, 45, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 45, niveau);
 		if(empire_AlloysGet(joueur) < 50){
 			gfx_SetTextFGColor(3);
 		}
@@ -2232,7 +2232,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		niveau += 20;
     	gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Scientifique ");
-		gfx_TransparentSprite_NoClip(fer, 190, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 190, niveau);
     	gfx_SetTextXY(205, niveau);
 		if(empire_AlloysGet(joueur) < 100){
 			gfx_SetTextFGColor(3);
@@ -2248,7 +2248,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		niveau += 14;
     	gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Construction ");
-		gfx_TransparentSprite_NoClip(fer, 190, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 190, niveau);
     	gfx_SetTextXY(205, niveau);
 		if(empire_AlloysGet(joueur) < 100){
 			gfx_SetTextFGColor(3);
@@ -2264,7 +2264,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		niveau += 14;
     	gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Corvette ");
-		gfx_TransparentSprite_NoClip(fer, 190, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 190, niveau);
     	gfx_SetTextXY(205, niveau);
 		if(empire_AlloysGet(joueur) < 100){
 			gfx_SetTextFGColor(3);
@@ -2280,7 +2280,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		niveau += 14;
     	gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Destroyer ");
-		gfx_TransparentSprite_NoClip(fer, 190, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 190, niveau);
     	gfx_SetTextXY(205, niveau);
 		if(empire_AlloysGet(joueur) < 200){
 			gfx_SetTextFGColor(3);
@@ -2296,7 +2296,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		niveau += 14;
     	gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Croiseur ");
-		gfx_TransparentSprite_NoClip(fer, 190, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 190, niveau);
     	gfx_SetTextXY(205, niveau);
 		if(empire_AlloysGet(joueur) < 500){
 			gfx_SetTextFGColor(3);
@@ -2312,7 +2312,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
 		niveau += 14;
     	gfx_SetTextXY(45, niveau);
 		gfx_PrintString("Cuirass/ "); //battleship
-		gfx_TransparentSprite_NoClip(fer, 190, niveau);
+		gfx_TransparentSprite_NoClip(icon_alloy, 190, niveau);
     	gfx_SetTextXY(205, niveau);
 		if(empire_AlloysGet(joueur) < 1000){
 			gfx_SetTextFGColor(3);
@@ -2478,7 +2478,7 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSyste
 	gfx_PrintString("Nombre de vaisseaux : ");
 	mainMenu_PrintInt(GetWindowFleetSize(fenetre));
 	gfx_SetTextXY(60, 74);
-	gfx_TransparentSprite_NoClip(fer, 45, 74);
+	gfx_TransparentSprite_NoClip(icon_alloy, 45, 74);
 	if(GetWindowFleetSize(fenetre) * prix > empire_AlloysGet(joueur)){
 		gfx_SetTextFGColor(3);
 	}
@@ -2581,7 +2581,7 @@ static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetr
 			
 		case MENU_MARKET_MINERAL:
 			gfx_PrintStringXY("Minerai", 45, 42);
-			gfx_TransparentSprite_NoClip(credit, 70, 60);
+			gfx_TransparentSprite_NoClip(icon_credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
 			gfx_SetTextXY(90, 60);
 			if(marche->valeurMinerai < 100)
@@ -2595,12 +2595,12 @@ static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetr
 				gfx_PrintString(",");
 				gfx_PrintInt((marche->valeurMinerai - marche->valeurMinerai / 100)*100, 2);
 			}
-			gfx_TransparentSprite_NoClip(minerai, 130, 60);
+			gfx_TransparentSprite_NoClip(icon_mineral, 130, 60);
 			break;
 
 		case MENU_MARKET_FOOD:
 			gfx_PrintStringXY("Nourriture", 45, 42);
-			gfx_TransparentSprite_NoClip(credit, 70, 60);
+			gfx_TransparentSprite_NoClip(icon_credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
 			gfx_SetTextXY(90, 60);
 			if(marche->valeurMinerai < 100)
@@ -2614,12 +2614,12 @@ static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetr
 				gfx_PrintString(",");
 				gfx_PrintInt((marche->valeurNourriture - marche->valeurNourriture / 100)*100, 2);
 			}
-			gfx_TransparentSprite_NoClip(food, 130, 60);
+			gfx_TransparentSprite_NoClip(icon_food, 130, 60);
 			break;
 
 		case MENU_MARKET_ALLOY:
 			gfx_PrintStringXY("Fer", 45, 42);
-			gfx_TransparentSprite_NoClip(credit, 70, 60);
+			gfx_TransparentSprite_NoClip(icon_credit, 70, 60);
 			gfx_PrintStringXY("=" , 80, 60);
 			gfx_SetTextXY(90, 60);
 			if(marche->valeurFer < 100)
@@ -2633,7 +2633,7 @@ static void MenuMarche(char *key, Market *marche, Camera *camera, Window *fenetr
 				gfx_PrintString(",");
 				gfx_PrintInt((marche->valeurFer - marche->valeurFer / 100)*100, 2);
 			}
-			gfx_TransparentSprite_NoClip(fer, 130, 60);
+			gfx_TransparentSprite_NoClip(icon_alloy, 130, 60);
 			break;
 			break;
 		case MENU_MARKET_OTHER:
@@ -2846,7 +2846,7 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	//opinion
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(45, 119, 120, 13); //rectangle
-	gfx_TransparentSprite_NoClip(opinion_icon, 48, 121);
+	gfx_TransparentSprite_NoClip(icon_opinion, 48, 121);
 	gfx_SetTextXY(58, 122);
 	if(diplomacy_OpinionGet(relations) < -750){
 		gfx_SetTextFGColor(3);
@@ -2878,7 +2878,7 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	//puissance
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(45, 135, 38, 13);
-	gfx_TransparentSprite_NoClip(alliedFleet, 50, 139);
+	gfx_TransparentSprite_NoClip(icon_fleet_allied, 50, 139);
 	gfx_SetTextXY(73, 138);
 	if(empire_PowerMilitaryGet(empire) > empire_PowerMilitaryGet(joueur) + (empire_PowerMilitaryGet(joueur) / 10)){
 		gfx_SetTextFGColor(3);
@@ -2894,7 +2894,7 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	}
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(86, 135, 38, 13);
-	gfx_TransparentSprite_NoClip(credit, 91, 136);
+	gfx_TransparentSprite_NoClip(icon_credit, 91, 136);
 	gfx_SetTextXY(114, 138);
 	if(empire_PowerEconomicGet(empire) > empire_PowerEconomicGet(joueur) + (empire_PowerEconomicGet(joueur) / 10)){
 		gfx_SetTextFGColor(3);
@@ -2910,7 +2910,7 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	}
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(127, 135, 38, 13);
-	gfx_TransparentSprite_NoClip(science, 131, 137);
+	gfx_TransparentSprite_NoClip(icon_science, 131, 137);
 	gfx_SetTextXY(155, 138);
 	if(empire_PowerScienceGet(empire) > empire_PowerScienceGet(joueur) + (empire_PowerScienceGet(joueur) / 10)){
 		gfx_SetTextFGColor(3);
@@ -2928,7 +2928,7 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	//attitude
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(45, 151, 120, 13);
-	gfx_TransparentSprite_NoClip(attitude_icon, 48, 152);
+	gfx_TransparentSprite_NoClip(icon_attitude, 48, 152);
 	gfx_SetTextXY(58, 154);
 	if(diplomacy_AttitudeGet(relations) < BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(3);
@@ -2966,7 +2966,7 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	//attitude
 	gfx_SetColor(7);
 	gfx_Rectangle_NoClip(45, 167, 120, 13);
-	gfx_TransparentSprite_NoClip(pact_icon, 48, 169);
+	gfx_TransparentSprite_NoClip(icon_agreement, 48, 169);
 	if(diplomacy_AttitudeGet(relations) < BEHAVIOR_NEUTRAL){
 		gfx_SetTextFGColor(3);
 	}
@@ -2978,11 +2978,11 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 	}
 	niveauX = 58;
 	if(diplomacy_AgreementStatus(relations, AGREEMENT_NON_AGRESSION)){
-		gfx_TransparentSprite_NoClip(attitude_icon, niveauX, 168);
+		gfx_TransparentSprite_NoClip(icon_attitude, niveauX, 168);
 		niveauX += 13;
 	}
 	if(diplomacy_AgreementStatus(relations, AGREEMENT_RESEARCH)){
-		gfx_TransparentSprite_NoClip(science, niveauX, 168);
+		gfx_TransparentSprite_NoClip(icon_science, niveauX, 168);
 		niveauX += 13;
 	}
 	//boutons actions
@@ -2997,27 +2997,27 @@ static void MenuContactsDetails(char *key, EmpireList *empireListe, Camera *came
 			default:
 				break;
 			case 1:
-				gfx_TransparentSprite_NoClip(up_icon, 176, boutonY + 2);
+				gfx_TransparentSprite_NoClip(icon_up, 176, boutonY + 2);
 				gfx_PrintStringXY("relations", 184, boutonY + 2);
 				break;
 			case 2:
-				gfx_TransparentSprite_NoClip(down_icon, 176, boutonY + 2);
+				gfx_TransparentSprite_NoClip(icon_down, 176, boutonY + 2);
 				gfx_PrintStringXY("relations", 184, boutonY + 2);
 				break;
 			case 3:
-				gfx_TransparentSprite_NoClip(attitude_icon, 172, boutonY + 2);
+				gfx_TransparentSprite_NoClip(icon_attitude, 172, boutonY + 2);
 				gfx_PrintStringXY("guerre", 184, boutonY + 2);
 				break;
 			case 4:
-				gfx_TransparentSprite_NoClip(insult_icon, 174, boutonY + 4);
+				gfx_TransparentSprite_NoClip(icon_insult, 174, boutonY + 4);
 				gfx_PrintStringXY("insulter", 184, boutonY + 2);
 				break;
 			case 5:
-				gfx_TransparentSprite_NoClip(pact_icon, 172, boutonY + 2);
+				gfx_TransparentSprite_NoClip(icon_agreement, 172, boutonY + 2);
 				gfx_PrintStringXY("non-agress.", 184, boutonY + 2);
 				break;
 			case 6:
-				gfx_TransparentSprite_NoClip(pact_icon, 172, boutonY + 2);
+				gfx_TransparentSprite_NoClip(icon_agreement, 172, boutonY + 2);
 				gfx_PrintStringXY("recherche", 184, boutonY + 2);
 				break;
 		}

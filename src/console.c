@@ -365,10 +365,10 @@ void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Set
 		else{
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
-			strcat(console.reponse, " food");
+			strcat(console.reponse, " icon_food");
 			empire_FoodAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d food to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
+				dbg_sprintf(dbgout, "Added %d icon_food to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
