@@ -13,7 +13,21 @@
 #define RAYON_DE_VUE_SYSTEME 160
 
 /* entry points ======================================================== */
-
-void DrawMap(EmpireList *empireListe, StarSystem **systemeStellaires, Camera *camera, char *key, Time *date, Window *fenetre, Settings *parametres);
+/**
+ * @brief Draw the map, galaxy and system view
+ * 
+ * @param key 
+ * @param empireListe 
+ * @param galaxy 
+ * @param camera 
+ * @param window 
+ * @param settings 
+ */
+void map_Draw(	char *key,
+				EmpireList *empireListe, 
+				StarSystem **galaxy, 
+				Camera *camera, 
+				Window *window, 
+				Settings *settings);
 
 #endif

@@ -657,7 +657,7 @@ void galaxy_StartEmpiresInitialize( Settings *parametres,
     camera_XSet(camera, starSystem_XGet(galaxy[systemIndex])*2);
     camera_YSet(camera, starSystem_YGet(galaxy[systemIndex])*2);
     
-    SetCameraSystem(camera, systemIndex);
+    camera_SystemActualSet(camera, systemIndex);
 
     for(empireIndex = 1; empireIndex < settings_EmpireNumberGet(parametres); empireIndex++){
         Empire *empire = NULL;

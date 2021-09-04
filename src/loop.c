@@ -29,7 +29,7 @@ int game_MainLoop(	EmpireList *empireListe,
 		loop = game_Update(&key, empireListe, starSystems, time, camera, window, notificationList, settings);
 
 		//dessiner l'écran
-		loop = DrawScreen(&key, empireListe, starSystems, time, camera, window, settings, marche, notificationList);
+		loop = draw_Screen(&key, empireListe, starSystems, time, camera, window, settings, marche, notificationList);
 		
 		// Get the number of fps
 		fps = TIMER_FREQ/timer_Get(1);

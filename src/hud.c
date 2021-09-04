@@ -242,7 +242,7 @@ static void hud_PrintInfos( Empire *player,
                         LCD_WIDTH / 2 - 4 * TEXT_HEIGHT, 
                         LCD_HEIGHT - HUD_TIME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
 
-    if(IsCameraMoveFleet(camera)){
+    if(camera_FleetMoveGet(camera)){
         gfx_SetColor(COLOR_HUD_BACKGROUND);
         gfx_FillRectangle_NoClip(80, 28, 160, 11);
         gfx_SetColor(COLOR_HUD_OUTLINES);

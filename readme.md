@@ -17,7 +17,7 @@ The game is actually on a dev stage. It is in French and will soon be in English
 ### Contact menu
 ![Contact menu](docs/contact_menu.png)
 
-### Installing
+## Installing
 
 The game need the toolchain [CeDev](https://github.com/CE-Programming/toolchain) to be make
 

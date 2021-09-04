@@ -40,7 +40,7 @@ static void update_KeysTest(char *key,
                             Window *window, 
                             Settings *settings){
     // Camera keys binding
-    if (GetCameraLockStatus(camera) != true){
+    if (camera_LockGet(camera) != true){
         switch(*key){
             // Moving the camera up down left and right
             case sk_Up:
@@ -78,7 +78,7 @@ static void update_KeysTest(char *key,
                         && camera_SystemActualGet(camera) != NO_SYSTEM
                         && camera_ZoomGet(camera) == ZOOM_MAX){
                             camera_MapTypeSet(camera, VUE_SYSTEM);
-                            SetCameraSystem(camera, camera_SystemActualGet(camera));
+                            camera_SystemActualSet(camera, camera_SystemActualGet(camera));
                         }
                         camera_ZoomSet(camera, camera_ZoomGet(camera) + 1);
                         break;
@@ -96,7 +96,7 @@ static void update_KeysTest(char *key,
                 || settings_SeeAllGet(settings))
                 && camera_SystemActualGet(camera) != NO_SYSTEM){
                     camera_MapTypeSet(camera, VUE_SYSTEM);
-                    SetCameraSystem(camera, camera_SystemActualGet(camera));
+                    camera_SystemActualSet(camera, camera_SystemActualGet(camera));
                 }
                 *key = 0;
                 break;
@@ -400,16 +400,16 @@ void update_PlayersData(char update,
         }
     }
 
-    //retirer et ajouter argent systemes et planetes
+    // Run through every planet
     for(systemIndex = 0; systemIndex < GALAXY_WIDTH * GALAXY_WIDTH; systemIndex++){
-        if(starSystem_EmpireGet(galaxy[systemIndex]) != -1){
+        if(starSystem_EmpireGet(galaxy[systemIndex]) != NO_EMPIRE){
             empire = empire_Get(empireList, starSystem_EmpireGet(galaxy[systemIndex]));
             planetArraySize = starSystem_NumberOfPlanetGet(galaxy[systemIndex]);
 
             for(planetIndex = 0; planetIndex < planetArraySize; planetIndex++){
                 planet = starSystem_PlanetGet(galaxy[systemIndex], planetIndex);
                 
-                //si la planete est habitée
+                // If the planet if habited
                 if((city = planet_CityGet(planet))){
 
                     empire_CreditVariationAdd(empire, -city_AgricultureDistrictGet(city));
@@ -554,5 +554,6 @@ int game_Update( char *key,
         ai_Empire(empireList, galaxy, time);
         
     }
+	camera_Update(camera);
     return 1;
 }

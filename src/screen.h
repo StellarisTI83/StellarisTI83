@@ -7,6 +7,27 @@
 #include "notifications.h"
 
 /* entry points ======================================================== */
-char DrawScreen(char *key, EmpireList *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, Settings *parametres, Market *marche, NotificationList *notificationList);
-
+/**
+ * @brief Draw everything on the screen
+ * 
+ * @param key 
+ * @param empireListe 
+ * @param galaxy 
+ * @param time 
+ * @param camera 
+ * @param window 
+ * @param settings 
+ * @param market 
+ * @param notificationList 
+ * @return char 
+ */
+char draw_Screen(   char *key, 
+                    EmpireList *empireListe, 
+                    StarSystem **galaxy, 
+                    Time *time, 
+                    Camera *camera, 
+                    Window *window, 
+                    Settings *settings, 
+                    Market *market, 
+                    NotificationList *notificationList);
 #endif

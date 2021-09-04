@@ -16,7 +16,7 @@
 
 #define DEBUG_VERSION
 
-#ifdef DEBUG_VERSION
+#ifndef DEBUG_VERSION
 #define NDEBUG
 #endif
 

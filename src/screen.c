@@ -1,19 +1,4 @@
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <tice.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <debug.h>
-#include <math.h>
-#include <errno.h>
-
 #include <graphx.h>
-#include <fileioc.h>
-#include <fontlibc.h>
 
 #include "menus.h"
 #include "hud.h"
@@ -21,20 +6,31 @@
 #include "screen.h"
 
 /* entry points ======================================================== */
-/**
- * 
- * */
-char DrawScreen(char *key, EmpireList *empireListe, StarSystem **systemeStellaires, Time *date, Camera *camera, Window *fenetre, Settings *parametres, Market *marche, NotificationList *notificationList) {
-    int8_t fin = 1;
+
+char draw_Screen(   char *key, 
+                    EmpireList *empireListe, 
+                    StarSystem **galaxy, 
+                    Time *time, 
+                    Camera *camera, 
+                    Window *window, 
+                    Settings *settings, 
+                    Market *market, 
+                    NotificationList *notificationList) {
+    int8_t endGame;
     gfx_ZeroScreen();
 
-    DrawMap(empireListe, systemeStellaires, camera, key, date, fenetre, parametres);
+    map_Draw(   empireListe, 
+                galaxy, 
+                camera, 
+                key, 
+                window, 
+                settings);
 
-    hud_Draw(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, notificationList);
+    hud_Draw(empireListe, time, key, camera, galaxy, window, settings, notificationList);
 
-    fin = DrawMenu(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, marche);
+    endGame = DrawMenu(empireListe, time, key, camera, galaxy, window, settings, market);
     
 	gfx_SwapDraw();
     
-    return fin;
+    return endGame;
 }

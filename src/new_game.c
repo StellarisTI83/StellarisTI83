@@ -52,7 +52,7 @@ static void newGame_Initialize( EmpireList **empireListe,
     camera_ZoomSet(*camera, ZOOM_MAX);
     camera_MapTypeSet(*camera, VUE_SYSTEM);
 
-    *window = AllocFenetre();
+    *window = window_Create();
     CloseMenu(*window, *camera);
     
     timer_Disable(1);

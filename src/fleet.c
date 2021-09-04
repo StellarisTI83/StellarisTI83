@@ -375,22 +375,20 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 		return;
 	}
 	
-	if(IsCameraMoveFleet(camera) == false){
-		SetCameraMoveFleet(camera, true);
-		SetCameraLock(camera, false);
+	if(camera_FleetMoveGet(camera) == false){
+		camera_FleetMoveSet(camera, true);
+		camera_LockSet(camera, false);
 		camera_MapTypeSet(camera, VUE_GALACTIC);
 		CloseMenu(fenetre, camera);
-		SetCameraEmpire(camera, numeroDeEmpire);
-		SetCameraFleet(camera, numeroDeFlotte);
+		camera_FleetSet(camera, numeroDeFlotte);
 	} else {
 		if(systeme == flotte->systeme){
-			SetCameraMoveFleet(camera, false);
+			camera_FleetMoveSet(camera, false);
 			flotte->action = FLOTTE_AUCUNE_ACTION;
 		} else if(((flotte->type == FLOTTE_SCIENTIFIQUE) && (starSystem_IntelLevelGet(systemeStellaires[systeme]) == INTEL_UNKNOWN)) || (starSystem_IntelLevelGet(systemeStellaires[systeme]) != INTEL_UNKNOWN)){
-			SetCameraMoveFleet(camera, false);
+			camera_FleetMoveSet(camera, false);
 			
-			SetCameraEmpire(camera, 0);
-			SetCameraFleet(camera, 0);
+			camera_FleetSet(camera, 0);
 
 			camera_MapTypeSet(camera, VUE_SYSTEM);
 			camera_XSet(camera, starSystem_XGet(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
