@@ -17,7 +17,7 @@
 #include "ai.h"
 #include "camera.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 struct CameraStruct{
     int         x;
     int         y;
@@ -39,26 +39,6 @@ struct CameraStruct{
     int         flotte;
 };
 
-struct WindowStruct{
-    ClassMenu menu;
-    MenuSystem menuDetails;
-    int selection;
-
-    int planete;
-    int flotteSelectionee;
-
-    char precedente;
-    int scroll;
-
-    Error error;
-    int errorCountDown;
-    int commandPrompt;
-    
-    int nombreDeVaisseaux; // utilisé dans la création de flottes
-    City *villes; // utilisé dans le changement de batiment
-    int empire; // utilisé dans les relations
-};
-
 /* entry points ======================================================== */
 
 Camera *camera_Create(){
@@ -78,12 +58,18 @@ void camera_Update(Camera *camera) {
     assert(camera);
     if(camera->xVector){
         camera->x += camera->xVector;
+        if(camera->xVector > 0) 
+            camera->xVector--;
+        else
+            camera->xVector++;
     }
     if(camera->yVector){
         camera->y += camera->yVector;
+        if(camera->yVector > 0) 
+            camera->yVector--;
+        else
+            camera->yVector++;
     }
-    (camera->xVector)?camera->xVector++:camera->xVector--;
-    (camera->yVector)?camera->yVector++:camera->yVector--;
 }
 
 // Functions to set the x and y positions in map vue
@@ -261,133 +247,4 @@ void camera_FleetSet(Camera *camera, int fleet){
 int camera_FleetGet(Camera *camera){
     assert(camera);
     return camera->flotte;
-}
-
-// Windows functions
-
-Window *window_Create(){
-    return calloc(1, sizeof(Window));
-}
-
-void OpenMenu(Window *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme){
-    fenetre->menu = classMenu;
-    fenetre->menuDetails = menuSysteme;
-    fenetre->selection = 1;
-    camera->lock = true;
-}
-void CloseMenu(Window *fenetre, Camera *camera){
-    fenetre->menu = MENU_NONE;
-    fenetre->menuDetails = MENU_SYSTEME_AUCUN;
-    camera->lock = false;
-}
-ClassMenu GetOpenedMenuClass(Window *fenetre){
-    return fenetre->menu;
-}
-MenuSystem GetOpenedMenuDetails(Window *fenetre){
-    return fenetre->menuDetails;
-}
-
-void OpenCommandPrompt(Window *fenetre, Camera *camera, Time *date){
-    fenetre->commandPrompt = true;
-    camera->lock = true;
-    time_Pause(date);
-}
-void CloseCommandPrompt(Window *fenetre, Camera *camera, Time *date){
-    fenetre->commandPrompt = false;
-    camera->lock = false;
-    time_Unpause(date);
-}
-int GetCommandPromptStatus(Window *fenetre){
-    return fenetre->commandPrompt;
-}
-
-void SetWindowPlanet(Window *fenetre, int planete){
-    fenetre->planete = planete;
-}
-int GetWindowPlanet(Window *fenetre){
-    return fenetre->planete;
-}
-
-void SetWindowSelection(Window *fenetre, int selection){
-    fenetre->selection = selection;
-}
-int GetWindowSelection(Window *fenetre){
-    return fenetre->selection;
-}
-void IncrementWindowSelection(Window *fenetre){
-    fenetre->selection++;
-}
-void UnincrementWindowSelection(Window *fenetre){
-    fenetre->selection--;
-}
-void AddWindowSelection(Window *fenetre, int number){
-    fenetre->selection += number;
-}
-
-void SetWindowSelectedFleet(Window *fenetre, int fleet){
-    fenetre->flotteSelectionee = fleet;
-}
-int GetWindowSelectedFleet(Window *fenetre){
-    return fenetre->flotteSelectionee;
-}
-
-void SetWindowPrevious(Window *fenetre, int previous){
-    fenetre->precedente = previous;
-}
-int GetWindowPrevious(Window *fenetre){
-    return fenetre->precedente;
-}
-
-Error GetWindowError(Window *fenetre){
-    return fenetre->error;
-}
-void SetWindowError(Window *fenetre, Error error){
-    fenetre->error = error;
-}
-int GetWindowErrorCountDown(Window *fenetre){
-    return fenetre->errorCountDown;
-}
-void UnincrementWindowErrorCountdown(Window *fenetre){
-    fenetre->errorCountDown--;
-}
-void SetWindowErrorCountdown(Window *fenetre, int countdown){
-    fenetre->errorCountDown = countdown;
-}
-
-void SetWindowCity(Window *fenetre, City *city){
-    fenetre->villes = city;
-}
-City *GetWindowCity(Window *fenetre){
-    return fenetre->villes;
-}
-
-void SetWindowEmpire(Window *fenetre, int empire){
-    fenetre->empire = empire;
-}
-int GetWindowEmpire(Window *fenetre){
-    return fenetre->empire;
-}
-
-void SetWindowScroll(Window *fenetre, int scroll){
-    fenetre->scroll = scroll;
-}
-void AddWindowScroll(Window *fenetre, int scroll){
-    fenetre->scroll += scroll;
-}
-int GetWindowScroll(Window *fenetre){
-    return fenetre->scroll;
-}
-
-void SetWindowFleetSize(Window *fenetre, int size){
-    fenetre->nombreDeVaisseaux = size;
-}
-void AddWindowFleetSize(Window *fenetre, int size){
-    fenetre->nombreDeVaisseaux += size;
-}
-int GetWindowFleetSize(Window *fenetre){
-    return fenetre->nombreDeVaisseaux;
-}
-
-void SetWindowMenuSystem(Window *fenetre, MenuSystem menu){
-    fenetre->menuDetails = menu;
 }

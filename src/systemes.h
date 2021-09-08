@@ -34,7 +34,7 @@ typedef enum {  STAR_NONE,
                 STAR_TYPE_PULSAR, 
                 STAR_TYPE_NEUTRON} StarType;
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 typedef struct HyperlaneStruct Hyperlane;
 

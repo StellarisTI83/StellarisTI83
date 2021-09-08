@@ -25,7 +25,7 @@
 #include "stations.h"
 #include "ai.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 struct HyperlaneStruct{
     int         destination;

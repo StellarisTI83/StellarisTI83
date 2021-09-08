@@ -14,7 +14,7 @@ typedef enum {  TIME_SPEED_VERY_SLOW = -2,
                 TIME_SPEED_FAST,
                 TIME_SPEED_VERY_FAST} gameSpeed;
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 typedef struct DateStruct Time;
 

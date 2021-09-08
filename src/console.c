@@ -169,7 +169,7 @@ void AfficherConsole(char *key, Window *fenetre, EmpireList *empireListe, Camera
 					character = ' ';
 					break;
 				case sk_2nd:
-					CloseCommandPrompt(fenetre, camera, date);
+					window_CommandPromptClose(fenetre, camera, date);
 					break;
 				case sk_Alpha:
 					console.nombreActive = true;
@@ -215,7 +215,7 @@ void AfficherConsole(char *key, Window *fenetre, EmpireList *empireListe, Camera
 					console.nombreActive = false;
 					break;
 				case sk_2nd:
-					CloseCommandPrompt(fenetre, camera, date);
+					window_CommandPromptClose(fenetre, camera, date);
 					break;
 			}
 		}

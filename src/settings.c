@@ -9,7 +9,7 @@
 
 #include "settings.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 struct SettingsStruct{
 	char starNumber;
 	char empireNumber;

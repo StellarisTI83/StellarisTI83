@@ -3,7 +3,7 @@
  * @author Cocheril Dimitri (cochgit.dimitri@gmail.com)
  * @brief The hud drawing routines
  * @version 0.1
- * @date 2021-08-21
+ * @time 2021-08-21
  * 
  * @copyright GNU General Public License v3.0
  * 
@@ -98,11 +98,11 @@ static void hud_DrawFlag(){
 /**
  * @brief Draw the icon of the speed / pause
  * 
- * @param date 
+ * @param time 
  */
-static void hud_DrawSpeedIcon(Time *date){
+static void hud_DrawSpeedIcon(Time *time){
     //pause / avance
-    switch (speed_TimeGet(date)){
+    switch (speed_TimeGet(time)){
         case TIME_SPEED_VERY_SLOW:
             gfx_SetColor(COLOR_WHITE);
             gfx_FillRectangle_NoClip(100, 225, 3, 9);
@@ -145,13 +145,13 @@ static void hud_DrawSpeedIcon(Time *date){
  * @param time 
  * @param camera 
  * @param settings 
- * @param systemeStellaires 
+ * @param galaxy 
  */
 static void hud_PrintInfos( Empire *player, 
                             Time *time, 
                             Camera *camera,
                             Settings *settings,
-                            StarSystem **systemeStellaires){
+                            StarSystem **galaxy){
     char dayString[11];
     char monthString[8];
     char yearString[5];
@@ -222,7 +222,7 @@ static void hud_PrintInfos( Empire *player,
 
     // bottom bar
 
-    // date
+    // time
     if (time_DayGet(time) < 10) {
         sprintf(dayString, "0%d.", time_DayGet(time));
     } else {
@@ -257,19 +257,19 @@ static void hud_PrintInfos( Empire *player,
         } else {
             system = camera_SystemAimedGet(camera);
         }
-        if ((starSystem_IntelLevelGet(systemeStellaires[system]) == INTEL_UNKNOWN) && (!settings_SeeAllGet(settings))) {
+        if ((starSystem_IntelLevelGet(galaxy[system]) == INTEL_UNKNOWN) && (!settings_SeeAllGet(settings))) {
             gfx_PrintStringXY(  "Inconnu", 
                                 132,
                                 LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
         } else {
-            gfx_PrintStringXY(  starSystem_NameGet(systemeStellaires[system]), 
-                                LCD_WIDTH / 2 - strlen(starSystem_NameGet(systemeStellaires[system])) * TEXT_HEIGHT / 2, 
+            gfx_PrintStringXY(  starSystem_NameGet(galaxy[system]), 
+                                LCD_WIDTH / 2 - strlen(starSystem_NameGet(galaxy[system])) * TEXT_HEIGHT / 2, 
                                 LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
         }
         gfx_SetTextXY(100, 100);
         gfx_PrintUInt(system, 3);
         gfx_PrintString(" ");
-        gfx_PrintUInt(starSystem_IntelLevelGet(systemeStellaires[system]), 3);
+        gfx_PrintUInt(starSystem_IntelLevelGet(galaxy[system]), 3);
     }
 
     // print fps
@@ -310,10 +310,10 @@ static void hud_DrawPointer(Camera *camera) {
 /**
  * @brief Function to draw the shapes of the screen
  * 
- * @param date
+ * @param time
  * @param camera
  */
-static void hud_DrawShapes( Time *date, 
+static void hud_DrawShapes( Time *time, 
                             Camera *camera){
     //draw the background
     gfx_SetColor(COLOR_HUD_BACKGROUND);
@@ -323,8 +323,8 @@ static void hud_DrawShapes( Time *date,
     gfx_FillRectangle(0, HUD_WIDTH, HUD_WIDTH, HUD_HEIGHT - HUD_WIDTH);
     gfx_FillTriangle(0, HUD_HEIGHT, HUD_WIDTH, HUD_HEIGHT, 0, HUD_HEIGHT + HUD_WIDTH);
     
-    //bottom bar (date)
-    if (speed_TimeGet(date) == 0) {
+    //bottom bar (time)
+    if (speed_TimeGet(time) == 0) {
         gfx_SetColor(COLOR_HUD_PAUSE_BACKGROUND);
     }
     
@@ -380,7 +380,7 @@ static void hud_DrawShapes( Time *date,
 
 
     //down bar
-    if (speed_TimeGet(date) == 0) {
+    if (speed_TimeGet(time) == 0) {
         gfx_SetColor(COLOR_HUD_PAUSE_OUTLINES);
     }
     gfx_HorizLine_NoClip((  LCD_WIDTH - HUD_TIME_BAR_WIDTH)/2,      // x
@@ -420,40 +420,26 @@ static void hud_DrawShapes( Time *date,
 
 /* entry points ======================================================== */
 
-/**
- * @brief Function to draw the HUD on the screen
- * 
- * @param empireListe EmpireList*
- * @param date Date*
- * @param key char*
- * @param camera Camera*
- * @param systemeStellaires SystemeStellaire*
- * @param fenetre Window*
- * @param settings Settings*
- * @param notificationList NotificationList*
- * @return int 
- */
-int hud_Draw(   EmpireList *empireListe, 
-                Time *date, 
-                char *key, 
+int hud_Draw(   char *key, 
+                EmpireList *empireList, 
+                Time *time,
                 Camera *camera, 
-                StarSystem **systemeStellaires, 
-                Window *fenetre, 
+                StarSystem **galaxy, 
+                Window *window, 
                 Settings *settings, 
-                NotificationList *notificationList)
-{
-    Empire *player = empire_Get(empireListe, 0);
+                NotificationList *notificationList) {
+    Empire *player = empire_Get(empireList, 0);
     
-    hud_DrawShapes(date, camera);
+    hud_DrawShapes(time, camera);
 
-    hud_PrintInfos(player, date, camera, settings, systemeStellaires);
+    hud_PrintInfos(player, time, camera, settings, galaxy);
     
     hud_DrawPointer(camera);
     
-    DrawNotifications(notificationList, date);
+    DrawNotifications(notificationList, time);
 
-    if(GetCommandPromptStatus(fenetre) == true){ 
-        AfficherConsole(key, fenetre, empireListe, camera, date, settings);
+    if(window_CommandPromptStatusGet(window) == true){ 
+        AfficherConsole(key, window, empireList, camera, time, settings);
     }
  
     return 0;

@@ -30,7 +30,7 @@
 
 typedef enum {NO_ERROR, ACIER_MANQUE, MINERAI_MANQUE} Error;
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 typedef struct {
 	int valeurMinerai;

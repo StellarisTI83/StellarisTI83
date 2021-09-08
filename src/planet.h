@@ -49,7 +49,7 @@ typedef enum {  HABITABLE_ARID = 1,
 #define F_RESEARCH_STATION (2)
 #define F_MINE_STATION (4)
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 typedef struct CityStruct City;
 

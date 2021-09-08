@@ -23,12 +23,25 @@
 #define HUD_SIDE_BAR_UP 50
 #define HUD_SIDE_BAR_GAP 20
 
-int hud_Draw(   EmpireList *empireListe, 
-                Time *date, 
-                char *key, 
+/**
+ * @brief Function to draw the HUD on the screen
+ * 
+ * @param empireList EmpireList*
+ * @param time Time*
+ * @param key char*
+ * @param camera Camera*
+ * @param galaxy StarSystem*
+ * @param window Window*
+ * @param settings Settings*
+ * @param notificationList NotificationList*
+ * @return int 
+ */
+int hud_Draw(   char *key, 
+                EmpireList *empireList, 
+                Time *time,
                 Camera *camera, 
-                StarSystem **systemeStellaires, 
-                Window *fenetre, 
-                Settings *parametres, 
+                StarSystem **galaxy, 
+                Window *window, 
+                Settings *settings, 
                 NotificationList *notificationList);
 #endif

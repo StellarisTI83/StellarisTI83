@@ -39,7 +39,7 @@ typedef enum {  STATION_ORDER_NONE = 0,
                 STATION_ORDER_BUILD_PLATFORM, 
                 STATION_ORDER_BUILD_SHIP} StationOrder;
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 /**
  * @brief The struct of a starbase

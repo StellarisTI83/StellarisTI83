@@ -11,7 +11,7 @@
 
 #include "notifications.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 struct NotificationStruct {
     NOTIFICATION_TYPE type;

@@ -75,7 +75,7 @@ typedef GenericList EmpireList;
  */
 typedef GenericList DiplomacyList;
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 /**
  * @struct Empire

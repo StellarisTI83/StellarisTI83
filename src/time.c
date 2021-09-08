@@ -8,7 +8,7 @@
 
 #include "time.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 struct DateStruct{
 	gameSpeed speed;
 	gameSpeed previousSpeed; //vitesse sauvegardé pour quand on passe de pause à action

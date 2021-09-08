@@ -44,7 +44,7 @@
 
 #define MAIN_MENU_CHOICE_VERTICAL_GAP 15
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 /**
  * @brief The structure used for positioning and moving the station on the 

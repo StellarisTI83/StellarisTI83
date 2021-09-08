@@ -379,7 +379,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 		camera_FleetMoveSet(camera, true);
 		camera_LockSet(camera, false);
 		camera_MapTypeSet(camera, VUE_GALACTIC);
-		CloseMenu(fenetre, camera);
+		menu_Close(fenetre, camera);
 		camera_FleetSet(camera, numeroDeFlotte);
 	} else {
 		if(systeme == flotte->systeme){

@@ -31,11 +31,9 @@ typedef enum {  ZOOM_MIN = 0,
 
 
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 typedef struct CameraStruct Camera;
-
-typedef struct WindowStruct Window;
 
 #include "main.h"
 #include "planet.h"
@@ -119,51 +117,4 @@ int     camera_FleetMoveGet     (Camera *camera);
 void    camera_FleetSet         (Camera *camera, int fleet);
 int     camera_FleetGet         (Camera *camera);
 
-// Windows functions
-
-Window *window_Create();
-
-void OpenMenu(Window *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme);
-void CloseMenu(Window *fenetre, Camera *camera);
-ClassMenu GetOpenedMenuClass(Window *fenetre);
-MenuSystem GetOpenedMenuDetails(Window *fenetre);
-void SetWindowMenuSystem(Window *fenetre, MenuSystem menu);
-
-void OpenCommandPrompt(Window *fenetre, Camera *camera, Time *date);
-void CloseCommandPrompt(Window *fenetre, Camera *camera, Time *date);
-int GetCommandPromptStatus(Window *fenetre);
-
-void SetWindowPlanet(Window *fenetre, int planete);
-int GetWindowPlanet(Window *fenetre);
-
-void SetWindowSelection(Window *fenetre, int selection);
-int GetWindowSelection(Window *fenetre);
-void IncrementWindowSelection(Window *fenetre);
-void UnincrementWindowSelection(Window *fenetre);
-void AddWindowSelection(Window *fenetre, int number);
-
-void SetWindowSelectedFleet(Window *fenetre, int fleet);
-int GetWindowSelectedFleet(Window *fenetre);
-
-void SetWindowPrevious(Window *fenetre, int previous);
-int GetWindowPrevious(Window *fenetre);
-
-Error GetWindowError(Window *fenetre);
-void SetWindowError(Window *fenetre, Error error);
-int GetWindowErrorCountDown(Window *fenetre);
-void UnincrementWindowErrorCountdown(Window *fenetre);
-void SetWindowErrorCountdown(Window *fenetre, int countdown);
-
-void SetWindowCity(Window *fenetre, City *city);
-City *GetWindowCity(Window *fenetre);
-void SetWindowEmpire(Window *fenetre, int empire);
-int GetWindowEmpire(Window *fenetre);
-
-void SetWindowScroll(Window *fenetre, int scroll);
-void AddWindowScroll(Window *fenetre, int scroll);
-int GetWindowScroll(Window *fenetre);
-
-void SetWindowFleetSize(Window *fenetre, int size);
-void AddWindowFleetSize(Window *fenetre, int size);
-int GetWindowFleetSize(Window *fenetre);
 #endif

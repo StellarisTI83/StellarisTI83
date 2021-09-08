@@ -8,7 +8,7 @@
 #include "ordres.h"
 #include "main.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 struct OrdreElement{
 	int ordre;
 	int info1; //numero du module / type de flotte / numero du batiment

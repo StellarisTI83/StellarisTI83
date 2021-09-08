@@ -9,7 +9,7 @@
 #include "stations.h"
 #include "main.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 struct StationStruct{
     Stationlevel niveauStation;
     OrdreFile* ordreFile;

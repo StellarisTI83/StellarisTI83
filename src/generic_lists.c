@@ -5,7 +5,7 @@
 #include "main.h"
 #include "generic_lists.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 typedef struct _genericListElement GenericListElement;
 

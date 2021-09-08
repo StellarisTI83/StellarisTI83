@@ -120,71 +120,71 @@ static void update_KeysTest(char *key,
     switch(*key){
         // Open the command prompt
         case sk_2nd:
-            if(!GetCommandPromptStatus(window))
-                OpenCommandPrompt(window, camera, time);
+            if(!window_CommandPromptStatusGet(window))
+                window_CommandPromptOpen(window, camera, time);
             else
-                CloseCommandPrompt(window, camera, time);
+                window_CommandPromptClose(window, camera, time);
             *key = 0;
             break;
         // Open the exit menu
         case sk_Clear:
-            if(GetOpenedMenuClass(window) == MENU_EXIT)
-                CloseMenu(window, camera);
+            if(window_MenuGet(window) == MENU_EXIT)
+                menu_Close(window, camera);
             else
-                OpenMenu(window, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
+                menu_Open(window, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
             *key = 0;
             break;
 
         // Open the market menus
         // The top buttons for the top hud
         case sk_Yequ:
-            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, MENU_MARKET_CASH);
             break;
         case sk_Window:
-            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, MENU_MARKET_MINERAL);
             break;
         case sk_Zoom:
-            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, MENU_MARKET_FOOD);
             break;
         case sk_Trace:
-            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, MENU_MARKET_ALLOY);
             break;
         case sk_Graph:
-            OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, MENU_MARKET_OTHER);
             break;
 
         // The left buttons for the left hud
         case sk_Recip:
-            if(GetOpenedMenuClass(window) == MENU_MARKET)
-                CloseMenu(window, camera);
+            if(window_MenuGet(window) == MENU_MARKET)
+                menu_Close(window, camera);
             else
-                OpenMenu(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+                menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, 0);
             break;
         case sk_Math:
-            if(GetOpenedMenuClass(window) == MENU_CONTACTS)
-                CloseMenu(window, camera);
+            if(window_MenuGet(window) == MENU_CONTACTS)
+                menu_Close(window, camera);
             else
-                OpenMenu(window, camera, MENU_CONTACTS, MENU_SYSTEME_AUCUN);
+                menu_Open(window, camera, MENU_CONTACTS, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, 0);
             break;
         case sk_Square:
-            if(GetOpenedMenuClass(window) == MENU_SCIENCE)
-                CloseMenu(window, camera);
+            if(window_MenuGet(window) == MENU_SCIENCE)
+                menu_Close(window, camera);
             else
-                OpenMenu(window, camera, MENU_SCIENCE, MENU_SYSTEME_AUCUN);
+                menu_Open(window, camera, MENU_SCIENCE, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, 0);
             break;
         case sk_Log:
-            if(GetOpenedMenuClass(window) == MENU_FLEET)
-                CloseMenu(window, camera);
+            if(window_MenuGet(window) == MENU_FLEET)
+                menu_Close(window, camera);
             else
-                OpenMenu(window, camera, MENU_FLEET, MENU_SYSTEME_AUCUN);
+                menu_Open(window, camera, MENU_FLEET, MENU_SYSTEME_AUCUN);
             SetWindowSelection(window, 0);
             break;
 

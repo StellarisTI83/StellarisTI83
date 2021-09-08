@@ -53,7 +53,7 @@ static void newGame_Initialize( EmpireList **empireListe,
     camera_MapTypeSet(*camera, VUE_SYSTEM);
 
     *window = window_Create();
-    CloseMenu(*window, *camera);
+    menu_Close(*window, *camera);
     
     timer_Disable(1);
     timer_Set(1, ONE_SECOND);

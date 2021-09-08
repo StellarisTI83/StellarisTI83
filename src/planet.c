@@ -94,7 +94,7 @@ char * planetNames[] = {
     "Griri"
 };
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 struct CityStruct{
     Building building0;
     int levelBuilding0;

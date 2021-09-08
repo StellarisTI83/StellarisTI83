@@ -27,7 +27,7 @@ typedef enum {FLOTTE_MILITAIRE, FLOTTE_SCIENTIFIQUE, FLOTTE_DE_CONSTRUCTION} Flo
 
 typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 typedef GenericList FleetList;
 
