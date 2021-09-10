@@ -11,6 +11,7 @@
 #include "galaxy.h"
 #include "loop.h"
 #include "notifications.h"
+#include "widget.h"
 
 #include "new_game.h"
 
@@ -30,6 +31,7 @@ static void newGame_Initialize( EmpireList **empireListe,
                                 Time **time,
                                 Camera **camera,
                                 Window **window){
+    WidgetWindow *widgetWindow;
     *empireListe = empire_ListCreate();
     empire_Add(*empireListe);
     empire_FleetListCreate(empire_Get(*empireListe, 0));
@@ -54,6 +56,9 @@ static void newGame_Initialize( EmpireList **empireListe,
 
     *window = window_Create();
     menu_Close(*window, *camera);
+
+    widgetWindow = window_WindowNew(*window, "Market");
+    widget_WindowContainerAdd(widgetWindow);
     
     timer_Disable(1);
     timer_Set(1, ONE_SECOND);

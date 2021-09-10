@@ -61,6 +61,7 @@ typedef struct WindowStruct Window;
 #include "time.h"
 #include "settings.h"
 #include "systemes.h"
+#include "widget.h"
 
 /* entry points ======================================================== */
 /**
@@ -153,4 +154,6 @@ void SetWindowFleetSize(Window *fenetre, int size);
 void AddWindowFleetSize(Window *fenetre, int size);
 int GetWindowFleetSize(Window *fenetre);
 
+WidgetWindow *window_WindowNew(Window *window, const char *title);
+WidgetWindow *window_WindowGet(Window *window, const int index);
 #endif
