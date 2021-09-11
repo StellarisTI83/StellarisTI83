@@ -3105,81 +3105,6 @@ static void MenuContactsEffectuerAction(char *key, EmpireList *empireListe, Came
     }
 }
 
-static bool menu_Exit(	char *key,
-                        Window *window,
-                        Camera *camera){
-    char car[20] = {0};
-    switch(*key) {
-        default:
-            break;
-        case sk_Up:
-            window_SelectionUnIncrement(window);
-            break;
-        case sk_Down:
-            window_SelectionIncrement(window);
-            break;
-        case sk_Clear:
-            menu_Close(window, camera);
-            break;
-        case sk_Enter:
-            switch(GetWindowSelection(window)) {
-                default:
-                    return false;
-                case 0:
-                    return true;
-            }
-            return false;
-            break;
-    }
-
-    if(GetWindowSelection(window) > 4) {
-        SetWindowSelection(window, 0);
-    } else if(GetWindowSelection(window) < 0) {
-        SetWindowSelection(window, 4);
-    }
-
-    gfx_SetColor(COLOR_HUD_BACKGROUND);
-    gfx_FillRectangle_NoClip(   MENU_EXIT_X, 
-                                MENU_EXIT_Y - MENU_BUTTON_GAP, 
-                                MENU_EXIT_WIDTH, 
-                                MENU_EXIT_HEIGHT);
-
-    gfx_SetColor(COLOR_HUD_OUTLINES);
-    gfx_Rectangle_NoClip(   MENU_EXIT_X, 
-                            MENU_EXIT_Y - MENU_BUTTON_GAP, 
-                            MENU_EXIT_WIDTH, 
-                            MENU_EXIT_HEIGHT);
-sprintf(car, "%d", MENU_BUTTON_GAP_Y_GAP);
-    widget_ButtonDraw(car, 
-                MENU_EXIT_X + MENU_BUTTON_GAP, 
-                MENU_EXIT_Y,
-                MENU_EXIT_WIDTH - MENU_BUTTON_GAP * 2, 
-                GetWindowSelection(window) == 0);
-    widget_ButtonDraw(_(lc_save), 
-                MENU_EXIT_X + MENU_BUTTON_GAP, 
-                MENU_EXIT_Y + MENU_BUTTON_GAP_Y_GAP,
-                MENU_EXIT_WIDTH - MENU_BUTTON_GAP * 2, 
-                GetWindowSelection(window) == 1);
-    widget_ButtonDraw(_(lc_load), 
-                MENU_EXIT_X + MENU_BUTTON_GAP, 
-                MENU_EXIT_Y + (MENU_BUTTON_GAP_Y_GAP * 2),
-                MENU_EXIT_WIDTH - MENU_BUTTON_GAP * 2, 
-                GetWindowSelection(window) == 2);
-    widget_ButtonDraw(_(lc_settings), 
-                MENU_EXIT_X + MENU_BUTTON_GAP, 
-                MENU_EXIT_Y + (MENU_BUTTON_GAP_Y_GAP * 3),
-                MENU_EXIT_WIDTH - MENU_BUTTON_GAP * 2, 
-                GetWindowSelection(window) == 3);
-    widget_ButtonDraw(_(lc_exit), 
-                MENU_EXIT_X + MENU_BUTTON_GAP, 
-                MENU_EXIT_Y + (MENU_BUTTON_GAP_Y_GAP * 4),
-                MENU_EXIT_WIDTH - MENU_BUTTON_GAP * 2, 
-                GetWindowSelection(window) == 4);
-    
-
-    return true;
-}
-
 
 /* entry points ======================================================== */
 
@@ -3194,10 +3119,7 @@ int menus_Draw( char *key,
     int8_t endGame = 1;
     switch(window_MenuGet(window)){
         case MENU_EXIT:
-            endGame = menu_Exit(key, 
-                                window,
-                                camera);
-            return endGame;
+            widget_WindowShow(window_WindowGet(window, 0), key);
             break;
         case MENU_SYSTEM:
             MenuSysteme(key, empireList, settings, time, galaxy, camera, window);
@@ -3206,7 +3128,6 @@ int menus_Draw( char *key,
             MenuListeFLottes(key, empireList, camera, window);
             break;
         case MENU_MARKET:
-            widget_WindowShow(window_WindowGet(window, 0));
             break;
         case MENU_SCIENCE:
             MenuRecherche(key, camera, window);
@@ -3363,8 +3284,11 @@ void SetWindowMenuSystem(Window *fenetre, MenuSystem menu){
     fenetre->menuDetails = menu;
 }
 
-WidgetWindow *window_WindowNew(Window *window, const char *title){
-    WidgetWindow *widgetWindow = widget_WindowCreate(title);
+WidgetWindow *window_WindowNew( Window *window, 
+                                const char *title, 
+                                const int width, 
+                                const int height){
+    WidgetWindow *widgetWindow = widget_WindowCreate(title, width, height);
     GenericCell_Add(window->windowList, widgetWindow);
     return widgetWindow;
 }

@@ -4,6 +4,7 @@
 #include <debug.h>
 
 #include "gfx/gfx.h"
+#include "locale/locale.h"
 #include "colors.h"
 
 #include "ai.h"
@@ -32,6 +33,7 @@ static void newGame_Initialize( EmpireList **empireListe,
                                 Camera **camera,
                                 Window **window){
     WidgetWindow *widgetWindow;
+    WidgetContainer *widgetContainer;
     *empireListe = empire_ListCreate();
     empire_Add(*empireListe);
     empire_FleetListCreate(empire_Get(*empireListe, 0));
@@ -39,6 +41,7 @@ static void newGame_Initialize( EmpireList **empireListe,
     
     *settings = setting_Malloc();
     settings_SeeAllSet(*settings, false);
+    settings_GameActiveSet(*settings, true);
 
     *time = time_Alloc();
     time_DateSet(*time, NEW_GAME_START_DAY, NEW_GAME_START_MONTH, NEW_GAME_START_YEAR);
@@ -57,8 +60,13 @@ static void newGame_Initialize( EmpireList **empireListe,
     *window = window_Create();
     menu_Close(*window, *camera);
 
-    widgetWindow = window_WindowNew(*window, "Market");
-    widget_WindowContainerAdd(widgetWindow);
+    widgetWindow = window_WindowNew(*window, NULL, MENU_EXIT_WIDTH, MENU_EXIT_HEIGHT);
+    widgetContainer = widget_WindowContainerAdd(widgetWindow);
+    widget_ButtonAdd(widgetContainer, "Retour", &menu_Close, *window, *camera);
+    widget_ButtonAdd(widgetContainer, _(lc_load), NULL, NULL, NULL);
+    widget_ButtonAdd(widgetContainer, _(lc_save), NULL, NULL, NULL);
+    widget_ButtonAdd(widgetContainer, _(lc_settings), NULL, NULL, NULL);
+    widget_ButtonAdd(widgetContainer, _(lc_exit), &settings_GameActiveSet, *settings, false);
     
     timer_Disable(1);
     timer_Set(1, ONE_SECOND);

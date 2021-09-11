@@ -154,6 +154,9 @@ void SetWindowFleetSize(Window *fenetre, int size);
 void AddWindowFleetSize(Window *fenetre, int size);
 int GetWindowFleetSize(Window *fenetre);
 
-WidgetWindow *window_WindowNew(Window *window, const char *title);
+WidgetWindow *window_WindowNew( Window *window, 
+                                const char *title, 
+                                const int width, 
+                                const int height);
 WidgetWindow *window_WindowGet(Window *window, const int index);
 #endif

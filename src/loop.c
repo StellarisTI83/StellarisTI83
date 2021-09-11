@@ -21,7 +21,7 @@ int game_MainLoop(	EmpireList *empireListe,
 	char key = 0;
 	long fps;
 	
-	while (loop) {
+	while (settings_GameActiveGet(settings)) {
 		// Get the pressed keys
 		key = os_GetCSC();
 		
