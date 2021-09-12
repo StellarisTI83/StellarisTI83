@@ -22,4 +22,5 @@ int settings_SeeAllGet(Settings *settings);
 
 void settings_GameActiveSet(Settings *settings, int gameActive);
 int settings_GameActiveGet(Settings *settings);
+void settings_GameStop(Settings *settings);
 #endif

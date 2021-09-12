@@ -435,7 +435,7 @@ static void DessinerEtoile(StarSystem *systeme, Camera* camera, Window *fenetre,
 		gfx_SetColor(9);
 		gfx_Rectangle_NoClip(xEtoile - 8, yEtoile - 8, 16, 16);
 		if((*key == sk_Enter) && (camera_LockGet(camera) == false)){
-			menu_Open(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_ETOILE);
+			menu_OpenSystem(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_ETOILE);
 			*key = 0;
 		}
 	}
@@ -558,7 +558,7 @@ static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera
 		gfx_SetColor(9);
 		gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
 		if((*key == sk_Enter) && (camera_LockGet(camera) == false)){
-			menu_Open(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_PLANETE_RESUME);
+			menu_OpenSystem(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_PLANETE_RESUME);
 			SetWindowPlanet(fenetre, numero);
 			*key = 0;
 		}
@@ -615,7 +615,7 @@ void DessinerBase(StarSystem *systeme, Camera* camera, Window* fenetre, char* ke
 				gfx_SetColor(9);
 				gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
 				if((*key == sk_Enter) && (camera_LockGet(camera) == false)){
-					menu_Open(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_STATION_RESUME);
+					menu_OpenSystem(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_STATION_RESUME);
 					SetWindowSelection(fenetre, 1);
 					*key = 0;
 				}
@@ -677,7 +677,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 					gfx_SetColor(9);
 					gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);			
 					if((*key == sk_Enter) && (camera_LockGet(camera) == false)){
-						menu_Open(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_FLOTTE_DETAILS);
+						menu_OpenSystem(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_FLOTTE_DETAILS);
 						SetWindowSelection(fenetre, 1);
 						SetWindowSelectedFleet(fenetre, fleetIndex);
 						SetWindowPrevious(fenetre, 1);
@@ -734,7 +734,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 						gfx_SetColor(9);
 						gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);			
 						if((*key == sk_Enter) && (camera_LockGet(camera) == false)){
-							menu_Open(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_FLOTTE_DETAILS);
+							menu_OpenSystem(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_FLOTTE_DETAILS);
 							SetWindowSelection(fenetre, 1);
 							SetWindowSelectedFleet(fenetre, fleetIndex);
 							SetWindowPrevious(fenetre, 1);

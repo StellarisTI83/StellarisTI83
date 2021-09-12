@@ -21,22 +21,20 @@
 /**
  * @brief Initialize the main structures of the game
  * 
- * @param empireListe 
+ * @param empireList 
  * @param settings 
  * @param time 
  * @param camera 
  * @param window 
  */
-static void newGame_Initialize( EmpireList **empireListe, 
+static void newGame_Initialize( EmpireList **empireList, 
                                 Settings **settings, 
                                 Time **time,
                                 Camera **camera,
                                 Window **window){
-    WidgetWindow *widgetWindow;
-    WidgetContainer *widgetContainer;
-    *empireListe = empire_ListCreate();
-    empire_Add(*empireListe);
-    empire_FleetListCreate(empire_Get(*empireListe, 0));
+    *empireList = empire_ListCreate();
+    empire_Add(*empireList);
+    empire_FleetListCreate(empire_Get(*empireList, 0));
 
     
     *settings = setting_Malloc();
@@ -60,13 +58,6 @@ static void newGame_Initialize( EmpireList **empireListe,
     *window = window_Create();
     menu_Close(*window, *camera);
 
-    widgetWindow = window_WindowNew(*window, NULL, MENU_EXIT_WIDTH, MENU_EXIT_HEIGHT);
-    widgetContainer = widget_WindowContainerAdd(widgetWindow);
-    widget_ButtonAdd(widgetContainer, "Retour", &menu_Close, *window, *camera);
-    widget_ButtonAdd(widgetContainer, _(lc_load), NULL, NULL, NULL);
-    widget_ButtonAdd(widgetContainer, _(lc_save), NULL, NULL, NULL);
-    widget_ButtonAdd(widgetContainer, _(lc_settings), NULL, NULL, NULL);
-    widget_ButtonAdd(widgetContainer, _(lc_exit), &settings_GameActiveSet, *settings, false);
     
     timer_Disable(1);
     timer_Set(1, ONE_SECOND);
@@ -77,7 +68,7 @@ static void newGame_Initialize( EmpireList **empireListe,
 /* entry points ======================================================== */
 
 void newGame_Start(){
-    EmpireList *empireListe = NULL;
+    EmpireList *empireList = NULL;
     StarSystem *galaxy[GALAXY_WIDTH * GALAXY_WIDTH];
     Window *window = NULL;
     Settings *settings = NULL;
@@ -90,16 +81,24 @@ void newGame_Start(){
     gfx_BlitBuffer();
     gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
 
-    newGame_Initialize(&empireListe, &settings, &time, &camera, &window);
-    
+    newGame_Initialize(&empireList, &settings, &time, &camera, &window);
+
     galaxy_CreateNew(galaxy);
 	settings_EmpireNumberSet(settings, 4);
 
-	galaxy_StartEmpiresInitialize(settings, empireListe, galaxy, camera);
-	update_PlayersData(false, empireListe, galaxy, notificationList);
+	galaxy_StartEmpiresInitialize(settings, empireList, galaxy, camera);
+	update_PlayersData(false, empireList, galaxy, notificationList);
+
+    menu_Initialize(empireList, 
+                    galaxy,
+                    settings, 
+                    time,
+                    camera,
+                    window,
+                    market);
 
 	gfx_SetDrawBuffer();
-    game_MainLoop(  empireListe, 
+    game_MainLoop(  empireList, 
                     settings, 
                     time, 
                     galaxy, 
@@ -108,7 +107,7 @@ void newGame_Start(){
                     market, 
                     notificationList);
 
-    game_Close( empireListe, 
+    game_Close( empireList, 
                 galaxy, 
                 settings, 
                 time, 
@@ -118,7 +117,7 @@ void newGame_Start(){
                 notificationList);
 }
 
-void game_Close(EmpireList *empireListe, 
+void game_Close(EmpireList *empireList, 
                 StarSystem **galaxy,
                 Settings *settings, 
                 Time *time,
@@ -127,8 +126,8 @@ void game_Close(EmpireList *empireListe,
                 Market *market,
                 NotificationList *notificationList){
     int index = 0;
-    if(empireListe)
-        empire_ListFree(empireListe);
+    if(empireList)
+        empire_ListFree(empireList);
 
     if(galaxy){
         index = 0;

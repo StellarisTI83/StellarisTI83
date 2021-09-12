@@ -26,9 +26,11 @@ struct WidgetButtonStruct{
     int width;
     int height;
 
+    bool outline;
+    bool justify;
+
     int (*action)();
-    void* action1;
-    void* action2;
+    void* actionData;
     char *text;
 
     void *next;
@@ -59,10 +61,11 @@ struct WidgetWindowStruct{
 };
 
 void widget_ButtonAdd(  WidgetContainer *widgetNode, 
-                        const char *string, 
+                        const char *string,
                         int(*action)(),
-                        void* action1,
-                        void* action2){
+                        void* actionData,
+                        bool outline,
+                        bool justify){
     WidgetButton *button, *tmp;
     int y;
 
@@ -95,9 +98,11 @@ void widget_ButtonAdd(  WidgetContainer *widgetNode,
     button->x = widgetNode->x + MENU_BUTTON_GAP;
     button->y = y;
 
+    button->outline = outline;
+    button->justify = justify;
+
     button->action = action;
-    button->action1 = action1;
-    button->action2 = action2;
+    button->actionData = actionData;
 }
 
 void widget_ButtonDestroy(WidgetButton *button){
@@ -107,11 +112,14 @@ void widget_ButtonDestroy(WidgetButton *button){
 }
 
 int widget_ButtonShow(WidgetButton *button, bool status, bool click){
-    gfx_SetColor(COLOR_HUD_OUTLINES);
-    gfx_Rectangle(  button->x, 
-                    button->y, 
-                    button->width, 
-                    button->height);
+    if(button->outline){
+        gfx_SetColor(COLOR_HUD_OUTLINES);
+        gfx_Rectangle(  button->x, 
+                        button->y, 
+                        button->width, 
+                        button->height);
+    }
+    
     if(status)
         gfx_SetTextFGColor(COLOR_YELLOW);
     else
@@ -120,7 +128,7 @@ int widget_ButtonShow(WidgetButton *button, bool status, bool click){
                         button->x + (button->width - strlen(button->text) * TEXT_HEIGHT)/2,
                         button->y + (button->height - TEXT_HEIGHT) / 2);
     if(click && button->action)
-        (*button->action)(button->action1, button->action2);
+        (*button->action)(button->actionData);
     return 0;
 }
 
@@ -130,8 +138,12 @@ WidgetContainer *widget_WindowContainerAdd(WidgetWindow *window){
     WidgetContainer *container, *tmp;
     assert(window);
     container = calloc(1, sizeof(WidgetContainer));
+
     container->x = window->x;
-    container->y = window->y;
+    if(window->titleString)
+        container->y = window->y + 11;
+    else
+        container->y = window->y;
     container->width = window->width;
     container->height = window->height;
     container->selection = 0;
@@ -158,23 +170,14 @@ static void widget_ContainerShow(   WidgetContainer *widgetNode,
     int index = 0;
     assert(widgetNode);
     button = widgetNode->begin;
-    gfx_SetColor(COLOR_HUD_OUTLINES);
-    gfx_Rectangle(  widgetNode->x, 
-                    widgetNode->y, 
-                    widgetNode->width, 
-                    widgetNode->height);
-    dbg_printf("%d ", *key);
-    dbg_printf("%d\n", widgetNode->selection);
     switch(*key){
         default:
             break;
         case sk_Down:
             widgetNode->selection++;
-            dbg_printf("%d", widgetNode->selection);
             break;
         case sk_Up:
             widgetNode->selection--;
-            dbg_printf("%d", widgetNode->selection);
             break;
     }
     while(button) {

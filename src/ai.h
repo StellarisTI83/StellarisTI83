@@ -95,6 +95,7 @@ typedef struct RelationsStruct Diplomacy;
 /* entry points ======================================================== */
 
 #include "fleet.h"
+#include "time.h"
 
 // Empire list
 EmpireList* empire_ListCreate();

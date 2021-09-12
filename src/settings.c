@@ -55,3 +55,7 @@ int settings_GameActiveGet(Settings *settings){
     return settings->gameActive;
 }
 
+void settings_GameStop(Settings *settings){
+    settings->gameActive = false;
+}
+

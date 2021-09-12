@@ -4,10 +4,11 @@ typedef struct WidgetWindowStruct WidgetWindow;
 
 
 void widget_ButtonAdd(  WidgetContainer *widgetNode, 
-                        const char *string, 
+                        const char *string,
                         int(*action)(),
-                        void* action1,
-                        void* action2);
+                        void* actionData,
+                        bool outline,
+                        bool justify);
 void widget_ButtonDestroy(WidgetButton *button);
 
 WidgetContainer *widget_WindowContainerAdd(WidgetWindow *window);
