@@ -1,16 +1,23 @@
 # STELLARIS TI remake
-
+[![Make](https://github.com/StellarisTI83/StellarisTI83/actions/workflows/make.yml/badge.svg)](https://github.com/StellarisTI83/StellarisTI83/actions/workflows/make.yml)
 ## Presentation
 
 This is a remake of Stellaris (by _Paradox Development Studio_) for TI-83 Premium CE and TI-84 Plus CE.
 
 The game is actually on a dev stage. It is in French and will soon be in English.
 
-## Getting started
+## Screens
 
-Thes instructions help you to run this program on your machine
+### The main menu
+![Main menu](docs/main_menu.png)
+### Stellar system
+![Stellar system](docs/stellar_system.png)
+### Galactic view
+![Galaxy](docs/galaxy.png)
+### Contact menu
+![Contact menu](docs/contact_menu.png)
 
-### Installing
+## Installing
 
 The game need the toolchain [CeDev](https://github.com/CE-Programming/toolchain) to be make
 

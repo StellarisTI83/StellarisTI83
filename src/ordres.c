@@ -1,20 +1,14 @@
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
-#include <tice.h>
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include <debug.h>
-#include <math.h>
-#include <errno.h>
 
 #include "ordres.h"
 #include "main.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 struct OrdreElement{
 	int ordre;
 	int info1; //numero du module / type de flotte / numero du batiment

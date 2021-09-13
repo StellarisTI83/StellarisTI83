@@ -4,153 +4,229 @@
 #include "generic_lists.h"
 
 /* types =============================================================== */
+/**
+ * @enum Governement
+ * @brief Governements types
+ * 
+ */
+typedef enum {  GOVENEMENT_DEMOCRATIC, 
+                GOVERNEMENT_OLIGARCHIC, 
+                GOVERNEMENT_DICTATORIAL, 
+                GOVERNEMENT_IMPERIAL, 
+                GOVERNEMENT_HIVE_MIND, 
+                GOVERNEMENT_MACHINE_INTELLIGENCE} Governement;
 
 /**
- * Differents gouvernements possibles
+ * @enum Ethic
+ * @brief The ethics for the governements
+ * 
  */
-typedef enum {DEMOCRATIE, OLIGARCHIE, DICTATORIALE, IMPERIALE, RUCHE, MACHINE_INTELLIGENCE} Gouvernement;
+typedef enum {  ETHIC_AUTHORITARIAN, 
+                ETHIC_FANATIC_AUTHORITARIAN, 
+                ETHIC_EGALITARIAN, 
+                ETHIC_FANATIC_EGALITARIAN,
+
+                ETHIC_SPIRITUALIST, 
+                ETHIC_FANATIC_SPIRITUALIST, 
+                ETHIC_MATERIALIST, 
+                ETHIC_FANATIC_MATERIALIST,
+
+                ETHIC_MILITARIST, 
+                ETHIC_FANATIC_MILITARIST, 
+                ETHIC_PACIFIST, 
+                ETHIC_FANATIC_PACIFIST,
+
+                ETHIC_XENOPHILE, 
+                ETHIC_FANATIC_XENOPHILE, 
+                ETHIC_XENOPHOBE, 
+                ETHIC_FANATIC_XENOPHOBE,
+                
+                ETHIC_GESTALT} Ethic;
 
 /**
- * Differents principes (ethics)
+ * @enum Behavior
+ * @brief IA behavior
+ * 
  */
-typedef enum {AUTHORITARIAN, FANATIC_AUTHORITARIAN, EGALITARIAN, FANATIC_EGALITARIAN,
-SPIRITUALIST, FANATIC_SPIRITUALIST, MATERIALIST, FANATIC_MATERIALIST,
-MILITARIST, FANATIC_MILITARIST, PACIFIST, FANATIC_PACIFIST,
-XENOPHILE, FANATIC_XENOPHILE, XONOPHOBE, FANATIC_XENOPHOBE,
-GESTALT} Principe;
+typedef enum {  BEHAVIOR_HOSTILE = -2, 
+                BEHAVIOR_SUSPICIOUS, 
+                BEHAVIOR_NEUTRAL, 
+                BEHAVIOR_CORDIAL, 
+                BEHAVIOR_FRIENDLY, 
+                BEHAVIOR_PROTECTIVE} Behavior;
 
 /**
- * Differentes attitudes
+ * @enum Agreements
+ * @brief Possible agreements
+ * 
  */
-typedef enum {ATTITUDE_HOSTILE = -2, ATTITUDE_SUSPICIOUS, ATTITUDE_NEUTRAL, ATTITUDE_CORDIAL, ATTITUDE_FRIENDLY, ATTITUDE_PROTECTIVE} Attitude;
-
+typedef enum {  AGREEMENT_NON_AGRESSION = 1, 
+                AGREEMENT_RESEARCH      = 2, 
+                AGREEMENT_COMMERCIAL    = 4} Agreements;
 /**
- * Differents pactes
+ * @typedef EmpireList
+ * @brief Base typedef for the list of all empires
+ * 
  */
-typedef enum {PACTE_NON_AGRESSION = 1, PACTE_RECHERCHE = 2, PACTE_COMMERCIAL = 4} Pacte;
-
-typedef GenericList EmpireListe;
+typedef GenericList EmpireList;
 
 /**
  * Opinions
  */
-typedef GenericList RelationsListe;
+typedef GenericList DiplomacyList;
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 /**
- * Empire
+ * @struct Empire
+ * @brief Struct of an empire
+ * 
  */
 typedef struct EmpireStruct Empire;
-/**
- * Relations
- */
-typedef struct RelationsStruct Relations;
 
+/**
+ * Diplomacy
+ */
+typedef struct RelationsStruct Diplomacy;
+
+
+#define NO_EMPIRE -1
 
 /* entry points ======================================================== */
 
-#include "flottes.h"
+#include "fleet.h"
 
-EmpireListe* EmpireListeCreer();
-void EmpireListeSupprimer(EmpireListe*);
-int EmpireArraySize(EmpireListe* empireListe);
-Empire* EmpireNumero(EmpireListe*, int numero);
-Empire* EmpireAjouter(EmpireListe*);
-void EmpireSupprimer(EmpireListe*, int numero);
+// Empire list
+EmpireList* empire_ListCreate();
+void        empire_ListFree(EmpireList* empireList);
+int         empire_ArraySize(const EmpireList* empireList);
 
+// Empire creation and destruction
+Empire*     empire_Get(const EmpireList* empireList, const int numero);
+Empire*     empire_Add(EmpireList* empireList);
+void        empire_Free(EmpireList* empireList, int numero);
 
-void EmpireFlotteCreer(Empire *empire);
-void EmpireFlotteNouvelle(Empire *empire, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses);
-FlotteListe *EmpireFleetGetArray(Empire *empire);
+/**
+ * @brief Generate the structure and the system of an empire
+ * 
+ * @param empire 
+ * @param empireIndex 
+ * @param empireStarSystem 
+ * @param systemIndex 
+ * @param color 
+ */
+void empire_Generate(   Empire *empire, 
+                        const int empireIndex,
+                        StarSystem *empireStarSystem, 
+                        const int systemIndex,
+                        const int color);
 
-void EmpireCreerRelations(Empire *empire);
-void EmpireRelationNouvelle(Empire *empire);
-RelationsListe *EmpireRelationGetArray(Empire *empire);
+// Fleet
+void        empire_FleetListCreate  (Empire *empire);
+FleetList*  empire_FleetListGet     (Empire *empire);
 
-void SetEmpireGouvernement(Empire *empire, Gouvernement gouvernement);
-Gouvernement GetEmpireGouvernement(Empire *empire);
+// Governement
+void        empire_GovernementSet   (Empire *empire, Governement governement);
+Governement empire_GovernementGet   (Empire *empire);
 
-void SetEmpireSystemCapital(Empire *empire, int system);
-int GetEmpireSystemCapital(Empire *empire);
+// Color and system
+void        empire_SystemCapitalSet (Empire *empire, int system);
+int         empire_SystemCapitalGet (Empire *empire);
 
-void SetEmpireColor(Empire *empire, Gouvernement couleur);
-int GetEmpireColor(Empire *empire);
+void        empire_ColorSet         (Empire *empire, Governement couleur);
+int         empire_ColorGet         (Empire *empire);
 
-void SetEmpirePrincipes(Empire *empire, Principe principe1, Principe principe2, Principe principe3);
-Principe GetEmpirePrincipes(Empire *empire, int numero);
+// Ethic
+void        empire_EthicSet     (Empire *empire, Ethic ethic1, Ethic ethic2, Ethic ethic3);
+Ethic       empire_EthicGet     (Empire *empire, int index);
 
-void SetEmpireSpecies(Empire *empire, int espece);
-int GetEmpireSpecies(Empire *empire);
+// Species
+void        empire_SpeciesSet       (Empire *empire, int espece);
+int         empire_SpeciesGet       (Empire *empire);
 
-void SetEmpireClothes(Empire *empire, int clothes);
-int GetEmpireClothes(Empire *empire);
+void        empire_SpeciesClothesSet(Empire *empire, int clothes);
+int         empire_SpeciesClothesGet(Empire *empire);
 
-void SetEmpireName(Empire *empire, int curseur, char lettre);
-char GetEmpireNameChar(Empire *empire, int cursor);
-char* GetEmpireNameString(Empire *empire);
+// Name
+void        empire_NameGenerate     (Empire *empire);
+char*       empire_NameStringGet    (Empire *empire);
 
-void SetEmpireCredit(Empire *empire, int argent);
-void AddEmpireCredit(Empire *empire, int argent);
-int GetEmpireCredit(Empire *empire);
-void SetEmpireCreditChange(Empire *empire, int change);
-void AddEmpireCreditChange(Empire *empire, int change);
-int GetEmpireCreditChange(Empire *empire);
+// Ressources
+void        empire_CreditSet        (Empire *empire, int credits);
+void        empire_CreditAdd        (Empire *empire, int credits);
+int         empire_CreditGet        (Empire *empire);
+void        empire_CreditVariationSet(Empire *empire, int variation);
+void        empire_CreditVariationAdd(Empire *empire, int variation);
+int         empire_CreditVariationGet(Empire *empire);
 
-void SetEmpireMinerals(Empire *empire, int minerais);
-void AddEmpireMinerals(Empire *empire, int minerais);
-int GetEmpireMinerals(Empire *empire);
-void SetEmpireMineralsChange(Empire *empire, int change);
-void AddEmpireMineralsChange(Empire *empire, int change);
-int GetEmpireMineralsChange(Empire *empire);
+void        empire_MineralsSet      (Empire *empire, int minerals);
+void        empire_MineralsAdd      (Empire *empire, int minerals);
+int         empire_MineralsGet      (Empire *empire);
+void        empire_MineralsVariationSet(Empire *empire, int variation);
+void        empire_MineralsVariationAdd(Empire *empire, int variation);
+int         empire_MineralsVariationGet(Empire *empire);
 
-void SetEmpireFood(Empire *empire, int nourriture);
-void AddEmpireFood(Empire *empire, int nourriture);
-int GetEmpireFood(Empire *empire);
-void SetEmpireFoodChange(Empire *empire, int change);
-void AddEmpireFoodChange(Empire *empire, int change);
-int GetEmpireFoodChange(Empire *empire);
+void        empire_FoodSet          (Empire *empire, int foods);
+void        empire_FoodAdd          (Empire *empire, int foods);
+int         empire_FoodGet          (Empire *empire);
+void        empire_FoodVariationSet (Empire *empire, int variation);
+void        empire_FoodVariationAdd (Empire *empire, int variation);
+int         empire_FoodVariationGet (Empire *empire);
 
-void SetEmpireAlloys(Empire *empire, int alloy);
-void AddEmpireAlloys(Empire *empire, int alloy);
-int GetEmpireAlloys(Empire *empire);
-void SetEmpireAlloysChange(Empire *empire, int change);
-void AddEmpireAlloysChange(Empire *empire, int change);
-int GetEmpireAlloysChange(Empire *empire);
+void        empire_AlloysSet        (Empire *empire, int alloy);
+void        empire_AlloysAdd        (Empire *empire, int alloy);
+int         empire_AlloysGet        (Empire *empire);
+void        empire_AlloysVariationSet(Empire *empire, int variation);
+void        empire_AlloysVariationAdd(Empire *empire, int variation);
+int         empire_AlloysVariationGet(Empire *empire);
 
-void SetEmpireConsumerGoods(Empire *empire, int consumerGoods);
-void AddEmpireConsumerGoods(Empire *empire, int consumerGoods);
-int GetEmpireConsumerGoods(Empire *empire);
-void SetEmpireConsumerGoodsChange(Empire *empire, int change);
-void AddEmpireConsumerGoodsChange(Empire *empire, int change);
-int GetEmpireConsumerGoodsChange(Empire *empire);
+void        empire_ConsumerSet      (Empire *empire, int consumerGoods);
+void        empire_ConsumerAdd      (Empire *empire, int consumerGoods);
+int         empire_ConsumerGet      (Empire *empire);
+void        empire_ConsumerVariationSet(Empire *empire, int variation);
+void        empire_ConsumerVariationAdd(Empire *empire, int variation);
+int         empire_ConsumerVariationGet(Empire *empire);
 
-void EmpireGenerateRandomName(Empire *empire);
+// Power
+void        empire_PowerUpdate      (Empire *empire);
+int         empire_PowerMilitaryGet (Empire *empire);
+int         empire_PowerScienceGet  (Empire *empire);
+int         empire_PowerEconomicGet (Empire *empire);
 
-void CalculateEmpirePower(Empire *empire);
-int GetEmpirePowerMilitary(Empire *empire);
-int GetEmpirePowerScientific(Empire *empire);
-int GetEmpirePowerEconomic(Empire *empire);
+// Diplomacy
+void        empire_DiplomacyCreate  (Empire *empire);
+void        empire_DiplomacyNew     (Empire *empire);
+DiplomacyList *empire_DiplomacyListGet(Empire *empire);
 
-RelationsListe* RelationListeCreer();
-void RelationAllListeUpdate(EmpireListe* empireListe);
-void RelationListeUpdate(RelationsListe* relationsListe, EmpireListe* empireListe);
-void RelationListeSupprimer(RelationsListe* relationsListe);
-int RelationArraySize(RelationsListe* relationsListe);
-Relations* RelationNumero(RelationsListe* relationsListe, int numero);
-Relations* RelationAjouter(RelationsListe* relationsListe);
-void RelationSupprimer(RelationsListe* relationsListe, int numero);
+DiplomacyList* diplomacy_ListCreate ();
+void        diplomacy_AllUpdate     (EmpireList* empireListe);
+void        diplomacy_Update        (DiplomacyList* relationsListe, EmpireList* empireListe);
+void        diplomacy_ListFree      (DiplomacyList* relationsListe);
+int         diplomacy_ArraySize     (DiplomacyList* relationsListe);
 
-int RelationGetOpinion(Relations* relations);
-Attitude RelationGetAttitude(Relations* relations);
+Diplomacy*  diplomacy_RelationsGet  (DiplomacyList* relationsListe, int numero);
+Diplomacy*  diplomacy_RelationsAdd  (DiplomacyList* relationsListe);
+void        diplomacy_RelationsFree (DiplomacyList* relationsListe, int numero);
 
-void RelationAmeliorer(Relations* relations);
-void RelationDegrader(Relations* relations);
-void RelationGuerreDeclarer(Relations* relations);
-void RelationInsulter(Relations* relations);
-void RelationSetPacte(Relations* relations, Pacte pacte);
-Pacte RelationGetPacteStatus(Relations* relations, Pacte pacte);
+int         diplomacy_OpinionGet    (Diplomacy* relations);
+Behavior    diplomacy_AttitudeGet   (Diplomacy* relations);
 
-void EmpireAI(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date);
+void        diplomacy_RelationsUpgrade  (Diplomacy* relations);
+void        diplomacy_RelationDowngrade (Diplomacy* relations);
+void        diplomacy_WarDeclare    (Diplomacy* relations);
+void        diplomacy_Insult        (Diplomacy* relations);
+void        diplomacy_AgreementSign     (Diplomacy* relations, Agreements pacte);
+Agreements  diplomacy_AgreementStatus   (Diplomacy* relations, Agreements pacte);
+
+/**
+ * @brief Function to update the actions that the AI make
+ * 
+ * @param empireListe 
+ * @param systemeStellaires 
+ * @param date 
+ */
+void        ai_Empire   (EmpireList *empireListe, 
+                        StarSystem **systemeStellaires, 
+                        Time *date);
 
 #endif

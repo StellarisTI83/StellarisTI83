@@ -3,17 +3,55 @@
 
 #include "ai.h"
 #include "camera.h"
-#include "parametres.h"
+#include "settings.h"
 #include "systemes.h"
 
-/* constants =========================================================== */
-#define RAYON_PLANETE1 30
-#define RAYON_PLANETE2 60
-#define RAYON_PLANETE3 90
-#define RAYON_PLANETE4 110
-#define RAYON_PLANETE5 130
+#define GALAXY_WIDTH    11
 
-void CreerEmpires(Parametres *parametres, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Camera *camera);
-int ChargementNouvellePartieGalaxie(SystemeStellaire **systemeStellaires);
+#define SPACE_BETWEEN_STARS     50
+#define RANDOMIZE_COEFFICIENT   100
+
+#define LIMIT_LEFT  180
+#define LIMIT_TOP   160
+
+
+#define STAR_TYPE_B_PROBABILITY         12
+#define STAR_TYPE_A_PROBABILITY         15
+#define STAR_TYPE_F_PROBABILITY         20
+#define STAR_TYPE_G_PROBABILITY         20
+#define STAR_TYPE_K_PROBABILITY         12
+#define STAR_TYPE_M_PROBABILITY         8
+#define STAR_TYPE_BLACKHOLE_PROBABILITY 5
+#define STAR_TYPE_PULSAR_PROBABILITY    3
+#define STAR_TYPE_NEUTRON_PROBABILITY   5
+
+#define STAR_TOTAL_PROBABILITY          STAR_TYPE_B_PROBABILITY + STAR_TYPE_A_PROBABILITY + STAR_TYPE_F_PROBABILITY + STAR_TYPE_G_PROBABILITY + STAR_TYPE_K_PROBABILITY + STAR_TYPE_M_PROBABILITY + STAR_TYPE_BLACKHOLE_PROBABILITY + STAR_TYPE_PULSAR_PROBABILITY + STAR_TYPE_NEUTRON_PROBABILITY 
+
+/* constants =========================================================== */
+#define RADIUS_PLANET1 30
+#define RADIUS_PLANET2 60
+#define RADIUS_PLANET3 90
+#define RADIUS_PLANET4 110
+#define RADIUS_PLANET5 130
+
+/**
+ * @brief Function to create all empires
+ * 
+ * @param parametres 
+ * @param empireListe 
+ * @param galaxy 
+ * @param camera 
+ */
+void galaxy_StartEmpiresInitialize( Settings *parametres, 
+                                    EmpireList *empireListe, 
+                                    StarSystem **galaxy, 
+                                    Camera *camera);
+
+/**
+ * @brief Create a new galaxy in the sent aray
+ * 
+ * @param galaxy 
+ */
+void galaxy_CreateNew(StarSystem **galaxy);
 
 #endif

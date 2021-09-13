@@ -24,11 +24,9 @@
 #include "gfx/gfx.h"
 
 #include "main.h"
-#include "boucle.h"
-#include "map.h"
-#include "nouvelle_partie.h"
+#include "loop.h"
 #include "sauvegarde.h"
-#include "flottes.h"
+#include "fleet.h"
 #include "console.h"
 #include "ai.h"
 
@@ -42,7 +40,7 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 	Flotte* flotte = NULL, *flottePrecedente = NULL;
 	Empire* empire = NULL, *empirePrecedent = NULL;
 	gfx_FillScreen(255);
-	PrintCentered("Chargement de la partie..." ,60 ,1 , 0, 0);*/
+	mainMenu_PrintSized("Chargement de la partie..." ,60 ,1 , 0, 0);*/
 	/*ouvrir sauvegarde*
 	ti_CloseAll();
 	sauvegarde = ti_Open("sauv", "r+");
@@ -106,13 +104,13 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 		}
 		i++;
 	}
-	joueur = EmpireNumero(empireListe, 1);
+	joueur = EmpireNumero(empireListe, 0);
 
 	
 
-	PrintCentered(joueur->nom ,90 ,1 , 0, 0);
+	mainMenu_PrintSized(joueur->nom ,90 ,1 , 0, 0);
 	camera->fenetre = MENU_AUCUN;
-	camera->bloque = FALSE;
+	camera->bloque = false;
 	StellarisBoucle(&sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, fenetre, marche);
 	return 0;
 }

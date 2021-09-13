@@ -1,337 +1,250 @@
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <tice.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+/**
+ * @file camera.c
+ * @author Cocheril Dimitri (cochgit.dimitri@gmail.com)
+ * @brief Camera management and movements of the camera and window management
+ * @version 0.1
+ * @date 2021-08-29
+ * 
+ * @copyright GNU General Public License v3.0
+ * 
+ */
 
 #include <debug.h>
-#include <math.h>
-#include <errno.h>
+#include <assert.h>
 
 #include "main.h"
 
 #include "ai.h"
 #include "camera.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 struct CameraStruct{
-	int x;
-	int y;
-	int xSysteme;
-	int ySysteme;
-	int xVector;
-	int yVector;
+    int         x;
+    int         y;
+    int         xSysteme;
+    int         ySysteme;
+    int         xVector;
+    int         yVector;
 
-	char zoom;
-	VueType mapType;
-	int lock;
+    char        zoom;
+    VueType     mapType;
+    int         lock;
 
-	int systemeSelectione; // systeme dans lequel on est
-	int systeme; // systeme que la camera pointe
+    int         systemeSelectione; // systeme dans lequel on est
+    int         systeme; // systeme que la camera pointe
 
-	int selection;
-	int ouverte;
+    int         ouverte;
 
-	int bougerFlotte;
-	int flotte;
-	int empire;
-};
-
-struct FenetreStruct{
-	ClassMenu menu;
-	MenuSystem menuDetails;
-	int selection;
-
-	int planete;
-	int flotteSelectionee;
-
-	char precedente;
-	int scroll;
-
-	Error error;
-	int errorCountDown;
-	int commandPrompt;
-	
-	int nombreDeVaisseaux; // utilisé dans la création de flottes
-	Villes *villes; // utilisé dans le changement de batiment
-	int empire; // utilisé dans les relations
+    int         bougerFlotte;
+    int         flotte;
 };
 
 /* entry points ======================================================== */
-Camera *AllocCamera(){
-	return calloc(1, sizeof(Camera));
+
+Camera *camera_Create(){
+    Camera *camera = calloc(1, sizeof(Camera));
+    if(!camera){
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "Malloc returned NULL when creating camera");
+        #endif
+        assert(camera);
+    }
+    return camera;
 }
 
-void SetCameraX(Camera *camera, int x){
-	camera->x = x;
-	
-	// #ifdef DEBUG_VERSION
-	// 	dbg_sprintf(dbgout, "Set camera x position: %d\n", x);
-	// #endif
-}
-void AddCameraX(Camera *camera, int x){
-	camera->x += x;
-	// #ifdef DEBUG_VERSION
-	// 	dbg_sprintf(dbgout, "Add camera x position: %d\n", x);
-	// #endif
-}
-int GetCameraX(Camera *camera){
-	return camera->x;
-}
-void SetCameraY(Camera *camera, int y){
-	camera->y = y;
-	// #ifdef DEBUG_VERSION
-	// 	dbg_sprintf(dbgout, "Set camera y position: %d\n", y);
-	// #endif
-}
-void AddCameraY(Camera *camera, int y){
-	camera->y += y;
-	// #ifdef DEBUG_VERSION
-	// 	dbg_sprintf(dbgout, "Add camera y position: %d\n", y);
-	// #endif
-}
-int GetCameraY(Camera *camera){
-	return camera->y;
+// Update the camera position
+
+void camera_Update(Camera *camera) {
+    assert(camera);
+    if(camera->xVector){
+        camera->x += camera->xVector;
+        if(camera->xVector > 0) 
+            camera->xVector--;
+        else
+            camera->xVector++;
+    }
+    if(camera->yVector){
+        camera->y += camera->yVector;
+        if(camera->yVector > 0) 
+            camera->yVector--;
+        else
+            camera->yVector++;
+    }
 }
 
-void SetCameraXSystem(Camera *camera, int x){
-	camera->xSysteme = x;
+// Functions to set the x and y positions in map vue
+
+void camera_XSet(Camera *camera, int x){
+    assert(camera);
+    camera->x = x;
+
 }
-void AddCameraXSystem(Camera *camera, int x){
-	camera->xSysteme += x;
+void camera_XAdd(Camera *camera, int x){
+    assert(camera);
+    camera->x += x;
 }
-int GetCameraXSystem(Camera *camera){
-	return camera->xSysteme;
+int camera_XGet(Camera *camera){
+    assert(camera);
+    return camera->x;
 }
-void SetCameraYSystem(Camera *camera, int y){
-	camera->ySysteme = y;
+void camera_YSet(Camera *camera, int y){
+    assert(camera);
+    camera->y = y;
 }
-void AddCameraYSystem(Camera *camera, int y){
-	camera->ySysteme += y;
+void camera_YAdd(Camera *camera, int y){
+    assert(camera);
+    camera->y += y;
 }
-int GetCameraYSystem(Camera *camera){
-	return camera->ySysteme;
+int camera_YGet(Camera *camera){
+    assert(camera);
+    return camera->y;
 }
 
-void SetCameraXVector(Camera *camera, int x){
-	camera->xVector = x;
+// Functions to set the x and y positions in system vue
+
+void camera_XSystemSet(Camera *camera, int x){
+    assert(camera);
+    camera->xSysteme = x;
 }
-void AddCameraXVector(Camera *camera, int x){
-	camera->xVector += x;
+void camera_XSystemAdd(Camera *camera, int x){
+    assert(camera);
+    camera->xSysteme += x;
 }
-int GetCameraXVector(Camera *camera){
-	return camera->xVector;
+int camera_XSystemGet(Camera *camera){
+    assert(camera);
+    return camera->xSysteme;
 }
-void SetCameraYVector(Camera *camera, int y){
-	camera->yVector = y;
+void camera_YsystemSet(Camera *camera, int y){
+    assert(camera);
+    camera->ySysteme = y;
 }
-void AddCameraYVector(Camera *camera, int y){
-	camera->yVector += y;
+void camera_YSystemAdd(Camera *camera, int y){
+    assert(camera);
+    camera->ySysteme += y;
 }
-int GetCameraYVector(Camera *camera){
-	return camera->yVector;
+int camera_YSystemGet(Camera *camera){
+    assert(camera);
+    return camera->ySysteme;
 }
 
-void SetCameraZoom(Camera *camera, int zoom){
-	camera->zoom = zoom;
+// Functions to set the x and y vectors
+// they are the same for system and map vue, and are used to make the movements
+// smooth
+
+void camera_XVectorSet(Camera *camera, int x){
+    assert(camera);
+    camera->xVector = x;
 }
-int GetCameraZoom(Camera *camera){
-	return camera->zoom;
+void camera_XVectorAdd(Camera *camera, int x){
+    assert(camera);
+    camera->xVector += x;
+}
+int camera_XVectorGet(Camera *camera){
+    assert(camera);
+    return camera->xVector;
+}
+void camera_YVectorSet(Camera *camera, int y){
+    assert(camera);
+    camera->yVector = y;
+}
+void camera_YVectorAdd(Camera *camera, int y){
+    assert(camera);
+    camera->yVector += y;
+}
+int camera_YVectorGet(Camera *camera){
+    assert(camera);
+    return camera->yVector;
 }
 
-void SetCameraLock(Camera *camera, int lock){
-	camera->lock = lock;
+// Functions about the zoom
+
+void camera_ZoomSet(Camera *camera, int zoom){
+    assert(camera);
+    if(zoom > ZOOM_MAX)
+        return;
+    if(zoom < ZOOM_MIN)
+        return;
+
+    if(zoom < camera->zoom){
+        camera_XSet(camera, camera_XGet(camera) * 0.5);
+        camera_YSet(camera, camera_YGet(camera) * 0.5);
+    } else {
+        camera_XSet(camera, camera_XGet(camera) * 2);
+        camera_YSet(camera, camera_YGet(camera) * 2);
+    }
+    camera->zoom = zoom;
 }
-int GetCameraLockStatus(Camera *camera){
-	return camera->lock;
+int camera_ZoomGet(Camera *camera){
+    assert(camera);
+    return camera->zoom;
 }
 
-void SetCameraMapType(Camera *camera, VueType mapType){
-	camera->mapType = mapType;
+// Functions to change the vue
+
+void camera_MapTypeSet(Camera *camera, VueType mapType){
+    assert(camera);
+    camera->mapType = mapType;
 }
-VueType GetCameraMapType(Camera *camera){
-	return camera->mapType;
+VueType camera_MapTypeGet(Camera *camera){
+    assert(camera);
+    return camera->mapType;
 }
 
-void SetCameraViewedSystem(Camera *camera, int system){
-	camera->systemeSelectione = system;
+// Functions to lock or unlock moving the camera
+
+void camera_LockSet(Camera *camera, int lock){
+    assert(camera);
+    camera->lock = lock;
 }
-void SetCameraSystem(Camera *camera, int system){
-	camera->systeme = system;
-}
-void SetCameraSystemViewStatus(Camera *camera, int status){
-	switch (status) {
-	case true:
-		camera->mapType = SYSTEME;
-		break;
-	case false:
-		camera->mapType = NORMAL;
-		break;
-	}
-	camera->systemeSelectione = camera->systeme;
-}
-int GetCameraViewedSystem(Camera *camera){
-	return camera->systemeSelectione;
-}
-int GetCameraSystem(Camera *camera){
-	return camera->systeme;
+int camera_LockGet(Camera *camera){
+    assert(camera);
+    return camera->lock;
 }
 
-int IsCameraMoveFleet(Camera *camera){
-	return camera->bougerFlotte;
+// Functions to set the aimed system in map vue
+
+void camera_SystemAimedSet(Camera *camera, int system){
+    assert(camera);
+    camera->systemeSelectione = system;
 }
-void SetCameraMoveFleet(Camera *camera, int status){
-	camera->bougerFlotte = status;
+int camera_SystemActualGet(Camera *camera){
+    assert(camera);
+    return camera->systemeSelectione;
 }
 
-void SetCameraSelection(Camera *camera, int selection){
-	camera->selection = selection;
+// Functions to set the viewed system in system vue
+
+void camera_SystemActualSet(Camera *camera, int system){
+    assert(camera);
+    camera->systeme = system;
+    if(camera_SystemAimedGet(camera) != camera_SystemActualGet(camera)){
+        camera_XSystemSet(camera, SYSTEM_MIDDLE_X);
+        camera_YsystemSet(camera, SYSTEM_MIDDLE_Y);
+    }   
 }
-int GetCameraSelection(Camera *camera){
-	return camera->selection;
+int camera_SystemAimedGet(Camera *camera){
+    assert(camera);
+    return camera->systeme;
 }
 
-void SetCameraFleet(Camera *camera, int fleet){
-	camera->flotte = fleet;
+// Function to set and get if the player is actually moving a fleet or not
+
+int camera_FleetMoveGet(Camera *camera){
+    assert(camera);
+    return camera->bougerFlotte;
 }
-int GetCameraFleet(Camera *camera){
-	return camera->flotte;
+void camera_FleetMoveSet(Camera *camera, int status){
+    assert(camera);
+    camera->bougerFlotte = status;
 }
 
-void SetCameraEmpire(Camera *camera, int empire){
-	camera->empire = empire;
-}
-int GetCameraEmpire(Camera *camera){
-	return camera->empire;
-}
+// Functions to set and get the fleet the player is moving a fleet
 
-//fenetre
-Fenetre *AllocFenetre(){
-	return calloc(1, sizeof(Fenetre));
+void camera_FleetSet(Camera *camera, int fleet){
+    assert(camera);
+    camera->flotte = fleet;
 }
-
-void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme){
-	fenetre->menu = classMenu;
-	fenetre->menuDetails = menuSysteme;
-	fenetre->selection = 1;
-	camera->lock = true;
-}
-void CloseMenu(Fenetre *fenetre, Camera *camera){
-	fenetre->menu = MENU_AUCUN;
-	fenetre->menuDetails = MENU_SYSTEME_AUCUN;
-	camera->lock = false;
-}
-ClassMenu GetOpenedMenuClass(Fenetre *fenetre){
-	return fenetre->menu;
-}
-MenuSystem GetOpenedMenuDetails(Fenetre *fenetre){
-	return fenetre->menuDetails;
-}
-
-void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date){
-	fenetre->commandPrompt = true;
-	camera->lock = true;
-	PauseGame(date);
-}
-void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date){
-	fenetre->commandPrompt = false;
-	camera->lock = false;
-	UnpauseGame(date);
-}
-int GetCommandPromptStatus(Fenetre *fenetre){
-	return fenetre->commandPrompt;
-}
-
-void SetWindowPlanet(Fenetre *fenetre, int planete){
-	fenetre->planete = planete;
-}
-int GetWindowPlanet(Fenetre *fenetre){
-	return fenetre->planete;
-}
-
-void SetWindowSelection(Fenetre *fenetre, int selection){
-	fenetre->selection = selection;
-}
-int GetWindowSelection(Fenetre *fenetre){
-	return fenetre->selection;
-}
-void IncrementWindowSelection(Fenetre *fenetre){
-	fenetre->selection++;
-}
-void UnincrementWindowSelection(Fenetre *fenetre){
-	fenetre->selection--;
-}
-void AddWindowSelection(Fenetre *fenetre, int number){
-	fenetre->selection += number;
-}
-
-void SetWindowSelectedFleet(Fenetre *fenetre, int fleet){
-	fenetre->flotteSelectionee = fleet;
-}
-int GetWindowSelectedFleet(Fenetre *fenetre){
-	return fenetre->flotteSelectionee;
-}
-
-void SetWindowPrevious(Fenetre *fenetre, int previous){
-	fenetre->precedente = previous;
-}
-int GetWindowPrevious(Fenetre *fenetre){
-	return fenetre->precedente;
-}
-
-Error GetWindowError(Fenetre *fenetre){
-	return fenetre->error;
-}
-void SetWindowError(Fenetre *fenetre, Error error){
-	fenetre->error = error;
-}
-int GetWindowErrorCountDown(Fenetre *fenetre){
-	return fenetre->errorCountDown;
-}
-void UnincrementWindowErrorCountdown(Fenetre *fenetre){
-	fenetre->errorCountDown--;
-}
-void SetWindowErrorCountdown(Fenetre *fenetre, int countdown){
-	fenetre->errorCountDown = countdown;
-}
-
-void SetWindowCity(Fenetre *fenetre, Villes *city){
-	fenetre->villes = city;
-}
-Villes *GetWindowCity(Fenetre *fenetre){
-	return fenetre->villes;
-}
-
-void SetWindowEmpire(Fenetre *fenetre, int empire){
-	fenetre->empire = empire;
-}
-int GetWindowEmpire(Fenetre *fenetre){
-	return fenetre->empire;
-}
-
-void SetWindowScroll(Fenetre *fenetre, int scroll){
-	fenetre->scroll = scroll;
-}
-void AddWindowScroll(Fenetre *fenetre, int scroll){
-	fenetre->scroll += scroll;
-}
-int GetWindowScroll(Fenetre *fenetre){
-	return fenetre->scroll;
-}
-
-void SetWindowFleetSize(Fenetre *fenetre, int size){
-	fenetre->nombreDeVaisseaux = size;
-}
-void AddWindowFleetSize(Fenetre *fenetre, int size){
-	fenetre->nombreDeVaisseaux += size;
-}
-int GetWindowFleetSize(Fenetre *fenetre){
-	return fenetre->nombreDeVaisseaux;
-}
-
-void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu){
-	fenetre->menuDetails = menu;
+int camera_FleetGet(Camera *camera){
+    assert(camera);
+    return camera->flotte;
 }

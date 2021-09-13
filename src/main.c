@@ -1,15 +1,21 @@
+/**
+ * @file main.c
+ * @author Cocheril Dimitri (cochgit.dimitri@gmail.com)
+ * @brief The entry point of the game and the main menus
+ * @version 0.1
+ * @date 2021-08-21
+ * 
+ * @copyright GNU General Public License v3.0
+ * 
+ */
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
-#include <tice.h>
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
 #include <math.h>
-#include <errno.h>
 
 #include <graphx.h>
 #include <fileioc.h>
@@ -19,462 +25,533 @@
 
 #include "fonts/Standard.h"
 #include "gfx/gfx.h"
+#include "colors.h"
 
 #include "main.h"
-#include "nouvelle_partie.h"
 #include "ai.h"
-#include "parametres.h"
+#include "settings.h"
 #include "dlc.h"
+#include "new_game.h"
 
 #include "locale/locale.h"
 
-/* structures ========================================================== */
+/* macros ============================================================== */
 
-typedef struct VecteurStationStruct VecteurStation;
+#define MAIN_MENU_LOAD 0
+#define MAIN_MENU_NEW_GAME 1
+#define MAIN_MENU_SETTINGS 2
+#define MAIN_MENU_EXIT 3
 
-struct VecteurStationStruct{
-	int x;
-	int y;
-	double yVector;
-	bool descend;
-}
+#define MAIN_MENU_CHOICE_VERTICAL_GAP 15
+
+/* struct ============================================================== */
+
+/**
+ * @brief The structure used for positioning and moving the station on the 
+ *        main menu screen
+ * 
+ */
+typedef struct {
+    int x;
+    int y;
+    double yVector;
+    bool descend;
+} StationVector;
 
 /* private functions =================================================== */
 
 /**
- * Initialise toutes les variables
- */;
-static void InitializeAll(EmpireListe **empireListe){
-	Empire *joueur = NULL;
-	
-	if(!var_gfx_init()){
-		os_SetCursorPos(1, 1);
-    	os_PutStrFull("Missing var_gfx.8xv");
-		os_SetCursorPos(2, 1);
-    	os_PutStrFull("Plase download it");
-		while(!os_GetCSC());
-
-		exit(EXIT_FAILURE);
-	}
-
-	ti_CloseAll();
-	
-	srandom(rtc_Time());
-	
-	gfx_Begin();
-    gfx_SetDrawBuffer();
-
-	setLanguage(LC_FR);	
-
-	*empireListe = EmpireListeCreer();
-	joueur = EmpireAjouter(*empireListe);
-	EmpireFlotteCreer(EmpireNumero(*empireListe, 1));
-	
-}
-
-static void MenuBackground(){
-    unsigned int i;
-    unsigned int x, y;
-    gfx_sprite_t *tile;
-
-    tile = gfx_MallocSprite(80, 80);
-
-    x = y = i = 0;
-
-    gfx_SetDrawBuffer();
-	gfx_SetColor(1);
-
-    for (; i < 12; i++) {
-        zx7_Decompress(tile, var_gfx_appvar[var_gfx_background_gfx_sprites_backgroundStation_compressed_index + 1 + i]);
-        gfx_Sprite_NoClip(tile, x, y);
-        x += 80;
+ * @brief Draw all the background
+ * 
+ */
+static void mainMenu_DrawBackground(gfx_sprite_t **tile){
+    int tileIndex = 0;
+    int x = 0, y = 0;
+    
+    for (; tileIndex < 12; tileIndex++) {
+        gfx_Sprite_NoClip(tile[tileIndex], x, y);
+        x += background0_tile_width;
         if (x >= LCD_WIDTH) {
-            y += 80;
+            y += background0_tile_height;
             x = 0;
         }
     }
+}
 
+
+/**
+ * @brief Draw the station of the main menu
+ * 
+ * @param stationVector 
+ * @param station 
+ */
+static void mainMenu_DrawStation(StationVector **stationVector, gfx_sprite_t *station){
+    if((*stationVector)->yVector >= M_PI)
+        (*stationVector)->descend = true;
+    else if((*stationVector)->yVector <= -M_PI)
+        (*stationVector)->descend = false;
+
+    if((*stationVector)->descend)
+        (*stationVector)->yVector -= 0.05;
+    else
+        (*stationVector)->yVector += 0.05;
+    
+    (*stationVector)->y = 120 + cos((*stationVector)->yVector) * 5;
+
+    gfx_TransparentSprite_NoClip(station, (*stationVector)->x, (*stationVector)->y);
+}
+
+
+/**
+ * @brief Alloc the station of the main menu
+ * 
+ * @param stationVector 
+ * @param station 
+ */
+static void mainMenu_StationCreate(StationVector **stationVector, gfx_sprite_t **station) {
+    *stationVector = malloc(sizeof(StationVector));
+    (*stationVector)->x = 206;
+    (*stationVector)->y = 120;
+    (*stationVector)->yVector = 0;
+    (*stationVector)->descend = false;
+
+
+    // alloc the place for the station tile
+    *station = gfx_MallocSprite(	backgroundStation_height,
+                                backgroundStation_width);
+                                
+    zx7_Decompress(*station, backgroundStation_compressed);
+}
+
+/**
+ * @brief Free the station of the main menu
+ * 
+ * @param stationVector 
+ */
+static void mainMenu_StationFree(StationVector **stationVector, gfx_sprite_t **station) {
+    free(*station);
+    free(*stationVector);
+}
+
+// FIXME Background don't work
+
+/**
+ * @brief Draw the Main Menu of the game 
+ * 
+ * @return int The choice
+ */
+static int mainMenu_Draw(){
+    gfx_sprite_t *station = NULL;
+    // gfx_sprite_t *tile[12] = {NULL};
+    // gfx_sprite_t *tmp_ptr;
+    int loop = true;
+    char key;
+    StationVector *stationVector = NULL;
+    int selector = 0, yLevel = 100;
+    int index = 0;
+    char string[20];
+
+    // Alloc the place and decompress the background tiles
+    // index = 0;
+    // while(index < 12) {
+    //     tmp_ptr = gfx_MallocSprite( background0_tile_width, 
+    //                                 background0_tile_height);
+    //     zx7_Decompress( tmp_ptr,
+    //                     var_gfx_appvar[var_gfx_background_gfx_sprites_backgroundStation_compressed_index + 1 + index]);
+    //     tile[index] = tmp_ptr;
+    //     index++;
+    // }
+    
+    // Initialize the station
+    mainMenu_StationCreate(&stationVector, &station);
+
+    // set the palette for the main menu
     gfx_SetPalette(background_gfx_pal, sizeof_background_gfx_pal, 0);
-	gfx_BlitBuffer();
+    
+    // Draw the background
+    gfx_SetTransparentColor(COLOR_TRANSPARENT);
+    while(loop) {
+        key = os_GetCSC();
 
-    free(tile);
+        // Draw the station and background
+        // mainMenu_DrawBackground(tile);
+        gfx_ZeroScreen();
+        mainMenu_DrawStation(&stationVector, station);
+        
+        // Print the title of the game
+        mainMenu_PrintSized("Stellaris", 30, 3, COLOR_WHITE, -30);
+        gfx_PrintStringXY("8-bit fan made", 150, 60);
+        gfx_SetTextXY(5, 220);
+        gfx_PrintString(VERSION_GAME);
+        #ifdef DEBUG_VERSION
+        gfx_PrintString(" Debug");
+        #endif
 
+        
+        // Print the choices of the menu
+        yLevel = 100;
+        for(index = 0; index < 4; index++) {
+            if(index == selector) { // If it is selected
+                gfx_SetTextFGColor(COLOR_YELLOW);
+                gfx_SetColor(COLOR_YELLOW);
+            } else {				// If it is not selected
+                gfx_SetTextFGColor(COLOR_WHITE);
+                gfx_SetColor(COLOR_WHITE);
+            }
+            switch(index) {
+                case 0:
+                    strcpy(string, _(lc_load));
+                    break;
+                case 1:
+                    strcpy(string, _(lc_new_game));
+                    break;
+                case 2:
+                    strcpy(string, _(lc_settings));
+                    break;
+                case 3:
+                    strcpy(string, _(lc_exit));
+                    break;
+            }
+            gfx_PrintStringXY(string, 5, yLevel);
+            gfx_HorizLine_NoClip(5, yLevel - 3, strlen(string) * 8);
+            yLevel += MAIN_MENU_CHOICE_VERTICAL_GAP;
+        }
+
+        // Test the keys
+        switch(key) {
+            case sk_Clear:
+                loop = false;
+                break;
+            case sk_Down:
+                selector++;
+                break;
+            case sk_Up:
+                selector--;
+                break;
+            case sk_Enter:
+                return selector;
+                break;
+            default:
+                break;
+        }
+        if(selector > MAIN_MENU_EXIT)
+            selector = MAIN_MENU_LOAD;
+        if(selector < MAIN_MENU_LOAD)
+            selector = MAIN_MENU_EXIT;
+        gfx_SwapDraw();
+    }
+    // index = 0;
+    // while(index < 12) {
+    //     free(tile[index]);
+    //     index++;
+    // }
+    mainMenu_StationFree(&stationVector, &station);
+    return MAIN_MENU_EXIT;
 }
 
-static void RedrawMenuBackground(){
-    unsigned int i;
-    unsigned int x, y;
-    gfx_sprite_t *tile;
 
-    tile = gfx_MallocSprite(80, 80);
+// FIXME Background don't work
 
-    i = 0;
-	x = 160;
-	y = 80;
+/**
+ * @brief 
+ * 
+ * @return int 
+ */
+static int mainMenu_Settings(){
+    gfx_sprite_t *station = NULL;
+    // gfx_sprite_t *tile[12];
+    int loop = true;
+    char key;
+    StationVector *stationVector = NULL;
+    int selector = 0, yLevel = 100;
+    int index = 0;
+    char language = getLanguage();
+    char* languageStr = "Francais";
 
-    for (; i < 2; i++) {
-        zx7_Decompress(tile, var_gfx_appvar[var_gfx_background_gfx_sprites_backgroundStation_compressed_index + 7 + i]);
-        gfx_Sprite_NoClip(tile, x, y);
-        x += 80;
-        if (x >= LCD_WIDTH) {
-            y += 80;
-            x = 0;
+    // alloc the place and decompress the background tiles
+    // for (index = 0; index < 12; index++) {
+    //     tile[index] = gfx_MallocSprite(background0_tile_width, 
+    //                         background0_tile_height);
+    //     zx7_Decompress(	tile[index], 
+    //                     var_gfx_appvar[var_gfx_background_gfx_sprites_backgroundStation_compressed_index + 1 + index]);
+    // }
+
+    // Initialize the station
+    mainMenu_StationCreate(&stationVector, &station);
+
+    while(loop) {
+        key = os_GetCSC();
+
+        // Draw the station and background
+        // mainMenu_DrawBackground(tile);
+        gfx_ZeroScreen();
+        mainMenu_DrawStation(&stationVector, station);
+
+        // Print the version of the game
+        mainMenu_PrintSized(_(lc_settings), 30, 2, COLOR_WHITE, 0);
+        gfx_SetTextXY(5, 220);
+        gfx_PrintString(VERSION_GAME);
+        #ifdef DEBUG_VERSION
+        gfx_PrintString(" Debug");
+        #endif
+
+        switch(language){
+            case LC_FR:
+                languageStr = "Francais";
+                break;
+            case LC_EN:
+                languageStr = "English";
+                break;
         }
+        
+        // Print the left part of the options
+        yLevel = 80;
+        for(index = 0; index < 1; index++) {
+            gfx_SetTextFGColor(COLOR_WHITE);
+            gfx_SetColor(COLOR_WHITE);
+            gfx_SetTextXY(10, yLevel);
+            switch(index) {
+                case 0:
+                    gfx_PrintString("Language");
+                    break;
+            }
+            yLevel += MAIN_MENU_CHOICE_VERTICAL_GAP;
+        }
+        
+        // Print the changing part of the options
+        yLevel = 80;
+        for(index = 0; index < 1; index++) {
+            if(index == selector) { // If it is selected
+                gfx_SetTextFGColor(COLOR_YELLOW);
+                gfx_SetColor(COLOR_YELLOW);
+            } else {				// If it is not selected
+                gfx_SetTextFGColor(COLOR_WHITE);
+                gfx_SetColor(COLOR_WHITE);
+            }
+            switch(index) {
+                case 0:
+                    gfx_PrintStringXY("<", LCD_WIDTH / 2 - TEXT_HEIGHT, yLevel);
+                    gfx_PrintStringXY(">", (LCD_WIDTH / 2) + TEXT_HEIGHT * 10, yLevel);
+                    gfx_PrintStringXY(languageStr, (LCD_WIDTH / 2) + TEXT_HEIGHT * 5 - TEXT_HEIGHT * strlen(languageStr)/2, yLevel);
+                    break;
+            }
+            yLevel += MAIN_MENU_CHOICE_VERTICAL_GAP;
+        }
+
+        // Test the keys
+        switch(key) {
+            case sk_Clear:
+                loop = false;
+                break;
+            case sk_Down:
+                selector++;
+                break;
+            case sk_Up:
+                selector--;
+                break;
+            case sk_Left:
+                language--;
+                break;
+            case sk_Right:
+                language++;
+                break;
+            case sk_Enter:
+                switch(selector){
+                    case 0:
+                        setLanguage(language);
+                        break;
+                    default:
+                        language = LC_EN;
+                        setLanguage(language);
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+        if(selector > 0)
+            selector = 0;
+        if(selector < 0)
+            selector = 0;
+        if(language > LC_EN)
+            language = LC_FR;
+        if(language < LC_FR)
+            language = LC_EN;
+        gfx_SetTextFGColor(COLOR_WHITE);
+        gfx_SetColor(COLOR_WHITE);
+        gfx_SwapDraw();
+    }
+    // for (index = 0; index < 12; index++) {
+    //     free(tile[index]);
+    // }
+    mainMenu_StationFree(&stationVector, &station);
+    return MAIN_MENU_EXIT;
+}
+
+/**
+ * @brief Initialize the 
+ * 
+ * @return int 0 if no error,  
+ */
+static int main_InitializeAll(){
+    if(!var_gfx_init()){
+        os_SetCursorPos(1, 1);
+        os_PutStrFull("Missing var_gfx.8xv");
+        os_SetCursorPos(2, 1);
+        os_PutStrFull("Plase download it");
+        while(!os_GetCSC());
+
+        return true;
     }
 
-    free(tile);
-}
+    ti_CloseAll();
+    
+    srandom(rtc_Time());
+    
+    gfx_Begin();
+    gfx_SetDrawBuffer();
 
-static void MoveStation(VecteurStation *vecteurStation){
-    gfx_sprite_t *station;
-	
-	station = gfx_MallocSprite(35, 25);
+    // Set the palette for the main menu
+    gfx_SetPalette(background_gfx_pal, sizeof_background_gfx_pal, 0);
 
-    zx7_Decompress(station, backgroundStation_compressed);
+    gfx_SetTextBGColor(COLOR_TRANSPARENT);
+    gfx_SetTextFGColor(COLOR_WHITE);
+    gfx_SetColor(COLOR_WHITE);
 
+    gfx_SetFontData(font_logo);
+    gfx_SetMonospaceFont(TEXT_HEIGHT);
 
-	if(vecteurStation->yVector >= M_PI)
-		vecteurStation->descend = true;
-	else if(vecteurStation->yVector <= -M_PI)
-		vecteurStation->descend = false;
+    gfx_SetTextTransparentColor(COLOR_TRANSPARENT);
 
-	if(vecteurStation->descend){
-		vecteurStation->yVector -= 0.05;
-	}
-	else{
-		vecteurStation->yVector += 0.05;
-	}
-	vecteurStation->y = 120 + cos(vecteurStation->yVector) * 5;
-
-    gfx_TransparentSprite_NoClip(station, vecteurStation->x, vecteurStation->y);
-	free(station);
-}
-
-/**
- * Menu des options
- */
-static void Options(){
-	char key = 0, choix = 0, fin = 1;
-	char language = getLanguage();
-	char* languageStr = "Francais";
-	while(fin) {
-		do {
-			gfx_SwapDraw();
-			
-			gfx_FillScreen(0);
-			PrintCentered("Parametres", 20, 3, 0, 0);
-			switch(key){
-				case sk_Down:
-					choix++;
-					break;
-				case sk_Up:
-					choix--;
-					break;
-				case sk_Left:
-					language--;
-					break;
-				case sk_Right:
-					language++;
-					break;
-			}
-			
-			if (choix > 0) {
-				choix = 0;
-			}
-			if (choix < 0) {
-				choix = 0;
-			}
-			
-			if(language > 2){language = 1;}
-			if(language < 1){language = 2;}
-			/*dessiner le choix*/
-			switch(language){
-				case LC_FR:
-					languageStr = "Francais";
-					break;
-				case LC_EN:
-					languageStr = "English";
-					break;
-			}
-			switch (choix)
-			{
-				case 0:
-					PrintCentered("Langue", 70, 2, 4, 0);
-					PrintCentered(languageStr, 100, 2, 4, 0);
-					break;
-			}
-		} while(((key = os_GetCSC()) != sk_Enter) && (key != sk_Clear));
-		
-		switch (key)
-		{
-			case sk_Clear:
-				return;
-				break;
-			case sk_Enter:
-				setLanguage(language);
-				return;
-				break;
-		}
-	}
-	return;
-}
-
-/**
- * Menu principal
- */
-static int MainMenu(EmpireListe *empireListe, Parametres *parametres){
-	char choix = 0, fin = 0, key = 0;
-	int espacement = 0, niveau = 0, index = 0;
-	VecteurStation vecteurStation;
-	char string[20];
-
-	vecteurStation.x = 206;
-	vecteurStation.y = 120;
-	vecteurStation.yVector = 0;
-	vecteurStation.descend = false;
-
-	/*imprimer tout*/
-	
-	gfx_SetMonospaceFont(8);
-	gfx_SetTextBGColor(4);
-	gfx_SetTextFGColor(1);
-	gfx_SetColor(1);
-	MenuBackground();
-	gfx_SetDrawBuffer();
-
-	gfx_SetFontData(font_logo);
-	gfx_SetMonospaceFont(8);
-	gfx_SetTextTransparentColor(2);
-	gfx_SetTextBGColor(2);
-	gfx_SetTransparentColor(2);
-
-	/*faire le choix*/
-	while((key = os_GetCSC()) != sk_Enter) {
-		RedrawMenuBackground();
-		MoveStation(&vecteurStation);
-
-		PrintCentered("Stellaris", 30, 3, 1, -30);
-		gfx_PrintStringXY(VERSION_LOGICIEL, 5, 220);
-		gfx_SetTextXY(LCD_WIDTH - strlen(__DATE__) * 8 - strlen(__TIME__) * 8 - 36, 220);
-		gfx_PrintString(" ");
-		gfx_PrintString(__DATE__);
-		gfx_PrintString(" ");
-		gfx_PrintString(__TIME__);
-		switch(key) {
-			case sk_Down:
-				choix++;
-				break;
-			case sk_Up:
-				choix--;
-				break;
-			case sk_Clear:
-				return fin;
-				break;
-		}
-		// if(!boot_CheckOnPressed()) {
-		// 	return fin;
-		// }
-		if (choix > 3) {choix = 0;}
-		if (choix < 0) {choix = 3;}
-		gfx_SetTextXY(5, 140);
-		niveau = 100;
-		espacement = 15;
-		
-		/*Dessine le menu suivant le choix*/
-		for(index = 0; index < 4; index++) {
-			if(index == choix) {
-				gfx_SetTextFGColor(13);
-				gfx_SetColor(13);
-			}
-			switch(index) {
-				case 0:
-					strcpy(string, _(lc_load));
-					break;
-				case 1:
-					strcpy(string, _(lc_new_game));
-					break;
-				case 2:
-					strcpy(string, _(lc_settings));
-					break;
-				case 3:
-					strcpy(string, _(lc_exit));
-					break;
-			}
-			
-			gfx_PrintStringXY(string, 5, niveau);
-			gfx_HorizLine_NoClip(5, niveau - 3, strlen(string) * 8);
-			gfx_SetTextFGColor(1);
-			gfx_SetColor(1);
-			niveau += espacement;
-		}
-		gfx_SwapDraw();
-	}
-	gfx_ZeroScreen();
-
-	gfx_SetDrawBuffer();
-
-	gfx_SetFontData(font_logo);
-	gfx_SetMonospaceFont(8);
-	gfx_SetTextTransparentColor(2);
-	gfx_SetTextBGColor(2);
-	gfx_SetTransparentColor(2);
-	/*On arrive ici si le joueur clique sur entrée et on vérifie son choix*/
-	switch (choix){
-		case 0:
-			/*
-			if(ChargementAnciennePartie(empireListe)){
-				gfx_FillScreen(255);
-				PrintCentered("Aucune sauvegarde", 96, 2, 0, 0);
-				while(!os_GetCSC());
-				fin = 1;
-			}*/
-			fin = 1;
-			break;
-		case 1:
-			gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
-			fin = NouvellePartieAvertissement(empireListe, parametres);
-			if (fin == 0){
-				/*lancer la nouvelle partie*/
-				ChargementNouvellePartie(empireListe, parametres);
-			}
-			break;
-		case 2:
-			gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
-			Options();
-			fin = 1;
-			break;
-		case 3:
-			fin = 0;
-			break;
-	}
-	return fin;
+    setLanguage(LC_FR);
+    return false;
 }
 
 /* entry points ======================================================== */
 
-/**
- * Imprime un texte centré
- * 
- * \param *str String à imprimer
- * \param Y position y où imprimer
- * \param taille Taille du texte (int)
- * \param color Couleur du texte
- * \param differenceX Décalage en X du texte
- */ 
-void PrintCentered(const char *str, int y, int taille, int color, int differenceX){
+void mainMenu_PrintSized(const char *str, int y, int taille, int color, int xOffset){
     int x, a, i;
     gfx_TempSprite(ch, 8, 8);
-	gfx_SetFontData(font_logo);
 
-	/*fait un "fond vert" au sprite et le rend transparent*/
     gfx_SetTextFGColor(color);
-    gfx_SetTextBGColor(TEXT_BG_COLOR);
-	
-    x = (LCD_WIDTH - strlen(str) * 8 * taille)/2 + differenceX;
-	a = 1;
-	i = 0;
-	
-	/*sort chaque char dans un sprite et le grossit à la taille désirée
-	on peut pas grossir un string sinon
-	police du logo de stellaris*/
+    
+    x = (LCD_WIDTH - strlen(str) * 8 * taille)/2 + xOffset;
+    a = 1;
+    i = 0;
+    
+    // Each character is put in a sprite and then sized
     while (a != 0)
     {
-		ch = gfx_GetSpriteChar(str[i]);
+        ch = gfx_GetSpriteChar(str[i]);
         gfx_ScaledTransparentSprite_NoClip(ch, x, y, taille, taille);
-		a = str[i];
-		x += 8 * taille;
-		i++;
+        a = str[i];
+        x += 8 * taille;
+        i++;
     }
 }
 
-/**
- * Imprime un entier de la bonne longueur suivant sa taille. 
- * Utilise gfx_PrintInt.
- */
-void PrintInt(int nombre){
-	if(nombre < 10){
-		gfx_PrintInt(nombre, 1);
-	}
-	else if(nombre < 100){
-		gfx_PrintInt(nombre, 2);
-	}
-	else if(nombre < 1000){
-		gfx_PrintInt(nombre, 3);
-	}
-	else if(nombre < 10000){
-		gfx_PrintInt(nombre, 4);
-	}
-	else  if(nombre < 100000){
-		gfx_PrintInt(nombre, 5);
-	}
-	else{
-		gfx_PrintInt(nombre, 6);		
-	}
+void mainMenu_PrintInt(int number){
+    if(number < 10){
+        gfx_PrintInt(number, 1);
+    }
+    else if(number < 100){
+        gfx_PrintInt(number, 2);
+    }
+    else if(number < 1000){
+        gfx_PrintInt(number, 3);
+    }
+    else if(number < 10000){
+        gfx_PrintInt(number, 4);
+    }
+    else  if(number < 100000){
+        gfx_PrintInt(number, 5);
+    }
+    else{
+        gfx_PrintInt(number, 6);		
+    }
+}
+
+int mainMenu_IntLen(int number){
+    int i = 1;
+    if(number < 0){
+        number = -number;
+    }
+    while(number >= 1){
+        number /= 10;
+        i++;
+    }
+    return i;
+}
+
+void mainMenu_PrintMultipleLines(char *str) {
+    int init_size = strlen(str);
+    char *string1;
+    char delim[] = " ";
+    int lineSize = 0;
+    int x = gfx_GetTextX();
+
+    char *ptr = NULL;
+
+    string1 = calloc(1, init_size + 1);
+    strcpy(string1, str);
+    ptr = strtok(string1, delim);
+    while(ptr != NULL) {
+        lineSize += strlen(string1) + 1;
+        if (lineSize > 20) {
+            gfx_SetTextXY(x, gfx_GetTextY() + 13);
+            lineSize = 0;
+        }
+        gfx_PrintString(ptr);
+        ptr = strtok(string1, delim);
+    }
+    free(string1);
 }
 
 /**
- * Renvoie la taille du int envoyé (nombre de chiffres)
- */
-int TailleInt(int nombre){
-	int i = 1;
-	if(nombre < 0){
-		nombre = -nombre;
-	}
-	while(nombre >= 1){
-		nombre /= 10;
-		i++;
-	}
-	return i;
-}
-
-void PrintMultipleLines(char str[]) {
-	int init_size = strlen(str);
-	char *string1;
-	char delim[] = " ";
-	int tailleLigne = 0;
-	int x = gfx_GetTextX();
-
-	char *ptr = NULL;
-
-	string1 = malloc(init_size + 1);
-	strcpy(string1, str);
-	ptr = strtok(string1, delim);
-	while(ptr != NULL) {
-		tailleLigne += strlen(string1) + 1;
-		if (tailleLigne > 20) {
-			gfx_SetTextXY(x, gfx_GetTextY() + 13);
-			tailleLigne = 0;
-		}
-		gfx_PrintString(ptr);
-		ptr = strtok(NULL, delim);
-	}
-	free(string1);
-}
-
-/**
- * MAIN
+ * @brief Entry point of the software
+ * 
+ * @return int 
  */
 
 int main(void){
-	char fin = 1;
-	
-	EmpireListe *empireListe = NULL;
-	Parametres *parametres = NULL;
-	#ifdef DEBUG_VERSION
-    	dbg_sprintf(dbgout, "\nStarted Stellaris\n\n");
-	#endif
+    char loop = false;
+    char choice = 0;
+    FleetTemplateListe *fleetTemplateList = NULL;
+    #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "\n*********************");
+        dbg_sprintf(dbgout, "\n* Started Stellaris");
+        dbg_sprintf(dbgout, "\n* %s", VERSION_GAME);
+        dbg_sprintf(dbgout, "\n* Debug activated");
+        dbg_sprintf(dbgout, "\n*********************\n\n");
+    #endif
 
-	dlc_Load("data");
+    fleetTemplateList = dlc_Load("data");
 
-	InitializeAll(&empireListe);
-	while (fin){
-		fin = MainMenu(empireListe, parametres);
-	}
-	
-	gfx_End();
-	#ifdef DEBUG_VERSION
-    	dbg_sprintf(dbgout, "\nClose Stellaris2\n\n");
-	#endif
-	
+    loop = !main_InitializeAll();
+    while(loop){
+        choice = mainMenu_Draw();
+        switch(choice){
+            case MAIN_MENU_LOAD:
+                break;
+            case MAIN_MENU_NEW_GAME:
+                newGame_Start();
+                break;
+            case MAIN_MENU_SETTINGS:
+                loop = mainMenu_Settings();
+                break;
+            case MAIN_MENU_EXIT:
+                loop = false;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    dlc_Unload(fleetTemplateList);
+    gfx_End();
+    #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgout, "\nClose Stellaris\nEXIT SUCCESS\n\n");
+    #endif
+    
     return 0;
 }

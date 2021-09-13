@@ -3,8 +3,8 @@
 
 #include "ai.h"
 #include "camera.h"
-#include "flottes.h"
-#include "parametres.h"
+#include "fleet.h"
+#include "settings.h"
 #include "systemes.h"
 #include "time.h"
 
@@ -13,7 +13,21 @@
 #define RAYON_DE_VUE_SYSTEME 160
 
 /* entry points ======================================================== */
-
-void DrawMap(EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Camera *camera, char *key, Date *date, Fenetre *fenetre, Parametres *parametres);
+/**
+ * @brief Draw the map, galaxy and system view
+ * 
+ * @param key 
+ * @param empireListe 
+ * @param galaxy 
+ * @param camera 
+ * @param window 
+ * @param settings 
+ */
+void map_Draw(	char *key,
+				EmpireList *empireListe, 
+				StarSystem **galaxy, 
+				Camera *camera, 
+				Window *window, 
+				Settings *settings);
 
 #endif

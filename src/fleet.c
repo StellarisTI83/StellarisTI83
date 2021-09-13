@@ -13,8 +13,8 @@
 
 #include "main.h"
 
-#include "nouvelle_partie.h"
-#include "flottes.h"
+#include "ai.h"
+#include "fleet.h"
 #include "pathfinding.h"
 
 static Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2);
@@ -86,90 +86,90 @@ struct FleetTemplateStruct {
 /**
  *Crée une liste de flottes
  */
-FlotteListe* CreerFlotteListe() {
-	return (FlotteListe*)CreateGenericList();
+FleetList* fleet_ListCreate() {
+	return (FleetList*)GenericList_Create();
 }
 
 /**
  *Supprime une liste des flottes
  */
-void SupprimerFlotteListe(FlotteListe* flotteliste) {
-    Flotte *flotte = NULL;
-	int i = 1;
-    flotte = GenericCellGet((GenericList*)flotteliste, i);
+void fleet_ListFree(FleetList* flotteliste) {
+    Fleet *flotte = NULL;
+	int i = 0;
+    flotte = GenericCell_Get((GenericList*)flotteliste, i);
     while(flotte != NULL) {
 		#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgout, "Free fleet %d, ", i);
+		dbg_sprintf(dbgout, ", Free fleet %d", i);
 		#endif
         free(flotte);
 		i++;
-        flotte = GenericCellGet((GenericList*)flotteliste, i);
+        flotte = GenericCell_Get((GenericList*)flotteliste, i);
     }
 	#ifdef DEBUG_VERSION
 	dbg_sprintf(dbgout, "\n");
 	#endif
-	FreeGenericList((GenericList*)flotteliste);
+	GenericList_Free((GenericList*)flotteliste);
 }
 
 /**
  * Renvoi nombre de flottes
  */
-int FleetArraySize(FlotteListe* flotteListe){
-	return GenericListArraySize((GenericList*)flotteListe);
+int FleetArraySize(const FleetList* flotteListe){
+	return GenericList_ArraySize((GenericList*)flotteListe);
 }
 
 /**
  *Renvoi un pointeur vers la flotte numero x, commence à 1
  */
-Flotte* FlotteNumero(FlotteListe* flotteliste, int numero) {
-	return GenericCellGet((GenericList*)flotteliste, numero);
+Fleet* FlotteNumero(const FleetList* flotteliste, const int numero) {
+	return GenericCell_Get((GenericList*)flotteliste, numero);
 }
 
 /**
  *Renvoi le numéro de la flotte suivant son pointeur
  */
-int RecupererFlotteNumero(FlotteListe* flotteliste, Flotte* flotte) {
-	return GenericCellGetNumber((GenericList*)flotteliste, flotte);
+int RecupererFlotteNumero(const FleetList* flotteliste, const Fleet* flotte) {
+	return GenericCell_GetNumber((GenericList*)flotteliste, flotte);
 }
 
 /**
  *Rajoute une flotte à la liste des flotte envoyée
  */
-Flotte* AjouterFlotte(FlotteListe* flotteliste) {
-	Flotte *pointeur = NULL;
-	pointeur = calloc(1, sizeof(Flotte));
+Fleet* AjouterFlotte(FleetList* flotteliste) {
+	Fleet *pointeur = NULL;
+	pointeur = calloc(1, sizeof(Fleet));
 	if(!pointeur){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when creating fleet");
 		#endif
 		exit(EXIT_FAILURE);
 	}
-	GenericCellAdd((GenericList*)flotteliste, pointeur);
+	GenericCell_Add((GenericList*)flotteliste, pointeur);
 	return pointeur;
 }
 
 /**
  *Supprime la flotte numero x à la liste de flottes envoyée
  */
-void SupprimerFlotte(FlotteListe* flotteliste, int numero) {
+void SupprimerFlotte(FleetList* flotteliste, int numero) {
 	#ifdef DEBUG_VERSION
 	dbg_sprintf(dbgout, "Free fleet %d\n", numero);
 	#endif
-	free(GenericCellGet((GenericList*)flotteliste, numero));
-	FreeGenericCell((GenericList*)flotteliste, numero);
+	free(GenericCell_Get((GenericList*)flotteliste, numero));
+	GenericCell_Free((GenericList*)flotteliste, numero);
 }
 
 /**
  *Crée une nouvelle flotte
  */
-Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
-	Flotte* flotte = NULL;
+Fleet* fleet_New(FleetList *flotteListe, int systeme, FlotteType type, int nombreDeCorvettes, int nombreDeDestroyers, int nombreDeCroiseurs, int nombreDeCuirasses){
+	Fleet* flotte = NULL;
 	flotte = AjouterFlotte(flotteListe);
-	memset(flotte, 0, sizeof(Flotte));
+	memset(flotte, 0, sizeof(Fleet));
 
 	flotte->systeme = systeme;
-	flotte->x = X_CENTRE_SYSTEME - 10;
-	flotte->y = Y_CENTRE_SYSTEME + 10;
+	flotte->x = SYSTEM_SPECIAL_X - 10;
+	flotte->y = SYSTEM_SPECIAL_Y + 10;
 	memset(&flotte->vecteur, 0, sizeof(Vecteur));
 	flotte->action = FLOTTE_AUCUNE_ACTION;
 	flotte->avancementTrajet = 0;
@@ -245,13 +245,13 @@ Flotte* NouvelleFlotte(FlotteListe *flotteListe, int systeme, FlotteType type, i
 	return flotte;
 }
 
-int CalculateFleetPower(FlotteListe *flotteListe){
-	Flotte *flotte = NULL;
-	int compteur = 1;
+int CalculateFleetPower(FleetList *flotteListe){
+	Fleet *flotte = NULL;
+	int compteur = 0;
 	int arraySize = FleetArraySize(flotteListe);
 	int puissance = 0;
 	while(compteur < arraySize){
-		flotte = GenericCellGet((GenericList*)flotteListe, compteur);
+		flotte = GenericCell_Get((GenericList*)flotteListe, compteur);
 		compteur++;
 		puissance += flotte->puissance;
 	}
@@ -261,14 +261,14 @@ int CalculateFleetPower(FlotteListe *flotteListe){
 /**
  * Get the system of the designated flotte
  */
-int GetFleetSystem(Flotte *flotte){
+int GetFleetSystem(Fleet *flotte){
 	return flotte->systeme;
 }
 
 /**
  * Get the path of the designated flotte
  */
-int GetFleetPath(Flotte *flotte, int index){
+int GetFleetPath(Fleet *flotte, int index){
 	if(index < 50)
 		return flotte->chemin[index];
 	else
@@ -278,96 +278,96 @@ int GetFleetPath(Flotte *flotte, int index){
 /**
  * Get the type of the designated flotte
  */
-FlotteType GetFleetType(Flotte *flotte){
+FlotteType GetFleetType(Fleet *flotte){
 	return flotte->type;
 }
 
 /**
  * Get the power of the designated flotte
  */
-int GetFleetPower(Flotte *flotte){
+int GetFleetPower(Fleet *flotte){
 	return flotte->puissance;
 }
 
 /**
  * Get the progress of the designated flotte
  */
-int GetFleetPathProgress(Flotte *flotte){
+int GetFleetPathProgress(Fleet *flotte){
 	return flotte->avancementTrajet;
 }
-void IncrementFleetPathProgress(Flotte *flotte){
+void IncrementFleetPathProgress(Fleet *flotte){
 	flotte->avancementTrajet++;
 }
-void SetFleetPathProgress(Flotte *flotte, int progress){
+void SetFleetPathProgress(Fleet *flotte, int progress){
 	flotte->avancementTrajet = progress;
 }
 
-int GetFleetProgress(Flotte *flotte){
+int GetFleetProgress(Fleet *flotte){
 	return flotte->avancement;
 }
-void IncrementFleetProgress(Flotte *flotte){
+void IncrementFleetProgress(Fleet *flotte){
 	flotte->avancement++;
 }
-void SetFleetProgress(Flotte *flotte, int progress){
+void SetFleetProgress(Fleet *flotte, int progress){
 	flotte->avancement = progress;
 }
 
-int GetFleetX(Flotte *flotte){
+int GetFleetX(Fleet *flotte){
 	return flotte->x;
 }
-int GetFleetY(Flotte *flotte){
+int GetFleetY(Fleet *flotte){
 	return flotte->y;
 }
-int GetFleetXVector(Flotte *flotte){
+int GetFleetXVector(Fleet *flotte){
 	return flotte->vecteur.xVecteur;
 }
-int GetFleetYVector(Flotte *flotte){
+int GetFleetYVector(Fleet *flotte){
 	return flotte->vecteur.yVecteur;
 }
 
-int GetFleetHullPourcent(Flotte *flotte){
+int GetFleetHullPourcent(Fleet *flotte){
 	return (flotte->coqueVie * 100) / flotte->coqueTotal;
 }
-int GetFleetArmorPourcent(Flotte *flotte){
+int GetFleetArmorPourcent(Fleet *flotte){
 	return (flotte->blindageVie * 100) / flotte->blindageTotal;
 }
-int GetFleetShieldPourcent(Flotte *flotte){
+int GetFleetShieldPourcent(Fleet *flotte){
 	return (flotte->bouclierVie * 100) / flotte->bouclierTotal;
 }
 
-int GetFleetCorvetteNumber(Flotte *flotte){
+int GetFleetCorvetteNumber(Fleet *flotte){
 	return flotte->nombreDeCorvette;
 }
-int GetFleetDestroyerNumber(Flotte *flotte){
+int GetFleetDestroyerNumber(Fleet *flotte){
 	return flotte->nombreDeDestroyer;
 }
-int GetFleetCruiserNumber(Flotte *flotte){
+int GetFleetCruiserNumber(Fleet *flotte){
 	return flotte->nombreDeCroiseur;
 }
-int GetFleetBattleshipNumber(Flotte *flotte){
+int GetFleetBattleshipNumber(Fleet *flotte){
 	return flotte->nombreDeCuirasse;
 }
 
-char GetFleetAction(Flotte *flotte){
+char GetFleetAction(Fleet *flotte){
 	return flotte->action;
 }
-void SetFleetAction(Flotte *flotte, char action){
+void SetFleetAction(Fleet *flotte, char action){
 	flotte->action = action;
 }
-int GetFleetArriveSystem(Flotte *flotte){
+int GetFleetArriveSystem(Fleet *flotte){
 	return flotte->systemeArrive;
 }
 
 /**
  *Donne l'ordre de faire bouger la flotte numero x
  */
-void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *fenetre, Camera *camera, EmpireListe *empireListe, SystemeStellaire **systemeStellaires){
+void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *fenetre, Camera *camera, EmpireList *empireListe, StarSystem **systemeStellaires){
 	Empire* empire;
-	Flotte* flotte;
+	Fleet* flotte;
 	int error;
 
-	empire = EmpireNumero(empireListe, numeroDeEmpire);
-	flotte = FlotteNumero(EmpireFleetGetArray(empire), numeroDeFlotte);
+	empire = empire_Get(empireListe, numeroDeEmpire);
+	flotte = FlotteNumero(empire_FleetListGet(empire), numeroDeFlotte);
 	if(flotte == NULL) {
 		#ifdef DEBUG_VERSION
 			dbg_sprintf(dbgerr, "Error fleet pointer NULL in function 'BougerFlotte'");
@@ -375,26 +375,24 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 		return;
 	}
 	
-	if(IsCameraMoveFleet(camera) == false){
-		SetCameraMoveFleet(camera, true);
-		SetCameraLock(camera, false);
-		SetCameraMapType(camera, NORMAL);
-		CloseMenu(fenetre, camera);
-		SetCameraEmpire(camera, numeroDeEmpire);
-		SetCameraFleet(camera, numeroDeFlotte);
+	if(camera_FleetMoveGet(camera) == false){
+		camera_FleetMoveSet(camera, true);
+		camera_LockSet(camera, false);
+		camera_MapTypeSet(camera, VUE_GALACTIC);
+		menu_Close(fenetre, camera);
+		camera_FleetSet(camera, numeroDeFlotte);
 	} else {
 		if(systeme == flotte->systeme){
-			SetCameraMoveFleet(camera, false);
+			camera_FleetMoveSet(camera, false);
 			flotte->action = FLOTTE_AUCUNE_ACTION;
-		} else if(((flotte->type == FLOTTE_SCIENTIFIQUE) && (GetSystemIntelLevel(systemeStellaires[systeme]) == INCONNU)) || (GetSystemIntelLevel(systemeStellaires[systeme]) != INCONNU)){
-			SetCameraMoveFleet(camera, false);
+		} else if(((flotte->type == FLOTTE_SCIENTIFIQUE) && (starSystem_IntelLevelGet(systemeStellaires[systeme]) == INTEL_UNKNOWN)) || (starSystem_IntelLevelGet(systemeStellaires[systeme]) != INTEL_UNKNOWN)){
+			camera_FleetMoveSet(camera, false);
 			
-			SetCameraEmpire(camera, 0);
-			SetCameraFleet(camera, 0);
+			camera_FleetSet(camera, 0);
 
-			SetCameraMapType(camera, SYSTEME);
-			SetCameraX(camera, GetSystemX(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
-			SetCameraY(camera, GetSystemY(systemeStellaires[(int)flotte->systeme]) * GetCameraZoom(camera));
+			camera_MapTypeSet(camera, VUE_SYSTEM);
+			camera_XSet(camera, starSystem_XGet(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
+			camera_YSet(camera, starSystem_YGet(systemeStellaires[(int)flotte->systeme]) * camera_ZoomGet(camera));
 			
 			error = MoveFleet(flotte, systeme, systemeStellaires);
 			
@@ -412,11 +410,11 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Fenetre *
 	}
 }
 
-int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires){
+int MoveFleet(Fleet *flotte, int systeme, StarSystem **systemeStellaires){
 	int error = 0;
 	int index = 0;
 
-	if(flotte == NULL){
+	if(!flotte){
 		#ifdef DEBUG_VERSION
 			dbg_sprintf(dbgerr, "Error fleet pointer NULL in function 'MoveFleet'");
 		#endif
@@ -428,8 +426,8 @@ int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires)
 	flotte->avancementTrajet = 1;
 	flotte->action = FLOTTE_BOUGER;
 	error = PathFinding(systemeStellaires, flotte->chemin, flotte->systeme, systeme, sizeof(flotte->chemin)/sizeof(flotte->chemin[0]));
-	flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, GetHyperlaneX(systemeStellaires[(int)flotte->systeme], index), GetHyperlaneY(systemeStellaires[(int)flotte->systeme], index));
-	while((index < 4) && (GetHyperlaneDestination(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
+	flotte->vecteur = CaclulerVecteur(flotte->x,  flotte->y, hyperlane_XGet(systemeStellaires[(int)flotte->systeme], index), hyperlane_YGet(systemeStellaires[(int)flotte->systeme], index));
+	while((index < 4) && (hyperlane_DestinationGet(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
 		index++;
 	}
 	return error;
@@ -438,20 +436,20 @@ int MoveFleet(Flotte *flotte, int systeme, SystemeStellaire **systemeStellaires)
 /**
  * Fait effectuer les action des flottes
  */
-void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **systemeStellaires){
+void fleet_ActionsUpdate(StarSystem **systemeStellaires, EmpireList* empireListe){
 	Empire* empire = NULL; 
-	Flotte* flotte = NULL;
-	int index = 0, numeroEmpire = 1;
-	int fleetSize = 1;
-	int fleetIndex = 1;
-	int empireSize = 1;
-	empire = EmpireNumero(empireListe, 1);
-	empireSize = EmpireArraySize(empireListe);
-	while(numeroEmpire <= empireSize){
-		flotte = FlotteNumero(EmpireFleetGetArray(empire), 1);
-		fleetIndex = 1;
-		fleetSize = FleetArraySize(EmpireFleetGetArray(empire));
-		while(fleetIndex <= fleetSize){
+	Fleet* flotte = NULL;
+	int index = 0, numeroEmpire = 0;
+	int fleetSize;
+	int fleetIndex;
+	int empireSize;
+	empire = empire_Get(empireListe, 0);
+	empireSize = empire_ArraySize(empireListe);
+	while(numeroEmpire < empireSize){
+		flotte = FlotteNumero(empire_FleetListGet(empire), 0);
+		fleetIndex = 0;
+		fleetSize = FleetArraySize(empire_FleetListGet(empire));
+		while(fleetIndex < fleetSize){
 			
 			//bouger la flotte
 			if(flotte->action != FLOTTE_AUCUNE_ACTION) {
@@ -459,49 +457,49 @@ void EffectuerActionsFlottes(EmpireListe* empireListe, SystemeStellaire **system
 				flotte->y += flotte->vecteur.yVecteur;
 
 				if(flotte->systeme == flotte->systemeArrive) {
-					flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, X_CENTRE_SYSTEME, Y_CENTRE_SYSTEME);
+					flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, SYSTEM_SPECIAL_X, SYSTEM_SPECIAL_Y);
 					flotte->avancement = 0;
-					if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) < pow((double)10, 2.0)) {
+					if(pow((double)(flotte->x - SYSTEM_SPECIAL_X), 2.0) + pow((double)(flotte->y - SYSTEM_SPECIAL_Y), 2.0) < pow((double)10, 2.0)) {
 						//arrivé au centre du systeme
 						if(flotte->action == FLOTTE_CONSTRUIRE_BASE) {
-							SetStationLevel(GetSystemStation(systemeStellaires[(int)flotte->systeme]), AVANT_POSTE);
-							SetSystemEmpire(systemeStellaires[(int)flotte->systeme], numeroEmpire);
+							station_LevelSet(starSystem_StationGet(systemeStellaires[(int)flotte->systeme]), STATION_OUTPOST);
+							starSystem_EmpireSet(systemeStellaires[(int)flotte->systeme], numeroEmpire);
 						}
 						flotte->action = FLOTTE_AUCUNE_ACTION;
 					}
 				}
 
 				//calculer si la flotte sort du systeme
-				if(pow((double)(flotte->x - X_CENTRE_SYSTEME), 2.0) + pow((double)(flotte->y - Y_CENTRE_SYSTEME), 2.0) > pow((double)RAYON_DE_VUE_SYSTEME, 2.0)) {
+				if(pow((double)(flotte->x - SYSTEM_SPECIAL_X), 2.0) + pow((double)(flotte->y - SYSTEM_SPECIAL_Y), 2.0) > pow((double)SYSTEM_VIEW_RADIUS, 2.0)) {
 					if(flotte->avancement >= 1){
 
 						index = 0;
-						while((index < 4) && (GetHyperlaneDestination(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index) != flotte->systeme)){
+						while((index < 4) && (hyperlane_DestinationGet(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index) != flotte->systeme)){
 							index++;
 						}
 						
-						flotte->x = GetHyperlaneX(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index);
-						flotte->y = GetHyperlaneY(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index);
+						flotte->x = hyperlane_XGet(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index);
+						flotte->y = hyperlane_YGet(systemeStellaires[flotte->chemin[(int)flotte->avancementTrajet]], index);
 
 						flotte->avancement = 0;
 						flotte->systeme = flotte->chemin[(int)flotte->avancementTrajet];
 						flotte->avancementTrajet++;
 
 						index = 0;
-						while((index < 4) && (GetHyperlaneDestination(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
+						while((index < 4) && (hyperlane_DestinationGet(systemeStellaires[(int)flotte->systeme], index) != flotte->chemin[(int)flotte->avancementTrajet])){
 							index++;
 						}
-						flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, GetHyperlaneX(systemeStellaires[(int)flotte->systeme], index), GetHyperlaneY(systemeStellaires[(int)flotte->systeme], index));
+						flotte->vecteur = CaclulerVecteur(flotte->x, flotte->y, hyperlane_XGet(systemeStellaires[(int)flotte->systeme], index), hyperlane_YGet(systemeStellaires[(int)flotte->systeme], index));
 					} else {
 						flotte->avancement = 1;
 					}
 				}
 			}
 			fleetIndex++;
-			flotte = FlotteNumero(EmpireFleetGetArray(empire), fleetIndex);
+			flotte = FlotteNumero(empire_FleetListGet(empire), fleetIndex);
 		}
 		numeroEmpire++;
-		empire = EmpireNumero(empireListe, numeroEmpire);
+		empire = empire_Get(empireListe, numeroEmpire);
 	}
 }
 
@@ -527,7 +525,7 @@ Vecteur CaclulerVecteur(double x1, double y1, double x2, double y2){
  *Crée une liste de templates de flottes
  */
 FleetTemplateListe* fleet_TemplateListCreate() {
-	return (FlotteListe*)CreateGenericList();
+	return (FleetList*)GenericList_Create();
 }
 
 /**
@@ -536,27 +534,27 @@ FleetTemplateListe* fleet_TemplateListCreate() {
 void fleet_TemplateListFree(FleetTemplateListe* flotteliste) {
 	FleetTemplate *fleetTemplate = NULL;
 	int i = 0;
-    fleetTemplate = GenericCellGet((GenericList*)flotteliste, i);
+    fleetTemplate = GenericCell_Get((GenericList*)flotteliste, i);
     while(fleetTemplate != NULL) {
         free(fleetTemplate);
 		i++;
-        fleetTemplate = GenericCellGet((GenericList*)flotteliste, i);
+        fleetTemplate = GenericCell_Get((GenericList*)flotteliste, i);
     }
-	FreeGenericList((GenericList*)flotteliste);
+	GenericList_Free((GenericList*)flotteliste);
 }
 
 /**
  * Renvoi nombre de templates de flottes
  */
 int fleet_TemplateListSize(FleetTemplateListe* flotteListe){
-	return GenericListArraySize((GenericList*)flotteListe);
+	return GenericList_ArraySize((GenericList*)flotteListe);
 }
 
 /**
  * Renvoi un pointeur vers le template flotte numero x, commence à 1
  */
 FleetTemplate* fleet_TemplateGet(FleetTemplateListe* flotteliste, int numero) {
-	return GenericCellGet((GenericList*)flotteliste, numero);
+	return GenericCell_Get((GenericList*)flotteliste, numero);
 }
 
 /**
@@ -571,7 +569,7 @@ FleetTemplate* fleet_TemplateAdd(FleetTemplateListe* flotteliste) {
 		#endif
 		exit(EXIT_FAILURE);
 	}
-	GenericCellAdd((GenericList*)flotteliste, pointeur);
+	GenericCell_Add((GenericList*)flotteliste, pointeur);
 	return pointeur;
 }
 
@@ -579,8 +577,8 @@ FleetTemplate* fleet_TemplateAdd(FleetTemplateListe* flotteliste) {
  * Supprime le template de flotte numero x à la liste de templates de flottes envoyée
  */
 void fleet_TemplateDestroy(FleetTemplateListe* flotteliste, int numero) {
-	free(GenericCellGet((GenericList*)flotteliste, numero));
-	FreeGenericCell((GenericList*)flotteliste, numero);
+	free(GenericCell_Get((GenericList*)flotteliste, numero));
+	GenericCell_Free((GenericList*)flotteliste, numero);
 }
 
 /**

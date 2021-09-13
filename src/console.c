@@ -18,11 +18,10 @@
 #include "gfx/gfx.h"
 
 #include "main.h"
-#include "boucle.h"
+#include "loop.h"
 #include "map.h"
-#include "nouvelle_partie.h"
 #include "sauvegarde.h"
-#include "flottes.h"
+#include "fleet.h"
 #include "updating.h"
 #include "console.h"
 
@@ -46,7 +45,7 @@ Console console;
 
 // static void FermerConsole();
 static void NouvelleLigneConsole(char *commande, char *reponse);
-static void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Parametres *parametres);
+static void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Settings *parametres);
 
 void EcrireConsoleString(char *chaine){
 	NouvelleLigneConsole("", chaine);
@@ -58,7 +57,7 @@ void EcrireConsoleInt(int nombre){
 	NouvelleLigneConsole("", chaine);
 }
 
-void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Camera *camera, Date *date, Parametres *parametres){
+void AfficherConsole(char *key, Window *fenetre, EmpireList *empireListe, Camera *camera, Time *date, Settings *parametres){
 	int largeur = 200, hauteur = 10;
 	Ligne *ligneDeCommande = NULL;
 	char character = '.';
@@ -170,7 +169,7 @@ void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Came
 					character = ' ';
 					break;
 				case sk_2nd:
-					CloseCommandPrompt(fenetre, camera, date);
+					window_CommandPromptClose(fenetre, camera, date);
 					break;
 				case sk_Alpha:
 					console.nombreActive = true;
@@ -216,7 +215,7 @@ void AfficherConsole(char *key, Fenetre *fenetre, EmpireListe *empireListe, Came
 					console.nombreActive = false;
 					break;
 				case sk_2nd:
-					CloseCommandPrompt(fenetre, camera, date);
+					window_CommandPromptClose(fenetre, camera, date);
 					break;
 			}
 		}
@@ -269,7 +268,7 @@ void NouvelleLigneConsole(char *commande, char *reponse){
 // 	console.premiereLigne = NULL;
 // }
 
-void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Parametres *parametres){
+void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Settings *parametres){
 	char *resultat = NULL;
 	char *fin = NULL;
 	int nombre = 0;
@@ -292,9 +291,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " cash");
-			AddEmpireCredit(EmpireNumero(empireListe, 1), nombre);
+			empire_CreditAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d cash to empire %d (%p)\n", nombre, 1, EmpireNumero(empireListe, 1));
+				dbg_sprintf(dbgout, "Added %d cash to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
@@ -317,9 +316,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " minerals");
-			AddEmpireMinerals(EmpireNumero(empireListe, 1), nombre);
+			empire_MineralsAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d minerals to empire %d (%p)\n", nombre, 1, EmpireNumero(empireListe, 1));
+				dbg_sprintf(dbgout, "Added %d minerals to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
@@ -342,9 +341,9 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
 			strcat(console.reponse, " alloys");
-			AddEmpireAlloys(EmpireNumero(empireListe, 1), nombre);
+			empire_AlloysAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d alloys to empire %d (%p)\n", nombre, 1, EmpireNumero(empireListe, 1));
+				dbg_sprintf(dbgout, "Added %d alloys to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
@@ -366,10 +365,10 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 		else{
 			sprintf(nombreChar, "%d", nombre);
 			strcat(console.reponse, nombreChar);
-			strcat(console.reponse, " food");
-			AddEmpireFood(EmpireNumero(empireListe, 1), nombre);
+			strcat(console.reponse, " icon_food");
+			empire_FoodAdd(empire_Get(empireListe, 0), nombre);
 			#ifdef DEBUG_VERSION
-				dbg_sprintf(dbgout, "Added %d food to empire %d (%p)\n", nombre, 1, EmpireNumero(empireListe, 1));
+				dbg_sprintf(dbgout, "Added %d icon_food to empire %d (%p)\n", nombre, 0, empire_Get(empireListe, 0));
 			#endif
 			return;
 		}
@@ -392,7 +391,7 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 			if((&(commande[15]) == fin) || !((annee > 2200) && (annee <= 2500))){
 				goto syntax_err;
 			}
-			SetTime(date, jour, mois, annee);
+			time_DateSet(date, jour, mois, annee);
 			strcpy(console.reponse, "time sat");
 			return;
 		}
@@ -400,15 +399,15 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 
 	resultat = strstr(commande, "see all");
 	if(resultat == commande){
-		switch(GetSeeAll(parametres)){
+		switch(settings_SeeAllGet(parametres)){
 			case true:
-				SetSeeAll(parametres, false);
+				settings_SeeAllSet(parametres, false);
 				#ifdef DEBUG_VERSION
 					dbg_sprintf(dbgout, "See all desactivated\n");
 				#endif
 				break;
 			case false:
-				SetSeeAll(parametres, true);
+				settings_SeeAllSet(parametres, true);
 				#ifdef DEBUG_VERSION
 					dbg_sprintf(dbgout, "See all activated\n");
 				#endif
@@ -421,6 +420,6 @@ void RechercherCommande(char *commande, EmpireListe *empireListe, Date *date, Pa
 	syntax_err:
 		strcpy(console.reponse, "syntax error");
 		#ifdef DEBUG_VERSION
-			dbg_sprintf(dbgerr, "Console syntax error: '%s'\n", resultat);
+			dbg_sprintf(dbgerr, "Console syntax error: '%s'\n", commande);
 		#endif
 }

@@ -11,30 +11,35 @@
 
 #include "notifications.h"
 
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 struct NotificationStruct {
     NOTIFICATION_TYPE type;
-    NOTIFICATION_ID ID;
+    NotificationId ID;
     int length;
 };
 
 /* entry points ======================================================== */
 
 NotificationList *CreateNotificationList(){
-    return (NotificationList*)CreateGenericList();
+    return (NotificationList*)GenericList_Create();
 }
 
 void FreeNotificationList(NotificationList *notificationList) {
     Notification *notification = NULL;
-	int i = 1;
-    notification = GenericCellGet((GenericList*)notification, i);
+    int i = 0;
+    #ifdef DEBUG_VERSION
+    dbg_sprintf(dbgout, "Free notification list\n");
+    #endif
+    if(!notificationList)
+        return;
+    notification = GenericCell_Get((GenericList*)notification, i);
     while(notification != NULL) {
         free(notification);
-		i++;
-        notification = GenericCellGet((GenericList*)notification, i);
+        i++;
+        notification = GenericCell_Get((GenericList*)notification, i);
     }
-    FreeGenericList((GenericList*)notificationList);
+    GenericList_Free((GenericList*)notificationList);
 }
 
 static void DrawNotificationLow(int x, int y) {
@@ -59,18 +64,22 @@ static void DrawNotificationMed(int x, int y) {
     gfx_SetPixel(x + 7, y + 6);
 }
 
-static void DrawNotificationLogo(int x, int y, NOTIFICATION_ID ID) {
-    gfx_Sprite_NoClip(low_ressources_icon, x + 1, y + 7);
+static void DrawNotificationLogo(int x, int y, NotificationId ID) {
+    switch(ID){
+        default:
+            gfx_Sprite_NoClip(icon_low_ressources, x + 1, y + 7);
+            break;
+    }
 }
 
-void DrawNotifications(NotificationList *notificationList, Date *date) {
+void DrawNotifications(NotificationList *notificationList, Time *date) {
     Notification *notification = NULL;
-    int numberOfNotifications = GenericListArraySize((GenericList*)notificationList);
+    int numberOfNotifications = GenericList_ArraySize((GenericList*)notificationList);
     int notificationIndex;
     int x = 50;
     int y = 22;
-    for(notificationIndex = 1; notificationIndex <= numberOfNotifications; notificationIndex++) {
-        notification = GenericCellGet((GenericList*)notificationList, notificationIndex);
+    for(notificationIndex = 0; notificationIndex <= numberOfNotifications; notificationIndex++) {
+        notification = GenericCell_Get((GenericList*)notificationList, notificationIndex);
         if(notification != NULL) {
             if(notification->type == MED_PRIORITY)
                 DrawNotificationMed(x, y);
@@ -79,31 +88,31 @@ void DrawNotifications(NotificationList *notificationList, Date *date) {
 
             DrawNotificationLogo(x, y, notification->ID);
             x += 17;
-            if(GetTimeClock(date) == 0){
+            if(time_TickGet(date) == 0){
                 notification->length--;
             }
             if(notification->length <= 0) {
-                FreeGenericCell((GenericList*)notificationList, notificationIndex);
+                GenericCell_Free((GenericList*)notificationList, notificationIndex);
                 free(notification);
             }
         }
     }
-    if(GetTimeClock(date) == 0)
-        AddTimeClock(date);
+    if(time_TickGet(date) == 0)
+        time_TickIncrement(date);
 }
 
-void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NOTIFICATION_ID ID, int length) {
+void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NotificationId ID, int length) {
     Notification *notification = malloc(sizeof(Notification));	
     if(!notification){
-		#ifdef DEBUG_VERSION
-		dbg_sprintf(dbgerr, "Malloc returned NULL when adding notification");
-		#endif
+        #ifdef DEBUG_VERSION
+        dbg_sprintf(dbgerr, "Malloc returned NULL when adding notification");
+        #endif
         exit(EXIT_FAILURE);
     }
     notification->type = type;
     notification->ID = ID;
     notification->length = length;
-    GenericCellAdd((GenericList*)notificationList, notification);
+    GenericCell_Add((GenericList*)notificationList, notification);
     #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "New notification\n - type: %d\n - ID: %d\n - length: %d\n", (int)type, (int)ID, length);
     #endif

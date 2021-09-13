@@ -1,19 +1,14 @@
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <tice.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <debug.h>
-#include <math.h>
-#include <errno.h>
-
+/**
+ * @file screen.c
+ * @author Cocheril Dimitri (cochgit.dimitri@gmail.com)
+ * @brief The routine drawing the screen
+ * @version 0.1
+ * @date 2021-09-05
+ * 
+ * @copyright GNU General Public License v3.0
+ * 
+ */
 #include <graphx.h>
-#include <fileioc.h>
-#include <fontlibc.h>
 
 #include "menus.h"
 #include "hud.h"
@@ -21,17 +16,45 @@
 #include "screen.h"
 
 /* entry points ======================================================== */
-char DrawScreen(char *key, EmpireListe *empireListe, SystemeStellaire **systemeStellaires, Date *date, Camera *camera, Fenetre *fenetre, Parametres *parametres, ti_var_t *sauvegarde, Marche *marche, NotificationList *notificationList) {
-    int8_t fin = 1;
+
+char draw_Screen(   char *key, 
+                    EmpireList *empireList, 
+                    StarSystem **galaxy, 
+                    Time *time, 
+                    Camera *camera, 
+                    Window *window, 
+                    Settings *settings, 
+                    Market *market, 
+                    NotificationList *notificationList) {
+    int8_t endGame;
     gfx_ZeroScreen();
 
-    DrawMap(empireListe, systemeStellaires, camera, key, date, fenetre, parametres);
+    map_Draw(   key,
+                empireList, 
+                galaxy, 
+                camera, 
+                window, 
+                settings);
 
-    DrawHUD(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, notificationList);
+    hud_Draw(   key,
+                empireList, 
+                time, 
+                camera, 
+                galaxy, 
+                window, 
+                settings, 
+                notificationList);
 
-    fin = DrawMenu(empireListe, date, key, camera, systemeStellaires, fenetre, parametres, sauvegarde, marche);
+    endGame = menus_Draw(   key, 
+                            empireList, 
+                            time, 
+                            camera, 
+                            galaxy, 
+                            window, 
+                            settings, 
+                            market);
     
 	gfx_SwapDraw();
     
-    return fin;
+    return endGame;
 }

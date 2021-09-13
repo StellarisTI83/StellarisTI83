@@ -29,7 +29,7 @@ void setLanguage(char languageNumber){
 	initializeLanguage();
 }
 
-char getLanguage(){
+localeLanguageEnum getLanguage(){
 	return localeLanguage;
 }
 
@@ -44,7 +44,7 @@ char initializeLanguage(){
 		case LC_FR:
 			strcpy(name, "lcFR");
 			break;
-		case 3:
+		case LC_EN:
 			strcpy(name, "lcEN");
 			break;
 		default:

@@ -1,130 +1,120 @@
 #ifndef H_CAMERA
 #define H_CAMERA
 
-#include "main.h"
-#include "planetes.h"
-#include "time.h"
+/* macros ============================================================== */
+
+#define SYSTEM_SPECIAL_X 480
+#define SYSTEM_SPECIAL_Y 360
+
+#define SYSTEM_MIDDLE_X 320
+#define SYSTEM_MIDDLE_Y 240
+
+#define SYSTEM_VIEW_RADIUS 160
 
 /* types =============================================================== */
 
-enum VueTypeEnum {CARTE, NORMAL, SYSTEME};
+/**
+ * @brief Differents view types
+ * 
+ */
+typedef enum {  VUE_MAP, 
+                VUE_GALACTIC, 
+                VUE_SYSTEM} VueType;
 
-typedef enum VueTypeEnum VueType;
+/**
+ * @brief Differents zoom levels
+ * 
+ */
+typedef enum {  ZOOM_MIN = 0, 
+                ZOOM_NORMAL, 
+                ZOOM_MAX} ZoomLevel;
 
-enum ClassMenuEnum {MENU_QUITTER = -1, MENU_AUCUN, MENU_SYSTEME, MENU_MARCHE, MENU_FLOTTE, MENU_RECHERCHE, MENU_CONTACTS, MENU_CONTACTS_DETAILS, MENU_CONTACTS_EFFECTUER_ACTION};
 
-typedef enum ClassMenuEnum ClassMenu;
 
-enum MenuSystemeEnum {MENU_SYSTEME_AUCUN, MENU_SYSTEME_FLOTTES = 1, MENU_SYSTEME_ETOILE, 
-MENU_SYSTEME_PLANETE_RESUME, MENU_SYSTEME_PLANETE_DISTRICT, MENU_SYSTEME_PLANETE_BATIMENT, MENU_SYSTEME_PLANETE_BATIMENT_CHOIX, 
-MENU_SYSTEME_FLOTTE_DETAILS, 
-MENU_SYSTEME_STATION_RESUME, MENU_SYSTEME_STATION_MODULES, MENU_SYSTEME_STATION_MODULES_CHOIX, MENU_SYSTEME_STATION_CHANTIER,
-MENU_SYSTEME_STATION_CHANTIER_CHOIX};
-
-typedef enum MenuSystemeEnum MenuSystem;
-
-/* structures ========================================================== */
+/* struct ============================================================== */
 
 typedef struct CameraStruct Camera;
 
-typedef struct FenetreStruct Fenetre;
+#include "main.h"
+#include "planet.h"
+#include "menus.h"
+#include "time.h"
 
 /* entry points ======================================================== */
 
-Camera *AllocCamera();
+/**
+ * @brief Create a new camera
+ * 
+ * @return Camera* 
+ */
+Camera *camera_Create();
 
-void SetCameraX(Camera *camera, int x);
-void AddCameraX(Camera *camera, int x);
-int GetCameraX(Camera *camera);
-void SetCameraY(Camera *camera, int y);
-void AddCameraY(Camera *camera, int y);
-int GetCameraY(Camera *camera);
+// Update the camera position
 
-void SetCameraXSystem(Camera *camera, int x);
-void AddCameraXSystem(Camera *camera, int x);
-int GetCameraXSystem(Camera *camera);
-void SetCameraYSystem(Camera *camera, int y);
-void AddCameraYSystem(Camera *camera, int y);
-int GetCameraYSystem(Camera *camera);
+void camera_Update(Camera *camera);
 
-void SetCameraXVector(Camera *camera, int x);
-void AddCameraXVector(Camera *camera, int x);
-int GetCameraXVector(Camera *camera);
-void SetCameraYVector(Camera *camera, int y);
-void AddCameraYVector(Camera *camera, int y);
-int GetCameraYVector(Camera *camera);
+// Functions to set the x and y positions in map vue
 
-void SetCameraZoom(Camera *camera, int zoom);
-int GetCameraZoom(Camera *camera);
+void    camera_XSet             (Camera *camera, int x);
+void    camera_XAdd             (Camera *camera, int x);
+int     camera_XGet             (Camera *camera);
+void    camera_YSet             (Camera *camera, int y);
+void    camera_YAdd             (Camera *camera, int y);
+int     camera_YGet             (Camera *camera);
 
-void SetCameraMapType(Camera *camera, VueType MapType);
-VueType GetCameraMapType(Camera *camera);
+// Functions to set the x and y positions in system vue
 
-void SetCameraLock(Camera *camera, int lock);
-int GetCameraLockStatus(Camera *camera);
+void    camera_XSystemSet       (Camera *camera, int x);
+void    camera_XSystemAdd       (Camera *camera, int x);
+int     camera_XSystemGet       (Camera *camera);
+void    camera_YsystemSet       (Camera *camera, int y);
+void    camera_YSystemAdd       (Camera *camera, int y);
+int     camera_YSystemGet       (Camera *camera);
 
-void SetCameraViewedSystem(Camera *camera, int system);
-void SetCameraSystem(Camera *camera, int system);
-void SetCameraSystemViewStatus(Camera *camera, int status);
-int GetCameraViewedSystem(Camera *camera);
-int GetCameraSystem(Camera *camera);
+// Functions to set the x and y vectors
+// they are the same for system and map vue, and are used to make the movements
+// smooth
 
-int IsCameraMoveFleet(Camera *camera);
-void SetCameraMoveFleet(Camera *camera, int status);
+void    camera_XVectorSet       (Camera *camera, int x);
+void    camera_XVectorAdd       (Camera *camera, int x);
+int     camera_XVectorGet       (Camera *camera);
+void    camera_YVectorSet       (Camera *camera, int y);
+void    camera_YVectorAdd       (Camera *camera, int y);
+int     camera_YVectorGet       (Camera *camera);
 
-void SetCameraSelection(Camera *camera, int selection);
-int GetCameraSelection(Camera *camera);
+// Functions about the zoom
 
-void SetCameraFleet(Camera *camera, int fleet);
-int GetCameraFleet(Camera *camera);
+void    camera_ZoomSet          (Camera *camera, int zoom);
+int     camera_ZoomGet          (Camera *camera);
 
-void SetCameraEmpire(Camera *camera, int empire);
-int GetCameraEmpire(Camera *camera);
+// Functions to change the vue
 
-//fenetre
-Fenetre *AllocFenetre();
+void    camera_MapTypeSet       (Camera *camera, VueType MapType);
+VueType camera_MapTypeGet       (Camera *camera);
 
-void OpenMenu(Fenetre *fenetre, Camera *camera, ClassMenu classMenu, MenuSystem menuSysteme);
-void CloseMenu(Fenetre *fenetre, Camera *camera);
-ClassMenu GetOpenedMenuClass(Fenetre *fenetre);
-MenuSystem GetOpenedMenuDetails(Fenetre *fenetre);
-void SetWindowMenuSystem(Fenetre *fenetre, MenuSystem menu);
+// Functions to lock or unlock moving the camera
 
-void OpenCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
-void CloseCommandPrompt(Fenetre *fenetre, Camera *camera, Date *date);
-int GetCommandPromptStatus(Fenetre *fenetre);
+void    camera_LockSet          (Camera *camera, int lock);
+int     camera_LockGet          (Camera *camera);
 
-void SetWindowPlanet(Fenetre *fenetre, int planete);
-int GetWindowPlanet(Fenetre *fenetre);
+// Functions to set the aimed system in map vue
 
-void SetWindowSelection(Fenetre *fenetre, int selection);
-int GetWindowSelection(Fenetre *fenetre);
-void IncrementWindowSelection(Fenetre *fenetre);
-void UnincrementWindowSelection(Fenetre *fenetre);
-void AddWindowSelection(Fenetre *fenetre, int number);
+void    camera_SystemActualSet  (Camera *camera, int system);
+int     camera_SystemActualGet  (Camera *camera);
 
-void SetWindowSelectedFleet(Fenetre *fenetre, int fleet);
-int GetWindowSelectedFleet(Fenetre *fenetre);
+// Functions to set the viewed system in system vue
 
-void SetWindowPrevious(Fenetre *fenetre, int previous);
-int GetWindowPrevious(Fenetre *fenetre);
+void    camera_SystemAimedSet   (Camera *camera, int system);
+int     camera_SystemAimedGet   (Camera *camera);
 
-Error GetWindowError(Fenetre *fenetre);
-void SetWindowError(Fenetre *fenetre, Error error);
-int GetWindowErrorCountDown(Fenetre *fenetre);
-void UnincrementWindowErrorCountdown(Fenetre *fenetre);
-void SetWindowErrorCountdown(Fenetre *fenetre, int countdown);
+// Function to set and get if the player is actually moving a fleet or not
 
-void SetWindowCity(Fenetre *fenetre, Villes *city);
-Villes *GetWindowCity(Fenetre *fenetre);
-void SetWindowEmpire(Fenetre *fenetre, int empire);
-int GetWindowEmpire(Fenetre *fenetre);
+void    camera_FleetMoveSet     (Camera *camera, int status);
+int     camera_FleetMoveGet     (Camera *camera);
 
-void SetWindowScroll(Fenetre *fenetre, int scroll);
-void AddWindowScroll(Fenetre *fenetre, int scroll);
-int GetWindowScroll(Fenetre *fenetre);
+// Functions to set and get the fleet the player is moving a fleet
 
-void SetWindowFleetSize(Fenetre *fenetre, int size);
-void AddWindowFleetSize(Fenetre *fenetre, int size);
-int GetWindowFleetSize(Fenetre *fenetre);
+void    camera_FleetSet         (Camera *camera, int fleet);
+int     camera_FleetGet         (Camera *camera);
+
 #endif

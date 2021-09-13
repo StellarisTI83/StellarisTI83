@@ -3,12 +3,12 @@
 
 #include "ai.h"
 #include "camera.h"
-#include "parametres.h"
+#include "settings.h"
 #include "time.h"
 
 /* entry points ======================================================== */
 
-void AfficherConsole(char *, Fenetre *, EmpireListe *, Camera *, Date *, Parametres *);
+void AfficherConsole(char *, Window *, EmpireList *, Camera *, Time *, Settings *);
 
 void EcrireConsoleChar(char *);
 void EcrireConsoleInt(int );
