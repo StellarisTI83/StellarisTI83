@@ -55,7 +55,10 @@ int settings_GameActiveGet(Settings *settings){
     return settings->gameActive;
 }
 
-void settings_GameStop(Settings *settings){
+void settings_GameStop(Settings *settings){		
+    #ifdef DEBUG_VERSION
+    dbg_sprintf(dbgout, "Close game\n");
+    #endif
     settings->gameActive = false;
 }
 

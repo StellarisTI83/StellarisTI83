@@ -8,9 +8,9 @@
 
 /* entry points ======================================================== */
 
-void AfficherConsole(char *, Window *, EmpireList *, Camera *, Time *, Settings *);
+void console_show(char *, Window *, EmpireList *, Camera *, Time *, Settings *);
 
-void EcrireConsoleChar(char *);
-void EcrireConsoleInt(int );
+void console_writeChar(char *);
+void console_writeInt(int );
 
 #endif

@@ -163,6 +163,13 @@ void game_Close(EmpireList *empireList,
     }
 
     if(window){
+        WidgetWindow *widgetWindow = window_WindowGet(window, 0);
+        index = 1;
+        while(widgetWindow) {
+            widget_WindowDestroy(widgetWindow);
+            widgetWindow = window_WindowGet(window, index);
+            index++;
+        }
         free(window);
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "Free window\n");

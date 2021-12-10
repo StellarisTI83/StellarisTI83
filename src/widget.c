@@ -26,8 +26,7 @@ struct WidgetButtonStruct{
     int width;
     int height;
 
-    bool outline;
-    bool justify;
+    char flags;
 
     int (*action)();
     void* actionData;
@@ -98,8 +97,10 @@ void widget_ButtonAdd(  WidgetContainer *widgetNode,
     button->x = widgetNode->x + MENU_BUTTON_GAP;
     button->y = y;
 
-    button->outline = outline;
-    button->justify = justify;
+    if(outline)
+        button->flags = button->flags | BUTTON_FLAG_OUTLINE;
+    if(justify)
+        button->flags = button->flags | BUTTON_FLAG_CENTER;
 
     button->action = action;
     button->actionData = actionData;
@@ -107,12 +108,17 @@ void widget_ButtonAdd(  WidgetContainer *widgetNode,
 
 void widget_ButtonDestroy(WidgetButton *button){
     assert(button);
+    assert(button->text);
+    if(button->actionData){
+        free(button->actionData);
+    }
     free(button->text);
     free(button);
 }
 
 int widget_ButtonShow(WidgetButton *button, bool status, bool click){
-    if(button->outline){
+    int x;
+    if(button->flags & BUTTON_FLAG_OUTLINE){
         gfx_SetColor(COLOR_HUD_OUTLINES);
         gfx_Rectangle(  button->x, 
                         button->y, 
@@ -120,12 +126,14 @@ int widget_ButtonShow(WidgetButton *button, bool status, bool click){
                         button->height);
     }
     
+    x = (button->flags & BUTTON_FLAG_CENTER) ? button->x + (button->width - strlen(button->text) * TEXT_HEIGHT)/2 : button->x + MENU_BUTTON_GAP;
+
     if(status)
         gfx_SetTextFGColor(COLOR_YELLOW);
     else
         gfx_SetTextFGColor(COLOR_WHITE);
     gfx_PrintStringXY(  button->text, 
-                        button->x + (button->width - strlen(button->text) * TEXT_HEIGHT)/2,
+                        x,
                         button->y + (button->height - TEXT_HEIGHT) / 2);
     if(click && button->action)
         (*button->action)(button->actionData);
@@ -160,8 +168,16 @@ WidgetContainer *widget_WindowContainerAdd(WidgetWindow *window){
 
     return container;
 }
-void widget_WindowContainerDestroy(WidgetWindow *window){
-    free(window->begin);
+void widget_WindowContainerDestroy(WidgetContainer *widgetNode){
+    WidgetButton *button, *buttonTemp;
+    assert(widgetNode);
+    button = widgetNode->begin;
+    while(button) {
+        buttonTemp = button->next;
+        widget_ButtonDestroy(button);
+        button = buttonTemp;
+    }
+    free(widgetNode->begin);
 }
 
 static void widget_ContainerShow(   WidgetContainer *widgetNode, 
@@ -241,7 +257,15 @@ void widget_WindowShow( WidgetWindow *window,
         container = container->next;
     }
 }
-
+ 
 void widget_WindowDestroy(WidgetWindow *window) {
+    WidgetContainer *container, *containerTemp;
+    assert(window);
+    container = window->begin;
+    while(container) {
+        containerTemp = container->next;
+        widget_WindowContainerDestroy(container);
+        container = containerTemp;
+    }
     free(window);
 }

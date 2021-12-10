@@ -13,9 +13,9 @@
  * @brief If defined, debug version
  * 
  */
-
+#ifndef DEBUG
 #define DEBUG_VERSION
-
+#endif
 #ifndef DEBUG_VERSION
 #define NDEBUG
 #endif

@@ -3166,7 +3166,7 @@ void menu_Initialize(   EmpireList *empireList,
     widget_ButtonAdd(widgetContainer, _(lc_settings), NULL, NULL, true, true);
     widget_ButtonAdd(widgetContainer, _(lc_exit), &settings_GameStop, settings, true, true);
 
-    // Contacts
+    // Contacts list
     widgetWindow = window_WindowNew(window, "Contacts", MENU_WIDE_WIDTH, MENU_WIDE_HEIGHT);
     widgetContainer = widget_WindowContainerAdd(widgetWindow);
     empire = empire_Get(empireList, empireIndex);
