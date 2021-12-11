@@ -177,7 +177,6 @@ void widget_WindowContainerDestroy(WidgetContainer *widgetNode){
         widget_ButtonDestroy(button);
         button = buttonTemp;
     }
-    free(widgetNode->begin);
 }
 
 static void widget_ContainerShow(   WidgetContainer *widgetNode, 

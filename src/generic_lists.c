@@ -22,6 +22,9 @@ struct _genericList {
 
 GenericList *GenericList_Create() {
     GenericList *list = malloc(sizeof(GenericList));
+    #ifdef LOG_VERSION
+	dbg_sprintf(dbgerr, "Create generic list %p\n", list);
+    #endif
 	if(!list){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when creating generic list");
@@ -34,6 +37,9 @@ GenericList *GenericList_Create() {
 
 void GenericList_Free(GenericList *list) {
     GenericListElement *cell = NULL;
+    #ifdef LOG_VERSION
+	dbg_sprintf(dbgerr, "Free generic list\n");
+    #endif
     if(!list)
         return;
 
@@ -48,6 +54,9 @@ void GenericList_Free(GenericList *list) {
 int GenericList_ArraySize(const GenericList *list) {
     GenericListElement *cell;
     int size = 0;
+    #ifdef LOG_VERSION
+	dbg_sprintf(dbgerr, "GenericList_ArraySize\n");
+    #endif
     if(!list)
         return size;
     
@@ -61,7 +70,9 @@ int GenericList_ArraySize(const GenericList *list) {
 
 void GenericCell_Add(GenericList *list, void *info) {
     GenericListElement *cell;
-    
+    #ifdef LOG_VERSION
+	dbg_sprintf(dbgerr, "GenericCell_Add\n");
+    #endif
     if(!list)
         return;
 
@@ -91,6 +102,9 @@ void GenericCell_Add(GenericList *list, void *info) {
 void *GenericCell_Get(const GenericList *list, const int index) {
     GenericListElement *cell = list->firstElement;
     int  actualCell = 0;
+    #ifdef LOG_VERSION
+	dbg_sprintf(dbgerr, "GenericCell_Get\n");
+    #endif
     while(cell != NULL){
         if(actualCell == index){
             return cell->element;
@@ -107,6 +121,9 @@ void *GenericCell_Get(const GenericList *list, const int index) {
 
 void GenericCell_Free(GenericList *list, int index) {
     GenericListElement *temporaryCell;
+    #ifdef LOG_VERSION
+	dbg_sprintf(dbgerr, "GenericCell_Free\n");
+    #endif
 
     if(!list)
         return;
@@ -136,6 +153,9 @@ void GenericCell_Free(GenericList *list, int index) {
 int GenericCell_GetNumber(const GenericList *list, const void *info) {
     GenericListElement *temporaryCell;
     int  actualCell = 0;
+    #ifdef LOG_VERSION
+	dbg_sprintf(dbgerr, "GenericCell_GetNumber\n");
+    #endif
     
     if(!list)
         return 0;

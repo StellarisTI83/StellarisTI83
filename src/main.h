@@ -16,9 +16,12 @@
 #ifndef DEBUG
 #define DEBUG_VERSION
 #endif
+
 #ifndef DEBUG_VERSION
 #define NDEBUG
 #endif
+
+#define LOG_VERSION
 
 
 /* constants =========================================================== */
