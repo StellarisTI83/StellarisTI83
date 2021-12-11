@@ -116,82 +116,84 @@ static void update_KeysTest(char *key,
                 break;
         }
     }
-    // Other keys
-    switch(*key){
-        // Open the command prompt
-        case sk_2nd:
-            if(!window_CommandPromptStatusGet(window))
-                window_CommandPromptOpen(window, camera, time);
-            else
-                window_CommandPromptClose(window, camera, time);
-            *key = 0;
-            break;
-        // Open the exit menu
-        case sk_Clear:
-            if(window_MenuGet(window) == MENU_EXIT)
-                menu_Close(window, camera);
-            else
-                menu_Open(window, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
-            *key = 0;
-            break;
-
-        // Open the market menus
-        // The top buttons for the top hud
-        case sk_Yequ:
-            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, MENU_MARKET_CASH);
-            break;
-        case sk_Window:
-            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, MENU_MARKET_MINERAL);
-            break;
-        case sk_Zoom:
-            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, MENU_MARKET_FOOD);
-            break;
-        case sk_Trace:
-            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, MENU_MARKET_ALLOY);
-            break;
-        case sk_Graph:
-            menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, MENU_MARKET_OTHER);
-            break;
-
-        // The left buttons for the left hud
-        case sk_Recip:
-            if(window_MenuGet(window) == MENU_MARKET)
-                menu_Close(window, camera);
-            else
-                menu_Open(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, 0);
-            break;
-        case sk_Math:
-            if(window_MenuGet(window) == MENU_CONTACTS)
-                menu_Close(window, camera);
-            else
-                menu_Open(window, camera, MENU_CONTACTS, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, 0);
-            break;
-        case sk_Square:
-            if(window_MenuGet(window) == MENU_SCIENCE)
-                menu_Close(window, camera);
-            else
-                menu_Open(window, camera, MENU_SCIENCE, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, 0);
-            break;
-        case sk_Log:
-            if(window_MenuGet(window) == MENU_FLEET)
-                menu_Close(window, camera);
-            else
-                menu_Open(window, camera, MENU_FLEET, MENU_SYSTEME_AUCUN);
-            SetWindowSelection(window, 0);
-            break;
-
-        default:
-            break;
-    }
     
+    // Open the command prompt
+    if(*key == sk_2nd){
+        if(!window_CommandPromptStatusGet(window))
+            window_CommandPromptOpen(window, camera, time);
+        else
+            window_CommandPromptClose(window, camera, time);
+        *key = 0;
+    }
+    // Other keys
+    if(!window_CommandPromptStatusGet(window)){
+        switch(*key){
+            // Open the exit menu
+            case sk_Clear:
+                if(window_MenuGet(window))
+                    menu_Close(window, camera);
+                else
+                    menu_OpenSystem(window, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
+                *key = 0;
+                break;
+
+            // Open the market menus
+            // The top buttons for the top hud
+            case sk_Yequ:
+                menu_OpenSystem(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, MENU_MARKET_CASH);
+                break;
+            case sk_Window:
+                menu_OpenSystem(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, MENU_MARKET_MINERAL);
+                break;
+            case sk_Zoom:
+                menu_OpenSystem(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, MENU_MARKET_FOOD);
+                break;
+            case sk_Trace:
+                menu_OpenSystem(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, MENU_MARKET_ALLOY);
+                break;
+            case sk_Graph:
+                menu_OpenSystem(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, MENU_MARKET_OTHER);
+                break;
+
+            // The left buttons for the left hud
+            case sk_Recip:
+                if(window_MenuGet(window) == MENU_MARKET)
+                    menu_Close(window, camera);
+                else
+                    menu_OpenSystem(window, camera, MENU_MARKET, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, 0);
+                break;
+            case sk_Math:
+                if(window_MenuGet(window) == MENU_CONTACTS)
+                    menu_Close(window, camera);
+                else
+                    menu_OpenSystem(window, camera, MENU_CONTACTS, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, 0);
+                break;
+            case sk_Square:
+                if(window_MenuGet(window) == MENU_SCIENCE)
+                    menu_Close(window, camera);
+                else
+                    menu_OpenSystem(window, camera, MENU_SCIENCE, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, 0);
+                break;
+            case sk_Log:
+                if(window_MenuGet(window) == MENU_FLEET)
+                    menu_Close(window, camera);
+                else
+                    menu_OpenSystem(window, camera, MENU_FLEET, MENU_SYSTEME_AUCUN);
+                SetWindowSelection(window, 0);
+                break;
+
+            default:
+                break;
+        }
+    }
 }
 
 /**
@@ -532,7 +534,7 @@ int game_Update( char *key,
                 NotificationList *notificationList, 
                 Settings *settings){
     // We test the keys
-	update_KeysTest(key, 
+    update_KeysTest(key, 
                     galaxy, 
                     time, 
                     camera, 

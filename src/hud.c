@@ -438,8 +438,8 @@ int hud_Draw(   char *key,
     
     DrawNotifications(notificationList, time);
 
-    if(window_CommandPromptStatusGet(window) == true){ 
-        AfficherConsole(key, window, empireList, camera, time, settings);
+    if(window_CommandPromptStatusGet(window)){ 
+        console_show(key, window, empireList, camera, time, settings);
     }
  
     return 0;

@@ -4,6 +4,7 @@
 #include <debug.h>
 
 #include "gfx/gfx.h"
+#include "locale/locale.h"
 #include "colors.h"
 
 #include "ai.h"
@@ -11,6 +12,7 @@
 #include "galaxy.h"
 #include "loop.h"
 #include "notifications.h"
+#include "widget.h"
 
 #include "new_game.h"
 
@@ -19,24 +21,25 @@
 /**
  * @brief Initialize the main structures of the game
  * 
- * @param empireListe 
+ * @param empireList 
  * @param settings 
  * @param time 
  * @param camera 
  * @param window 
  */
-static void newGame_Initialize( EmpireList **empireListe, 
+static void newGame_Initialize( EmpireList **empireList, 
                                 Settings **settings, 
                                 Time **time,
                                 Camera **camera,
                                 Window **window){
-    *empireListe = empire_ListCreate();
-    empire_Add(*empireListe);
-    empire_FleetListCreate(empire_Get(*empireListe, 0));
+    *empireList = empire_ListCreate();
+    empire_Add(*empireList);
+    empire_FleetListCreate(empire_Get(*empireList, 0));
 
     
     *settings = setting_Malloc();
     settings_SeeAllSet(*settings, false);
+    settings_GameActiveSet(*settings, true);
 
     *time = time_Alloc();
     time_DateSet(*time, NEW_GAME_START_DAY, NEW_GAME_START_MONTH, NEW_GAME_START_YEAR);
@@ -54,6 +57,7 @@ static void newGame_Initialize( EmpireList **empireListe,
 
     *window = window_Create();
     menu_Close(*window, *camera);
+
     
     timer_Disable(1);
     timer_Set(1, ONE_SECOND);
@@ -64,7 +68,7 @@ static void newGame_Initialize( EmpireList **empireListe,
 /* entry points ======================================================== */
 
 void newGame_Start(){
-    EmpireList *empireListe = NULL;
+    EmpireList *empireList = NULL;
     StarSystem *galaxy[GALAXY_WIDTH * GALAXY_WIDTH];
     Window *window = NULL;
     Settings *settings = NULL;
@@ -77,16 +81,24 @@ void newGame_Start(){
     gfx_BlitBuffer();
     gfx_SetPalette(gfx_pal, sizeof_background_gfx_pal, 0);
 
-    newGame_Initialize(&empireListe, &settings, &time, &camera, &window);
-    
+    newGame_Initialize(&empireList, &settings, &time, &camera, &window);
+
     galaxy_CreateNew(galaxy);
 	settings_EmpireNumberSet(settings, 4);
 
-	galaxy_StartEmpiresInitialize(settings, empireListe, galaxy, camera);
-	update_PlayersData(false, empireListe, galaxy, notificationList);
+	galaxy_StartEmpiresInitialize(settings, empireList, galaxy, camera);
+	update_PlayersData(false, empireList, galaxy, notificationList);
+
+    menu_Initialize(empireList, 
+                    galaxy,
+                    settings, 
+                    time,
+                    camera,
+                    window,
+                    market);
 
 	gfx_SetDrawBuffer();
-    game_MainLoop(  empireListe, 
+    game_MainLoop(  empireList, 
                     settings, 
                     time, 
                     galaxy, 
@@ -95,7 +107,7 @@ void newGame_Start(){
                     market, 
                     notificationList);
 
-    game_Close( empireListe, 
+    game_Close( empireList, 
                 galaxy, 
                 settings, 
                 time, 
@@ -105,7 +117,7 @@ void newGame_Start(){
                 notificationList);
 }
 
-void game_Close(EmpireList *empireListe, 
+void game_Close(EmpireList *empireList, 
                 StarSystem **galaxy,
                 Settings *settings, 
                 Time *time,
@@ -114,8 +126,8 @@ void game_Close(EmpireList *empireListe,
                 Market *market,
                 NotificationList *notificationList){
     int index = 0;
-    if(empireListe)
-        empire_ListFree(empireListe);
+    if(empireList)
+        empire_ListFree(empireList);
 
     if(galaxy){
         index = 0;
@@ -151,6 +163,13 @@ void game_Close(EmpireList *empireListe,
     }
 
     if(window){
+        WidgetWindow *widgetWindow = window_WindowGet(window, 0);
+        index = 1;
+        while(widgetWindow) {
+            widget_WindowDestroy(widgetWindow);
+            widgetWindow = window_WindowGet(window, index);
+            index++;
+        }
         free(window);
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "Free window\n");

@@ -224,7 +224,7 @@ void empire_Generate(   Empire *empire,
 
     empire_PowerUpdate(empire);
     #ifdef DEBUG_VERSION
-        dbg_sprintf(dbgout, "Generate Empire: %d (%p)\n   -System: %d\n   -Color: %d\n   -Planet: %d\n", empireIndex, empire, systemIndex, color, planetIndex);
+        dbg_sprintf(dbgout, "Generate Empire: %s (%d-%p)\n   -System: %d\n   -Color: %d\n   -Planet: %d\n", empire->name, empireIndex, empire, systemIndex, color, planetIndex);
     #endif
 }
 

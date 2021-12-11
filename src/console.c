@@ -41,9 +41,12 @@ typedef struct{
     Ligne *premiereLigne;
 } Console;
 
+
+
 Console console;
 
-// static void FermerConsole();
+
+
 static void NouvelleLigneConsole(char *commande, char *reponse);
 static void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Settings *parametres);
 
@@ -51,13 +54,13 @@ void EcrireConsoleString(char *chaine){
 	NouvelleLigneConsole("", chaine);
 }
 
-void EcrireConsoleInt(int nombre){
+void console_writeInt(int nombre){
 	char chaine[50];
 	sprintf(chaine, "%d", nombre);
 	NouvelleLigneConsole("", chaine);
 }
 
-void AfficherConsole(char *key, Window *fenetre, EmpireList *empireListe, Camera *camera, Time *date, Settings *parametres){
+void console_show(char *key, Window *fenetre, EmpireList *empireListe, Camera *camera, Time *date, Settings *parametres){
 	int largeur = 200, hauteur = 10;
 	Ligne *ligneDeCommande = NULL;
 	char character = '.';

@@ -11,13 +11,16 @@ typedef struct SettingsStruct Settings;
 /* entry points ======================================================== */
 Settings *setting_Malloc();
 
-void settings_StarNumberSet(Settings *parametres, int starNumber);
-int settings_StarNumberGet(Settings *parametres);
+void settings_StarNumberSet(Settings *settings, int starNumber);
+int settings_StarNumberGet(Settings *settings);
 
-void settings_EmpireNumberSet(Settings *parametres, int starNumber);
-int settings_EmpireNumberGet(Settings *parametres);
+void settings_EmpireNumberSet(Settings *settings, int starNumber);
+int settings_EmpireNumberGet(Settings *settings);
 
-void settings_SeeAllSet(Settings *parametres, int seeAll);
-int settings_SeeAllGet(Settings *parametres);
+void settings_SeeAllSet(Settings *settings, int seeAll);
+int settings_SeeAllGet(Settings *settings);
 
+void settings_GameActiveSet(Settings *settings, int gameActive);
+int settings_GameActiveGet(Settings *settings);
+void settings_GameStop(Settings *settings);
 #endif

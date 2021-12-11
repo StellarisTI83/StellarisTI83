@@ -15,6 +15,7 @@ struct SettingsStruct{
 	char empireNumber;
 	bool seeAll;
     int fps;
+    bool gameActive;
 };
 
 /* entry points ======================================================== */
@@ -44,5 +45,20 @@ void settings_SeeAllSet(Settings *settings, int seeAll){
 
 int settings_SeeAllGet(Settings *settings){
     return settings->seeAll;
+}
+
+void settings_GameActiveSet(Settings *settings, int gameActive){
+    settings->gameActive = gameActive;
+}
+
+int settings_GameActiveGet(Settings *settings){
+    return settings->gameActive;
+}
+
+void settings_GameStop(Settings *settings){		
+    #ifdef DEBUG_VERSION
+    dbg_sprintf(dbgout, "Close game\n");
+    #endif
+    settings->gameActive = false;
 }
 
