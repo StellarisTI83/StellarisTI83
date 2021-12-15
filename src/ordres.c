@@ -49,7 +49,7 @@ void SupprimerFileOrdres(OrdreFile *ordreFile){
 	free(ordreFile);
 }
 
-void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, int info1, int info2, int prix){
+void order_New(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, int info1, int info2, int prix){
 	Ordre *ordreElement = NULL;
 
 	if(ordreFile->premierOrdre == NULL){
@@ -85,6 +85,7 @@ void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, in
 	ordreElement->prix = prix;
 	ordreElement->empire = empire;
 	ordreElement->ordreSuivant = NULL;
+			dbg_printf("Order new");
 }
 
 void FinirOrdre(OrdreFile *ordreFile){

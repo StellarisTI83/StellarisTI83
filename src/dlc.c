@@ -132,8 +132,6 @@ FleetTemplateListe *dlc_Load(const char *name) {
 	uint16_t sizeOfChunk;
 	FleetTemplateListe *fleetTemplateList = fleet_TemplateListCreate();
 
-	ti_CloseAll();
-
 	dlc_var = ti_Open(name, "r");
 
 	#ifdef DEBUG_VERSION

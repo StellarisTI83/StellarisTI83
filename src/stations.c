@@ -175,7 +175,7 @@ void station_NewOrder(Station *station, StationOrder ordre, int empire){
     int info1 = 0;
     int info2 = 0;
     int prix = 0;
-    NouvelOrdre(station->ordreFile, empire, ordre, tempsTotal, info1, info2, prix);
+    order_New(station->ordreFile, empire, ordre, tempsTotal, info1, info2, prix);
 }
 StationOrder station_OrderGet(Station *station){
     if(!station){

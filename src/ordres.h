@@ -32,7 +32,7 @@ void SupprimerFileOrdres(OrdreFile *ordreFile);
  * \param info2 info supplementaire 2
  * \param prix Prix à rendre en cas d'annulation de l'ordre
  */
-void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, int info1, int info2, int prix);
+void order_New(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, int info1, int info2, int prix);
 
 /**
  * Fini le dernier ordre

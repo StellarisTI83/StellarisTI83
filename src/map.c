@@ -557,7 +557,7 @@ static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera
 	{
 		gfx_SetColor(9);
 		gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
-		if((*key == sk_Enter) && (camera_LockGet(camera) == false)){
+		if((*key == sk_Enter) && (!camera_LockGet(camera))){
 			menu_OpenSystem(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_PLANETE_RESUME);
 			SetWindowPlanet(fenetre, numero);
 			*key = 0;

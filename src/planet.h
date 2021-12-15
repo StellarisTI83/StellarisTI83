@@ -20,7 +20,7 @@ typedef enum {  AUCUN_ORDRE_VILLE,
                 CONSTRUIRE_DISTRICT_GENERATEUR, 
                 CONSTRUIRE_DISTRICT_MINIER,
                 CONSTRUIRE_DISTRICT_AGRICOLE, 
-                CONSTRUIRE_BATIMENT} OrdreConstruction;
+                CONSTRUIRE_BATIMENT} AiOrdreConstruction;
 
 /**
  * @brief The different planet types
@@ -267,7 +267,7 @@ int     city_AmentiesGet(const City *city);
 
 Ordre*  GetCityOrderElement(City *city);
 OrdreFile* city_OrderQueueGet(City *city);
-OrdreConstruction city_OrderGet(City *city);
+AiOrdreConstruction city_OrderGet(City *city);
 int     city_OrderProgressGet(City *city);
 void    city_OrderProgressUnincrement(City *city);
 void    city_OrderEnd(City *city);

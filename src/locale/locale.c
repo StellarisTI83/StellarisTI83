@@ -39,7 +39,6 @@ char initializeLanguage(){
 	char name[4] = {0};
 	uint16_t numberOfString = 0;
 
-	ti_CloseAll();
 	switch(localeLanguage){
 		case LC_FR:
 			strcpy(name, "lcFR");

@@ -607,7 +607,7 @@ OrdreFile* city_OrderQueueGet(City *city){
         return NULL;
 }
 
-OrdreConstruction city_OrderGet(City *city){
+AiOrdreConstruction city_OrderGet(City *city){
     if(city)
         return GetOrder(city->ordreFile);
     else

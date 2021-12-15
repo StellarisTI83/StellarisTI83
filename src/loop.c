@@ -37,7 +37,7 @@ int game_MainLoop(	EmpireList *empireListe,
 		if(fps > 0)
         	time_FPSSet(time, fps);
 		
-		if(!boot_CheckOnPressed() || !loop) {
+		if(/*!boot_CheckOnPressed() ||*/ !loop) {
 			// StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
 			return 0;
 			

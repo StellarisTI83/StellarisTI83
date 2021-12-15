@@ -94,11 +94,12 @@ static void update_KeysTest(char *key,
             case sk_Enter:
                 if((starSystem_IntelLevelGet(galaxy[camera_SystemActualGet(camera)]) 
                 || settings_SeeAllGet(settings))
-                && camera_SystemActualGet(camera) != NO_SYSTEM){
+                && camera_SystemActualGet(camera) != NO_SYSTEM
+                && camera_MapTypeGet(camera) == VUE_GALACTIC){
                     camera_MapTypeSet(camera, VUE_SYSTEM);
                     camera_SystemActualSet(camera, camera_SystemActualGet(camera));
+                    *key = 0;
                 }
-                *key = 0;
                 break;
             // Pause and unpause
             case sk_0:
@@ -288,7 +289,7 @@ static void planets_ActionsUpdate(StarSystem **galaxy){
     int systemindex, planetIndex;
     City *city;
     Planet *planet;
-    OrdreConstruction order;
+    AiOrdreConstruction order;
     // We loop through every system and planet
     for(systemindex = 0; systemindex < GALAXY_WIDTH * GALAXY_WIDTH; systemindex++){
         if(starSystem_EmpireGet(galaxy[systemindex]) != NO_EMPIRE){

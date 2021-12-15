@@ -619,16 +619,16 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
                 empire_MineralsAdd(empire_Get(empireListe, 0), -50);
                 switch(GetWindowSelection(window)){
                     case 1:
-                        NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
+                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
                         break;
                     case 2:
-                        NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 1, 12, 0, 0, 50);
+                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 1, 12, 0, 0, 50);
                         break;
                     case 3:
-                        NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_MINIER, 1, 12, 0, 0, 50);
+                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_MINIER, 1, 12, 0, 0, 50);
                         break;
                     case 4:
-                        NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 1, 12, 0, 0, 50);
+                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 1, 12, 0, 0, 50);
                         break;
                 }
             }
@@ -835,7 +835,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
         }
         if(empire_AlloysGet(joueur) >= prix){
             empire_AlloysAdd(joueur, -prix);
-            NouvelOrdre(city_OrderQueueGet(GetWindowCity(window)),
+            order_New(city_OrderQueueGet(GetWindowCity(window)),
                 CONSTRUIRE_BATIMENT,
                 1, 
                 10,
@@ -993,16 +993,16 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
                 empire_MineralsAdd(empire_Get(empireListe, 0), -50);
                 switch(GetWindowSelection(window)){
                     case 1:
-                        NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
+                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
                         break;
                     case 2:
-                        NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 1, 12, 0, 0, 50);
+                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 1, 12, 0, 0, 50);
                         break;
                     case 3:
-                        NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_MINIER, 1, 12, 0, 0, 50);
+                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_MINIER, 1, 12, 0, 0, 50);
                         break;
                     case 4:
-                        NouvelOrdre(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 1, 12, 0, 0, 50);
+                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 1, 12, 0, 0, 50);
                         break;
                 }
             }
@@ -1667,7 +1667,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
             case 1:
                 if((empire_AlloysGet(joueur) >= prixAmelioration) && (station_LevelGet(station) < STATION_CITADEL)){
                     empire_AlloysAdd(joueur, -prixAmelioration);
-                    NouvelOrdre(station_OrderQueueGet(station),
+                    order_New(station_OrderQueueGet(station),
                         STATION_ORDER_UPGRADE,
                         1, 
                         tempsAmelioration,
@@ -1864,7 +1864,7 @@ static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **sy
             if(GetWindowPrevious(window) != 0){
                 if(empire_AlloysGet(joueur) >= 50){
                     empire_AlloysAdd(joueur, -50);
-                    NouvelOrdre(ordreQueue,
+                    order_New(ordreQueue,
                         STATION_ORDER_BUILD_MODULE, 
                         1, 
                         12,
@@ -2290,7 +2290,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
             else{
                 if(empire_AlloysGet(joueur) >= prix){
                     empire_AlloysAdd(joueur, -prix);
-                    NouvelOrdre(ordreQueue,
+                    order_New(ordreQueue,
                         STATION_ORDER_BUILD_SHIP,
                         1, 
                         travail,
@@ -2429,7 +2429,7 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSyste
     if(*key == sk_Enter){
         if(empire_AlloysGet(joueur) >= prix * GetWindowFleetSize(window)){
             empire_AlloysAdd(joueur, -(prix * GetWindowFleetSize(window)));
-            NouvelOrdre(station_OrderQueueGet(starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)])),
+            order_New(station_OrderQueueGet(starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)])),
                 STATION_ORDER_BUILD_SHIP,
                 1, 
                 travail * GetWindowFleetSize(window),
@@ -2448,8 +2448,7 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSyste
  */
 static void MenuSysteme(char* key, EmpireList* empireListe, Settings* parametres, Time* date, StarSystem **systemeStellaires, Camera* camera, Window* window){
     Empire *joueur = empire_Get(empireListe, 0);
-    switch(GetOpenedMenuDetails(window))
-    {				
+    switch(GetOpenedMenuDetails(window)) {				
         default:
             break;
         case MENU_SYSTEME_FLOTTES: //liste flottes
@@ -3199,6 +3198,9 @@ void menu_OpenSystem( Window *window,
     window->menuDetails = menuSysteme;
     window->selection = 0;
     camera_LockSet(camera, true);
+    #ifdef DEBUG_VERSION
+    dbg_sprintf(dbgout, "Open system menu %d\n", classMenu);
+    #endif
 }
 void menu_Open( Window *window, 
                 Camera *camera, 
@@ -3235,7 +3237,7 @@ MenuSystem GetOpenedMenuDetails(Window *window){
 
 void window_CommandPromptOpen(Window *window, Camera *camera, Time *date){
     window->commandPrompt = true;
-    camera_LockSet(camera, false);
+    camera_LockSet(camera, true);
     time_Pause(date);
 }
 void window_CommandPromptClose(Window *window, Camera *camera, Time *date){

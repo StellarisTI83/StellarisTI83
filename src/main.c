@@ -403,8 +403,6 @@ static int main_InitializeAll(){
 
         return true;
     }
-
-    ti_CloseAll();
     
     srandom(rtc_Time());
     
