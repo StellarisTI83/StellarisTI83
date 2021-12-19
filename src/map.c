@@ -78,7 +78,7 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 			}
 			gfx_TransparentSprite(icon_fleet_our, xFlotte, yFlotte);
 			switch(GetFleetType(flotte)){
-				case FLOTTE_MILITAIRE:
+				case FLEET_MILITARY:
 					gfx_TransparentSprite(icon_ship_military_our, xFlotte + 6, yFlotte - 1);
 					if (GetFleetPower(flotte) > 500)
 					{
@@ -89,10 +89,10 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 						gfx_TransparentSprite(icon_ship_military_our, xFlotte + 8, yFlotte - 4);
 					}
 					break;
-				case FLOTTE_DE_CONSTRUCTION:
+				case FLEET_CONSTRUCTION:
 					gfx_TransparentSprite(icon_ship_construction_our, xFlotte + 6, yFlotte - 4);
 					break;
-				case FLOTTE_SCIENTIFIQUE:
+				case FLEET_SCIENTIFIC:
 					gfx_TransparentSprite(icon_ship_science_our, xFlotte + 6, yFlotte - 4);
 					break;
 			}
@@ -131,7 +131,7 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 					}
 					gfx_TransparentSprite(icon_fleet_neutral, xFlotte, yFlotte);
 					switch(GetFleetType(flotte)){
-					case FLOTTE_MILITAIRE:
+					case FLEET_MILITARY:
 						gfx_TransparentSprite(icon_ship_military_neutral, xFlotte + 6, yFlotte - 1);
 						if (GetFleetPower(flotte) > 500){
 							gfx_TransparentSprite(icon_ship_military_neutral, xFlotte + 10, yFlotte - 1);
@@ -140,10 +140,10 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 							gfx_TransparentSprite(icon_ship_military_neutral, xFlotte + 8, yFlotte - 4);
 						}
 						break;
-					case FLOTTE_DE_CONSTRUCTION:
+					case FLEET_CONSTRUCTION:
 						gfx_TransparentSprite(icon_ship_construction_neutral, xFlotte + 6, yFlotte - 4);
 						break;
-					case FLOTTE_SCIENTIFIQUE:
+					case FLEET_SCIENTIFIC:
 						gfx_TransparentSprite(icon_ship_science_neutral, xFlotte + 6, yFlotte - 4);
 						break;
 					}
@@ -650,7 +650,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 				if(GetFleetProgress(flotte) == 0){
 					gfx_TransparentSprite(icon_fleet_our, x, y);
 					switch(GetFleetType(flotte)){
-					case FLOTTE_MILITAIRE:
+					case FLEET_MILITARY:
 						gfx_TransparentSprite(icon_ship_military_our, x + 6, y - 1);
 						if (GetFleetPower(flotte) > 500) {
 							gfx_TransparentSprite(icon_ship_military_our, x + 10, y - 1);
@@ -659,10 +659,10 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 							gfx_TransparentSprite(icon_ship_military_our, x + 8, y - 4);
 						}
 						break;
-					case FLOTTE_DE_CONSTRUCTION:
+					case FLEET_CONSTRUCTION:
 						gfx_TransparentSprite(icon_ship_construction_our, x + 6, y - 4);
 						break;
-					case FLOTTE_SCIENTIFIQUE:
+					case FLEET_SCIENTIFIC:
 						gfx_TransparentSprite(icon_ship_science_our, x + 6, y - 4);
 						break;
 					}
@@ -707,7 +707,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 					if(GetFleetProgress(flotte) == 0){
 						gfx_TransparentSprite(icon_fleet_neutral, x, y);
 						switch(GetFleetType(flotte)){
-						case FLOTTE_MILITAIRE:
+						case FLEET_MILITARY:
 							gfx_TransparentSprite(icon_ship_military_neutral, x + 6, y - 1);
 							if (GetFleetPower(flotte) > 500) {
 								gfx_TransparentSprite(icon_ship_military_neutral, x + 10, y - 1);
@@ -716,10 +716,10 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 								gfx_TransparentSprite(icon_ship_military_neutral, x + 8, y - 4);
 							}
 							break;
-						case FLOTTE_DE_CONSTRUCTION:
+						case FLEET_CONSTRUCTION:
 							gfx_TransparentSprite(icon_ship_construction_neutral, x + 6, y - 4);
 							break;
-						case FLOTTE_SCIENTIFIQUE:
+						case FLEET_SCIENTIFIC:
 							gfx_TransparentSprite(icon_ship_science_neutral, x + 6, y - 4);
 							break;
 						}

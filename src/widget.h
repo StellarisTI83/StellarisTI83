@@ -11,7 +11,7 @@ typedef enum {
 
 void widget_ButtonAdd(  WidgetContainer *widgetNode, 
                         const char *string,
-                        int(*action)(),
+                        void(*action)(),
                         void* actionData,
                         bool outline,
                         bool justify);

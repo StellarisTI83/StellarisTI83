@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <debug.h>
 #include <assert.h>
+#include <string.h>
 
 #include <graphx.h>
 
@@ -112,7 +113,7 @@ static void DrawMenuBase(char planetePopulation, char niveauMenu, Window *window
 /**
  * Dessine le menu des flottes du système
  */
-static void MenuSystemeFlotte(char* key, EmpireList* empireListe, StarSystem **systemeStellaires, Camera* camera, Window* window){
+static void MenuSystemeFlotte(char* key, EmpireList* empireListe, Camera* camera, Window* window){
     int niveau = 0, i = 0;
     int8_t compteur = 0, compteurFlotte = 0;
     int fleetIndex = 0;
@@ -176,13 +177,13 @@ static void MenuSystemeFlotte(char* key, EmpireList* empireListe, StarSystem **s
             gfx_SetTextFGColor(1);
         }
         switch(GetFleetType(flotte)){
-            case FLOTTE_MILITAIRE:
+            case FLEET_MILITARY:
                 gfx_PrintStringXY("militaire", 203, niveau);
                 break;
-            case FLOTTE_DE_CONSTRUCTION:
+            case FLEET_CONSTRUCTION:
                 gfx_PrintStringXY("construction", 179, niveau);
                 break;
-            case FLOTTE_SCIENTIFIQUE:
+            case FLEET_SCIENTIFIC:
                 gfx_PrintStringXY("scientifique", 179, niveau);
                 break;
         }
@@ -311,39 +312,35 @@ static void MenuSystemeEtoile(char *key, StarSystem **systemeStellaires, Camera 
             gfx_Circle_NoClip(95, 106, 4);
             gfx_Circle_NoClip(95, 106, 10);
             break;
+        default:
+            gfx_PrintString("Default star");
     }
 }
 
-static void NumeroPlanete(int numero, int *decalage, Planet *planete, char *nomPlanete, StarSystem *systeme){
+static void NumeroPlanete(int numero, int *decalage, char *nomPlanete){
     switch(numero){
     case 0:
         *decalage = 186;
-        planete = starSystem_PlanetGet(systeme, 0);
         strcpy(nomPlanete, " I");
         break;
     case 1:
         *decalage = 182;
-        planete = starSystem_PlanetGet(systeme, 1);
         strcpy(nomPlanete, " II");
         break;
     case 2:
         *decalage = 178;
-        planete = starSystem_PlanetGet(systeme, 2);
         strcpy(nomPlanete, " III");
         break;
     case 3:
         *decalage = 182;
-        planete = starSystem_PlanetGet(systeme, 3);
         strcpy(nomPlanete, " IV");
         break;
     case 4:
         *decalage = 186;
-        planete = starSystem_PlanetGet(systeme, 4);
         strcpy(nomPlanete, " V");
         break;
     default:
         *decalage = 178;
-        planete = starSystem_PlanetGet(systeme, 0);
         strcpy(nomPlanete, " ERR");
         break;
     }
@@ -357,11 +354,13 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
     int decalage = 0;
     int niveau = 0;
     Planet* planete = NULL;
+    City* city;
     planete = starSystem_PlanetGet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(window));
-    NumeroPlanete(GetWindowPlanet(window), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
+    NumeroPlanete(GetWindowPlanet(window), &decalage, nomPlanete);
 
+    city = planet_CityGet(planete);
     //dessiner window
-    DrawMenuBase(GetPlanetCityPopulation(planete), 0, window);
+    DrawMenuBase(city_PopulationGet(city), 0, window);
 
     gfx_Rectangle_NoClip(45, 56, 100, 100); //cadre image
 
@@ -369,7 +368,7 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
     if(planet_HabitabilityGet(planete) == 1){
         gfx_PrintString(planet_NameGet(planete));
         gfx_SetTextFGColor(19);
-        if(GetPlanetCityPopulation(planete) > 0){
+        if(city_PopulationGet(city)){
             gfx_PrintStringXY("Habit/e", 150, 62);
         }
         else{
@@ -386,34 +385,34 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
     gfx_SetTextFGColor(1);
     gfx_SetTextXY(157, 74);
     gfx_TransparentSprite_NoClip(icon_pop, 150, 74);
-    sprintf(populationChar, "%d", GetPlanetCityPopulation(planete));
+    sprintf(populationChar, "%d", city_PopulationGet(city));
     gfx_PrintString(populationChar);
     
-    if(GetPlanetCityPopulation(planete) > 0){
+    if(city_PopulationGet(city) > 0){
         gfx_SetTextXY(157, 84);
         gfx_TransparentSprite_NoClip(icon_pop_criminal, 150, 84);
-        mainMenu_PrintInt(planet_CriminalityGet(planete));
+        mainMenu_PrintInt(city_CriminalityGet(city));
         
         gfx_SetTextXY(157, 94);
         gfx_TransparentSprite_NoClip(icon_freeHouse, 150, 94);
-        mainMenu_PrintInt(GetPlanetCityUrbanDistrictNumber(planete));
+        mainMenu_PrintInt(city_UrbanDistrictGet(city));
         
         gfx_SetTextXY(157, 104);
         gfx_TransparentSprite_NoClip(icon_amienties, 150, 104);
-        mainMenu_PrintInt(GetPlanetCityAmienties(planete));
+        mainMenu_PrintInt(city_AmentiesGet(city));
 
         gfx_SetTextXY(157, 114);
         gfx_TransparentSprite_NoClip(icon_freeJob, 150, 114);
-        if(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete) > 0){
-            mainMenu_PrintInt(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete));
+        if(city_PopulationGet(city) - city_JobGet(city) > 0){
+            mainMenu_PrintInt(city_PopulationGet(city) - city_JobGet(city));
         } else {
             mainMenu_PrintInt(0);
         }
         
         gfx_SetTextXY(157, 124);
         gfx_TransparentSprite_NoClip(icon_pop_unemployed, 150, 124);
-        if(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete) < 0) {
-            mainMenu_PrintInt(-(GetPlanetCityPopulation(planete) - GetPlanetCityJob(planete)));
+        if(city_PopulationGet(city) - city_JobGet(city) < 0) {
+            mainMenu_PrintInt(-(city_PopulationGet(city) - city_JobGet(city)));
         } else {
             mainMenu_PrintInt(0);
         }
@@ -435,7 +434,7 @@ static void MenuSystemePlaneteResume(char *key, StarSystem **systemeStellaires, 
             *key = 0;
             break;
         case sk_Right:
-            if(GetPlanetCityPopulation(planete) > 0){
+            if(city_PopulationGet(city) > 0){
                 menu_OpenSystem(window, camera, MENU_SYSTEM, MENU_SYSTEME_PLANETE_DISTRICT);
                 *key = 0;
             }
@@ -455,28 +454,28 @@ static void OrdreDistrictNom(City *villes){
     gfx_SetTextFGColor(1);
     if(RecupererOrdre(ordreQueue) != NULL){
         switch(GetOrder(ordreQueue)){
-            case AUCUN_ORDRE_VILLE:
+            case CITY_ORDER_NONE:
                 gfx_PrintString("Aucun ordre");
                 break;
-            case CONSTRUIRE_DISTRICT_URBAIN:
+            case CITY_DISTRICT_URBAN:
                 gfx_PrintString("Construit district urbain");
                 break;
-            case CONSTRUIRE_DISTRICT_GENERATEUR:
+            case CITY_DISTRICT_GENERATOR:
                 gfx_PrintString("Construit district g/n/rateur");
                 break;
-            case CONSTRUIRE_DISTRICT_MINIER:
+            case CITY_DISTRICT_MINING:
                 gfx_PrintString("Construit district minier");
                 break;
-            case CONSTRUIRE_DISTRICT_AGRICOLE:
+            case CITY_DISTRICT_AGRICULTURE:
                 gfx_PrintString("Construit district agicole");
                 break;
                 break;
-            case CONSTRUIRE_BATIMENT:
+            case CITY_BUILDING:
                 gfx_PrintString("Construit batiment ");
                 mainMenu_PrintInt(GetOrderInfo1(ordreQueue));
                 break;
         }
-        if(GetOrder(ordreQueue) != AUCUN_ORDRE_VILLE){
+        if(GetOrder(ordreQueue) != CITY_ORDER_NONE){
             gfx_SetTextXY(45, niveau += 9);
             gfx_PrintString("(");
             gfx_SetTextFGColor(13);
@@ -501,19 +500,21 @@ static void OrdreDistrictNom(City *villes){
  *Dessine le menu des districts de planète
  */
 static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires, Camera *camera, Window *window, EmpireList *empireListe){
-    int8_t nomPlanete[20];
+    char nomPlanete[20];
     int decalage = 0;
     int maximum = 4;
     int niveau = 0;
     Planet* planete = NULL;
     Ordre *ordre = NULL;
+    City* city;
     planete = starSystem_PlanetGet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(window));
-    NumeroPlanete(GetWindowPlanet(window), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
+    NumeroPlanete(GetWindowPlanet(window), &decalage, nomPlanete);
+    city = planet_CityGet(planete);
 
     ordre = GetCityOrderElement(planet_CityGet(planete));	
 
     //dessiner window
-    DrawMenuBase(GetPlanetCityPopulation(planete), 1, window);
+    DrawMenuBase(city_PopulationGet(city), 1, window);
 
     gfx_HorizLine_NoClip(45, 179, 230);//barre du bas au dessus des ordres
 
@@ -537,7 +538,7 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
         gfx_SetTextXY(50, niveau + 2);
         gfx_PrintString("Districts urbains");
         gfx_SetTextXY(50, niveau + 12);
-        mainMenu_PrintInt(GetPlanetCityUrbanDistrictNumber(planete));
+        mainMenu_PrintInt(city_UrbanDistrictGet(city));
         gfx_PrintString("|10");
 
         niveau += 24;
@@ -552,7 +553,7 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
         gfx_SetTextXY(50, niveau + 2);
         gfx_PrintString("Districts g/n/rateurs");
         gfx_SetTextXY(50, niveau + 12);
-        mainMenu_PrintInt(GetPlanetCityGeneratorDistrictNumber(planete));
+        mainMenu_PrintInt(city_GeneratorDistrictGet(city));
         gfx_PrintString("|10");
 
         niveau += 24;
@@ -567,7 +568,7 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
         gfx_SetTextXY(50, niveau + 2);
         gfx_PrintString("Districts miniers");
         gfx_SetTextXY(50, niveau + 12);
-        mainMenu_PrintInt(GetPlanetCityMiningDistrictNumber(planete));
+        mainMenu_PrintInt(city_MiningDistrictGet(city));
         gfx_PrintString("|10");
 
         niveau += 24;
@@ -582,7 +583,7 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
         gfx_SetTextXY(50, niveau + 2);
         gfx_PrintString("Districts agricoles");
         gfx_SetTextXY(50, niveau + 12);
-        mainMenu_PrintInt(GetPlanetCityAgricultureDistrictNumber(planete));
+        mainMenu_PrintInt(city_AgricultureDistrictGet(city));
         gfx_PrintString("|10");
     }
     OrdreDistrictNom(planet_CityGet(planete));
@@ -619,16 +620,16 @@ static void MenuSystemePlaneteDistrict(char *key, StarSystem **systemeStellaires
                 empire_MineralsAdd(empire_Get(empireListe, 0), -50);
                 switch(GetWindowSelection(window)){
                     case 1:
-                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
+                        order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planete)), CITY_DISTRICT_URBAN, 1, 12, 0, 0, 50);
                         break;
                     case 2:
-                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 1, 12, 0, 0, 50);
+                        order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planete)), CITY_DISTRICT_GENERATOR, 1, 12, 0, 0, 50);
                         break;
                     case 3:
-                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_MINIER, 1, 12, 0, 0, 50);
+                        order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planete)), CITY_DISTRICT_MINING, 1, 12, 0, 0, 50);
                         break;
                     case 4:
-                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 1, 12, 0, 0, 50);
+                        order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planete)), CITY_DISTRICT_AGRICULTURE, 1, 12, 0, 0, 50);
                         break;
                 }
             }
@@ -692,6 +693,9 @@ static char *PlaneteBatimentNom(Building batiment, int niveau, char* nom){
                 break;
             case BUILDING_THEATRE:
                 strcpy(nom, "Theatre");
+            default:
+                strcpy(nom, "err");
+                break;
         }
         strcat(nom, " lvl.");
         sprintf(levelStr, "%d", niveau);
@@ -709,7 +713,7 @@ static char *PlaneteBatimentNom(Building batiment, int niveau, char* nom){
 static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *window){
     int niveau = 53;
     char nomDuBatiment[50];
-    int i = 0, prix = 0;
+    int prix = 0;
     // Batiment *batiment = NULL;
     // int niveauDuBatiment = 0;
     switch(*key) {
@@ -835,14 +839,7 @@ static void MenuSystemePlaneteBatimentChoix(char *key, Empire *joueur, StarSyste
         }
         if(empire_AlloysGet(joueur) >= prix){
             empire_AlloysAdd(joueur, -prix);
-            order_New(city_OrderQueueGet(GetWindowCity(window)),
-                CONSTRUIRE_BATIMENT,
-                1, 
-                10,
-                GetWindowPrevious(window),
-                GetWindowSelection(window),
-                prix
-            );
+            city_Build(GetWindowCity(window), joueur, CITY_BUILDING, GetWindowSelection(window));
             SetWindowSelection(window, GetWindowPrevious(window));
             SetWindowPrevious(window, 1);
         }
@@ -861,13 +858,15 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
     int niveau = 0;
     Planet* planete = NULL;
     Ordre *ordre = NULL;
+    City* city;
     planete = starSystem_PlanetGet(systemeStellaires[camera_SystemAimedGet(camera)], GetWindowPlanet(window));
-    NumeroPlanete(GetWindowPlanet(window), &decalage, planete, nomPlanete, systemeStellaires[camera_SystemAimedGet(camera)]);
+    NumeroPlanete(GetWindowPlanet(window), &decalage, nomPlanete);
+    city = planet_CityGet(planete);
 
     ordre = GetCityOrderElement(planet_CityGet(planete));	
 
     //dessiner window
-    DrawMenuBase(GetPlanetCityPopulation(planete), 2, window);
+    DrawMenuBase(city_PopulationGet(city), 2, window);
 
     gfx_HorizLine_NoClip(45, 179, 230);//barre du bas au dessus des ordres
 
@@ -884,12 +883,12 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
     niveau = 55;
     if(planet_CityGet(planete) != NULL){
         gfx_SetTextXY(45, niveau);
-        if(GetPlanetCityPopulation(planete) >= 0){
+        if(city_PopulationGet(city) >= 0){
             gfx_SetTextFGColor(1);
             if(GetWindowSelection(window) == 1){
                 gfx_SetTextFGColor(13);
             }
-            gfx_PrintString(PlaneteBatimentNom(GetPlanetCityBuildingNumber(planete, 0), GetPlanetCityBuildingLevel(planete, 0), nom));
+            gfx_PrintString(PlaneteBatimentNom(city_BuildingGet(city, 0), city_BuildingLevelGet(city, 0), nom));
             nombreDeBatiment++;
         }
         else{
@@ -898,12 +897,12 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
         }
         niveau += 14;
         gfx_SetTextXY(45, niveau);
-        if(GetPlanetCityPopulation(planete) >= 10){
+        if(city_PopulationGet(city) >= 10){
             gfx_SetTextFGColor(1);
             if(GetWindowSelection(window) == 2){
                 gfx_SetTextFGColor(13);
             }
-            gfx_PrintString(PlaneteBatimentNom(GetPlanetCityBuildingNumber(planete, 1), GetPlanetCityBuildingLevel(planete, 1), nom));
+            gfx_PrintString(PlaneteBatimentNom(city_BuildingGet(city, 1), city_BuildingLevelGet(city, 1), nom));
             nombreDeBatiment++;
         }
         else{
@@ -912,12 +911,12 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
         }
         niveau += 14;
         gfx_SetTextXY(45, niveau);
-        if(GetPlanetCityPopulation(planete) >= 20){
+        if(city_PopulationGet(city) >= 20){
             gfx_SetTextFGColor(1);
             if(GetWindowSelection(window) == 3){
                 gfx_SetTextFGColor(13);
             }
-            gfx_PrintString(PlaneteBatimentNom(GetPlanetCityBuildingNumber(planete, 2), GetPlanetCityBuildingLevel(planete, 2), nom));
+            gfx_PrintString(PlaneteBatimentNom(city_BuildingGet(city, 2), city_BuildingLevelGet(city, 2), nom));
             nombreDeBatiment++;
         }
         else{
@@ -926,12 +925,12 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
         }
         niveau += 14;
         gfx_SetTextXY(45, niveau);
-        if(GetPlanetCityPopulation(planete) >= 30){
+        if(city_PopulationGet(city) >= 30){
             gfx_SetTextFGColor(1);
             if(GetWindowSelection(window) == 4){
                 gfx_SetTextFGColor(13);
             }
-            gfx_PrintString(PlaneteBatimentNom(GetPlanetCityBuildingNumber(planete, 3), GetPlanetCityBuildingLevel(planete, 3), nom));
+            gfx_PrintString(PlaneteBatimentNom(city_BuildingGet(city, 3), city_BuildingLevelGet(city, 3), nom));
             nombreDeBatiment++;
         }
         else{
@@ -940,12 +939,12 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
         }
         niveau += 14;
         gfx_SetTextXY(45, niveau);
-        if(GetPlanetCityPopulation(planete) >= 40){
+        if(city_PopulationGet(city) >= 40){
             gfx_SetTextFGColor(1);
             if(GetWindowSelection(window) == 5){
                 gfx_SetTextFGColor(13);
             }
-            gfx_PrintString(PlaneteBatimentNom(GetPlanetCityBuildingNumber(planete, 4), GetPlanetCityBuildingLevel(planete, 4), nom));
+            gfx_PrintString(PlaneteBatimentNom(city_BuildingGet(city, 4), city_BuildingLevelGet(city, 4), nom));
             nombreDeBatiment++;
         }
         else{
@@ -954,12 +953,12 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
         }
         niveau += 14;
         gfx_SetTextXY(45, niveau);
-        if(GetPlanetCityPopulation(planete) >= 50){
+        if(city_PopulationGet(city) >= 50){
             gfx_SetTextFGColor(1);
             if(GetWindowSelection(window) == 6){
                 gfx_SetTextFGColor(13);
             }
-            gfx_PrintString(PlaneteBatimentNom(GetPlanetCityBuildingNumber(planete, 5), GetPlanetCityBuildingLevel(planete, 5), nom));
+            gfx_PrintString(PlaneteBatimentNom(city_BuildingGet(city, 5), city_BuildingLevelGet(city, 5), nom));
             nombreDeBatiment++;
         }
         else{
@@ -993,16 +992,16 @@ static void MenuSystemePlaneteBatiments(char *key, StarSystem **systemeStellaire
                 empire_MineralsAdd(empire_Get(empireListe, 0), -50);
                 switch(GetWindowSelection(window)){
                     case 1:
-                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_URBAIN, 1, 12, 0, 0, 50);
+                        order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planete)), CITY_DISTRICT_URBAN, 1, 12, 0, 0, 50);
                         break;
                     case 2:
-                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_GENERATEUR, 1, 12, 0, 0, 50);
+                        order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planete)), CITY_DISTRICT_GENERATOR, 1, 12, 0, 0, 50);
                         break;
                     case 3:
-                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_MINIER, 1, 12, 0, 0, 50);
+                        order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planete)), CITY_DISTRICT_MINING, 1, 12, 0, 0, 50);
                         break;
                     case 4:
-                        order_New(city_OrderQueueGet(planet_CityGet(planete)), CONSTRUIRE_DISTRICT_AGRICOLE, 1, 12, 0, 0, 50);
+                        order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planete)), CITY_DISTRICT_AGRICULTURE, 1, 12, 0, 0, 50);
                         break;
                 }
             }
@@ -1115,7 +1114,7 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
     gfx_PrintStringXY("Retour", 48, 42);
     gfx_SetTextXY(150, 42);
     flotte = FlotteNumero(empire_FleetListGet(empire_Get(empireListe, 0)), GetWindowSelectedFleet(window));
-    if(GetFleetType(flotte) == FLOTTE_DE_CONSTRUCTION){
+    if(GetFleetType(flotte) == FLEET_CONSTRUCTION){
         if((GetWindowSelection(window) == 0) || (GetWindowSelection(window) >= 10)){
             SetWindowSelection(window, 2);
         }
@@ -1153,13 +1152,13 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
     niveau += 14;
     gfx_SetTextFGColor(17);
     switch(GetFleetType(flotte)){
-        case FLOTTE_MILITAIRE:
+        case FLEET_MILITARY:
             gfx_PrintString("Flotte militaire");
             break;
-        case FLOTTE_DE_CONSTRUCTION:
+        case FLEET_CONSTRUCTION:
             gfx_PrintString("Flotte de construction");
             break;
-        case FLOTTE_SCIENTIFIQUE:
+        case FLEET_SCIENTIFIC:
             gfx_PrintString("Flotte scientifique");
             break;
     }
@@ -1177,7 +1176,7 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
     gfx_TransparentSprite_NoClip(icon_shield, 45, niveau);
     mainMenu_PrintInt(GetFleetShieldPourcent(flotte));
     gfx_PrintString("%");
-    if(GetFleetType(flotte) == FLOTTE_MILITAIRE){
+    if(GetFleetType(flotte) == FLEET_MILITARY){
         gfx_SetTextFGColor(18);
         gfx_SetTextXY(170, niveau);
         gfx_TransparentSprite_NoClip(icon_fleetPower, 165, niveau + 2);
@@ -1195,7 +1194,7 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
     gfx_SetTextXY(165, niveau);
     niveau += 14;
     switch(GetFleetType(flotte)){
-        case FLOTTE_MILITAIRE:
+        case FLEET_MILITARY:
             if(GetWindowSelection(window) == FLOTTE_ATTAQUER){
                 gfx_SetTextFGColor(13);
             }
@@ -1242,7 +1241,7 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
             }
             break;
 
-        case FLOTTE_SCIENTIFIQUE:
+        case FLEET_SCIENTIFIC:
             if(GetWindowSelection(window) == FLOTTE_INSPECTER){
                 gfx_SetTextFGColor(13);
             }
@@ -1259,14 +1258,14 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
             gfx_SetTextXY(45, 167);
             break;
 
-        case FLOTTE_DE_CONSTRUCTION:
+        case FLEET_CONSTRUCTION:
             if(GetWindowSelection(window) == FLOTTE_CONSTRUIRE_BASE){
                 gfx_SetTextFGColor(13);
             }
             gfx_PrintString("Station");
             gfx_SetTextFGColor(1);
 
-            if(GetWindowSelection(window) == FLOTTE_COSNTRUIRE_MINE){
+            if(GetWindowSelection(window) == FLOTTE_CONSTRUIRE_MINE){
                 gfx_SetTextFGColor(13);
             }
             gfx_SetTextXY(45, niveau);
@@ -1309,20 +1308,22 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
         }
         else{
             switch(GetFleetType(flotte)){
-            case FLOTTE_MILITAIRE:
-                switch(GetWindowSelection(window)){
-                case FLOTTE_ATTAQUER:
-                    break; 
-                }
-                break;
-            case FLOTTE_DE_CONSTRUCTION:
-                switch(GetWindowSelection(window)){
-                case FLOTTE_CONSTRUIRE_BASE:
-                    SetFleetAction(flotte, FLOTTE_CONSTRUIRE_BASE);
-                    BougerFlotte(GetWindowSelectedFleet(window), 0, 0, window, camera, empireListe, systemeStellaires);
+                case FLEET_MILITARY:
+                    switch(GetWindowSelection(window)){
+                    case FLOTTE_ATTAQUER:
+                        break; 
+                    }
                     break;
-                }
-                break;
+                case FLEET_CONSTRUCTION:
+                    switch(GetWindowSelection(window)){
+                    case FLOTTE_CONSTRUIRE_BASE:
+                        SetFleetAction(flotte, FLOTTE_CONSTRUIRE_BASE);
+                        BougerFlotte(GetWindowSelectedFleet(window), 0, 0, window, camera, empireListe, systemeStellaires);
+                        break;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -1333,7 +1334,7 @@ static void MenuSystemeFlotteDetails(char *key, StarSystem **systemeStellaires, 
  */
 static char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOrdre, int niveau){
     char numero[20];
-    int travail = 0, nombredOrdres = 0;
+    int nombredOrdres = 0;
     Ordre *ordre = RecupererOrdre(station_OrderQueueGet(station));
     if(ordre == NULL){
         gfx_PrintStringXY("Aucun ordre", 55, niveau);
@@ -1389,27 +1390,21 @@ static char* OrdreStationNom(Station *station, int numeroDuModule, char* nomDeOr
                 switch(GetOrderInfo1(station_OrderQueueGet(station))) {
                     case 1:
                         strcat(nomDeOrdre, "Scientifique");
-                        travail = 3;
                         break;
                     case 2:
                         strcat(nomDeOrdre, "Construction");
-                        travail = 3;
                         break;
                     case 3:
                         strcat(nomDeOrdre, "Corvette");
-                        travail = 3;
                         break;
                     case 4:
                         strcat(nomDeOrdre, "Destroyer");
-                        travail = 6;
                         break;
                     case 5:
                         strcat(nomDeOrdre, "Croiseur");
-                        travail = 12;
                         break;
                     case 6:
                         strcat(nomDeOrdre, "Cuirass/");
-                        travail = 24;
                         break;
                 }
                 gfx_SetTextXY(55, niveau);
@@ -1598,8 +1593,8 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
         gfx_PrintString("Am/liorer");
         gfx_SetTextXY(212 - strlen(evolution) * 4, 92);
         gfx_PrintString(evolution);
-        gfx_SetTextXY(227 - mainMenu_IntLen(prixAmelioration) * 4, 104);
-        gfx_TransparentSprite_NoClip(icon_alloy, 212 - mainMenu_IntLen(prixAmelioration) * 4, 103);
+        gfx_SetTextXY(227 - main_IntLength(prixAmelioration) * 4, 104);
+        gfx_TransparentSprite_NoClip(icon_alloy, 212 - main_IntLength(prixAmelioration) * 4, 103);
         if(empire_AlloysGet(joueur) < prixAmelioration){
             gfx_SetTextFGColor(3);
         }
@@ -1667,7 +1662,7 @@ static void MenuSystemeStationResume(char *key, Empire *joueur, StarSystem **sys
             case 1:
                 if((empire_AlloysGet(joueur) >= prixAmelioration) && (station_LevelGet(station) < STATION_CITADEL)){
                     empire_AlloysAdd(joueur, -prixAmelioration);
-                    order_New(station_OrderQueueGet(station),
+                    order_NewDeprecated(station_OrderQueueGet(station),
                         STATION_ORDER_UPGRADE,
                         1, 
                         tempsAmelioration,
@@ -1864,7 +1859,7 @@ static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **sy
             if(GetWindowPrevious(window) != 0){
                 if(empire_AlloysGet(joueur) >= 50){
                     empire_AlloysAdd(joueur, -50);
-                    order_New(ordreQueue,
+                    order_NewDeprecated(ordreQueue,
                         STATION_ORDER_BUILD_MODULE, 
                         1, 
                         12,
@@ -1917,7 +1912,7 @@ static void MenuSystemeStationModules(char *key, Empire *joueur, StarSystem **sy
 /**
  *Choisi un module
  */
-static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, StarSystem **systemeStellaires, Camera *camera, Window *window){
+static void MenuSystemeStationModulesChoix(char *key, Empire *joueur, Camera *camera, Window *window){
     int niveau = 53;
     char nomDuModule[50];
     int i = 0;
@@ -2290,7 +2285,7 @@ static void MenuSystemeStationChantier(char *key, Empire *joueur, StarSystem **s
             else{
                 if(empire_AlloysGet(joueur) >= prix){
                     empire_AlloysAdd(joueur, -prix);
-                    order_New(ordreQueue,
+                    order_NewDeprecated(ordreQueue,
                         STATION_ORDER_BUILD_SHIP,
                         1, 
                         travail,
@@ -2429,7 +2424,7 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSyste
     if(*key == sk_Enter){
         if(empire_AlloysGet(joueur) >= prix * GetWindowFleetSize(window)){
             empire_AlloysAdd(joueur, -(prix * GetWindowFleetSize(window)));
-            order_New(station_OrderQueueGet(starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)])),
+            order_NewDeprecated(station_OrderQueueGet(starSystem_StationGet(systemeStellaires[camera_SystemAimedGet(camera)])),
                 STATION_ORDER_BUILD_SHIP,
                 1, 
                 travail * GetWindowFleetSize(window),
@@ -2446,13 +2441,13 @@ static void MenuSystemeStationChantierChoix(char *key, Empire *joueur, StarSyste
 /**
  * Dessine le menu systeme
  */
-static void MenuSysteme(char* key, EmpireList* empireListe, Settings* parametres, Time* date, StarSystem **systemeStellaires, Camera* camera, Window* window){
+static void MenuSysteme(char* key, EmpireList* empireListe, StarSystem **systemeStellaires, Camera* camera, Window* window){
     Empire *joueur = empire_Get(empireListe, 0);
     switch(GetOpenedMenuDetails(window)) {				
         default:
             break;
         case MENU_SYSTEME_FLOTTES: //liste flottes
-            MenuSystemeFlotte(key, empireListe, systemeStellaires, camera, window);
+            MenuSystemeFlotte(key, empireListe, camera, window);
             break;
             
         case MENU_SYSTEME_ETOILE: //etoile
@@ -2488,7 +2483,7 @@ static void MenuSysteme(char* key, EmpireList* empireListe, Settings* parametres
             break;
 
         case MENU_SYSTEME_STATION_MODULES_CHOIX: //menu station changer module
-            MenuSystemeStationModulesChoix(key, joueur, systemeStellaires, camera, window);
+            MenuSystemeStationModulesChoix(key, joueur, camera, window);
             break;
 
         case MENU_SYSTEME_STATION_CHANTIER: //menu station chantier
@@ -2630,13 +2625,13 @@ static void MenuListeFLottes(char *key, EmpireList *empireListe, Camera *camera,
             gfx_SetTextFGColor(1);
         }
         switch(GetFleetType(flotte)){
-            case FLOTTE_MILITAIRE:
+            case FLEET_MILITARY:
                 gfx_PrintStringXY("militaire", 203, niveau);
                 break;
-            case FLOTTE_DE_CONSTRUCTION:
+            case FLEET_CONSTRUCTION:
                 gfx_PrintStringXY("construction", 179, niveau);
                 break;
-            case FLOTTE_SCIENTIFIQUE:
+            case FLEET_SCIENTIFIC:
                 gfx_PrintStringXY("scientifique", 179, niveau);
                 break;
         }
@@ -3106,13 +3101,12 @@ int menus_Draw( char *key,
                 Window *window, 
                 Settings *settings, 
                 Market *market){
-    int8_t endGame = 1;
     switch(window_MenuGet(window)){
         case MENU_EXIT:
             widget_WindowShow(window_WindowGet(window, 0), key);
             break;
         case MENU_SYSTEM:
-            MenuSysteme(key, empireList, settings, time, galaxy, camera, window);
+            MenuSysteme(key, empireList, galaxy, camera, window);
             break;
         case MENU_FLEET:
             MenuListeFLottes(key, empireList, camera, window);
@@ -3126,7 +3120,7 @@ int menus_Draw( char *key,
             widget_WindowShow(window_WindowGet(window, 1), key);
             break;
         case MENU_CONTACTS_INFOS:
-            MenuContactsDetails(key, empireList, camera, window);
+            widget_WindowShow(window_WindowGet(window, 2), key);
             break;
         case MENU_CONTACTS_EFFECTUER_ACTION:
             MenuContactsEffectuerAction(key, empireList, camera, window);
@@ -3179,6 +3173,12 @@ void menu_Initialize(   EmpireList *empireList,
         empireIndex++;
         empire = empire_Get(empireList, empireIndex);
     }
+
+    // Contacts infos
+    widgetWindow = window_WindowNew(window, "Contacts", MENU_WIDE_WIDTH, MENU_WIDE_HEIGHT);
+    widgetContainer = widget_WindowContainerAdd(widgetWindow);
+    empire = empire_Get(empireList, empireIndex);
+    
 }
 
 // Windows functions

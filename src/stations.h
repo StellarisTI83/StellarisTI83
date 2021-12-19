@@ -1,7 +1,6 @@
 #ifndef H_STATIONS
 #define H_STATIONS
 
-#include "ordres.h"
 
 /* types =============================================================== */
 /**
@@ -48,6 +47,8 @@ typedef enum {  STATION_ORDER_NONE = 0,
 typedef struct StationStruct Station;
 
 /* entry points ======================================================== */
+
+#include "ordres.h"
 
 Station* station_Create();
 void station_Reinitialize(Station *station);

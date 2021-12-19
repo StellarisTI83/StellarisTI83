@@ -2,8 +2,6 @@
 #define H_SYSTEMES
 
 #include <stdbool.h>
-#include "planet.h"
-#include "stations.h"
 
 #define NO_SYSTEM -1
 
@@ -39,6 +37,9 @@ typedef enum {  STAR_NONE,
 typedef struct HyperlaneStruct Hyperlane;
 
 typedef struct StarSystemStruct StarSystem;
+
+#include "planet.h"
+#include "stations.h"
 
 /* internal public functions =========================================== */
 /**

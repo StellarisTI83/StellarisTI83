@@ -1,7 +1,6 @@
 #ifndef H_PLANETES
 #define H_PLANETES
 
-#include "ordres.h"
 
 /* types =============================================================== */
 
@@ -15,12 +14,12 @@ typedef enum {  BUILDING_NONE,
 
 
 
-typedef enum {  AUCUN_ORDRE_VILLE,
-                CONSTRUIRE_DISTRICT_URBAIN,
-                CONSTRUIRE_DISTRICT_GENERATEUR, 
-                CONSTRUIRE_DISTRICT_MINIER,
-                CONSTRUIRE_DISTRICT_AGRICOLE, 
-                CONSTRUIRE_BATIMENT} AiOrdreConstruction;
+typedef enum {  CITY_ORDER_NONE,
+                CITY_DISTRICT_URBAN,
+                CITY_DISTRICT_GENERATOR, 
+                CITY_DISTRICT_MINING,
+                CITY_DISTRICT_AGRICULTURE, 
+                CITY_BUILDING} PlanetBuildType;
 
 /**
  * @brief The different planet types
@@ -56,6 +55,8 @@ typedef struct CityStruct City;
 typedef struct PlanetStruct Planet;
 
 /* entry points ======================================================== */
+
+#include "ordres.h"
 
 Planet* planet_Alloc();
 
@@ -138,6 +139,8 @@ void    city_PopulationSet(City *city, int population);
  * @return int
  */
 int     city_PopulationGet(const City *city);
+
+int city_Build(City *city, Empire *empire, const PlanetBuildType type, const Building building);
 
 /**
  * @brief To initialize all of the districts of a planet
@@ -267,7 +270,7 @@ int     city_AmentiesGet(const City *city);
 
 Ordre*  GetCityOrderElement(City *city);
 OrdreFile* city_OrderQueueGet(City *city);
-AiOrdreConstruction city_OrderGet(City *city);
+PlanetBuildType city_OrderGet(City *city);
 int     city_OrderProgressGet(City *city);
 void    city_OrderProgressUnincrement(City *city);
 void    city_OrderEnd(City *city);

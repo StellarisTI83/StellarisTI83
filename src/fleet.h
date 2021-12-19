@@ -1,11 +1,8 @@
-#ifndef _FLOTTES_INCLUDE
-#define _FLOTTES_INCLUDE
+#ifndef H_FLEET
+#define H_FLEET
 
 #include "generic_lists.h"
 
-#include "ai.h"
-#include "camera.h"
-#include "systemes.h"
 
 /* constants =========================================================== */
 
@@ -18,14 +15,19 @@
 #define FLOTTE_RECHERCHER 5
 
 #define FLOTTE_CONSTRUIRE_BASE 2
-#define FLOTTE_COSNTRUIRE_MINE 5
+#define FLOTTE_CONSTRUIRE_MINE 5
 #define FLOTTE_CONSTRUIRE_BASE_SCIENTIFIQUE 6
 
 /* types =============================================================== */
 
-typedef enum {FLOTTE_MILITAIRE, FLOTTE_SCIENTIFIQUE, FLOTTE_DE_CONSTRUCTION} FlotteType;
+typedef enum {  FLEET_MILITARY, 
+                FLEET_SCIENTIFIC, 
+                FLEET_CONSTRUCTION} FlotteType;
 
-typedef enum {CORVETTE, DESTROYER, CROISEUR, CUIRASSE} TypeMilitaire;
+typedef enum {  CORVETTE, 
+                DESTROYER, 
+                CRUISER, 
+                BATTLESHIP} TypeMilitaire;
 
 /* struct ============================================================== */
 
@@ -38,6 +40,10 @@ typedef struct FlotteStruct Fleet;
 typedef struct FleetTemplateStruct FleetTemplate;
 
 typedef struct VecteurStruct Vecteur;
+
+#include "ai.h"
+#include "camera.h"
+#include "systemes.h"
 
 /* entry points ======================================================== */
 

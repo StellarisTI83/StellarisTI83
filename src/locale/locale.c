@@ -36,7 +36,7 @@ localeLanguageEnum getLanguage(){
 char initializeLanguage(){
 	uint16_t indexString, taille = 0, index = 0;
 	char chaineTemporaire[MAX_VALUE_LENGTH];
-	char name[4] = {0};
+	char name[5] = {0};
 	uint16_t numberOfString = 0;
 
 	switch(localeLanguage){

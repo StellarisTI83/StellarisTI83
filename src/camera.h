@@ -37,8 +37,8 @@ typedef struct CameraStruct Camera;
 
 #include "main.h"
 #include "planet.h"
-#include "menus.h"
 #include "time.h"
+#include "menus.h"
 
 /* entry points ======================================================== */
 

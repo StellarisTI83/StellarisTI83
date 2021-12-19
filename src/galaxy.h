@@ -1,5 +1,5 @@
-#ifndef _GALAXY_INCLUDE
-#define _GALAXY_INCLUDE
+#ifndef H_GALAXY
+#define H_GALAXY
 
 #include "ai.h"
 #include "camera.h"

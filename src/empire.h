@@ -97,8 +97,9 @@ typedef struct RelationsStruct Diplomacy;
 
 #define NO_EMPIRE -1
 
-#include "fleet.h"
 #include "time.h"
+#include "planet.h"
+#include "fleet.h"
 
 // Empire list
 EmpireList* empire_ListCreate();

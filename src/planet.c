@@ -20,6 +20,8 @@
 #include "main.h"
 
 #include "planet.h"
+#include "empire.h"
+#include "price.h"
 
 char * planetNames[] = {
     "Egnepra",
@@ -409,6 +411,42 @@ int city_PopulationGet(const City *city){
         return 0;
 }
 
+
+int city_Build(City *city, Empire *empire, const PlanetBuildType type, const Building building){
+    Building tempBuilding;
+    int index = 1;
+    switch(type){
+        case CITY_DISTRICT_URBAN:
+            if(city->districtUrban < CITY_DISTRICT_URBAN_MAX && empire_MineralsGet(empire) >= CITY_DISTRICT_URBAN_PRICE)
+                order_New(city_OrderQueueGet(city), CITY_DISTRICT_URBAN, empire, CITY_DISTRICT_URBAN_TIME, 0, 0, CITY_DISTRICT_URBAN_PRICE);
+            break;
+        case CITY_DISTRICT_GENERATOR:
+            if(city->districtUrban < CITY_DISTRICT_GENERATOR_MAX && empire_MineralsGet(empire) >= CITY_DISTRICT_GENERATOR_PRICE)
+                order_New(city_OrderQueueGet(city), CITY_DISTRICT_GENERATOR, empire, CITY_DISTRICT_GENERATOR_TIME, 0, 0, CITY_DISTRICT_GENERATOR_PRICE);
+            break;
+        case CITY_DISTRICT_MINING:
+            if(city->districtUrban < CITY_DISTRICT_MINING_MAX && empire_MineralsGet(empire) >= CITY_DISTRICT_MINING_PRICE)
+                order_New(city_OrderQueueGet(city), CITY_DISTRICT_MINING, empire, CITY_DISTRICT_GENERATOR_TIME, 0, 0, CITY_DISTRICT_MINING_PRICE);
+            break;
+        case CITY_DISTRICT_AGRICULTURE:
+            if(city->districtUrban < CITY_DISTRICT_AGRICULTURE_MAX && empire_MineralsGet(empire) >= CITY_DISTRICT_AGRICULTURE_PRICE)
+                order_New(city_OrderQueueGet(city), CITY_DISTRICT_AGRICULTURE, empire, CITY_DISTRICT_AGRICULTURE_TIME, 0, 0, CITY_DISTRICT_AGRICULTURE_PRICE);
+            break;
+        case CITY_BUILDING:
+            tempBuilding = city_BuildingGet(city, 0);
+            while(tempBuilding){
+                tempBuilding = city_BuildingGet(city, index);
+                index++;
+            }
+            if(empire_MineralsGet(empire) >= CITY_BUILDING_PRICE)
+                order_New(city_OrderQueueGet(city), CITY_BUILDING, empire, CITY_BUILDING_TIME, index, (int)building, CITY_DISTRICT_AGRICULTURE_PRICE);
+            break;
+        default:
+            break;
+    }
+    return 0;
+}
+
 void city_DistrictSet(City *city, int urban, int generator, int mining, int agriculture){
     if(city){
         city->districtUrban = urban;
@@ -607,7 +645,7 @@ OrdreFile* city_OrderQueueGet(City *city){
         return NULL;
 }
 
-AiOrdreConstruction city_OrderGet(City *city){
+PlanetBuildType city_OrderGet(City *city){
     if(city)
         return GetOrder(city->ordreFile);
     else

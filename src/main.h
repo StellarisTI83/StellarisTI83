@@ -72,6 +72,6 @@ void mainMenu_PrintInt(int nombre);
  * @param number 
  * @return int 
  */
-int mainMenu_IntLen(int nombre);
+int main_IntLength(int nombre);
 
 #endif

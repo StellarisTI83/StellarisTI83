@@ -391,23 +391,23 @@ void RechercherCommande(char *commande, EmpireList *empireListe, Time *date, Set
         }
     }
 
-    resultat = strstr(commande, "see all");
+    resultat = strstr(commande, "observe");
     if(resultat){
         switch(settings_SeeAllGet(parametres)){
             case true:
                 settings_SeeAllSet(parametres, false);
                 #ifdef DEBUG_VERSION
-                    dbg_sprintf(dbgout, "See all desactivated\n");
+                    dbg_sprintf(dbgout, "observe desactivated\n");
                 #endif
                 break;
             case false:
                 settings_SeeAllSet(parametres, true);
                 #ifdef DEBUG_VERSION
-                    dbg_sprintf(dbgout, "See all activated\n");
+                    dbg_sprintf(dbgout, "observe activated\n");
                 #endif
                 break;
         }
-        strcpy(console.reponse, "see all systems");
+        strcpy(console.reponse, "observe systems");
         return;
     }
 

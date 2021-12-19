@@ -481,7 +481,7 @@ static void galaxy_PlanetInitialize(StarSystem *starSystem, int planetIndex){
 static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition, int starIndex){
     StarSystem *starSystem = NULL;
     StarType star = STAR_NONE;
-    int planetNumber, habitablePlanetNumber;
+    int planetNumber;
     int planetIndex;
     // Create the structure of the star system
     starSystem = starSystem_Create();
@@ -526,14 +526,6 @@ static StarSystem *galaxy_SystemGenerate(int xPosition, int yPosition, int starI
 
     // Randomize the number of planet
     planetNumber = randInt(1, 5);
-    habitablePlanetNumber = 0;
-
-    // Randomize the number of habitable planet
-    if((starSystem_StarTypeGet(starSystem) == STAR_TYPE_M) ||
-    ((starSystem_StarTypeGet(starSystem) == STAR_TYPE_G) || 
-    (starSystem_StarTypeGet(starSystem) == STAR_TYPE_K))){
-        habitablePlanetNumber = randInt(0, planetNumber);
-    }
 
     // Randomize the number of habitable planet
     planetIndex = 0;

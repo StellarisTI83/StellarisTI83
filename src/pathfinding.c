@@ -5,8 +5,8 @@
 
 #include "main.h"
 
-#include "systemes.h"
 #include "pathfinding.h"
+#include "systemes.h"
 
 typedef struct NodeStruct Node;
 

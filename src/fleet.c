@@ -176,10 +176,10 @@ Fleet* fleet_New(FleetList *flotteListe, int systeme, FlotteType type, int nombr
 	flotte->systemeArrive = 0;
 	flotte->avancement = 0;
 	switch(type){
-		case FLOTTE_SCIENTIFIQUE:
+		case FLEET_SCIENTIFIC:
 			flotte->nombreVaisseaux = 1;
 			flotte->puissance = 0;
-			flotte->type = FLOTTE_SCIENTIFIQUE;
+			flotte->type = FLEET_SCIENTIFIC;
 			flotte->coqueVie = 300;
 			flotte->coqueTotal = 300;
 			flotte->blindageVie = 50;
@@ -187,10 +187,10 @@ Fleet* fleet_New(FleetList *flotteListe, int systeme, FlotteType type, int nombr
 			flotte->bouclierVie = 100;
 			flotte->bouclierTotal = 100;
 			break;
-		case FLOTTE_DE_CONSTRUCTION:
+		case FLEET_CONSTRUCTION:
 			flotte->nombreVaisseaux = 1;
 			flotte->puissance = 0;
-			flotte->type = FLOTTE_DE_CONSTRUCTION;
+			flotte->type = FLEET_CONSTRUCTION;
 			flotte->coqueVie = 300;
 			flotte->coqueTotal = 300;
 			flotte->blindageVie = 50;
@@ -198,8 +198,8 @@ Fleet* fleet_New(FleetList *flotteListe, int systeme, FlotteType type, int nombr
 			flotte->bouclierVie = 100;
 			flotte->bouclierTotal = 100;
 			break;
-		case FLOTTE_MILITAIRE:
-			flotte->type = FLOTTE_MILITAIRE;
+		case FLEET_MILITARY:
+			flotte->type = FLEET_MILITARY;
 
 			flotte->nombreVaisseaux += nombreDeCorvettes;
 			flotte->puissance += 150 * nombreDeCorvettes;
@@ -385,7 +385,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *f
 		if(systeme == flotte->systeme){
 			camera_FleetMoveSet(camera, false);
 			flotte->action = FLOTTE_AUCUNE_ACTION;
-		} else if(((flotte->type == FLOTTE_SCIENTIFIQUE) && (starSystem_IntelLevelGet(systemeStellaires[systeme]) == INTEL_UNKNOWN)) || (starSystem_IntelLevelGet(systemeStellaires[systeme]) != INTEL_UNKNOWN)){
+		} else if(((flotte->type == FLEET_SCIENTIFIC) && (starSystem_IntelLevelGet(systemeStellaires[systeme]) == INTEL_UNKNOWN)) || (starSystem_IntelLevelGet(systemeStellaires[systeme]) != INTEL_UNKNOWN)){
 			camera_FleetMoveSet(camera, false);
 			
 			camera_FleetSet(camera, 0);

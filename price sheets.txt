@@ -1,5 +1,7 @@
 Planets
-
+    max :   10 districts
+            6 buildings
+            
                                 minerals    time
     CITY_ORDER_NONE             0           0
     CITY_DISTRICT_URBAN         50          12

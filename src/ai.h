@@ -6,6 +6,8 @@ typedef struct EmpireAiStruct EmpireAi;
 /* entry points ======================================================== */
 
 #include "empire.h"
+#include "time.h"
+#include "galaxy.h"
 
 void ai_EmpireGenerate( Empire *empire);
 

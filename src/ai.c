@@ -24,6 +24,9 @@
 
 /* types =============================================================== */
 
+typedef GenericList ConstructionList;
+typedef GenericList ConstructionList;
+
 typedef enum {
     credit, 
     mineral, 
@@ -33,36 +36,134 @@ typedef enum {
 } EconomicPriority;
 
 typedef struct {
-    AiOrdreConstruction ordreConstruction;
-    Building building;
-} PlanetaryConstructionOrder;
+    union {
+        struct {
+            PlanetBuildType buildingType;
+            Building building;
+        }PlanetOrder;
+        struct {
+            int a;
+        }FleetOrder;
+    };
+} AiConstuctionOrder;
 
 struct EmpireAiStruct{
-    EconomicPriority economicPriority;
+    EconomicPriority economicPriority;  // The ressource to prioritize
     int militaryPriority;
-    GenericList* constructionList;
+    ConstructionList* constructionList; // The contruction queue for the empire
+    GenericList* priority;
 };
 
 
+
 /* entry points ======================================================== */
+
+/**
+ * @brief The ai for economy : Priority are calculated, priority are set, and
+ * a queue is created. ai_Planet then pick in this queue what building to
+ * construct on planets
+ * 
+ * @param empire 
+ */
+static void ai_EmpireEconomy(   Empire *empire){
+    EmpireAi* ai = empire_AiGet(empire);
+    assert(ai);
+    AiConstuctionOrder* order = calloc(1, sizeof(AiConstuctionOrder));
+    
+    dbg_sprintf(dbgout, "Empire economy\n");
+    switch(ai->economicPriority){
+        case credit:
+            order->PlanetOrder.buildingType = CITY_DISTRICT_GENERATOR;
+            GenericCell_Add(ai->constructionList, order);
+            #ifdef DEBUG_VERSION
+            dbg_sprintf(dbgout, "%d\n", order->PlanetOrder.buildingType);
+            #endif
+            break;
+
+        case mineral:
+            order->PlanetOrder.buildingType = CITY_DISTRICT_MINING;
+            GenericCell_Add(ai->constructionList, order);
+            #ifdef DEBUG_VERSION
+            dbg_sprintf(dbgout, "%d\n", order->PlanetOrder.buildingType);
+            #endif
+            break;
+
+        case food:
+            order->PlanetOrder.buildingType = CITY_DISTRICT_AGRICULTURE;
+            GenericCell_Add(ai->constructionList, order);
+            #ifdef DEBUG_VERSION
+            dbg_sprintf(dbgout, "%d\n", order->PlanetOrder.buildingType);
+            #endif
+            break;
+
+        case alloys:
+            order->PlanetOrder.buildingType = CITY_BUILDING;
+            order->PlanetOrder.building = BUILDING_FOUNDRIES;
+            GenericCell_Add(ai->constructionList, order);
+            #ifdef DEBUG_VERSION
+            dbg_sprintf(dbgout, "%d\n", order->PlanetOrder.buildingType);
+            #endif
+            break;
+
+        case goods:
+            order->PlanetOrder.buildingType = CITY_BUILDING;
+            order->PlanetOrder.building = BUILDING_CIVILIAN_INDUSTRIES;
+            GenericCell_Add(ai->constructionList, order);
+            #ifdef DEBUG_VERSION
+            dbg_sprintf(dbgout, "%d\n", order->PlanetOrder.buildingType);
+            #endif
+            break;
+
+        default:
+            #ifdef DEBUG_VERSION
+            dbg_sprintf(dbgerr, "Unknown order id %d\n", ai->economicPriority);
+            #endif
+            break;
+    }
+}
+
+static void ai_EmpireEconomyCalculate(Empire *empire){
+    EmpireAi* ai = empire_AiGet(empire);
+    int element[5];
+    int priority = 0, index = 0;
+
+    assert(ai);
+
+    // We place the variation in a buffer easy to use
+    element[0] = empire_CreditVariationGet(empire);
+    element[1] = empire_MineralsVariationGet(empire);
+    element[2] = empire_FoodVariationGet(empire);
+    element[3] = empire_AlloysVariationGet(empire);
+    element[4] = empire_ConsumerVariationGet(empire);
+
+    //Here we get the worst variation of economy
+    for (index = 1; index < 5; index++)
+        if (element[index] < element[priority])
+            priority = index;
+    
+    #ifdef DEBUG_VERSION
+    dbg_sprintf(dbgout, "%d\n", ai->economicPriority);
+    #endif
+    ai->economicPriority = priority;
+}
 
 static void ai_Planet(  Empire *empire){
     Planet* planet = empire_PlanetGet(empire, 0);
     int planetIndex = 1;
     EmpireAi* ai = empire_AiGet(empire);
     int minerals = empire_MineralsGet(empire);
-    PlanetaryConstructionOrder* planetaryConstructionOrder = GenericCell_Get(ai->constructionList, 0);
+    AiConstuctionOrder* planetaryConstructionOrder = GenericCell_Get(ai->constructionList, 0);
 
     while(planetaryConstructionOrder && planet){
         //Here we get the planet
-        dbg_printf("Planet %d %d %d\n", planetIndex, planetaryConstructionOrder->ordreConstruction, minerals);
+        dbg_printf("Planet %d %d %d\n", planetIndex, planetaryConstructionOrder->PlanetOrder.buildingType, minerals);
         if(minerals > 400) {
-            if(planetaryConstructionOrder->ordreConstruction == CONSTRUIRE_BATIMENT){
-                order_New(city_OrderQueueGet(planet_CityGet(planet)),
-                    CONSTRUIRE_BATIMENT,
+            if(planetaryConstructionOrder->PlanetOrder.buildingType == CITY_BUILDING){
+                order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planet)),
+                    CITY_BUILDING,
                     1, 
                     10,
-                    planetaryConstructionOrder->building,
+                    planetaryConstructionOrder->PlanetOrder.building,
                     1,
                     400
                 );
@@ -72,8 +173,8 @@ static void ai_Planet(  Empire *empire){
                 planetaryConstructionOrder = GenericCell_Get(ai->constructionList, 0);
             }
         } else if(minerals > 50){
-            order_New(city_OrderQueueGet(planet_CityGet(planet)), 
-                planetaryConstructionOrder->ordreConstruction, 
+            order_NewDeprecated(city_OrderQueueGet(planet_CityGet(planet)), 
+                planetaryConstructionOrder->PlanetOrder.buildingType, 
                 1, 
                 12, 
                 0, 
@@ -89,74 +190,14 @@ static void ai_Planet(  Empire *empire){
     }
 }
 
-static void ai_EmpireEconomyCalculate(Empire *empire){
-    EmpireAi* ai = empire_AiGet(empire);
-    int element[5];
-    int priority = 0, index = 0;
 
-    assert(ai);
 
-    element[0] = empire_CreditVariationGet(empire);
-    element[1] = empire_MineralsVariationGet(empire);
-    element[2] = empire_FoodVariationGet(empire);
-    element[3] = empire_AlloysVariationGet(empire);
-    element[4] = empire_ConsumerVariationGet(empire);
 
-    //Here we get the worst variation of economy
-    for (index = 1; index < 5; index++)
-        if (element[index] < element[priority])
-            priority = index;
-    
-    dbg_sprintf(dbgout, "%d\n", ai->economicPriority);
-    ai->economicPriority = priority;
-}
-
-static void ai_EmpireEconomy(   Empire *empire){
-    EmpireAi* ai = empire_AiGet(empire);
-    assert(ai);
-    PlanetaryConstructionOrder* order = calloc(1, sizeof(PlanetaryConstructionOrder));
-    
-    dbg_sprintf(dbgout, "empireconomy\n");
-    switch(ai->economicPriority){
-        case credit:
-            order->ordreConstruction = CONSTRUIRE_DISTRICT_GENERATEUR;
-            GenericCell_Add(ai->constructionList, order);
-    dbg_sprintf(dbgout, "%d\n", order->ordreConstruction);
-            break;
-        case mineral:
-            order->ordreConstruction = CONSTRUIRE_DISTRICT_MINIER;
-            GenericCell_Add(ai->constructionList, order);
-    dbg_sprintf(dbgout, "%d\n", order->ordreConstruction);
-            break;
-        case food:
-            order->ordreConstruction = CONSTRUIRE_DISTRICT_AGRICOLE;
-            GenericCell_Add(ai->constructionList, order);
-    dbg_sprintf(dbgout, "%d\n", order->ordreConstruction);
-            break;
-        case alloys:
-            order->ordreConstruction = CONSTRUIRE_BATIMENT;
-            order->building = BUILDING_FOUNDRIES;
-            GenericCell_Add(ai->constructionList, order);
-    dbg_sprintf(dbgout, "%d\n", order->ordreConstruction);
-            break;
-        case goods:
-            order->ordreConstruction = CONSTRUIRE_BATIMENT;
-            order->building = BUILDING_CIVILIAN_INDUSTRIES;
-            GenericCell_Add(ai->constructionList, order);
-    dbg_sprintf(dbgout, "%d\n", order->ordreConstruction);
-            break;
-        default:
-            #ifdef DEBUG_VERSION
-            dbg_sprintf(dbgerr, "Unknown order id %d\n", ai->economicPriority);
-            #endif
-            break;
-    }
-}
 
 static void ai_EmpireFleetCivilian(Empire *empire, Fleet *flotte, StarSystem **systemeStellaires){
     if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
         // int systeme = GetFleetSystem(flotte);
-        if(GetFleetType(flotte) == FLOTTE_SCIENTIFIQUE){
+        if(GetFleetType(flotte) == FLEET_SCIENTIFIC){
             if(GetFleetAction(flotte) == FLOTTE_AUCUNE_ACTION){
                 int systemIndex = 0;
                 int systemeDestination = 0;
@@ -188,7 +229,7 @@ static void ai_EmpireFleetManager(Empire *empire, StarSystem **systemeStellaires
 
         while(compteurFlotte < tailleFlotte){
             flotte = FlotteNumero(flotteListe, compteurFlotte);
-            if(GetFleetType(flotte) == FLOTTE_MILITAIRE)
+            if(GetFleetType(flotte) == FLEET_MILITARY)
                 ai_EmpireFleetMilitary();
             
             else

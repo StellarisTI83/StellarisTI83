@@ -28,7 +28,7 @@ struct WidgetButtonStruct{
 
     char flags;
 
-    int (*action)();
+    void (*action)();
     void* actionData;
     char *text;
 
@@ -61,7 +61,7 @@ struct WidgetWindowStruct{
 
 void widget_ButtonAdd(  WidgetContainer *widgetNode, 
                         const char *string,
-                        int(*action)(),
+                        void(*action)(),
                         void* actionData,
                         bool outline,
                         bool justify){

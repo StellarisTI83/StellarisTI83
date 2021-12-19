@@ -469,7 +469,7 @@ void mainMenu_PrintInt(int number){
     }
 }
 
-int mainMenu_IntLen(int number){
+int main_IntLength(int number){
     int i = 1;
     if(number < 0){
         number = -number;

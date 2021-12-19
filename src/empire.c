@@ -221,9 +221,9 @@ void empire_Generate(   Empire *empire,
     city_BuildingSet(city, BUILDING_FOUNDRIES, 3, 1);
 
     empire_FleetListCreate(empire);
-    fleet_New(empire->fleet, systemIndex, FLOTTE_MILITAIRE, 3, 0, 0, 0);
-    fleet_New(empire->fleet, systemIndex, FLOTTE_DE_CONSTRUCTION, 0, 0, 0, 0);
-    fleet_New(empire->fleet, systemIndex, FLOTTE_SCIENTIFIQUE, 0, 0, 0, 0);
+    fleet_New(empire->fleet, systemIndex, FLEET_MILITARY, 3, 0, 0, 0);
+    fleet_New(empire->fleet, systemIndex, FLEET_CONSTRUCTION, 0, 0, 0, 0);
+    fleet_New(empire->fleet, systemIndex, FLEET_SCIENTIFIC, 0, 0, 0, 0);
 
     empire_PowerUpdate(empire);
 
