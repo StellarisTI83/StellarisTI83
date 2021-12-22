@@ -3107,15 +3107,15 @@ int menus_Draw( char *key,
             widget_WindowShow(window_WindowGet(window, 0), key);
             break;
         case MENU_SYSTEM:
-            MenuSysteme(key, empireList, galaxy, camera, window);
+            // MenuSysteme(key, empireList, galaxy, camera, window);
             break;
         case MENU_FLEET:
-            MenuListeFLottes(key, empireList, camera, window);
+            // MenuListeFLottes(key, empireList, camera, window);
             break;
         case MENU_MARKET:
             break;
         case MENU_SCIENCE:
-            MenuRecherche(key, camera, window);
+            // MenuRecherche(key, camera, window);
             break;
         case MENU_CONTACTS:
             widget_WindowShow(window_WindowGet(window, 1), key);
@@ -3125,7 +3125,7 @@ int menus_Draw( char *key,
             // MenuContactsDetails(key, empireList, camera, window);
             break;
         case MENU_CONTACTS_EFFECTUER_ACTION:
-            MenuContactsEffectuerAction(key, empireList, camera, window);
+            // MenuContactsEffectuerAction(key, empireList, camera, window);
             break;
         default:
             break;
@@ -3180,7 +3180,7 @@ void menu_Initialize(   EmpireList *empireList,
     // Contacts infos
     widgetWindow = window_WindowNew(window, (char*)1, MENU_WIDE_WIDTH, MENU_WIDE_HEIGHT);
     
-    widgetContainer = widget_WindowContainerAdd(widgetWindow, 30, 50);
+    widgetContainer = widget_WindowContainerAdd(widgetWindow, 50, 45);
     widget_WindowContainerBackgroundSet(widgetContainer, COLOR_BLACK);
     widget_WindowContainerOutlineSet(widgetContainer, true);
     widget_ImageAdd(widgetContainer, leader_head_human, 69, 67, 3);
@@ -3195,6 +3195,11 @@ void menu_Initialize(   EmpireList *empireList,
     widget_ButtonIconAdd(widgetContainer, "recherche", NULL, NULL, true, false, icon_agreement, icon_agreement_width, icon_agreement_height);
     
     widgetContainer = widget_WindowContainerAdd(widgetWindow, 50, 50);
+    widget_TextIconAdd(widgetContainer, "0 Neutres", 100, true, false, icon_opinion, icon_opinion_width, icon_opinion_height);
+    widget_TextIconAdd(widgetContainer, ">", 32, true, false, icon_fleet_allied, icon_fleet_allied_width, icon_fleet_allied_height);
+    widget_TextIconAdd(widgetContainer, "<", 33, true, false, icon_credit, icon_credit_width, icon_credit_height);
+    widget_TextIconAdd(widgetContainer, "=", 32, true, false, icon_science, icon_science_width, icon_science_height);
+    widget_TextIconAdd(widgetContainer, "", 100, true, false, icon_agreement, icon_agreement_width, icon_agreement_height);
 }
 
 // Windows functions

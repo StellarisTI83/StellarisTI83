@@ -33,7 +33,24 @@ struct WidgetButtonStruct{
     char *text;
 
     gfx_sprite_t *icon;
-    int iconX;
+    int iconWidth;
+    int iconY;
+
+    void *next;
+};
+
+struct WidgetTextStruct{
+    int x;
+    int y;
+    int width;
+    int height;
+
+    char flags;
+
+    char *text;
+
+    gfx_sprite_t *icon;
+    int iconWidth;
     int iconY;
 
     void *next;
@@ -97,7 +114,7 @@ WidgetButton*  widget_ButtonIconAdd(  WidgetContainer *widgetNode,
                                             justify);
 
     button->icon = icon;
-    button->iconX = iconWidth;
+    button->iconWidth = iconWidth;
     button->iconY = button->y + (button->height - iconHeight) / 2;
     return button;
 }
@@ -144,9 +161,9 @@ WidgetButton* widget_ButtonAdd(  WidgetContainer *widgetNode,
     button->y = y;
 
     if(outline)
-        button->flags = button->flags | BUTTON_FLAG_OUTLINE;
+        button->flags = button->flags | FLAG_OUTLINE;
     if(justify)
-        button->flags = button->flags | BUTTON_FLAG_CENTER;
+        button->flags = button->flags | FLAG_CENTER;
     
     button->action = action;
     button->actionData = actionData;
@@ -165,7 +182,7 @@ void widget_ButtonDestroy(WidgetButton *button){
 
 int widget_ButtonShow(WidgetButton *button, bool status, bool click){
     int x;
-    if(button->flags & BUTTON_FLAG_OUTLINE){
+    if(button->flags & FLAG_OUTLINE){
         gfx_SetColor(COLOR_HUD_OUTLINES);
         gfx_Rectangle(  button->x, 
                         button->y, 
@@ -173,7 +190,7 @@ int widget_ButtonShow(WidgetButton *button, bool status, bool click){
                         button->height);
     }
     
-    x = (button->flags & BUTTON_FLAG_CENTER) ? button->x + (button->width - strlen(button->text) * TEXT_HEIGHT)/2 : button->x + MENU_BUTTON_GAP;
+    x = (button->flags & FLAG_CENTER) ? button->x + (button->width - strlen(button->text) * TEXT_HEIGHT)/2 : button->x + MENU_BUTTON_GAP;
 
     if(status)
         gfx_SetTextFGColor(COLOR_YELLOW);
@@ -183,7 +200,7 @@ int widget_ButtonShow(WidgetButton *button, bool status, bool click){
     
     if(button->icon){
         gfx_TransparentSprite_NoClip(button->icon, button->x + MENU_BUTTON_GAP, button->iconY);
-        x += button->iconX + MENU_BUTTON_GAP;
+        x += button->iconWidth + MENU_BUTTON_GAP;
     }
     gfx_PrintStringXY(  button->text, 
                         x,
@@ -229,7 +246,111 @@ WidgetImage* widget_ImageAdd(   WidgetContainer *widgetNode,
 }
 
 void widget_ImageShow(WidgetImage* widgetImage){
-gfx_ScaledTransparentSprite_NoClip(widgetImage->image, widgetImage->x, widgetImage->y, widgetImage->scale, widgetImage->scale);
+    gfx_ScaledTransparentSprite_NoClip(widgetImage->image, widgetImage->x, widgetImage->y, widgetImage->scale, widgetImage->scale);
+}
+
+void widget_TextNoMalloc(   WidgetText *text,
+                            char *string){
+    assert(text);
+    assert(string);
+    text->text = string;
+}
+
+WidgetText* widget_TextIconAdd( WidgetContainer *widgetNode, 
+                                const char *string,
+                                const int width,
+                                const bool outline,
+                                const bool justify,
+                                gfx_sprite_t *icon,
+                                const int iconWidth,
+                                const int iconHeight){
+
+    WidgetText* text = widget_TextAdd(  widgetNode, 
+                                        string,
+                                        width,
+                                        outline,
+                                        justify);   
+    text->icon = icon;
+    text->iconWidth = iconWidth;
+    text->iconY = text->y + (text->height - iconHeight) / 2;
+    return text;
+}
+
+WidgetText* widget_TextAdd( WidgetContainer *widgetNode, 
+                            const char *string,
+                            const int width,
+                            const bool outline,
+                            const bool justify){
+    WidgetText *text, *tmp;
+    int x = widgetNode->x + MENU_BUTTON_GAP, y = widgetNode->y + MENU_BUTTON_GAP;
+
+    assert(widgetNode);
+
+    text = calloc(1, sizeof(WidgetText));
+    assert(text);
+    
+    text->width = ((widgetNode->width - MENU_BUTTON_GAP * 2) * width) / 100;
+    text->height = TEXT_HEIGHT * 2;
+
+    if(widgetNode->begin){
+        if(widgetNode->type != WIDGET_TEXT)
+            exit(EXIT_FAILURE);
+
+        tmp = widgetNode->begin;
+
+        while(tmp->next){
+            tmp = tmp->next;
+        }
+
+        tmp->next = text;
+        x = tmp->x + tmp->width + MENU_BUTTON_GAP;
+        y = tmp->y;
+        if(x + text->width > widgetNode->x + widgetNode->width) {
+            x = widgetNode->x + MENU_BUTTON_GAP;
+            y += tmp->height + MENU_BUTTON_GAP;
+        }
+    } else {
+        widgetNode->begin = text;
+        widgetNode->type = WIDGET_TEXT;
+        y = widgetNode->y + MENU_BUTTON_GAP;
+    }
+
+    text->x = x;
+    text->y = y;
+
+    if(string){
+        text->text = calloc(1, sizeof(char) * (strlen(string) + 1));
+        assert(text->text);
+        strcpy(text->text, string);
+    }
+
+    if(outline)
+        text->flags = text->flags | FLAG_OUTLINE;
+    if(justify)
+        text->flags = text->flags | FLAG_CENTER;
+    
+    return text;
+}
+
+void widget_TextShow(WidgetText* text){
+    int x;
+    if(text->flags & FLAG_OUTLINE){
+        gfx_SetColor(COLOR_HUD_OUTLINES);
+        gfx_Rectangle(  text->x, 
+                        text->y, 
+                        text->width, 
+                        text->height);
+    }
+    
+    x = (text->flags & FLAG_CENTER) ? text->x + (text->width - strlen(text->text) * TEXT_HEIGHT)/2 : text->x + MENU_BUTTON_GAP;
+    
+    if(text->icon){
+        gfx_TransparentSprite_NoClip(text->icon, text->x + MENU_BUTTON_GAP, text->iconY);
+        x += text->iconWidth + MENU_BUTTON_GAP;
+    }
+    gfx_PrintStringXY(  text->text, 
+                        x,
+                        text->y + (text->height - TEXT_HEIGHT) / 2);
 }
 
 
@@ -259,13 +380,13 @@ WidgetContainer *widget_WindowContainerAdd( WidgetWindow *window,
     if(window->begin){
         tmp = window->begin;
         x += tmp->width;
-        if(x + 1 > window->x + window->width) {
+        if(x + container->width > window->x + window->width) {
             x = window->x;
             y += tmp->height;
         }
         while(tmp->next){
             x += tmp->width;
-            if(x + 1 > window->x + window->width) {
+            if(x + container->width > window->x + window->width) {
                 x = window->x;
                 y += tmp->height;
             }
@@ -284,20 +405,28 @@ WidgetContainer *widget_WindowContainerAdd( WidgetWindow *window,
 void widget_WindowContainerDestroy(WidgetContainer *widgetNode){
     WidgetButton *button, *buttonTemp;
     WidgetImage *image, *imageTemp;
+    WidgetText *text, *textTemp;
     assert(widgetNode);
     button = widgetNode->begin;
     image = widgetNode->begin;
+    text = widgetNode->begin;
     if(widgetNode->type == WIDGET_BUTTON){
-    while(button) {
-        buttonTemp = button->next;
-        widget_ButtonDestroy(button);
-        button = buttonTemp;
-    }
+        while(button) {
+            buttonTemp = button->next;
+            widget_ButtonDestroy(button);
+            button = buttonTemp;
+        }
     } else if(widgetNode->type == WIDGET_IMAGE){
         while(image) {
             imageTemp = image->next;
             free(image);
             image = imageTemp;
+        }
+    } else if(widgetNode->type == WIDGET_TEXT){
+        while(text) {
+            textTemp = text->next;
+            free(text);
+            text = textTemp;
         }
     }
 }
@@ -316,10 +445,12 @@ static void widget_ContainerShow(   WidgetContainer *widgetNode,
                                     char *key){
     WidgetButton *button;
     WidgetImage *image;
+    WidgetText *text;
     int index = 0;
     assert(widgetNode);
     button = widgetNode->begin;
     image = widgetNode->begin;
+    text = widgetNode->begin;
     switch(*key){
         default:
             break;
@@ -357,6 +488,11 @@ static void widget_ContainerShow(   WidgetContainer *widgetNode,
         while(image) {
             widget_ImageShow(image);
             image = image->next;
+        }
+    } else if(widgetNode->type == WIDGET_TEXT){
+        while(text) {
+            widget_TextShow(text);
+            text = text->next;
         }
     }
     if(widgetNode->selection >= index)

@@ -7,17 +7,24 @@
 
 typedef struct WidgetButtonStruct WidgetButton;
 typedef struct WidgetImageStruct WidgetImage;
+typedef struct WidgetTextStruct WidgetText;
 typedef struct WidgetContainerStruct WidgetContainer;
 typedef struct WidgetWindowStruct WidgetWindow;
 
 typedef enum {
-    BUTTON_FLAG_OUTLINE = 1,
-    BUTTON_FLAG_CENTER = 2 } BUTTON_FLAG;
+    FLAG_OUTLINE = 1,
+    FLAG_CENTER = 2
+} BUTTON_FLAG;
 
 typedef enum {
     WIDGET_BUTTON,
-    WIDGET_IMAGE
+    WIDGET_IMAGE,
+    WIDGET_TEXT
 } WidgetType;
+
+
+
+// Buttons
 
 WidgetButton* widget_ButtonAdd( WidgetContainer *widgetNode, 
                                 const char *string,
@@ -38,11 +45,34 @@ WidgetButton*  widget_ButtonIconAdd(WidgetContainer *widgetNode,
 
 void widget_ButtonDestroy(WidgetButton *button);
 
+
+// Text
+
+WidgetText* widget_TextAdd( WidgetContainer *widgetNode, 
+                            const char *string,
+                            const int width,
+                            const bool outline,
+                            const bool justify);
+
+WidgetText* widget_TextIconAdd( WidgetContainer *widgetNode, 
+                                const char *string,
+                                const int width,
+                                const bool outline,
+                                const bool justify,
+                                gfx_sprite_t *icon,
+                                const int iconWidth,
+                                const int iconHeight);
+
+// Images
+
 WidgetImage* widget_ImageAdd(   WidgetContainer *widgetNode, 
                                 gfx_sprite_t *image,
                                 const int imageX,
                                 const int imageY,
                                 const char scale);
+
+
+// Container
 
 WidgetContainer *widget_WindowContainerAdd( WidgetWindow *window, 
                                             const int width, 
@@ -52,6 +82,9 @@ void widget_WindowContainerBackgroundSet(   WidgetContainer *widgetNode,
                                             const uint8_t backgroundColor);
 void widget_WindowContainerOutlineSet(  WidgetContainer *widgetNode, 
                                         const bool outline);
+
+
+// Windows
 
 WidgetWindow *widget_WindowCreate(  const char *title, 
                                     const int width, 
