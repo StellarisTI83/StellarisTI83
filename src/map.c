@@ -408,6 +408,9 @@ static void DessinerEtoile(StarSystem *systeme, Camera* camera, Window *fenetre,
 		case STAR_TYPE_NEUTRON:
 			rayon = 4;
 			break;
+		default:
+			rayon = 3;
+			break;
 	}
 	if(starSystem_StarTypeGet(systeme) < 6){
 		CouleurEtoile(starSystem_StarTypeGet(systeme));

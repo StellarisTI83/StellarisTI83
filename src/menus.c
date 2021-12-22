@@ -46,14 +46,15 @@ struct WindowStruct{
 typedef struct{
     Window *window;
     Camera *camera;
-    int previous;
+    Empire *empire;
+    int empireIndex;
     MenuClass menu;
-} MenuData;
+} MenuDataContacts;
 
 /* private functions =================================================== */
 
-static void menu_Open_WithData(MenuData *data);
-static void menu_Close_WithData(MenuData *data);
+static void menu_OpenContacts(MenuDataContacts *data);
+static void menu_Close_WithData(MenuDataContacts *data);
 
 /**
  * Base pour dessiner les menus
@@ -3121,6 +3122,7 @@ int menus_Draw( char *key,
             break;
         case MENU_CONTACTS_INFOS:
             widget_WindowShow(window_WindowGet(window, 2), key);
+            // MenuContactsDetails(key, empireList, camera, window);
             break;
         case MENU_CONTACTS_EFFECTUER_ACTION:
             MenuContactsEffectuerAction(key, empireList, camera, window);
@@ -3144,15 +3146,15 @@ void menu_Initialize(   EmpireList *empireList,
     WidgetContainer *widgetContainer;
     Empire *empire;
     int empireIndex = 1;
-    MenuData *data, *dataClose;
+    MenuDataContacts *data, *dataClose;
 
-    dataClose = malloc(sizeof(MenuData));
+    dataClose = malloc(sizeof(MenuDataContacts));
     dataClose->window = window;
     dataClose->camera = camera;
 
     // Exit menu
     widgetWindow = window_WindowNew(window, NULL, MENU_EXIT_WIDTH, MENU_EXIT_HEIGHT);
-    widgetContainer = widget_WindowContainerAdd(widgetWindow);
+    widgetContainer = widget_WindowContainerAdd(widgetWindow, 100, 100);
     widget_ButtonAdd(widgetContainer, "Retour", &menu_Close_WithData, dataClose, true, true);
     widget_ButtonAdd(widgetContainer, _(lc_load), NULL, NULL, true, true);
     widget_ButtonAdd(widgetContainer, _(lc_save), NULL, NULL, true, true);
@@ -3161,24 +3163,38 @@ void menu_Initialize(   EmpireList *empireList,
 
     // Contacts list
     widgetWindow = window_WindowNew(window, "Contacts", MENU_WIDE_WIDTH, MENU_WIDE_HEIGHT);
-    widgetContainer = widget_WindowContainerAdd(widgetWindow);
+    widgetContainer = widget_WindowContainerAdd(widgetWindow, 100, 100);
     empire = empire_Get(empireList, empireIndex);
     while(empire) {
-        data = malloc(sizeof(MenuData));
+        data = malloc(sizeof(MenuDataContacts));
         data->camera = camera;
         data->window = window;
         data->menu = MENU_CONTACTS_INFOS;
-        data->previous = empireIndex;
-        widget_ButtonAdd(widgetContainer, empire_NameStringGet(empire), &menu_Open_WithData, data, false, false);
+        data->empireIndex = empireIndex;
+        data->empire = empire;
+        widget_ButtonAdd(widgetContainer, empire_NameStringGet(empire), &menu_OpenContacts, data, false, false);
         empireIndex++;
         empire = empire_Get(empireList, empireIndex);
     }
 
     // Contacts infos
-    widgetWindow = window_WindowNew(window, "Contacts", MENU_WIDE_WIDTH, MENU_WIDE_HEIGHT);
-    widgetContainer = widget_WindowContainerAdd(widgetWindow);
-    empire = empire_Get(empireList, empireIndex);
+    widgetWindow = window_WindowNew(window, (char*)1, MENU_WIDE_WIDTH, MENU_WIDE_HEIGHT);
     
+    widgetContainer = widget_WindowContainerAdd(widgetWindow, 30, 50);
+    widget_WindowContainerBackgroundSet(widgetContainer, COLOR_BLACK);
+    widget_WindowContainerOutlineSet(widgetContainer, true);
+    widget_ImageAdd(widgetContainer, leader_head_human, 69, 67, 3);
+    widget_ImageAdd(widgetContainer, leader_clothes_1, 60, 88, 3);
+
+    widgetContainer = widget_WindowContainerAdd(widgetWindow, 50, 100);
+    widget_ButtonIconAdd(widgetContainer, "relations", NULL, NULL, true, false, icon_up, icon_life_width, icon_life_height);
+    widget_ButtonIconAdd(widgetContainer, "relations", NULL, NULL, true, false, icon_down, icon_down_width, icon_down_height);
+    widget_ButtonIconAdd(widgetContainer, "guerre", NULL, NULL, true, false, icon_attitude, icon_attitude_width, icon_attitude_height);
+    widget_ButtonIconAdd(widgetContainer, "insulter", NULL, NULL, true, false, icon_insult, icon_insult_width, icon_insult_height);
+    widget_ButtonIconAdd(widgetContainer, "non-agress.", NULL, NULL, true, false, icon_agreement, icon_agreement_width, icon_agreement_height);
+    widget_ButtonIconAdd(widgetContainer, "recherche", NULL, NULL, true, false, icon_agreement, icon_agreement_width, icon_agreement_height);
+    
+    widgetContainer = widget_WindowContainerAdd(widgetWindow, 50, 50);
 }
 
 // Windows functions
@@ -3216,13 +3232,14 @@ void menu_Close(Window *window,
     camera_LockSet(camera, false);
 }
 
-void menu_Open_WithData(MenuData *data){
+void menu_OpenContacts(MenuDataContacts *data){
     data->window->menu = data->menu;
     data->window->selection = 0;
-    data->window->precedente = data->previous;
+    data->window->precedente = data->empireIndex;
+    widget_WindowNameChange_NoMalloc(window_WindowGet(data->window, 2), empire_NameStringGet(data->empire));
     camera_LockSet(data->camera, true);
 }
-void menu_Close_WithData(MenuData *data){
+void menu_Close_WithData(MenuDataContacts *data){
     data->window->menu = MENU_NONE;
     data->window->menuDetails = MENU_SYSTEME_AUCUN;
     camera_LockSet(data->camera, false);
