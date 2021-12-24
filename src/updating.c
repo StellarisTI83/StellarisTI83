@@ -37,7 +37,7 @@ static void update_KeysTest(char *key,
                             StarSystem **galaxy, 
                             Time *time, 
                             Camera *camera, 
-                            Window *window, 
+                            WindowManager *window, 
                             Settings *settings){
     // Camera keys binding
     if (camera_LockGet(camera) != true){
@@ -532,7 +532,7 @@ int game_Update( char *key,
                 StarSystem **galaxy, 
                 Time *time, 
                 Camera *camera, 
-                Window *window, 
+                WindowManager *window, 
                 NotificationList *notificationList, 
                 Settings *settings){
     // We test the keys

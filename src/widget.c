@@ -48,6 +48,8 @@ struct WidgetTextStruct{
     char flags;
 
     char *text;
+    char *(*function)();
+    void *functionData;
 
     gfx_sprite_t *icon;
     int iconWidth;
@@ -212,6 +214,10 @@ int widget_ButtonShow(WidgetButton *button, bool status, bool click){
 }
 
 
+
+
+
+
 WidgetImage* widget_ImageAdd(   WidgetContainer *widgetNode, 
                                 gfx_sprite_t *image,
                                 const int imageX,
@@ -249,11 +255,23 @@ void widget_ImageShow(WidgetImage* widgetImage){
     gfx_ScaledTransparentSprite_NoClip(widgetImage->image, widgetImage->x, widgetImage->y, widgetImage->scale, widgetImage->scale);
 }
 
+
+
+
 void widget_TextNoMalloc(   WidgetText *text,
                             char *string){
     assert(text);
     assert(string);
     text->text = string;
+}
+
+void widget_TextByFunction( WidgetText *text,
+                            char *(*function)(),
+                            void *functionData){
+    assert(text);
+    assert(function);
+    text->function = function;
+    text->functionData = functionData;
 }
 
 WidgetText* widget_TextIconAdd( WidgetContainer *widgetNode, 
@@ -275,6 +293,7 @@ WidgetText* widget_TextIconAdd( WidgetContainer *widgetNode,
     text->iconY = text->y + (text->height - iconHeight) / 2;
     return text;
 }
+
 
 WidgetText* widget_TextAdd( WidgetContainer *widgetNode, 
                             const char *string,
@@ -348,10 +367,20 @@ void widget_TextShow(WidgetText* text){
         gfx_TransparentSprite_NoClip(text->icon, text->x + MENU_BUTTON_GAP, text->iconY);
         x += text->iconWidth + MENU_BUTTON_GAP;
     }
+    
+    if(text->function)
+        text->text = (*text->function)(text->functionData);
+
+    gfx_SetTextFGColor(COLOR_WHITE);
+
     gfx_PrintStringXY(  text->text, 
                         x,
                         text->y + (text->height - TEXT_HEIGHT) / 2);
 }
+
+
+
+
 
 
 
@@ -402,6 +431,7 @@ WidgetContainer *widget_WindowContainerAdd( WidgetWindow *window,
 
     return container;
 }
+
 void widget_WindowContainerDestroy(WidgetContainer *widgetNode){
     WidgetButton *button, *buttonTemp;
     WidgetImage *image, *imageTemp;

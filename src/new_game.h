@@ -35,7 +35,7 @@ void game_Close(EmpireList *empireListe,
                 Settings *settings, 
                 Time *time,
                 Camera *camera,
-                Window *window,
+                WindowManager *window,
                 Market *market,
                 NotificationList *notificationList);
 #endif

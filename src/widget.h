@@ -47,6 +47,12 @@ void widget_ButtonDestroy(WidgetButton *button);
 
 
 // Text
+void widget_TextNoMalloc(   WidgetText *text,
+                            char *string);
+                            
+void widget_TextByFunction( WidgetText *text,
+                            char *(*function)(),
+                            void *functionData);
 
 WidgetText* widget_TextAdd( WidgetContainer *widgetNode, 
                             const char *string,

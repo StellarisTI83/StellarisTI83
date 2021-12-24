@@ -60,7 +60,7 @@ void console_writeInt(int nombre){
     NouvelleLigneConsole("", chaine);
 }
 
-void console_show(char *key, Window *fenetre, EmpireList *empireListe, Camera *camera, Time *date, Settings *parametres){
+void console_show(char *key, WindowManager *fenetre, EmpireList *empireListe, Camera *camera, Time *date, Settings *parametres){
     int largeur = 200, hauteur = 10;
     Ligne *ligneDeCommande = NULL;
     char character = '.';

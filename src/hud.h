@@ -41,7 +41,7 @@ int hud_Draw(   char *key,
                 Time *time,
                 Camera *camera, 
                 StarSystem **galaxy, 
-                Window *window, 
+                WindowManager *window, 
                 Settings *settings, 
                 NotificationList *notificationList);
 #endif

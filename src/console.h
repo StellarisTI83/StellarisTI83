@@ -8,7 +8,7 @@
 
 /* entry points ======================================================== */
 
-void console_show(char *, Window *, EmpireList *, Camera *, Time *, Settings *);
+void console_show(char *, WindowManager *, EmpireList *, Camera *, Time *, Settings *);
 
 void console_writeChar(char *);
 void console_writeInt(int );

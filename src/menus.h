@@ -55,7 +55,7 @@ typedef enum {  MENU_SYSTEME_AUCUN,
 
 /* struct ============================================================== */
 
-typedef struct WindowStruct Window;
+typedef struct WindowManagerStruct WindowManager;
 
 #include "ai.h"
 #include "camera.h"
@@ -84,7 +84,7 @@ int menus_Draw( char *key,
                 Time *time,
                 Camera *camera, 
                 StarSystem **galaxy, 
-                Window *window, 
+                WindowManager *window, 
                 Settings *settings, 
                 Market *market);
 
@@ -96,7 +96,7 @@ int menus_Draw( char *key,
  * @param classMenu 
  * @param menuSysteme 
  */
-void menu_OpenSystem( Window *window, 
+void menu_OpenSystem( WindowManager *window, 
                 Camera *camera, 
                 MenuClass classMenu, 
                 MenuSystem menuSysteme);
@@ -108,7 +108,7 @@ void menu_OpenSystem( Window *window,
  * @param camera 
  * @param classMenu 
  */
-void menu_Open( Window *window, 
+void menu_Open( WindowManager *window, 
                 Camera *camera, 
                 MenuClass classMenu);
 
@@ -118,7 +118,7 @@ void menu_Open( Window *window,
  * @param window 
  * @param camera 
  */
-void menu_Close(Window *window, 
+void menu_Close(WindowManager *window, 
                 Camera *camera);
 
 void menu_Initialize(   EmpireList *empireList, 
@@ -126,57 +126,57 @@ void menu_Initialize(   EmpireList *empireList,
                         Settings *settings, 
                         Time *time,
                         Camera *camera,
-                        Window *window,
+                        WindowManager *window,
                         Market *market);
 // Windows functions
 
-Window *window_Create();
+WindowManager *window_Create();
 
-MenuClass window_MenuGet(Window *window);
-MenuSystem GetOpenedMenuDetails(Window *window);
-void SetWindowMenuSystem(Window *window, MenuSystem menu);
+MenuClass window_MenuGet(WindowManager *window);
+MenuSystem GetOpenedMenuDetails(WindowManager *window);
+void SetWindowMenuSystem(WindowManager *window, MenuSystem menu);
 
-void window_CommandPromptOpen(Window *window, Camera *camera, Time *date);
-void window_CommandPromptClose(Window *window, Camera *camera, Time *date);
-int window_CommandPromptStatusGet(Window *window);
+void window_CommandPromptOpen(WindowManager *window, Camera *camera, Time *date);
+void window_CommandPromptClose(WindowManager *window, Camera *camera, Time *date);
+int window_CommandPromptStatusGet(WindowManager *window);
 
-void SetWindowPlanet(Window *window, int planete);
-int GetWindowPlanet(Window *window);
+void SetWindowPlanet(WindowManager *window, int planete);
+int GetWindowPlanet(WindowManager *window);
 
-void SetWindowSelection(Window *window, int selection);
-int GetWindowSelection(Window *window);
-void window_SelectionIncrement(Window *window);
-void window_SelectionUnIncrement(Window *window);
-void AddWindowSelection(Window *window, int number);
+void SetWindowSelection(WindowManager *window, int selection);
+int GetWindowSelection(WindowManager *window);
+void window_SelectionIncrement(WindowManager *window);
+void window_SelectionUnIncrement(WindowManager *window);
+void AddWindowSelection(WindowManager *window, int number);
 
-void SetWindowSelectedFleet(Window *window, int fleet);
-int GetWindowSelectedFleet(Window *window);
+void SetWindowSelectedFleet(WindowManager *window, int fleet);
+int GetWindowSelectedFleet(WindowManager *window);
 
-void SetWindowPrevious(Window *window, int previous);
-int GetWindowPrevious(Window *window);
+void SetWindowPrevious(WindowManager *window, int previous);
+int GetWindowPrevious(WindowManager *window);
 
-Error GetWindowError(Window *window);
-void SetWindowError(Window *window, Error error);
-int GetWindowErrorCountDown(Window *window);
-void UnincrementWindowErrorCountdown(Window *window);
-void SetWindowErrorCountdown(Window *window, int countdown);
+Error GetWindowError(WindowManager *window);
+void SetWindowError(WindowManager *window, Error error);
+int GetWindowErrorCountDown(WindowManager *window);
+void UnincrementWindowErrorCountdown(WindowManager *window);
+void SetWindowErrorCountdown(WindowManager *window, int countdown);
 
-void SetWindowCity(Window *window, City *city);
-City *GetWindowCity(Window *window);
-void SetWindowEmpire(Window *window, int empire);
-int GetWindowEmpire(Window *window);
+void SetWindowCity(WindowManager *window, City *city);
+City *GetWindowCity(WindowManager *window);
+void SetWindowEmpire(WindowManager *window, int empire);
+int GetWindowEmpire(WindowManager *window);
 
-void SetWindowScroll(Window *window, int scroll);
-void AddWindowScroll(Window *window, int scroll);
-int GetWindowScroll(Window *window);
+void SetWindowScroll(WindowManager *window, int scroll);
+void AddWindowScroll(WindowManager *window, int scroll);
+int GetWindowScroll(WindowManager *window);
 
-void SetWindowFleetSize(Window *window, int size);
-void AddWindowFleetSize(Window *window, int size);
-int GetWindowFleetSize(Window *window);
+void SetWindowFleetSize(WindowManager *window, int size);
+void AddWindowFleetSize(WindowManager *window, int size);
+int GetWindowFleetSize(WindowManager *window);
 
-WidgetWindow *window_WindowNew( Window *window, 
+WidgetWindow *window_WindowNew( WindowManager *window, 
                                 const char *title, 
                                 const int width, 
                                 const int height);
-WidgetWindow *window_WindowGet(Window *window, const int index);
+WidgetWindow *window_WindowGet(WindowManager *window, const int index);
 #endif

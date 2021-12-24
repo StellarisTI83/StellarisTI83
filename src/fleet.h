@@ -88,7 +88,7 @@ char GetFleetAction(Fleet *flotte);
 void SetFleetAction(Fleet *flotte, char action);
 int GetFleetArriveSystem(Fleet *flotte);
 
-void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, Window *fenetre, Camera *camera, EmpireList *empireListe, StarSystem **systemeStellaires);
+void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, WindowManager *fenetre, Camera *camera, EmpireList *empireListe, StarSystem **systemeStellaires);
 int MoveFleet(Fleet *flotte, int systeme, StarSystem **systemeStellaires);
 void fleet_ActionsUpdate(StarSystem **systemeStellaires, EmpireList* empireListe);
 

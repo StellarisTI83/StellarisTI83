@@ -31,7 +31,7 @@ static void newGame_Initialize( EmpireList **empireList,
                                 Settings **settings, 
                                 Time **time,
                                 Camera **camera,
-                                Window **window){
+                                WindowManager **window){
     *empireList = empire_ListCreate();
     empire_Add(*empireList);
     empire_FleetListCreate(empire_Get(*empireList, 0));
@@ -70,7 +70,7 @@ static void newGame_Initialize( EmpireList **empireList,
 void newGame_Start(){
     EmpireList *empireList = NULL;
     StarSystem *galaxy[GALAXY_WIDTH * GALAXY_WIDTH];
-    Window *window = NULL;
+    WindowManager *window = NULL;
     Settings *settings = NULL;
     Camera *camera = NULL;
     Time *time = NULL;
@@ -122,7 +122,7 @@ void game_Close(EmpireList *empireList,
                 Settings *settings, 
                 Time *time,
                 Camera *camera,
-                Window *window,
+                WindowManager *window,
                 Market *market,
                 NotificationList *notificationList){
     int index = 0;

@@ -22,7 +22,7 @@ char draw_Screen(   char *key,
                     StarSystem **galaxy, 
                     Time *time, 
                     Camera *camera, 
-                    Window *window, 
+                    WindowManager *window, 
                     Settings *settings, 
                     Market *market, 
                     NotificationList *notificationList) {

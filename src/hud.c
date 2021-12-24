@@ -425,7 +425,7 @@ int hud_Draw(   char *key,
                 Time *time,
                 Camera *camera, 
                 StarSystem **galaxy, 
-                Window *window, 
+                WindowManager *window, 
                 Settings *settings, 
                 NotificationList *notificationList) {
     Empire *player = empire_Get(empireList, 0);

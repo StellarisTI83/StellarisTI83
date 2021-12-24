@@ -310,7 +310,7 @@ static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, Empir
 /**
  * Dessine les fleches des hyperlane en vue systeme
  * */
-static void DessinerHyperlanesSysteme(StarSystem **systemeStellaires, Camera *camera, Window *fenetre, char *key){
+static void DessinerHyperlanesSysteme(StarSystem **systemeStellaires, Camera *camera, WindowManager *fenetre, char *key){
 	StarSystem *systeme;
 	int hyperlane;
 	int x, y;
@@ -378,7 +378,7 @@ static void CouleurEtoile(int type){
 /**
  *Dessine l'étoile en vue systeme
  */
-static void DessinerEtoile(StarSystem *systeme, Camera* camera, Window *fenetre, char* key){
+static void DessinerEtoile(StarSystem *systeme, Camera* camera, WindowManager *fenetre, char* key){
 	int xEtoile = SYSTEM_SPECIAL_X - camera_XSystemGet(camera), yEtoile = SYSTEM_SPECIAL_Y - camera_YSystemGet(camera), rayon = 0;
 	switch(starSystem_StarTypeGet(systeme)){
 		case STAR_TYPE_B:
@@ -503,7 +503,7 @@ void CouleurPlanete(char type){
 /**
  *Dessine une planète pour le menu systeme de la fonction StellarisHUD
  */
-static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera, Window *fenetre, int numero, char* key){
+static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera, WindowManager *fenetre, int numero, char* key){
 	int x, y;
 	char nomNumero[10], decalage = 0;
 	x = planet_XGet(planete) - camera_XSystemGet(camera);
@@ -571,7 +571,7 @@ static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera
 /**
  *Dessine la base du systeme
  */
-void DessinerBase(StarSystem *systeme, Camera* camera, Window* fenetre, char* key){
+void DessinerBase(StarSystem *systeme, Camera* camera, WindowManager* fenetre, char* key){
 	int x, y;
 	Station *station = starSystem_StationGet(systeme);
 	if(station_LevelGet(station) != STATION_NONE){
@@ -630,7 +630,7 @@ void DessinerBase(StarSystem *systeme, Camera* camera, Window* fenetre, char* ke
 /**
  *Dessine les flottes du systeme
  */
-static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Window *fenetre, char* key){
+static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, WindowManager *fenetre, char* key){
 	Empire* empire = NULL;
 	Fleet* flotte = NULL;
 	int empireIndex = 0, fleetIndex = 0;
@@ -757,7 +757,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 /**
  *dessine le systeme en vue systeme
  */
-static void DessinerVueSysteme(StarSystem **systemeStellaires, Camera* camera, Window *fenetre, EmpireList* empireListe, char *key){
+static void DessinerVueSysteme(StarSystem **systemeStellaires, Camera* camera, WindowManager *fenetre, EmpireList* empireListe, char *key){
 	StarSystem* systeme;
 	int j = 0;
 
@@ -778,7 +778,7 @@ void map_Draw(	char *key,
 				EmpireList *empireListe, 
 				StarSystem **galaxy, 
 				Camera *camera, 
-				Window *window, 
+				WindowManager *window, 
 				Settings *settings){
 	// We get the pointer of the player
 	Empire *player = empire_Get(empireListe, 0);
