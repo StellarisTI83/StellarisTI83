@@ -3244,9 +3244,9 @@ void menu_Initialize(   EmpireList *empireList,
     widgetText = widget_TextIconAdd(widgetContainer, NULL, 32, true, false, icon_fleet_allied, icon_fleet_allied_width, icon_fleet_allied_height);
     widget_TextByFunction(widgetText, empireCompareMilitary, textData);
     widgetText = widget_TextIconAdd(widgetContainer, NULL, 33, true, false, icon_credit, icon_credit_width, icon_credit_height);
-    widget_TextByFunction(widgetText, empireCompareMilitary, textData);
+    widget_TextByFunction(widgetText, empireCompareEconomic, textData);
     widgetText = widget_TextIconAdd(widgetContainer, NULL, 32, true, false, icon_science, icon_science_width, icon_science_height);
-    widget_TextByFunction(widgetText, empireCompareMilitary, textData);
+    widget_TextByFunction(widgetText, empireCompareScience, textData);
     widgetText = widget_TextIconAdd(widgetContainer, NULL, 100, true, false, icon_agreement, icon_agreement_width, icon_agreement_height);
     widget_TextByFunction(widgetText, empireCompareMilitary, textData);
 }

@@ -88,7 +88,6 @@ void order_NewDeprecated(OrdreFile* ordreFile, int ordre, int empire, int tempsT
 	ordreElement->prix = prix;
 	ordreElement->empireNumber = empire;
 	ordreElement->ordreSuivant = NULL;
-			dbg_printf("Order new");
 }
 
 void order_New(OrdreFile* ordreFile, int ordre, Empire* empire, int tempsTotal, int info1, int info2, int prix){

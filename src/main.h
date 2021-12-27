@@ -74,4 +74,12 @@ void mainMenu_PrintInt(int nombre);
  */
 int main_IntLength(int nombre);
 
+void *malloc_count(size_t _Size);
+
+void *calloc_count(size_t _Count, size_t _Size);
+
+void free_count(void *_Block);
+
+unsigned long ramGet();
+
 #endif

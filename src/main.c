@@ -58,6 +58,8 @@ typedef struct {
     bool descend;
 } StationVector;
 
+unsigned long usedRam; // To count the size of used ram
+
 /* private functions =================================================== */
 
 /**
@@ -515,6 +517,9 @@ int main(void){
     char loop = false;
     char choice = 0;
     FleetTemplateListe *fleetTemplateList = NULL;
+
+    usedRam = 0;
+
     #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "\n*********************");
         dbg_sprintf(dbgout, "\n* Started Stellaris");
@@ -552,4 +557,25 @@ int main(void){
     #endif
     
     return 0;
+}
+
+
+void *malloc_count(size_t _Size){
+    usedRam += (_Size * sizeof(HEADER));
+    return malloc(_Size);
+}
+
+void *calloc_count(size_t _Count, size_t _Size){
+    usedRam += (_Size * sizeof(HEADER))* _Count;
+    return calloc(_Count, _Size);
+}
+
+void free_count(void *_Block){
+    HEADER *q = (HEADER*)_Block - 1;
+    usedRam -= q->s.size;
+    free(_Block);
+}
+
+unsigned long ramGet(){
+    return usedRam;
 }

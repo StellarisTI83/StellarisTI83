@@ -26,7 +26,7 @@ char draw_Screen(   char *key,
                     Settings *settings, 
                     Market *market, 
                     NotificationList *notificationList) {
-    int8_t endGame;
+    int8_t endGame = 1;
     gfx_ZeroScreen();
 
     map_Draw(   key,

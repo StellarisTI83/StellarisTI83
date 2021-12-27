@@ -59,10 +59,17 @@ static void newGame_Initialize( EmpireList **empireList,
     menu_Close(*window, *camera);
 
     
+    #ifdef DEBUG_FPS    
     timer_Disable(1);
     timer_Set(1, ONE_SECOND);
     timer_SetReload(1, ONE_SECOND);
     timer_Enable(1, TIMER_32K, TIMER_0INT, TIMER_UP);
+    
+    timer_Disable(2);
+    timer_Set(2, ONE_SECOND);
+    timer_SetReload(2, ONE_SECOND);
+    timer_Enable(2, TIMER_32K, TIMER_0INT, TIMER_UP);
+    #endif
 }
 
 /* entry points ======================================================== */

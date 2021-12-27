@@ -19,23 +19,28 @@ int game_MainLoop(	EmpireList *empireListe,
 					NotificationList *notificationList) {
 	int loop = true;
 	char key = 0;
-	long fps;
+	int fps;
+	float updateTime, screenTime;
 	
 	while (settings_GameActiveGet(settings)) {
 		// Get the pressed keys
 		key = os_GetCSC();
 		
+    	timer_Set(2, 0);
 		// mettre a jour les informations
 		loop = loop && game_Update(&key, empireListe, starSystems, time, camera, window, notificationList, settings);
+		updateTime = timer_Get(2)*1000/TIMER_FREQ;
 
+    	timer_Set(2, 0);
 		//dessiner l'écran
 		loop = loop && draw_Screen(&key, empireListe, starSystems, time, camera, window, settings, marche, notificationList);
-		
+		screenTime = timer_Get(2)*1000/TIMER_FREQ;
+
 		// Get the number of fps
 		fps = TIMER_FREQ/timer_Get(1);
     	timer_Set(1, 0);
 		if(fps > 0)
-        	time_FPSSet(time, fps);
+        	time_FPSSet(time, fps, updateTime, screenTime);
 		
 		if(/*!boot_CheckOnPressed() ||*/ !loop) {
 			// StellarisSauvegarde(sauvegarde, empireListe, joueur, parametres, date, systemeStellaires, camera, marche);
