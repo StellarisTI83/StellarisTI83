@@ -36,10 +36,9 @@ localeLanguageEnum getLanguage(){
 char initializeLanguage(){
 	uint16_t indexString, taille = 0, index = 0;
 	char chaineTemporaire[MAX_VALUE_LENGTH];
-	char name[4] = {0};
+	char name[5] = {0};
 	uint16_t numberOfString = 0;
 
-	ti_CloseAll();
 	switch(localeLanguage){
 		case LC_FR:
 			strcpy(name, "lcFR");
@@ -71,31 +70,31 @@ char initializeLanguage(){
 			ti_Read(&chaineTemporaire, sizeof(char) * taille, 1, languageVar);
 			switch(indexString){
 				case lc_load:
-					lc_charger_array = calloc(1, (taille + 1) * sizeof(char));
+					lc_charger_array = calloc_count(1, (taille + 1) * sizeof(char));
 					memcpy(lc_charger_array, chaineTemporaire, taille);
 					break;
 				case lc_new_game:
-					lc_nouvelle_partie_array = calloc(1, (taille + 1) * sizeof(char));
+					lc_nouvelle_partie_array = calloc_count(1, (taille + 1) * sizeof(char));
 					memcpy(lc_nouvelle_partie_array, chaineTemporaire, taille);
 					break;
 				case lc_settings:
-					lc_options_array = calloc(1, (taille + 1) * sizeof(char));;
+					lc_options_array = calloc_count(1, (taille + 1) * sizeof(char));;
 					memcpy(lc_options_array, chaineTemporaire, taille);
 					break;
 				case lc_exit:
-					lc_quitter_array = calloc(1, (taille + 1) * sizeof(char));;
+					lc_quitter_array = calloc_count(1, (taille + 1) * sizeof(char));;
 					memcpy(lc_quitter_array, chaineTemporaire, taille);
 					break;
 				case lc_save:
-					lc_sauvegarder_array = calloc(1, (taille + 1) * sizeof(char));;
+					lc_sauvegarder_array = calloc_count(1, (taille + 1) * sizeof(char));;
 					memcpy(lc_sauvegarder_array, chaineTemporaire, taille);
 					break;
 				case lc_back:
-					lc_retour_array = calloc(1, (taille + 1) * sizeof(char));;
+					lc_retour_array = calloc_count(1, (taille + 1) * sizeof(char));;
 					memcpy(lc_retour_array, chaineTemporaire, taille);
 					break;
 				case lc_create_galaxie:
-					lc_create_galaxie_array = calloc(1, (taille + 1) * sizeof(char));;
+					lc_create_galaxie_array = calloc_count(1, (taille + 1) * sizeof(char));;
 					memcpy(lc_create_galaxie_array, chaineTemporaire, taille);
 					break;
 				default:

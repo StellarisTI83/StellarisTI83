@@ -273,12 +273,17 @@ static void hud_PrintInfos( Empire *player,
     }
 
     // print fps
+    #ifdef DEBUG_FPS
     gfx_SetTextXY(LCD_WIDTH - 2 * TEXT_HEIGHT, 1);
     gfx_PrintUInt(time_FPSGet(time), 2);
-    gfx_SetTextXY(LCD_WIDTH - 8 * TEXT_HEIGHT, TEXT_HEIGHT + 2);
-    gfx_PrintUInt(camera_XSystemGet(camera), 3);
-    gfx_PrintString(" ");
-    gfx_PrintUInt(camera_YSystemGet(camera), 3);
+    char buffer[20];
+    sprintf(buffer, "%f", time_UpdateTimeGet(time));
+    gfx_PrintStringXY(buffer, LCD_WIDTH - 8 * TEXT_HEIGHT, TEXT_HEIGHT + 2);
+    sprintf(buffer, "%f", time_ScreenTimeGet(time));
+    gfx_PrintStringXY(buffer, LCD_WIDTH - 9 * TEXT_HEIGHT, TEXT_HEIGHT * 2 + 3);
+    sprintf(buffer, "%lu", ramGet());
+    gfx_PrintStringXY(buffer, LCD_WIDTH - 5 * TEXT_HEIGHT, TEXT_HEIGHT * 3 + 4);
+    #endif
 
     hud_DrawSpeedIcon(time);
 }
@@ -425,7 +430,7 @@ int hud_Draw(   char *key,
                 Time *time,
                 Camera *camera, 
                 StarSystem **galaxy, 
-                Window *window, 
+                WindowManager *window, 
                 Settings *settings, 
                 NotificationList *notificationList) {
     Empire *player = empire_Get(empireList, 0);

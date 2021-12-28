@@ -27,7 +27,7 @@ void map_Draw(	char *key,
 				EmpireList *empireListe, 
 				StarSystem **galaxy, 
 				Camera *camera, 
-				Window *window, 
+				WindowManager *window, 
 				Settings *settings);
 
 #endif

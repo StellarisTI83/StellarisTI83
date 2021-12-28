@@ -78,7 +78,7 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 			}
 			gfx_TransparentSprite(icon_fleet_our, xFlotte, yFlotte);
 			switch(GetFleetType(flotte)){
-				case FLOTTE_MILITAIRE:
+				case FLEET_MILITARY:
 					gfx_TransparentSprite(icon_ship_military_our, xFlotte + 6, yFlotte - 1);
 					if (GetFleetPower(flotte) > 500)
 					{
@@ -89,10 +89,10 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 						gfx_TransparentSprite(icon_ship_military_our, xFlotte + 8, yFlotte - 4);
 					}
 					break;
-				case FLOTTE_DE_CONSTRUCTION:
+				case FLEET_CONSTRUCTION:
 					gfx_TransparentSprite(icon_ship_construction_our, xFlotte + 6, yFlotte - 4);
 					break;
-				case FLOTTE_SCIENTIFIQUE:
+				case FLEET_SCIENTIFIC:
 					gfx_TransparentSprite(icon_ship_science_our, xFlotte + 6, yFlotte - 4);
 					break;
 			}
@@ -131,7 +131,7 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 					}
 					gfx_TransparentSprite(icon_fleet_neutral, xFlotte, yFlotte);
 					switch(GetFleetType(flotte)){
-					case FLOTTE_MILITAIRE:
+					case FLEET_MILITARY:
 						gfx_TransparentSprite(icon_ship_military_neutral, xFlotte + 6, yFlotte - 1);
 						if (GetFleetPower(flotte) > 500){
 							gfx_TransparentSprite(icon_ship_military_neutral, xFlotte + 10, yFlotte - 1);
@@ -140,10 +140,10 @@ static void DessinerFlottesMap(EmpireList* empireListe, Empire* joueur, StarSyst
 							gfx_TransparentSprite(icon_ship_military_neutral, xFlotte + 8, yFlotte - 4);
 						}
 						break;
-					case FLOTTE_DE_CONSTRUCTION:
+					case FLEET_CONSTRUCTION:
 						gfx_TransparentSprite(icon_ship_construction_neutral, xFlotte + 6, yFlotte - 4);
 						break;
-					case FLOTTE_SCIENTIFIQUE:
+					case FLEET_SCIENTIFIC:
 						gfx_TransparentSprite(icon_ship_science_neutral, xFlotte + 6, yFlotte - 4);
 						break;
 					}
@@ -310,7 +310,7 @@ static void DessinerVueMap(StarSystem **systemeStellaires, Camera *camera, Empir
 /**
  * Dessine les fleches des hyperlane en vue systeme
  * */
-static void DessinerHyperlanesSysteme(StarSystem **systemeStellaires, Camera *camera, Window *fenetre, char *key){
+static void DessinerHyperlanesSysteme(StarSystem **systemeStellaires, Camera *camera, WindowManager *fenetre, char *key){
 	StarSystem *systeme;
 	int hyperlane;
 	int x, y;
@@ -378,7 +378,7 @@ static void CouleurEtoile(int type){
 /**
  *Dessine l'étoile en vue systeme
  */
-static void DessinerEtoile(StarSystem *systeme, Camera* camera, Window *fenetre, char* key){
+static void DessinerEtoile(StarSystem *systeme, Camera* camera, WindowManager *fenetre, char* key){
 	int xEtoile = SYSTEM_SPECIAL_X - camera_XSystemGet(camera), yEtoile = SYSTEM_SPECIAL_Y - camera_YSystemGet(camera), rayon = 0;
 	switch(starSystem_StarTypeGet(systeme)){
 		case STAR_TYPE_B:
@@ -407,6 +407,9 @@ static void DessinerEtoile(StarSystem *systeme, Camera* camera, Window *fenetre,
 			break;
 		case STAR_TYPE_NEUTRON:
 			rayon = 4;
+			break;
+		default:
+			rayon = 3;
 			break;
 	}
 	if(starSystem_StarTypeGet(systeme) < 6){
@@ -500,7 +503,7 @@ void CouleurPlanete(char type){
 /**
  *Dessine une planète pour le menu systeme de la fonction StellarisHUD
  */
-static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera, Window *fenetre, int numero, char* key){
+static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera, WindowManager *fenetre, int numero, char* key){
 	int x, y;
 	char nomNumero[10], decalage = 0;
 	x = planet_XGet(planete) - camera_XSystemGet(camera);
@@ -557,7 +560,7 @@ static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera
 	{
 		gfx_SetColor(9);
 		gfx_Rectangle_NoClip(x - 8, y - 8, 16, 16);
-		if((*key == sk_Enter) && (camera_LockGet(camera) == false)){
+		if((*key == sk_Enter) && (!camera_LockGet(camera))){
 			menu_OpenSystem(fenetre, camera, MENU_SYSTEM, MENU_SYSTEME_PLANETE_RESUME);
 			SetWindowPlanet(fenetre, numero);
 			*key = 0;
@@ -568,7 +571,7 @@ static void DessinerPlanete(StarSystem* systeme, Planet* planete, Camera* camera
 /**
  *Dessine la base du systeme
  */
-void DessinerBase(StarSystem *systeme, Camera* camera, Window* fenetre, char* key){
+void DessinerBase(StarSystem *systeme, Camera* camera, WindowManager* fenetre, char* key){
 	int x, y;
 	Station *station = starSystem_StationGet(systeme);
 	if(station_LevelGet(station) != STATION_NONE){
@@ -627,7 +630,7 @@ void DessinerBase(StarSystem *systeme, Camera* camera, Window* fenetre, char* ke
 /**
  *Dessine les flottes du systeme
  */
-static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Window *fenetre, char* key){
+static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, WindowManager *fenetre, char* key){
 	Empire* empire = NULL;
 	Fleet* flotte = NULL;
 	int empireIndex = 0, fleetIndex = 0;
@@ -650,7 +653,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 				if(GetFleetProgress(flotte) == 0){
 					gfx_TransparentSprite(icon_fleet_our, x, y);
 					switch(GetFleetType(flotte)){
-					case FLOTTE_MILITAIRE:
+					case FLEET_MILITARY:
 						gfx_TransparentSprite(icon_ship_military_our, x + 6, y - 1);
 						if (GetFleetPower(flotte) > 500) {
 							gfx_TransparentSprite(icon_ship_military_our, x + 10, y - 1);
@@ -659,10 +662,10 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 							gfx_TransparentSprite(icon_ship_military_our, x + 8, y - 4);
 						}
 						break;
-					case FLOTTE_DE_CONSTRUCTION:
+					case FLEET_CONSTRUCTION:
 						gfx_TransparentSprite(icon_ship_construction_our, x + 6, y - 4);
 						break;
-					case FLOTTE_SCIENTIFIQUE:
+					case FLEET_SCIENTIFIC:
 						gfx_TransparentSprite(icon_ship_science_our, x + 6, y - 4);
 						break;
 					}
@@ -707,7 +710,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 					if(GetFleetProgress(flotte) == 0){
 						gfx_TransparentSprite(icon_fleet_neutral, x, y);
 						switch(GetFleetType(flotte)){
-						case FLOTTE_MILITAIRE:
+						case FLEET_MILITARY:
 							gfx_TransparentSprite(icon_ship_military_neutral, x + 6, y - 1);
 							if (GetFleetPower(flotte) > 500) {
 								gfx_TransparentSprite(icon_ship_military_neutral, x + 10, y - 1);
@@ -716,10 +719,10 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 								gfx_TransparentSprite(icon_ship_military_neutral, x + 8, y - 4);
 							}
 							break;
-						case FLOTTE_DE_CONSTRUCTION:
+						case FLEET_CONSTRUCTION:
 							gfx_TransparentSprite(icon_ship_construction_neutral, x + 6, y - 4);
 							break;
-						case FLOTTE_SCIENTIFIQUE:
+						case FLEET_SCIENTIFIC:
 							gfx_TransparentSprite(icon_ship_science_neutral, x + 6, y - 4);
 							break;
 						}
@@ -754,7 +757,7 @@ static void DessinerFlottesSysteme(EmpireList *empireListe, Camera *camera, Wind
 /**
  *dessine le systeme en vue systeme
  */
-static void DessinerVueSysteme(StarSystem **systemeStellaires, Camera* camera, Window *fenetre, EmpireList* empireListe, char *key){
+static void DessinerVueSysteme(StarSystem **systemeStellaires, Camera* camera, WindowManager *fenetre, EmpireList* empireListe, char *key){
 	StarSystem* systeme;
 	int j = 0;
 
@@ -775,7 +778,7 @@ void map_Draw(	char *key,
 				EmpireList *empireListe, 
 				StarSystem **galaxy, 
 				Camera *camera, 
-				Window *window, 
+				WindowManager *window, 
 				Settings *settings){
 	// We get the pointer of the player
 	Empire *player = empire_Get(empireListe, 0);

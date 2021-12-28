@@ -31,7 +31,7 @@ static void newGame_Initialize( EmpireList **empireList,
                                 Settings **settings, 
                                 Time **time,
                                 Camera **camera,
-                                Window **window){
+                                WindowManager **window){
     *empireList = empire_ListCreate();
     empire_Add(*empireList);
     empire_FleetListCreate(empire_Get(*empireList, 0));
@@ -59,10 +59,17 @@ static void newGame_Initialize( EmpireList **empireList,
     menu_Close(*window, *camera);
 
     
+    #ifdef DEBUG_FPS    
     timer_Disable(1);
     timer_Set(1, ONE_SECOND);
     timer_SetReload(1, ONE_SECOND);
     timer_Enable(1, TIMER_32K, TIMER_0INT, TIMER_UP);
+    
+    timer_Disable(2);
+    timer_Set(2, ONE_SECOND);
+    timer_SetReload(2, ONE_SECOND);
+    timer_Enable(2, TIMER_32K, TIMER_0INT, TIMER_UP);
+    #endif
 }
 
 /* entry points ======================================================== */
@@ -70,7 +77,7 @@ static void newGame_Initialize( EmpireList **empireList,
 void newGame_Start(){
     EmpireList *empireList = NULL;
     StarSystem *galaxy[GALAXY_WIDTH * GALAXY_WIDTH];
-    Window *window = NULL;
+    WindowManager *window = NULL;
     Settings *settings = NULL;
     Camera *camera = NULL;
     Time *time = NULL;
@@ -122,7 +129,7 @@ void game_Close(EmpireList *empireList,
                 Settings *settings, 
                 Time *time,
                 Camera *camera,
-                Window *window,
+                WindowManager *window,
                 Market *market,
                 NotificationList *notificationList){
     int index = 0;
@@ -133,7 +140,7 @@ void game_Close(EmpireList *empireList,
         index = 0;
         while(index < GALAXY_WIDTH * GALAXY_WIDTH){
             if(galaxy[index])
-                free(galaxy[index]);
+                free_count(galaxy[index]);
             index++;
         }
         #ifdef DEBUG_VERSION
@@ -142,21 +149,21 @@ void game_Close(EmpireList *empireList,
     }
 
     if(settings){
-        free(settings);
+        free_count(settings);
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "Free settings\n");
         #endif
     }
 
     if(time){
-        free(time);
+        free_count(time);
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "Free time\n");
         #endif
     }
 
     if(camera){
-        free(camera);
+        free_count(camera);
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "Free camera\n");
         #endif
@@ -170,14 +177,14 @@ void game_Close(EmpireList *empireList,
             widgetWindow = window_WindowGet(window, index);
             index++;
         }
-        free(window);
+        free_count(window);
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "Free window\n");
         #endif
     }
 
     if(market){
-        free(market);
+        free_count(market);
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "Free market\n");
         #endif

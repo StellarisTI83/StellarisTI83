@@ -20,7 +20,7 @@ struct SettingsStruct{
 
 /* entry points ======================================================== */
 Settings *setting_Malloc(){
-    return calloc(1, sizeof(Settings));
+    return calloc_count(1, sizeof(Settings));
 }
 
 void settings_StarNumberSet(Settings *settings, int starNumber){

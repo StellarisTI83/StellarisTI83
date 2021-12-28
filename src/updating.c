@@ -37,7 +37,7 @@ static void update_KeysTest(char *key,
                             StarSystem **galaxy, 
                             Time *time, 
                             Camera *camera, 
-                            Window *window, 
+                            WindowManager *window, 
                             Settings *settings){
     // Camera keys binding
     if (camera_LockGet(camera) != true){
@@ -94,11 +94,12 @@ static void update_KeysTest(char *key,
             case sk_Enter:
                 if((starSystem_IntelLevelGet(galaxy[camera_SystemActualGet(camera)]) 
                 || settings_SeeAllGet(settings))
-                && camera_SystemActualGet(camera) != NO_SYSTEM){
+                && camera_SystemActualGet(camera) != NO_SYSTEM
+                && camera_MapTypeGet(camera) == VUE_GALACTIC){
                     camera_MapTypeSet(camera, VUE_SYSTEM);
                     camera_SystemActualSet(camera, camera_SystemActualGet(camera));
+                    *key = 0;
                 }
-                *key = 0;
                 break;
             // Pause and unpause
             case sk_0:
@@ -130,9 +131,10 @@ static void update_KeysTest(char *key,
         switch(*key){
             // Open the exit menu
             case sk_Clear:
-                if(window_MenuGet(window))
+                if(window_MenuGet(window)){
                     menu_Close(window, camera);
-                else
+                    time_Pause(time);
+                } else
                     menu_OpenSystem(window, camera, MENU_EXIT, MENU_SYSTEME_AUCUN);
                 *key = 0;
                 break;
@@ -239,25 +241,25 @@ static void stations_ActionsUpdate(StarSystem **galaxy, EmpireList* empireList){
                             battleshipNumber = 0;
                             switch(info1){
                                 case 1:
-                                    info1 = FLOTTE_SCIENTIFIQUE;
+                                    info1 = FLEET_SCIENTIFIC;
                                     break;
                                 case 2:
-                                    info1 = FLOTTE_DE_CONSTRUCTION;
+                                    info1 = FLEET_CONSTRUCTION;
                                     break;
                                 case 3:
-                                    info1 = FLOTTE_MILITAIRE;
+                                    info1 = FLEET_MILITARY;
                                     corvetNumber = info2;
                                     break;
                                 case 4:
-                                    info1 = FLOTTE_MILITAIRE;
+                                    info1 = FLEET_MILITARY;
                                     destroyerNumber = info2;
                                     break;
                                 case 5:
-                                    info1 = FLOTTE_MILITAIRE;
+                                    info1 = FLEET_MILITARY;
                                     cruiserNumber = info2;
                                     break;
                                 case 6:
-                                    info1 = FLOTTE_MILITAIRE;
+                                    info1 = FLEET_MILITARY;
                                     battleshipNumber = info2;
                                     break;
                             }
@@ -288,7 +290,7 @@ static void planets_ActionsUpdate(StarSystem **galaxy){
     int systemindex, planetIndex;
     City *city;
     Planet *planet;
-    OrdreConstruction order;
+    PlanetBuildType order;
     // We loop through every system and planet
     for(systemindex = 0; systemindex < GALAXY_WIDTH * GALAXY_WIDTH; systemindex++){
         if(starSystem_EmpireGet(galaxy[systemindex]) != NO_EMPIRE){
@@ -302,19 +304,19 @@ static void planets_ActionsUpdate(StarSystem **galaxy){
                             city_OrderProgressUnincrement(city);
                         } else if(city_OrderProgressGet(city)){ // Else the order is finished, so we take actions
                             switch(city_OrderGet(city)){
-                                case CONSTRUIRE_DISTRICT_URBAIN:
+                                case CITY_DISTRICT_URBAN:
                                     city_UrbanDistrictAdd(city, 1);
                                     break;
-                                case CONSTRUIRE_DISTRICT_GENERATEUR:
+                                case CITY_DISTRICT_GENERATOR:
                                     city_GeneratorDistrictAdd(city, 1);
                                     break;
-                                case CONSTRUIRE_DISTRICT_MINIER:
+                                case CITY_DISTRICT_MINING:
                                     city_MiningDistrictAdd(city, 1);
                                     break;
-                                case CONSTRUIRE_DISTRICT_AGRICOLE:
+                                case CITY_DISTRICT_AGRICULTURE:
                                     city_AgricultureDistrictAdd(city, 1);
                                     break;
-                                case CONSTRUIRE_BATIMENT:
+                                case CITY_BUILDING:
                                     city_BuildingSet(   city, 
                                                         (Building)city_OrderInfo2Get(city), 
                                                         city_OrderInfo1Get(city), 
@@ -370,7 +372,7 @@ void update_PlayersData(char update,
     int     empireIndex;
     int     empireArraySize;
 
-    Fleet *fleet;
+    // Fleet *fleet;
     FleetList *fleetList;
     int     fleetIndex;
     int     fleetArraySize;
@@ -397,7 +399,7 @@ void update_PlayersData(char update,
         fleetList = empire_FleetListGet(empire);
         fleetArraySize = FleetArraySize(fleetList);
         for(fleetIndex = 0; fleetIndex < fleetArraySize; fleetIndex++){
-            fleet = FlotteNumero(fleetList, fleetIndex);
+            // fleet = FlotteNumero(fleetList, fleetIndex);
             empire_CreditVariationAdd(empire, -1);
         }
     }
@@ -530,7 +532,7 @@ int game_Update( char *key,
                 StarSystem **galaxy, 
                 Time *time, 
                 Camera *camera, 
-                Window *window, 
+                WindowManager *window, 
                 NotificationList *notificationList, 
                 Settings *settings){
     // We test the keys

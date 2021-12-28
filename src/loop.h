@@ -21,7 +21,7 @@ int game_MainLoop(	EmpireList *empireListe,
 					Time *time, 
 					StarSystem **starSystems, 
 					Camera *camera, 
-					Window *window, 
+					WindowManager *window, 
 					Market *marche, 
 					NotificationList *notificationList);
 

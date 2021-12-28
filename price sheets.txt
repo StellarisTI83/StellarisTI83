@@ -1,0 +1,43 @@
+Planets
+    max :   10 districts
+            6 buildings
+            
+                                minerals    time
+    CITY_ORDER_NONE             0           0
+    CITY_DISTRICT_URBAN         50          12
+    CITY_DISTRICT_GENERATOR     50          12
+    CITY_DISTRICT_MINING        50          12
+    CITY_DISTRICT_AGRICULTURE   50          12
+    CITY_BUILDING               400         10
+
+
+Ships
+
+                                alloys      time
+    CORVETTE                    100         3
+    DESTROYER                   200         6
+    CRUISER                     500         12
+    BATTLESHIP                  1000        24
+
+    SCIENTIFIC                  100         3
+    CONSTRUCTION                100         3
+
+
+Stations
+
+                                alloys      time    modules
+    STATION_NONE                0           0       0
+    STATION_OUTPOST             
+    STATION_STARPORT            200         36      2
+    STATION_STARHOLD            500         72      4
+    STATION_STARFORTRESS        1200        108     6
+    STATION_CITADEL             3500        144     6
+
+    STATION_MODULE_NONE         0           0       .
+    STATION_MODULE_SHIPYARD     50          12      .
+    STATION_MODULE_ANCHORAGE    50          12      .
+    STATION_MODULE_GUN          50          12      .
+    STATION_MODULE_MISSILES     50          12      .
+    STATION_MODULE_HANGAR       50          12      .
+    STATION_MODULE_TRADE_HUB    50          12      .
+    STATION_MODULE_SOLAR_PANEL  50          12      .

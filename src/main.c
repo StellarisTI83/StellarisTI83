@@ -58,6 +58,8 @@ typedef struct {
     bool descend;
 } StationVector;
 
+unsigned long usedRam; // To count the size of used ram
+
 /* private functions =================================================== */
 
 /**
@@ -109,7 +111,7 @@ static void mainMenu_DrawStation(StationVector **stationVector, gfx_sprite_t *st
  * @param station 
  */
 static void mainMenu_StationCreate(StationVector **stationVector, gfx_sprite_t **station) {
-    *stationVector = malloc(sizeof(StationVector));
+    *stationVector = malloc_count(sizeof(StationVector));
     (*stationVector)->x = 206;
     (*stationVector)->y = 120;
     (*stationVector)->yVector = 0;
@@ -129,8 +131,8 @@ static void mainMenu_StationCreate(StationVector **stationVector, gfx_sprite_t *
  * @param stationVector 
  */
 static void mainMenu_StationFree(StationVector **stationVector, gfx_sprite_t **station) {
-    free(*station);
-    free(*stationVector);
+    free_count(*station);
+    free_count(*stationVector);
 }
 
 // FIXME Background don't work
@@ -242,7 +244,7 @@ static int mainMenu_Draw(){
     }
     // index = 0;
     // while(index < 12) {
-    //     free(tile[index]);
+    //     free_count(tile[index]);
     //     index++;
     // }
     mainMenu_StationFree(&stationVector, &station);
@@ -382,7 +384,7 @@ static int mainMenu_Settings(){
         gfx_SwapDraw();
     }
     // for (index = 0; index < 12; index++) {
-    //     free(tile[index]);
+    //     free_count(tile[index]);
     // }
     mainMenu_StationFree(&stationVector, &station);
     return MAIN_MENU_EXIT;
@@ -403,8 +405,6 @@ static int main_InitializeAll(){
 
         return true;
     }
-
-    ti_CloseAll();
     
     srandom(rtc_Time());
     
@@ -471,7 +471,7 @@ void mainMenu_PrintInt(int number){
     }
 }
 
-int mainMenu_IntLen(int number){
+int main_IntLength(int number){
     int i = 1;
     if(number < 0){
         number = -number;
@@ -492,7 +492,7 @@ void mainMenu_PrintMultipleLines(char *str) {
 
     char *ptr = NULL;
 
-    string1 = calloc(1, init_size + 1);
+    string1 = calloc_count(1, init_size + 1);
     strcpy(string1, str);
     ptr = strtok(string1, delim);
     while(ptr != NULL) {
@@ -504,7 +504,7 @@ void mainMenu_PrintMultipleLines(char *str) {
         gfx_PrintString(ptr);
         ptr = strtok(string1, delim);
     }
-    free(string1);
+    free_count(string1);
 }
 
 /**
@@ -517,6 +517,9 @@ int main(void){
     char loop = false;
     char choice = 0;
     FleetTemplateListe *fleetTemplateList = NULL;
+
+    usedRam = 0;
+
     #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "\n*********************");
         dbg_sprintf(dbgout, "\n* Started Stellaris");
@@ -554,4 +557,25 @@ int main(void){
     #endif
     
     return 0;
+}
+
+
+void *malloc_count(size_t _Size){
+    usedRam += (_Size * sizeof(HEADER));
+    return malloc(_Size);
+}
+
+void *calloc_count(size_t _Count, size_t _Size){
+    usedRam += (_Size * sizeof(HEADER))* _Count;
+    return calloc(_Count, _Size);
+}
+
+void free_count(void *_Block){
+    HEADER *q = (HEADER*)_Block - 1;
+    usedRam -= q->s.size;
+    free(_Block);
+}
+
+unsigned long ramGet(){
+    return usedRam/8;
 }

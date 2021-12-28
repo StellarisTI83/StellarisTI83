@@ -31,9 +31,6 @@ FONTDIR ?= $(SRCDIR)/fonts
 $(OBJDIR)/fonts/fonts.src: $(FONTDIR)/testfont.inc
 #$(OBJDIR)/version/version.src: $(VERSIONDIR)/version.h
 
-#$(VERSIONDIR)/version.h:
-#	echo \#define SHA > $(VERSIONDIR)/version.h
-#	git rev-parse HEAD >> $(VERSIONDIR)/version.h
 
 $(FONTDIR)/testfont.inc: $(FONTDIR)/testfont.fnt
 	$(call MKDIR,$(@D))

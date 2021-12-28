@@ -2,8 +2,6 @@
 #define H_SYSTEMES
 
 #include <stdbool.h>
-#include "planet.h"
-#include "stations.h"
 
 #define NO_SYSTEM -1
 
@@ -40,10 +38,13 @@ typedef struct HyperlaneStruct Hyperlane;
 
 typedef struct StarSystemStruct StarSystem;
 
+#include "planet.h"
+#include "stations.h"
+
 /* internal public functions =========================================== */
 /**
  * @brief To alloc a star system
- *        use free() to free the star system
+ *        use free_count() to free the star system
  * 
  * @return StarSystem* 
  */

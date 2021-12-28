@@ -13,15 +13,12 @@
  * @brief If defined, debug version
  * 
  */
-#ifndef DEBUG
 #define DEBUG_VERSION
-#endif
 
 #ifndef DEBUG_VERSION
 #define NDEBUG
 #endif
 
-#define LOG_VERSION
 
 
 /* constants =========================================================== */
@@ -75,6 +72,14 @@ void mainMenu_PrintInt(int nombre);
  * @param number 
  * @return int 
  */
-int mainMenu_IntLen(int nombre);
+int main_IntLength(int nombre);
+
+void *malloc_count(size_t _Size);
+
+void *calloc_count(size_t _Count, size_t _Size);
+
+void free_count(void *_Block);
+
+unsigned long ramGet();
 
 #endif

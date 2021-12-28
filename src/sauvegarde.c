@@ -62,27 +62,27 @@ int ChargementAnciennePartie(EmpireListe *empireListe, Empire *joueur, Parametre
 		
 		if(systemeStellaires[i].nombrePlanetes >= 1)
 		{
-			systemeStellaires[i].planete1 = (Planete*)malloc(sizeof(Planete));
+			systemeStellaires[i].planete1 = (Planete*)malloc_count(sizeof(Planete));
 			ti_Read(systemeStellaires[i].planete1, sizeof(Planete), 1, sauvegarde);
 		}
 		if(systemeStellaires[i].nombrePlanetes >= 2)
 		{
-			systemeStellaires[i].planete2 = (Planete*)malloc(sizeof(Planete));
+			systemeStellaires[i].planete2 = (Planete*)malloc_count(sizeof(Planete));
 			ti_Read(systemeStellaires[i].planete2, sizeof(Planete), 1, sauvegarde);
 		}
 		if(systemeStellaires[i].nombrePlanetes >= 3)
 		{
-			systemeStellaires[i].planete3 = (Planete*)malloc(sizeof(Planete));
+			systemeStellaires[i].planete3 = (Planete*)malloc_count(sizeof(Planete));
 			ti_Read(systemeStellaires[i].planete3, sizeof(Planete), 1, sauvegarde);
 		}
 		if(systemeStellaires[i].nombrePlanetes >= 4)
 		{
-			systemeStellaires[i].planete4 = (Planete*)malloc(sizeof(Planete));
+			systemeStellaires[i].planete4 = (Planete*)malloc_count(sizeof(Planete));
 			ti_Read(systemeStellaires[i].planete4, sizeof(Planete), 1, sauvegarde);
 		}
 		if(systemeStellaires[i].nombrePlanetes == 5)
 		{
-			systemeStellaires[i].planete5 = (Planete*)malloc(sizeof(Planete));
+			systemeStellaires[i].planete5 = (Planete*)malloc_count(sizeof(Planete));
 			ti_Read(systemeStellaires[i].planete5, sizeof(Planete), 1, sauvegarde);
 		}
 		i++;

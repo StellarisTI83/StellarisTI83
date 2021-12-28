@@ -17,11 +17,13 @@ struct DateStruct{
 	int year;
 	int tick;
     int fps;
+    float updateTime;
+    float screenTime;
 };
 
 /* entry points ======================================================== */
 Time *time_Alloc(){
-    return calloc(1, sizeof(Time));
+    return calloc_count(1, sizeof(Time));
 }
 
 void time_DateSet(Time *time, char d, char m, int y){
@@ -141,11 +143,19 @@ void time_Update(Time *time) {
 	}
 }
 
-void time_FPSSet(Time *time, long fps) {
+void time_FPSSet(Time *time, int fps, float updateTime, float screenTime) {
     time->fps = fps;
+    time->updateTime = updateTime;
+    time->screenTime = screenTime;
 }
 
-long time_FPSGet(Time *time) {
+int time_FPSGet(Time *time) {
     return time->fps;
+}
+float time_UpdateTimeGet(Time *time){
+    return time->updateTime;
+}
+float time_ScreenTimeGet(Time *time){
+    return time->screenTime;
 }
 

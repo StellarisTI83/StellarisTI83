@@ -22,11 +22,11 @@ char draw_Screen(   char *key,
                     StarSystem **galaxy, 
                     Time *time, 
                     Camera *camera, 
-                    Window *window, 
+                    WindowManager *window, 
                     Settings *settings, 
                     Market *market, 
                     NotificationList *notificationList) {
-    int8_t endGame;
+    int8_t endGame = 1;
     gfx_ZeroScreen();
 
     map_Draw(   key,

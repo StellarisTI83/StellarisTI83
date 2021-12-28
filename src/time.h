@@ -7,6 +7,9 @@
 #define QUARTER_SECOND  (TIMER_FREQ / 4)
 #define CHANGE_TIME     (TIMER_FREQ / 1) * 1
 
+
+#define DEBUG_FPS     
+
 typedef enum {  TIME_SPEED_VERY_SLOW = -2,
                 TIME_SPEED_SLOW,
                 TIME_SPEED_PAUSE,
@@ -45,8 +48,10 @@ void time_SpeedUnincrement(Time *date);
 
 void time_Update(Time *date);
 
-void time_FPSSet(Time *time, long fps);
-long time_FPSGet(Time *time);
+void time_FPSSet(Time *time, int fps, float updateTime, float screenTime);
+int time_FPSGet(Time *time);
+float time_UpdateTimeGet(Time *time);
+float time_ScreenTimeGet(Time *time);
 
 
 #endif

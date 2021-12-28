@@ -42,7 +42,7 @@ int game_Update(char *key,
                 StarSystem **galaxy, 
                 Time *time, 
                 Camera *camera, 
-                Window *window, 
+                WindowManager *window, 
                 NotificationList *notificationList, 
                 Settings *settings);
 

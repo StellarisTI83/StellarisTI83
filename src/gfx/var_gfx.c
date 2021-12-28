@@ -81,18 +81,18 @@ unsigned char *var_gfx_appvar[88] =
     (unsigned char*)19641,
     (unsigned char*)19715,
     (unsigned char*)19997,
-    (unsigned char*)20667,
-    (unsigned char*)22581,
-    (unsigned char*)25524,
-    (unsigned char*)29122,
-    (unsigned char*)31890,
-    (unsigned char*)34198,
-    (unsigned char*)37053,
-    (unsigned char*)39319,
-    (unsigned char*)42175,
-    (unsigned char*)43995,
-    (unsigned char*)45803,
-    (unsigned char*)47152,
+    (unsigned char*)20664,
+    (unsigned char*)22578,
+    (unsigned char*)25534,
+    (unsigned char*)29151,
+    (unsigned char*)31909,
+    (unsigned char*)34232,
+    (unsigned char*)37075,
+    (unsigned char*)39349,
+    (unsigned char*)42229,
+    (unsigned char*)44049,
+    (unsigned char*)45857,
+    (unsigned char*)47206,
 };
 
 unsigned char *background0_tiles_compressed[1] =
@@ -160,8 +160,6 @@ unsigned char var_gfx_init(void)
     unsigned int data, i;
     ti_var_t appvar;
 
-    ti_CloseAll();
-
     appvar = ti_Open("var_gfx", "r");
     if (appvar == 0)
     {
@@ -174,7 +172,7 @@ unsigned char var_gfx_init(void)
         var_gfx_appvar[i] += data;
     }
 
-    ti_CloseAll();
+    ti_Close(appvar);
 
     data = (unsigned int)var_gfx_appvar[76] - (unsigned int)background0_tiles_compressed[0];
     for (i = 0; i < background0_tiles_num; i++)

@@ -16,7 +16,10 @@ struct OrdreElement{
 	int prix;
 	int tempsTotal;
 	int tempsActuel;
-	int empire;
+	union {
+		int empireNumber;
+		Empire* empire;
+	};
 	Ordre* ordreSuivant;
 };
 
@@ -27,7 +30,7 @@ struct OrdreFileStruct{
 /* entry points ======================================================== */
 OrdreFile *CreerFileOrdres(){
 	OrdreFile *ordreFile = NULL;
-	ordreFile = calloc(1, sizeof(OrdreFile));
+	ordreFile = calloc_count(1, sizeof(OrdreFile));
     if(!ordreFile){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when creating order queue");
@@ -43,17 +46,17 @@ void SupprimerFileOrdres(OrdreFile *ordreFile){
 	ordre = ordreFile->premierOrdre;
 	while(ordre != NULL){
 		ordreSuivant = ordre->ordreSuivant;
-		free(ordre);
+		free_count(ordre);
 		ordre = ordreSuivant;
 	}
-	free(ordreFile);
+	free_count(ordreFile);
 }
 
-void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, int info1, int info2, int prix){
+void order_NewDeprecated(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, int info1, int info2, int prix){
 	Ordre *ordreElement = NULL;
 
 	if(ordreFile->premierOrdre == NULL){
-		ordreFile->premierOrdre = calloc(1, sizeof(Ordre));
+		ordreFile->premierOrdre = calloc_count(1, sizeof(Ordre));
 		if(!ordreFile->premierOrdre){
 			#ifdef DEBUG_VERSION
 			dbg_sprintf(dbgerr, "Malloc returned NULL when creating order");
@@ -67,7 +70,45 @@ void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, in
 		while(ordreElement->ordreSuivant != NULL){
 			ordreElement = ordreElement->ordreSuivant;
 		}
-		ordreElement->ordreSuivant = calloc(1, sizeof(Ordre));
+		ordreElement->ordreSuivant = calloc_count(1, sizeof(Ordre));
+			if(!ordreFile->premierOrdre){
+				#ifdef DEBUG_VERSION
+				dbg_sprintf(dbgerr, "Malloc returned NULL when creating order");
+				#endif
+				exit(EXIT_FAILURE);
+			}
+		ordreElement = ordreElement->ordreSuivant;
+	}
+
+	ordreElement->ordre = ordre;
+	ordreElement->tempsTotal = tempsTotal;
+	ordreElement->tempsActuel = tempsTotal;
+	ordreElement->info1 = info1;
+	ordreElement->info2 = info2;
+	ordreElement->prix = prix;
+	ordreElement->empireNumber = empire;
+	ordreElement->ordreSuivant = NULL;
+}
+
+void order_New(OrdreFile* ordreFile, int ordre, Empire* empire, int tempsTotal, int info1, int info2, int prix){
+	Ordre *ordreElement = NULL;
+
+	if(ordreFile->premierOrdre == NULL){
+		ordreFile->premierOrdre = calloc_count(1, sizeof(Ordre));
+		if(!ordreFile->premierOrdre){
+			#ifdef DEBUG_VERSION
+			dbg_sprintf(dbgerr, "Malloc returned NULL when creating order");
+			#endif
+			exit(EXIT_FAILURE);
+		}
+		ordreElement = ordreFile->premierOrdre;
+	}
+	else{
+		ordreElement = ordreFile->premierOrdre;
+		while(ordreElement->ordreSuivant != NULL){
+			ordreElement = ordreElement->ordreSuivant;
+		}
+		ordreElement->ordreSuivant = calloc_count(1, sizeof(Ordre));
 			if(!ordreFile->premierOrdre){
 				#ifdef DEBUG_VERSION
 				dbg_sprintf(dbgerr, "Malloc returned NULL when creating order");
@@ -85,6 +126,7 @@ void NouvelOrdre(OrdreFile* ordreFile, int ordre, int empire, int tempsTotal, in
 	ordreElement->prix = prix;
 	ordreElement->empire = empire;
 	ordreElement->ordreSuivant = NULL;
+			dbg_printf("Order new");
 }
 
 void FinirOrdre(OrdreFile *ordreFile){
@@ -92,7 +134,7 @@ void FinirOrdre(OrdreFile *ordreFile){
 	ordre = ordreFile->premierOrdre;
 	if(ordre != NULL){
 		ordreFile->premierOrdre = ordre->ordreSuivant;
-		free(ordre);
+		free_count(ordre);
 	}
 }
 
@@ -122,7 +164,7 @@ int GetOrder(OrdreFile *ordreFile){
 
 int GetOrderEmpire(OrdreFile *ordreFile){
 	if(RecupererOrdre(ordreFile) != NULL)
-		return RecupererOrdre(ordreFile)->empire;
+		return RecupererOrdre(ordreFile)->empireNumber;
 	else 
 		return 0;
 }
