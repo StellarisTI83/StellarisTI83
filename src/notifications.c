@@ -35,7 +35,7 @@ void FreeNotificationList(NotificationList *notificationList) {
         return;
     notification = GenericCell_Get((GenericList*)notification, i);
     while(notification != NULL) {
-        free(notification);
+        free_count(notification);
         i++;
         notification = GenericCell_Get((GenericList*)notification, i);
     }
@@ -93,7 +93,7 @@ void DrawNotifications(NotificationList *notificationList, Time *date) {
             }
             if(notification->length <= 0) {
                 GenericCell_Free((GenericList*)notificationList, notificationIndex);
-                free(notification);
+                free_count(notification);
             }
         }
     }
@@ -102,7 +102,7 @@ void DrawNotifications(NotificationList *notificationList, Time *date) {
 }
 
 void NewNotification(NotificationList *notificationList, NOTIFICATION_TYPE type, NotificationId ID, int length) {
-    Notification *notification = malloc(sizeof(Notification));	
+    Notification *notification = malloc_count(sizeof(Notification));	
     if(!notification){
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgerr, "Malloc returned NULL when adding notification");

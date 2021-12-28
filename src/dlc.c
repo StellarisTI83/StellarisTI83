@@ -139,7 +139,7 @@ FleetTemplateListe *dlc_Load(const char *name) {
 	#endif
 
 	ti_Read(&sizeOfChunk, sizeof(uint16_t), 1, dlc_var);
-	buffer = malloc(sizeOfChunk + 2);	
+	buffer = malloc_count(sizeOfChunk + 2);	
     if(!buffer){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when creating dlc buffer");
@@ -149,7 +149,7 @@ FleetTemplateListe *dlc_Load(const char *name) {
 	ti_Read(buffer, sizeOfChunk + 2, 1, dlc_var);
 	dlc_Parse(buffer, fleetTemplateList, ky_none);
 
-	free(buffer);
+	free_count(buffer);
 	ti_Close(dlc_var);
 	return fleetTemplateList;
 }
@@ -158,7 +158,7 @@ void dlc_Unload(FleetTemplateListe *fleetTemplateList) {
 	int index = 0;
 	FleetTemplate *fleetTemplate = (FleetTemplate*)GenericCell_Get((GenericList*)fleetTemplateList, index);
 	while (fleetTemplate) {
-		free(fleetTemplate);
+		free_count(fleetTemplate);
 		index++;
 		fleetTemplate = (FleetTemplate*)GenericCell_Get((GenericList*)fleetTemplateList, index);
 	}

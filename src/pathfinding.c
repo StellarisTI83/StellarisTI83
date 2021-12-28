@@ -30,7 +30,7 @@ typedef struct{
 
 static NodeArray *CreateNodeArray(){
     NodeArray *array = NULL;
-    array = calloc(1, sizeof(NodeArray));
+    array = calloc_count(1, sizeof(NodeArray));
     array->firstNode = NULL;
     return array;
 }
@@ -41,22 +41,22 @@ static void DestroyNodeArray(NodeArray *array){
     while(actual_node != NULL){
         precedent_node = actual_node;
         actual_node = actual_node->suivant;
-        free(precedent_node);
+        free_count(precedent_node);
     }
-    free(array);
+    free_count(array);
 }
 
 static Node* CreateNode(NodeArray *array){
     Node *node = NULL;
     if(array->firstNode == NULL){
-        array->firstNode = calloc(1, sizeof(Node));
+        array->firstNode = calloc_count(1, sizeof(Node));
         node = array->firstNode;
     } else {
         node = array->firstNode;
         while(node->suivant != NULL){
             node = node->suivant;
         }
-        node->suivant = calloc(1, sizeof(Node));
+        node->suivant = calloc_count(1, sizeof(Node));
         node = node->suivant;
     }
     node->suivant = NULL;
@@ -72,7 +72,7 @@ static void DestroyNode(NodeArray *array, int place){
     if(place == 0){
         array->firstNode = node->suivant;
 
-        free(node);
+        free_count(node);
     } else {
         while((node->suivant != NULL) && (index < place)){
             precedent_node = node;
@@ -80,7 +80,7 @@ static void DestroyNode(NodeArray *array, int place){
             index++;
         }
         precedent_node->suivant = node->suivant;
-        free(node);
+        free_count(node);
     }
 }
 
@@ -116,7 +116,7 @@ static Node* CopyNode(Node *destination, Node *source){
 
 static void ReverseArray(int array[], int size){
     int *aux = NULL, i = 0, j = size - 1;
-    aux = calloc(1, size * sizeof(int));
+    aux = calloc_count(1, size * sizeof(int));
     while(i < size){
         aux[j] = array[i];
         j--;
@@ -138,8 +138,8 @@ int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int tailleP
     NodeArray *listeOuverte = NULL;
     NodeArray *listeFermee = NULL;
     NodeArray *listeEnfants = NULL;
-    Node *depart = malloc(sizeof(Node));
-    Node *arrivee = malloc(sizeof(Node));
+    Node *depart = malloc_count(sizeof(Node));
+    Node *arrivee = malloc_count(sizeof(Node));
     Node *current_node = NULL;
     Node *temporary_node = NULL;
     Node *children = NULL;

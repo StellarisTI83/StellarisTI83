@@ -68,7 +68,7 @@ struct EmpireAiStruct{
 static void ai_EmpireEconomy(   Empire *empire){
     EmpireAi* ai = empire_AiGet(empire);
     assert(ai);
-    AiConstuctionOrder* order = calloc(1, sizeof(AiConstuctionOrder));
+    AiConstuctionOrder* order = calloc_count(1, sizeof(AiConstuctionOrder));
     
     dbg_sprintf(dbgout, "Empire economy\n");
     switch(ai->economicPriority){
@@ -168,7 +168,7 @@ static void ai_Planet(  Empire *empire){
                     400
                 );
                 empire_MineralsAdd(empire, -400);
-                free(planetaryConstructionOrder);
+                free_count(planetaryConstructionOrder);
                 GenericCell_Free(ai->constructionList, 0);
                 planetaryConstructionOrder = GenericCell_Get(ai->constructionList, 0);
             }
@@ -182,7 +182,7 @@ static void ai_Planet(  Empire *empire){
                 50
             );
             empire_MineralsAdd(empire, -50);
-            free(planetaryConstructionOrder);
+            free_count(planetaryConstructionOrder);
             GenericCell_Free(ai->constructionList, 0);
             planetaryConstructionOrder = GenericCell_Get(ai->constructionList, 0);
         }
@@ -241,7 +241,7 @@ static void ai_EmpireFleetManager(Empire *empire, StarSystem **systemeStellaires
 }
 
 void ai_EmpireGenerate( Empire *empire){
-    EmpireAi* empireAi = calloc(1, sizeof(EmpireAi));
+    EmpireAi* empireAi = calloc_count(1, sizeof(EmpireAi));
     assert(empireAi);
     empire_AiSet(empire, empireAi);
     empireAi->constructionList = GenericList_Create();

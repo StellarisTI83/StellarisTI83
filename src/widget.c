@@ -132,7 +132,7 @@ WidgetButton* widget_ButtonAdd(  WidgetContainer *widgetNode,
 
     assert(widgetNode);
 
-    button = calloc(1, sizeof(WidgetButton));
+    button = calloc_count(1, sizeof(WidgetButton));
     assert(button);
     
     if(widgetNode->begin){
@@ -152,7 +152,7 @@ WidgetButton* widget_ButtonAdd(  WidgetContainer *widgetNode,
     }
 
     if(string){
-        button->text = calloc(1, sizeof(char) * (strlen(string) + 1));
+        button->text = calloc_count(1, sizeof(char) * (strlen(string) + 1));
         assert(button->text);
         strcpy(button->text, string);
     }
@@ -176,10 +176,10 @@ void widget_ButtonDestroy(WidgetButton *button){
     assert(button);
     assert(button->text);
     if(button->actionData){
-        free(button->actionData);
+        free_count(button->actionData);
     }
-    free(button->text);
-    free(button);
+    free_count(button->text);
+    free_count(button);
 }
 
 int widget_ButtonShow(WidgetButton *button, bool status, bool click){
@@ -223,7 +223,7 @@ WidgetImage* widget_ImageAdd(   WidgetContainer *widgetNode,
                                 const int imageX,
                                 const int imageY,
                                 const char scale){
-    WidgetImage* widgetImage = calloc(1, sizeof(WidgetImage)), *tmp;
+    WidgetImage* widgetImage = calloc_count(1, sizeof(WidgetImage)), *tmp;
 
     assert(widgetNode);
 
@@ -305,7 +305,7 @@ WidgetText* widget_TextAdd( WidgetContainer *widgetNode,
 
     assert(widgetNode);
 
-    text = calloc(1, sizeof(WidgetText));
+    text = calloc_count(1, sizeof(WidgetText));
     assert(text);
     
     text->width = ((widgetNode->width - MENU_BUTTON_GAP * 2) * width) / 100;
@@ -338,7 +338,7 @@ WidgetText* widget_TextAdd( WidgetContainer *widgetNode,
     text->y = y;
 
     if(string){
-        text->text = calloc(1, sizeof(char) * (strlen(string) + 1));
+        text->text = calloc_count(1, sizeof(char) * (strlen(string) + 1));
         assert(text->text);
         strcpy(text->text, string);
     }
@@ -390,7 +390,7 @@ WidgetContainer *widget_WindowContainerAdd( WidgetWindow *window,
     WidgetContainer *container, *tmp;
     int x = 0, y = 0, windowY = window->y, windowHeight = window->height;
     assert(window);
-    container = calloc(1, sizeof(WidgetContainer));
+    container = calloc_count(1, sizeof(WidgetContainer));
 
 
     if(window->titleMallocType){ // If there is a title
@@ -449,13 +449,13 @@ void widget_WindowContainerDestroy(WidgetContainer *widgetNode){
     } else if(widgetNode->type == WIDGET_IMAGE){
         while(image) {
             imageTemp = image->next;
-            free(image);
+            free_count(image);
             image = imageTemp;
         }
     } else if(widgetNode->type == WIDGET_TEXT){
         while(text) {
             textTemp = text->next;
-            free(text);
+            free_count(text);
             text = textTemp;
         }
     }
@@ -534,7 +534,7 @@ static void widget_ContainerShow(   WidgetContainer *widgetNode,
 WidgetWindow *widget_WindowCreate(  const char *title, 
                                     const int width, 
                                     const int height) {
-    WidgetWindow *widgetWindow = calloc(1, sizeof(WidgetWindow));
+    WidgetWindow *widgetWindow = calloc_count(1, sizeof(WidgetWindow));
     assert(widgetWindow);
     widgetWindow->x = (gfx_lcdWidth - width) / 2;
     widgetWindow->y = (gfx_lcdHeight - height) / 2;
@@ -542,7 +542,7 @@ WidgetWindow *widget_WindowCreate(  const char *title,
     widgetWindow->height = height;
     if(title > (char*)1) {
         widgetWindow->titleMallocType = true;
-        widgetWindow->titleString = calloc(1, strlen(title) * sizeof(char));
+        widgetWindow->titleString = calloc_count(1, strlen(title) * sizeof(char));
         strcpy(widgetWindow->titleString, title);
     } else if(title == (char*)1) {
         widgetWindow->titleMallocType = true;
@@ -600,6 +600,6 @@ void widget_WindowDestroy(WidgetWindow *window) {
         container = containerTemp;
     }
     if(window->titleMallocType == true)
-        free(window->titleString);
-    free(window);
+        free_count(window->titleString);
+    free_count(window);
 }

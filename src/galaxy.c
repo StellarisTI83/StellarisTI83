@@ -675,7 +675,7 @@ void galaxy_CreateNew(StarSystem **galaxy){
     int radiusIntern = 50;
     int *galaxyMatrix = NULL;
     int starNumber;
-    galaxyMatrix = malloc(GALAXY_WIDTH * GALAXY_WIDTH * 2 * sizeof(int));
+    galaxyMatrix = malloc_count(GALAXY_WIDTH * GALAXY_WIDTH * 2 * sizeof(int));
     if(!galaxyMatrix) {
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when creating galaxy matrix");
@@ -698,7 +698,7 @@ void galaxy_CreateNew(StarSystem **galaxy){
 
     galaxy_HyperlanesCreate(galaxy, starNumber);
 
-    free(galaxyMatrix);
+    free_count(galaxyMatrix);
 
     #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "End of galaxy creation\n");

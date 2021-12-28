@@ -245,14 +245,14 @@ void NouvelleLigneConsole(char *commande, char *reponse){
     Ligne *ligneDeCommande = NULL;
     ligneDeCommande = console.premiereLigne;
     if(ligneDeCommande == NULL){
-        console.premiereLigne = malloc(sizeof(Ligne));
+        console.premiereLigne = malloc_count(sizeof(Ligne));
         ligneDeCommande = console.premiereLigne;
     }
     else{
         while(ligneDeCommande->commandeSuivante != NULL){
             ligneDeCommande = ligneDeCommande->commandeSuivante;
         }
-        ligneDeCommande->commandeSuivante = malloc(sizeof(Ligne));
+        ligneDeCommande->commandeSuivante = malloc_count(sizeof(Ligne));
         ligneDeCommande = ligneDeCommande->commandeSuivante;
     }
     memset(ligneDeCommande, 0, sizeof(Ligne));

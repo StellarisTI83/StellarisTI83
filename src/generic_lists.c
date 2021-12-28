@@ -21,7 +21,7 @@ struct _genericList {
 /* entry points ======================================================== */
 
 GenericList *GenericList_Create() {
-    GenericList *list = malloc(sizeof(GenericList));
+    GenericList *list = malloc_count(sizeof(GenericList));
     #ifdef LOG_VERSION
 	dbg_sprintf(dbgerr, "Create generic list %p\n", list);
     #endif
@@ -46,9 +46,9 @@ void GenericList_Free(GenericList *list) {
     while(list->firstElement != NULL) {
         cell = list->firstElement;
         list->firstElement = cell->nextElement;
-        free(cell);
+        free_count(cell);
     }
-    free(list);
+    free_count(list);
 }
 
 int GenericList_ArraySize(const GenericList *list) {
@@ -76,7 +76,7 @@ void GenericCell_Add(GenericList *list, void *info) {
     if(!list)
         return;
 
-    cell = calloc(1, sizeof(GenericListElement));
+    cell = calloc_count(1, sizeof(GenericListElement));
 	if(!cell){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when adding generic cell");
@@ -132,7 +132,7 @@ void GenericCell_Free(GenericList *list, int index) {
     if(index == 0) {
         GenericListElement *cell = list->firstElement;
         list->firstElement = temporaryCell->nextElement;
-        free(cell);
+        free_count(cell);
         return;
     }
     else {
@@ -141,7 +141,7 @@ void GenericCell_Free(GenericList *list, int index) {
             if(actualCell == index) {
                 GenericListElement *cell = temporaryCell->nextElement;
                 temporaryCell->nextElement = temporaryCell->nextElement->nextElement;
-                free(cell);
+                free_count(cell);
                 return;
             }
             temporaryCell = temporaryCell->nextElement;

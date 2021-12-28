@@ -144,7 +144,7 @@ struct PlanetStruct{
 // Planet functions
 Planet *planet_Alloc(){
     Planet *planet = NULL;
-    planet = calloc(1, sizeof(Planet));
+    planet = calloc_count(1, sizeof(Planet));
     if(planet == NULL)
         exit(EXIT_FAILURE);
     return planet;
@@ -386,7 +386,7 @@ int GetPlanetCityAmienties(Planet *planet){
 // City functions
 City *planet_CityCreate(Planet *planet){
     if(planet){
-        planet->city = calloc(1, sizeof(City));
+        planet->city = calloc_count(1, sizeof(City));
         planet->city->ordreFile = CreerFileOrdres();
         return planet->city;
     } else

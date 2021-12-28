@@ -117,7 +117,7 @@ void empire_ListFree(EmpireList* empireList) {
         if(empire->relationsListe)
             diplomacy_ListFree(empire->relationsListe);
 
-        free(empire);
+        free_count(empire);
         index++;
         empire = GenericCell_Get((GenericList*)empireList, index);
     }
@@ -143,7 +143,7 @@ Empire* empire_Add(EmpireList* empireList) {
 
     assert(empireList);
 
-    empire = calloc(1, sizeof(Empire));
+    empire = calloc_count(1, sizeof(Empire));
 
     assert(empire);
 
@@ -170,7 +170,7 @@ void empire_Free(EmpireList* empireList, int numero) {
     if(empire->relationsListe)
         diplomacy_ListFree(empire->relationsListe);
 
-    free(empire);
+    free_count(empire);
     GenericCell_Free((GenericList*)empireList, numero);
 }
 
@@ -378,7 +378,7 @@ void empire_PlanetListFree(EmpirePlanetList* empirePlanetList) {
     planetListCell = GenericCell_Get((GenericList*)empirePlanetList, index);
 
     while(planetListCell) {
-        free(planetListCell);
+        free_count(planetListCell);
         index++;
         planetListCell = GenericCell_Get((GenericList*)empirePlanetList, index);
     }
@@ -628,7 +628,7 @@ Diplomacy* diplomacy_RelationsGet(DiplomacyList* relationsListe, int numero) {
 
 Diplomacy* diplomacy_RelationsAdd(DiplomacyList* relationsListe) {
     Diplomacy *pointeur = NULL;
-    pointeur = calloc(1, sizeof(Diplomacy));
+    pointeur = calloc_count(1, sizeof(Diplomacy));
     GenericCell_Add((GenericList*)relationsListe, pointeur);
     return pointeur;
 }

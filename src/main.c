@@ -111,7 +111,7 @@ static void mainMenu_DrawStation(StationVector **stationVector, gfx_sprite_t *st
  * @param station 
  */
 static void mainMenu_StationCreate(StationVector **stationVector, gfx_sprite_t **station) {
-    *stationVector = malloc(sizeof(StationVector));
+    *stationVector = malloc_count(sizeof(StationVector));
     (*stationVector)->x = 206;
     (*stationVector)->y = 120;
     (*stationVector)->yVector = 0;
@@ -131,8 +131,8 @@ static void mainMenu_StationCreate(StationVector **stationVector, gfx_sprite_t *
  * @param stationVector 
  */
 static void mainMenu_StationFree(StationVector **stationVector, gfx_sprite_t **station) {
-    free(*station);
-    free(*stationVector);
+    free_count(*station);
+    free_count(*stationVector);
 }
 
 // FIXME Background don't work
@@ -244,7 +244,7 @@ static int mainMenu_Draw(){
     }
     // index = 0;
     // while(index < 12) {
-    //     free(tile[index]);
+    //     free_count(tile[index]);
     //     index++;
     // }
     mainMenu_StationFree(&stationVector, &station);
@@ -384,7 +384,7 @@ static int mainMenu_Settings(){
         gfx_SwapDraw();
     }
     // for (index = 0; index < 12; index++) {
-    //     free(tile[index]);
+    //     free_count(tile[index]);
     // }
     mainMenu_StationFree(&stationVector, &station);
     return MAIN_MENU_EXIT;
@@ -492,7 +492,7 @@ void mainMenu_PrintMultipleLines(char *str) {
 
     char *ptr = NULL;
 
-    string1 = calloc(1, init_size + 1);
+    string1 = calloc_count(1, init_size + 1);
     strcpy(string1, str);
     ptr = strtok(string1, delim);
     while(ptr != NULL) {
@@ -504,7 +504,7 @@ void mainMenu_PrintMultipleLines(char *str) {
         gfx_PrintString(ptr);
         ptr = strtok(string1, delim);
     }
-    free(string1);
+    free_count(string1);
 }
 
 /**
@@ -577,5 +577,5 @@ void free_count(void *_Block){
 }
 
 unsigned long ramGet(){
-    return usedRam;
+    return usedRam/8;
 }

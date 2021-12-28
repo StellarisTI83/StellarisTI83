@@ -55,7 +55,7 @@ struct StarSystemStruct{
 /* entry points ======================================================== */
 
 StarSystem* starSystem_Create(){
-    return calloc(1, sizeof(StarSystem));
+    return calloc_count(1, sizeof(StarSystem));
 }
 
 void starSystem_SetXY(StarSystem *starSystem, const int x, const int y){

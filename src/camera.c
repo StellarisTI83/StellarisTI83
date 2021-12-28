@@ -42,7 +42,7 @@ struct CameraStruct{
 /* entry points ======================================================== */
 
 Camera *camera_Create(){
-    Camera *camera = calloc(1, sizeof(Camera));
+    Camera *camera = calloc_count(1, sizeof(Camera));
     if(!camera){
         #ifdef DEBUG_VERSION
         dbg_sprintf(dbgout, "Malloc returned NULL when creating camera");

@@ -277,10 +277,12 @@ static void hud_PrintInfos( Empire *player,
     gfx_SetTextXY(LCD_WIDTH - 2 * TEXT_HEIGHT, 1);
     gfx_PrintUInt(time_FPSGet(time), 2);
     char buffer[20];
-    sprintf(buffer, "%fms", time_UpdateTimeGet(time));
+    sprintf(buffer, "%f", time_UpdateTimeGet(time));
     gfx_PrintStringXY(buffer, LCD_WIDTH - 8 * TEXT_HEIGHT, TEXT_HEIGHT + 2);
-    sprintf(buffer, "%fms", time_ScreenTimeGet(time));
-    gfx_PrintStringXY(buffer, LCD_WIDTH - 8 * TEXT_HEIGHT, TEXT_HEIGHT * 2 + 3);
+    sprintf(buffer, "%f", time_ScreenTimeGet(time));
+    gfx_PrintStringXY(buffer, LCD_WIDTH - 9 * TEXT_HEIGHT, TEXT_HEIGHT * 2 + 3);
+    sprintf(buffer, "%lu", ramGet());
+    gfx_PrintStringXY(buffer, LCD_WIDTH - 5 * TEXT_HEIGHT, TEXT_HEIGHT * 3 + 4);
     #endif
 
     hud_DrawSpeedIcon(time);

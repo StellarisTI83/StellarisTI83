@@ -23,7 +23,7 @@ struct DateStruct{
 
 /* entry points ======================================================== */
 Time *time_Alloc(){
-    return calloc(1, sizeof(Time));
+    return calloc_count(1, sizeof(Time));
 }
 
 void time_DateSet(Time *time, char d, char m, int y){

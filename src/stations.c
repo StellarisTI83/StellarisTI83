@@ -29,7 +29,7 @@ struct StationStruct{
 /* entry points ======================================================== */
 Station* station_Create(){
     Station *station = NULL;
-    station = calloc(1, sizeof(Station));
+    station = calloc_count(1, sizeof(Station));
     if(station == NULL)
         exit(EXIT_FAILURE);
 

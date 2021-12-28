@@ -101,7 +101,7 @@ void fleet_ListFree(FleetList* flotteliste) {
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgout, ", Free fleet %d", i);
 		#endif
-        free(flotte);
+        free_count(flotte);
 		i++;
         flotte = GenericCell_Get((GenericList*)flotteliste, i);
     }
@@ -137,7 +137,7 @@ int RecupererFlotteNumero(const FleetList* flotteliste, const Fleet* flotte) {
  */
 Fleet* AjouterFlotte(FleetList* flotteliste) {
 	Fleet *pointeur = NULL;
-	pointeur = calloc(1, sizeof(Fleet));
+	pointeur = calloc_count(1, sizeof(Fleet));
 	if(!pointeur){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when creating fleet");
@@ -155,7 +155,7 @@ void SupprimerFlotte(FleetList* flotteliste, int numero) {
 	#ifdef DEBUG_VERSION
 	dbg_sprintf(dbgout, "Free fleet %d\n", numero);
 	#endif
-	free(GenericCell_Get((GenericList*)flotteliste, numero));
+	free_count(GenericCell_Get((GenericList*)flotteliste, numero));
 	GenericCell_Free((GenericList*)flotteliste, numero);
 }
 
@@ -536,7 +536,7 @@ void fleet_TemplateListFree(FleetTemplateListe* flotteliste) {
 	int i = 0;
     fleetTemplate = GenericCell_Get((GenericList*)flotteliste, i);
     while(fleetTemplate != NULL) {
-        free(fleetTemplate);
+        free_count(fleetTemplate);
 		i++;
         fleetTemplate = GenericCell_Get((GenericList*)flotteliste, i);
     }
@@ -562,7 +562,7 @@ FleetTemplate* fleet_TemplateGet(FleetTemplateListe* flotteliste, int numero) {
  */
 FleetTemplate* fleet_TemplateAdd(FleetTemplateListe* flotteliste) {
 	FleetTemplate *pointeur = NULL;
-	pointeur = calloc(1, sizeof(FleetTemplate));
+	pointeur = calloc_count(1, sizeof(FleetTemplate));
 	if(!pointeur){
 		#ifdef DEBUG_VERSION
 		dbg_sprintf(dbgerr, "Malloc returned NULL when creating fleet template");
@@ -577,7 +577,7 @@ FleetTemplate* fleet_TemplateAdd(FleetTemplateListe* flotteliste) {
  * Supprime le template de flotte numero x à la liste de templates de flottes envoyée
  */
 void fleet_TemplateDestroy(FleetTemplateListe* flotteliste, int numero) {
-	free(GenericCell_Get((GenericList*)flotteliste, numero));
+	free_count(GenericCell_Get((GenericList*)flotteliste, numero));
 	GenericCell_Free((GenericList*)flotteliste, numero);
 }
 

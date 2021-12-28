@@ -3114,10 +3114,10 @@ int menus_Draw( char *key,
             widget_WindowShow(window_WindowGet(window, 0), key);
             break;
         case MENU_SYSTEM:
-            // MenuSysteme(key, empireList, galaxy, camera, window);
+            MenuSysteme(key, empireList, galaxy, camera, window);
             break;
         case MENU_FLEET:
-            // MenuListeFLottes(key, empireList, camera, window);
+            MenuListeFLottes(key, empireList, camera, window);
             break;
         case MENU_MARKET:
             break;
@@ -3189,7 +3189,7 @@ void menu_Initialize(   EmpireList *empireList,
     int empireIndex = 1;
     MenuDataContacts *data, *dataClose;
 
-    dataClose = malloc(sizeof(MenuDataContacts));
+    dataClose = malloc_count(sizeof(MenuDataContacts));
     dataClose->window = window;
     dataClose->camera = camera;
 
@@ -3206,10 +3206,10 @@ void menu_Initialize(   EmpireList *empireList,
     widgetWindow = window_WindowNew(window, "Contacts", MENU_WIDE_WIDTH, MENU_WIDE_HEIGHT);
     widgetContainer = widget_WindowContainerAdd(widgetWindow, 100, 100);
     empire = empire_Get(empireList, empireIndex);
-    textData = malloc(sizeof(TextEmpireCompareData));
+    textData = malloc_count(sizeof(TextEmpireCompareData));
     textData->player = empire_Get(empireList, 0);
     while(empire) {
-        data = malloc(sizeof(MenuDataContacts));
+        data = malloc_count(sizeof(MenuDataContacts));
         data->camera = camera;
         data->window = window;
         data->menu = MENU_CONTACTS_INFOS;
@@ -3254,7 +3254,7 @@ void menu_Initialize(   EmpireList *empireList,
 // Windows functions
 
 WindowManager *window_Create(){
-    WindowManager *window = calloc(1, sizeof(WindowManager));
+    WindowManager *window = calloc_count(1, sizeof(WindowManager));
     assert(window);
     window->windowList = GenericList_Create();
     return window;
