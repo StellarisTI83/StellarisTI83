@@ -42,6 +42,8 @@ typedef enum {  HABITABLE_ARID = 1,
                 MOLTEN, 
                 TOXIC} PlanetType;
 
+#define PLANET_MAX 5
+
 /* flags =============================================================== */
 
 #define F_HABITABLE (1)

@@ -8,10 +8,6 @@
 #include "systemes.h"
 #include "time.h"
 
-/* constants =========================================================== */
-
-#define RAYON_DE_VUE_SYSTEME 160
-
 /* entry points ======================================================== */
 /**
  * @brief Draw the map, galaxy and system view
@@ -27,7 +23,7 @@ void map_Draw(	char *key,
 				EmpireList *empireListe, 
 				StarSystem **galaxy, 
 				Camera *camera, 
-				WindowManager *window, 
+				WindowManager *windowManager, 
 				Settings *settings);
 
 #endif

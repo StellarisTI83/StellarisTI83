@@ -36,7 +36,7 @@
  * @param x 
  * @param y 
  */
-static void PrintHUD(   const unsigned int currentState, 
+static void hud_RessourcePrint(   const unsigned int currentState, 
                         const int change, 
                         const int x, 
                         const int y) {
@@ -164,7 +164,7 @@ static void hud_PrintInfos( Empire *player,
                                     HUD_UP_BAR_LEFT,
                                     HUD_UP_BAR_UP);
 
-    PrintHUD(   empire_CreditGet(player), 
+    hud_RessourcePrint(   empire_CreditGet(player), 
                 empire_CreditVariationGet(player), 
                 HUD_UP_BAR_LEFT - 15, 
                 HUD_UP_BAR_TEXT_X);
@@ -174,7 +174,7 @@ static void hud_PrintInfos( Empire *player,
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP, 
                                     1);
 
-    PrintHUD(   empire_MineralsGet(player), 
+    hud_RessourcePrint(   empire_MineralsGet(player), 
                 empire_MineralsVariationGet(player), 
                 HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP - 15, 
                 HUD_UP_BAR_TEXT_X);
@@ -184,7 +184,7 @@ static void hud_PrintInfos( Empire *player,
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 2, 
                                     HUD_UP_BAR_UP);
 
-    PrintHUD(   empire_FoodGet(player), 
+    hud_RessourcePrint(   empire_FoodGet(player), 
                 empire_FoodVariationGet(player), 
                 HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 2 - 15, 
                 HUD_UP_BAR_TEXT_X);
@@ -194,7 +194,7 @@ static void hud_PrintInfos( Empire *player,
                                     HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 3, 
                                     HUD_UP_BAR_UP);
 
-    PrintHUD(   empire_AlloysGet(player), 
+    hud_RessourcePrint(   empire_AlloysGet(player), 
                 empire_AlloysVariationGet(player), 
                 HUD_UP_BAR_LEFT + HUD_UP_BAR_GAP * 3 - 15, 
                 HUD_UP_BAR_TEXT_X);
@@ -252,7 +252,7 @@ static void hud_PrintInfos( Empire *player,
 
     // name of the system
     if ((camera_SystemActualGet(camera) != NO_SYSTEM) || (camera_MapTypeGet(camera) == VUE_SYSTEM)) {
-        if (camera_MapTypeGet(camera) == VUE_GALACTIC) {
+        if (camera_MapTypeGet(camera) == VUE_GALAXY_LARGE) {
             system = camera_SystemActualGet(camera);
         } else {
             system = camera_SystemAimedGet(camera);
@@ -266,10 +266,12 @@ static void hud_PrintInfos( Empire *player,
                                 LCD_WIDTH / 2 - strlen(starSystem_NameGet(galaxy[system])) * TEXT_HEIGHT / 2, 
                                 LCD_HEIGHT - HUD_TIME_BAR_HEIGHT - HUD_NAME_BAR_HEIGHT / 2 - TEXT_HEIGHT / 2);
         }
+        #ifdef DEBUG_VERSION
         gfx_SetTextXY(100, 100);
         gfx_PrintUInt(system, 3);
         gfx_PrintString(" ");
         gfx_PrintUInt(starSystem_IntelLevelGet(galaxy[system]), 3);
+        #endif
     }
 
     // print fps
@@ -298,7 +300,7 @@ static void hud_PrintInfos( Empire *player,
  */
 static void hud_DrawPointer(Camera *camera) {
     //pointeur
-    if (camera_MapTypeGet(camera) == VUE_MAP) {
+    if (camera_MapTypeGet(camera) == VUE_GALAXY_LARGE) {
         gfx_Line_NoClip(camera_XGet(camera) / 2.5 + 5, camera_YGet(camera) / 2.5 - 30, camera_XGet(camera) / 2.5 + 15, camera_YGet(camera) / 2.5 - 30);
         gfx_Line_NoClip(camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 25, camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 35);
         gfx_Circle_NoClip(camera_XGet(camera) / 2.5 + 10, camera_YGet(camera) / 2.5 - 30, 3);

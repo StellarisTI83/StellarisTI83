@@ -74,12 +74,37 @@ void mainMenu_PrintInt(int nombre);
  */
 int main_IntLength(int nombre);
 
+
+
+/**
+ * @brief Same as malloc, but help to know how much ram is left
+ * 
+ * @param _Size 
+ * @return void* 
+ */
 void *malloc_count(size_t _Size);
 
+/**
+ * @brief Same as calloc, but help to know how much ram is left
+ * 
+ * @param _Count 
+ * @param _Size 
+ * @return void* 
+ */
 void *calloc_count(size_t _Count, size_t _Size);
 
+/**
+ * @brief Same as free, but help to know how much ram is left
+ * 
+ * @param _Block 
+ */
 void free_count(void *_Block);
 
+/**
+ * @brief To get the used ram
+ * 
+ * @return unsigned long 
+ */
 unsigned long ramGet();
 
 #endif

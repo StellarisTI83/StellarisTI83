@@ -4,6 +4,7 @@
 #define COLOR_BLACK                 0
 #define COLOR_WHITE                 1
 #define COLOR_TRANSPARENT           2
+#define COLOR_GRAY                  11
 
 #define COLOR_RED                   3
 // #define COLOR_BLUE                  3
@@ -32,7 +33,7 @@
 #define COLOR_STAR_BLACK_HOLE       13
 #define COLOR_STAR_PULSAR           14
 #define COLOR_STAR_NEUTRINOS        14
-#define COLOR_STAR_DEFAULT          15
+#define COLOR_STAR_DEFAULT          6
 
 #define COLOR_YELLOW                13
 #define COLOR_STAR_BLUE_OUTLINE     14

@@ -58,11 +58,11 @@ static void update_KeysTest(char *key,
             // Zoom out
             case sk_Mode:
                 switch(camera_MapTypeGet(camera)){
-                    case VUE_GALACTIC:
+                    case VUE_GALAXY_NORMAL:
                         camera_ZoomSet(camera, camera_ZoomGet(camera) - 1);
                         break;
                     case VUE_SYSTEM:
-                        camera_MapTypeSet(camera, VUE_GALACTIC);
+                        camera_MapTypeSet(camera, VUE_GALAXY_NORMAL);
                         break;
                     default:
                         break;
@@ -72,30 +72,31 @@ static void update_KeysTest(char *key,
             // Zoom in
             case sk_Del:
                 switch(camera_MapTypeGet(camera)){
-                    case VUE_GALACTIC:
-                        if((starSystem_IntelLevelGet(galaxy[camera_SystemActualGet(camera)]) 
-                        || settings_SeeAllGet(settings))
+                    case VUE_GALAXY_NORMAL:
+                        if((starSystem_IntelLevelGet(galaxy[camera_SystemActualGet(camera)])  || settings_SeeAllGet(settings))
                         && camera_SystemActualGet(camera) != NO_SYSTEM
                         && camera_ZoomGet(camera) == ZOOM_MAX){
                             camera_MapTypeSet(camera, VUE_SYSTEM);
                             camera_SystemActualSet(camera, camera_SystemActualGet(camera));
+                        } else {
+                            camera_ZoomSet(camera, camera_ZoomGet(camera) + 1);
                         }
-                        camera_ZoomSet(camera, camera_ZoomGet(camera) + 1);
+                        *key = 0;
                         break;
-                    case VUE_MAP:
-                        camera_MapTypeSet(camera, VUE_GALACTIC);
+                    case VUE_GALAXY_LARGE:
+                        camera_MapTypeSet(camera, VUE_GALAXY_NORMAL);
+                        *key = 0;
                         break;
                     default:
                         break;
                 }
-                *key = 0;
                 break;
             // Open the system
             case sk_Enter:
                 if((starSystem_IntelLevelGet(galaxy[camera_SystemActualGet(camera)]) 
                 || settings_SeeAllGet(settings))
                 && camera_SystemActualGet(camera) != NO_SYSTEM
-                && camera_MapTypeGet(camera) == VUE_GALACTIC){
+                && camera_MapTypeGet(camera) == VUE_GALAXY_NORMAL){
                     camera_MapTypeSet(camera, VUE_SYSTEM);
                     camera_SystemActualSet(camera, camera_SystemActualGet(camera));
                     *key = 0;

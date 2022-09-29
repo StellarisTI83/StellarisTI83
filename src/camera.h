@@ -9,6 +9,9 @@
 #define SYSTEM_MIDDLE_X 320
 #define SYSTEM_MIDDLE_Y 240
 
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
+
 #define SYSTEM_VIEW_RADIUS 160
 
 /* types =============================================================== */
@@ -17,16 +20,16 @@
  * @brief Differents view types
  * 
  */
-typedef enum {  VUE_MAP, 
-                VUE_GALACTIC, 
+typedef enum {  VUE_GALAXY_NORMAL, 
+                VUE_GALAXY_LARGE, 
                 VUE_SYSTEM} VueType;
 
 /**
  * @brief Differents zoom levels
  * 
  */
-typedef enum {  ZOOM_MIN = 0, 
-                ZOOM_NORMAL, 
+typedef enum {  ZOOM_MIN = 1, 
+                ZOOM_NORMAL = 2,
                 ZOOM_MAX} ZoomLevel;
 
 

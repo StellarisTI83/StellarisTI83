@@ -160,18 +160,11 @@ int camera_YVectorGet(Camera *camera){
 
 void camera_ZoomSet(Camera *camera, int zoom){
     assert(camera);
-    if(zoom > ZOOM_MAX)
-        return;
-    if(zoom < ZOOM_MIN)
+    if(zoom > ZOOM_MAX || zoom < ZOOM_MIN || zoom == camera->zoom)
         return;
 
-    if(zoom < camera->zoom){
-        camera_XSet(camera, camera_XGet(camera) * 0.5);
-        camera_YSet(camera, camera_YGet(camera) * 0.5);
-    } else {
-        camera_XSet(camera, camera_XGet(camera) * 2);
-        camera_YSet(camera, camera_YGet(camera) * 2);
-    }
+    camera_XSet(camera, camera_XGet(camera) * zoom / camera->zoom);
+    camera_YSet(camera, camera_YGet(camera) * zoom / camera->zoom);
     camera->zoom = zoom;
 }
 int camera_ZoomGet(Camera *camera){
