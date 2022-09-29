@@ -1,0 +1,6 @@
+[submodule "tools/StellarisTI83-mods"]
+	path = tools/StellarisTI83-mods
+	url = https://github.com/StellarisTI83/StellarisTI83-mods.git
+[submodule "tools/StellarisTI83-localisation"]
+	path = tools/StellarisTI83-localisation
+	url = https://github.com/StellarisTI83/StellarisTI83-localisation.git

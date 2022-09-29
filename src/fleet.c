@@ -378,7 +378,7 @@ void BougerFlotte(int numeroDeFlotte, int numeroDeEmpire, int systeme, WindowMan
 	if(camera_FleetMoveGet(camera) == false){
 		camera_FleetMoveSet(camera, true);
 		camera_LockSet(camera, false);
-		camera_MapTypeSet(camera, VUE_GALACTIC);
+		camera_MapTypeSet(camera, VUE_GALAXY_NORMAL);
 		menu_Close(fenetre, camera);
 		camera_FleetSet(camera, numeroDeFlotte);
 	} else {

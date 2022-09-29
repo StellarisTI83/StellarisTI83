@@ -134,52 +134,52 @@ static void ReverseArray(int array[], int size){
     }
 }
 
-int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int taillePath){
-    NodeArray *listeOuverte = NULL;
-    NodeArray *listeFermee = NULL;
-    NodeArray *listeEnfants = NULL;
-    Node *depart = malloc_count(sizeof(Node));
-    Node *arrivee = malloc_count(sizeof(Node));
+int PathFinding(StarSystem **galaxy, int *path, int debut, int fin, int taillePath){
+    NodeArray *openList = NULL;
+    NodeArray *closedList = NULL;
+    NodeArray *childrenList = NULL;
+    Node *start = malloc_count(sizeof(Node));
+    Node *end = malloc_count(sizeof(Node));
     Node *current_node = NULL;
     Node *temporary_node = NULL;
-    Node *children = NULL;
+    Node *children_node = NULL;
 
     int index = 0, current_index = 0, children_index = 0, nombre_de_boucles = 0;
-    int enfant[4], parent;
+    int children[4], parent;
 
 
-    depart->x = starSystem_XGet(galaxie[debut]);
-    depart->y = starSystem_YGet(galaxie[debut]);
-    depart->g = 0;
-    depart->h = 0;
-    depart->f = 0;
-    depart->numero = debut;
-    depart->suivant = NULL;
-    depart->parent = 0;
+    start->x = starSystem_XGet(galaxy[debut]);
+    start->y = starSystem_YGet(galaxy[debut]);
+    start->g = 0;
+    start->h = 0;
+    start->f = 0;
+    start->numero = debut;
+    start->suivant = NULL;
+    start->parent = 0;
 
-    arrivee->x = starSystem_XGet(galaxie[fin]);
-    arrivee->y = starSystem_YGet(galaxie[fin]);
-    arrivee->g = 0;
-    arrivee->h = 0;
-    arrivee->f = 0;
-    arrivee->numero = fin;
+    end->x = starSystem_XGet(galaxy[fin]);
+    end->y = starSystem_YGet(galaxy[fin]);
+    end->g = 0;
+    end->h = 0;
+    end->f = 0;
+    end->numero = fin;
 
     memset(path, 0, sizeof(int) * taillePath);
 
-    listeOuverte = CreateNodeArray();
-    listeFermee = CreateNodeArray();
-    listeEnfants = CreateNodeArray();
-    CopyNode(CreateNode(listeOuverte), depart);
+    openList = CreateNodeArray();
+    closedList = CreateNodeArray();
+    childrenList = CreateNodeArray();
+    CopyNode(CreateNode(openList), start);
 
-    while((ArraySize(listeOuverte) > 0) && (nombre_de_boucles < taillePath)){
+    while((ArraySize(openList) > 0) && (nombre_de_boucles < taillePath)){
         nombre_de_boucles++;
-        current_node = listeOuverte->firstNode;
+        current_node = openList->firstNode;
         current_index = 0;
         index = 0;
 
         //recupere l'element le plus petit
-        while(index < ArraySize(listeOuverte)){
-            temporary_node = NodeNumber(listeOuverte, index);
+        while(index < ArraySize(openList)){
+            temporary_node = NodeNumber(openList, index);
             if(current_node->f > temporary_node->f){
                 current_node = temporary_node;
                 current_index = index;
@@ -187,11 +187,11 @@ int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int tailleP
             index++;
         }
 
-        current_node = CopyNode(CreateNode(listeFermee), current_node);
-        DestroyNode(listeOuverte, current_index);
+        current_node = CopyNode(CreateNode(closedList), current_node);
+        DestroyNode(openList, current_index);
 
-        DestroyNodeArray(listeEnfants);
-        listeEnfants = CreateNodeArray();
+        DestroyNodeArray(childrenList);
+        childrenList = CreateNodeArray();
 
         //écire resultat
         if(current_node->numero == fin){
@@ -202,7 +202,7 @@ int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int tailleP
                     parent = current_node->parent;
                     index = 0;
                     while((current_node->numero != parent) && (index < 50)){
-                        current_node = NodeNumber(listeFermee, index);
+                        current_node = NodeNumber(closedList, index);
                         index++;
                     }
                     current_index++;
@@ -215,45 +215,45 @@ int PathFinding(StarSystem **galaxie, int *path, int debut, int fin, int tailleP
                 return 0;
         }
 
-        memset(enfant, 0, sizeof(int) * 4);
+        memset(children, 0, sizeof(int) * 4);
         children_index = 0;
         while(children_index < 4){
-            enfant[children_index] = current_node->numero;
-            index = hyperlane_DestinationGet(galaxie[current_node->numero], children_index);
+            children[children_index] = current_node->numero;
+            index = hyperlane_DestinationGet(galaxy[current_node->numero], children_index);
             if(index != 255){
-                children = CreateNode(listeEnfants);
-                children->numero = index;
-                children->x = starSystem_XGet(galaxie[index]);
-                children->y = starSystem_YGet(galaxie[index]);
-                children->parent = current_node->numero;
+                children_node = CreateNode(childrenList);
+                children_node->numero = index;
+                children_node->x = starSystem_XGet(galaxy[index]);
+                children_node->y = starSystem_YGet(galaxy[index]);
+                children_node->parent = current_node->numero;
             }
             children_index++;
         }
 
         children_index = 0;
         index = 0;
-        while(children_index < ArraySize(listeEnfants)){
-            while(index < ArraySize(listeFermee)){
-                if(NodeNumber(listeEnfants, children_index)->numero == NodeNumber(listeFermee, index)->numero){
+        while(children_index < ArraySize(childrenList)){
+            while(index < ArraySize(closedList)){
+                if(NodeNumber(childrenList, children_index)->numero == NodeNumber(closedList, index)->numero){
                     goto finBoucleEnfants;
                 }
                 index++;
             }
 
-            NodeNumber(listeEnfants, children_index)->g = current_node->g + 1;
-            NodeNumber(listeEnfants, children_index)->h = pow(NodeNumber(listeEnfants, children_index)->x - arrivee->x, 2.0) + pow(NodeNumber(listeEnfants, children_index)->y - arrivee->y, 2.0);
-            NodeNumber(listeEnfants, children_index)->f = NodeNumber(listeEnfants, children_index)->g + NodeNumber(listeEnfants, children_index)->h;
+            NodeNumber(childrenList, children_index)->g = current_node->g + 1;
+            NodeNumber(childrenList, children_index)->h = pow(NodeNumber(childrenList, children_index)->x - end->x, 2.0) + pow(NodeNumber(childrenList, children_index)->y - end->y, 2.0);
+            NodeNumber(childrenList, children_index)->f = NodeNumber(childrenList, children_index)->g + NodeNumber(childrenList, children_index)->h;
 
             index = 0;
-            while(index < ArraySize(listeOuverte)){
-                if(NodeNumber(listeEnfants, children_index)->numero == NodeNumber(listeOuverte, index)->numero){
-                       if(NodeNumber(listeEnfants, children_index)->g > NodeNumber(listeOuverte, index)->g){
+            while(index < ArraySize(openList)){
+                if(NodeNumber(childrenList, children_index)->numero == NodeNumber(openList, index)->numero){
+                       if(NodeNumber(childrenList, children_index)->g > NodeNumber(openList, index)->g){
                             goto finBoucleEnfants;
                         }
                 }
                 index++;
             }
-            CopyNode(CreateNode(listeOuverte), NodeNumber(listeEnfants, children_index));
+            CopyNode(CreateNode(openList), NodeNumber(childrenList, children_index));
             finBoucleEnfants:
             children_index++;
         }
